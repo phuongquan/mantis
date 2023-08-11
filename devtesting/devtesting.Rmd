@@ -1,0 +1,47 @@
+---
+title: "devtesting"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data("example_data")
+
+df <- example_data
+timepoint_col <- "timepoint"
+item_col <- "item"
+value_col <- "value"
+
+```
+
+```{r}
+prepare_table(
+  df,
+  timepoint_col,
+  item_col,
+  value_col
+  ) %>%
+  output_table_html(
+    item_label = "item",
+    history_style = "line"
+  )
+  
+```
+
+```{r}
+prepare_table(
+  df,
+  timepoint_col,
+  item_col,
+  value_col,
+  history_type = "delta"
+  ) %>%
+  output_table(
+    item_label = "item",
+    history_style = "bar"
+  )
+  
+```
