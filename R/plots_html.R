@@ -90,18 +90,10 @@ output_table_html <- function(table,
 value_range_from_history <- function(value_history) {
   # NOTE: add 1 to max otherwise the tooltip doesn't appear
   c(min(unlist(lapply(value_history, function(x) {
-    if (names(x) == "value") {
-      min(c(0, min(x, na.rm = TRUE)))
-    } else if (names(x) == "delta") {
-      min(c(0, min(x, na.rm = TRUE)))
-    }
+    min(c(0, min(x, na.rm = TRUE)))
   }))),
-  max(unlist(lapply(value_history, function(x) {
-    if (names(x) == "value") {
-      max(c(0, max(x, na.rm = TRUE)))
-    } else if (names(x) == "delta") {
-      max(c(0, max(x, na.rm = TRUE)))
-    }
+    max(unlist(lapply(value_history, function(x) {
+    max(c(0, max(x, na.rm = TRUE)))
   }))) + 1)
 }
 
