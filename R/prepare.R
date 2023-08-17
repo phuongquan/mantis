@@ -20,7 +20,6 @@ prepare_table <-
            history_type = "value") {
 
   # TODO: Validate supplied colnames against df
-  # TODO: insert any missing timepoint values? Need to take care if df is long.
   # TODO: allow df to be passed in wide with vector of value_cols?
   # TODO: keep original item order? Or allow order to be passed in?
 
@@ -30,9 +29,19 @@ prepare_table <-
   # rename cols for ease. may want to figure out how to keep original colnames
   table_df <-
     df %>%
-    dplyr::rename(timepoint = timepoint_col,
-                  item = item_col,
-                  value = value_col)
+    dplyr::rename(timepoint = all_of(timepoint_col),
+                  item = all_of(item_col),
+                  value = all_of(value_col))
+
+  # insert any missing timepoint values so that x-ranges are the same. (Note: Cannot set xlimits in dygraph)
+  table_df <-
+    table_df %>%
+    tidyr::pivot_wider(names_from = item,
+                       values_from = value,
+                       names_prefix = "piv_") %>%
+    tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
+                        names_to = "item",
+                        names_prefix = "piv_")
 
   # add history column
   table_df <-

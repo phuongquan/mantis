@@ -10,11 +10,13 @@ example_data <-
                item_norm_na_norm = c(rnorm(n = 165, mean = 10), rep(NA, 100), rnorm(n = 100, mean = 7)),
                item_asc = 100 + cumsum(floor(rnorm(n = 365, mean = 5, sd = 2))),
                item_desc = 1000 - cumsum(floor(rnorm(n = 365, mean = 2, sd = 1))),
+               item_missing_norm_missing = c(rep(NA, 100), rnorm(n = 165, mean = 10), rep(NA, 100)),
                stringsAsFactors = FALSE) |>
   dplyr::mutate(dplyr::across(dplyr::contains("norm"), function(x){floor(x*10)})) |>
   tidyr::pivot_longer(cols = dplyr::starts_with("item_"),
                       names_prefix = "item_",
                       names_to = "item",
-                      values_to = "value")
+                      values_to = "value") |>
+  dplyr::filter(!(grepl("missing", item) & is.na(value)))
 
 usethis::use_data(example_data, overwrite = TRUE)
