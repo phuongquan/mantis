@@ -7,6 +7,7 @@
 #' @param item_col
 #' @param value_col
 #' @param history_type "value" or "delta
+#' @param fill_with_zero replace any missing or NA values with 0? Useful when value_col is a record count
 #'
 #' @return data frame
 #' @export
@@ -17,7 +18,8 @@ prepare_table <-
            timepoint_col,
            item_col,
            value_col,
-           history_type = "value") {
+           history_type = "value",
+           fill_with_zero = FALSE) {
 
   # TODO: Validate supplied colnames against df
   # TODO: allow df to be passed in wide with vector of value_cols?
@@ -42,6 +44,12 @@ prepare_table <-
     tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
                         names_to = "item",
                         names_prefix = "piv_")
+
+  if (fill_with_zero) {
+    table_df <-
+      table_df %>%
+      tidyr::replace_na(list(value = 0))
+  }
 
   # add history column
   table_df <-

@@ -24,3 +24,21 @@ table %>%
     sync_axis_range = FALSE
   )
 
+
+table <-
+  prepare_table(
+    df,
+    timepoint_col,
+    item_col,
+    value_col,
+    fill_with_zero = TRUE
+  )
+
+table %>%
+  output_table_html(
+    item_label = "item",
+    history_style = "bar",
+    summary_cols = c("last_value", "mean"),
+    sync_axis_range = FALSE
+  )
+
