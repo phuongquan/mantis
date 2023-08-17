@@ -8,6 +8,7 @@
 #' @param value_col
 #' @param history_type "value" or "delta
 #' @param fill_with_zero replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end
 #'
 #' @return data frame
 #' @export
@@ -19,11 +20,11 @@ prepare_table <-
            item_col,
            value_col,
            history_type = "value",
-           fill_with_zero = FALSE) {
+           fill_with_zero = FALSE,
+           item_order = NULL) {
 
   # TODO: Validate supplied colnames against df
   # TODO: allow df to be passed in wide with vector of value_cols?
-  # TODO: keep original item order? Or allow order to be passed in?
 
   # initialise column names to avoid R CMD check Notes
   timepoint <- item <- value <- value_for_history <- NULL
@@ -76,6 +77,12 @@ prepare_table <-
                                 history_type),
       .groups = "drop"
     )
+
+  if (!is.null(item_order)) {
+    table_df <-
+      table_df %>%
+      dplyr::arrange(factor(item, levels = item_order))
+  }
 
   table_df
 }

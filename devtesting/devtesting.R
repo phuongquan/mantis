@@ -13,7 +13,8 @@ table <-
     df,
     timepoint_col,
     item_col,
-    value_col
+    value_col,
+    item_order = c("norm", "norm_na", "na_norm", "zero")
   )
 
 table %>%
