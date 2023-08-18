@@ -10,13 +10,26 @@ example_data <-
                item_norm_na_norm = c(rnorm(n = 165, mean = 10), rep(NA, 100), rnorm(n = 100, mean = 7)),
                item_asc = 100 + cumsum(floor(rnorm(n = 365, mean = 5, sd = 2))),
                item_desc = 1000 - cumsum(floor(rnorm(n = 365, mean = 2, sd = 1))),
-               item_missing_norm_missing = c(rep(NA, 100), rnorm(n = 165, mean = 10), rep(NA, 100)),
                stringsAsFactors = FALSE) |>
   dplyr::mutate(dplyr::across(dplyr::contains("norm"), function(x){floor(x*10)})) |>
   tidyr::pivot_longer(cols = dplyr::starts_with("item_"),
                       names_prefix = "item_",
                       names_to = "item",
                       values_to = "value") |>
-  dplyr::filter(!(grepl("missing", item) & is.na(value)))
+  dplyr::bind_rows(data.frame(
+    timepoint = seq(as.Date("2022-03-01"), as.Date("2022-10-31"), by = "days"),
+    item = "missing_norm_missing",
+    value = rnorm(n = 245, mean = 10)
+  )) |>
+  dplyr::bind_rows(data.frame(
+    timepoint = c(as.Date("2022-02-01"), as.Date("2022-05-30"), as.Date("2022-10-06"), as.Date("2022-11-01")),
+    item = "sparse_1",
+    value = c(1, 5, 3, 1)
+  )) |>
+  dplyr::bind_rows(data.frame(
+    timepoint = c(as.Date("2022-04-01"), as.Date("2022-05-30"), as.Date("2022-09-06"), as.Date("2022-12-01")),
+    item = "sparse_2",
+    value = c(2, 3, 7, 4)
+  ))
 
 usethis::use_data(example_data, overwrite = TRUE)

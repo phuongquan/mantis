@@ -6,7 +6,8 @@
 #' @param timepoint_col
 #' @param item_col
 #' @param value_col
-#' @param history_type "value" or "delta
+#' @param history_type "value" or "delta"
+#' @param timepoint_limits set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end
 #'
@@ -20,6 +21,7 @@ prepare_table <-
            item_col,
            value_col,
            history_type = "value",
+           timepoint_limits = c(NA, NA),
            fill_with_zero = FALSE,
            item_order = NULL) {
 
@@ -36,15 +38,9 @@ prepare_table <-
                   item = all_of(item_col),
                   value = all_of(value_col))
 
-  # insert any missing timepoint values so that x-ranges are the same. (Note: Cannot set xlimits in dygraph)
   table_df <-
-    table_df %>%
-    tidyr::pivot_wider(names_from = item,
-                       values_from = value,
-                       names_prefix = "piv_") %>%
-    tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
-                        names_to = "item",
-                        names_prefix = "piv_")
+    align_data_timepoints(df = table_df,
+                          timepoint_limits = timepoint_limits)
 
   if (fill_with_zero) {
     table_df <-
@@ -102,3 +98,53 @@ history_to_list <-
     names(ts[[1]]) <- history_type
     ts
   }
+
+
+#' Align the timepoint values across all items
+#'
+#' @param df
+#' @param timepoint_limits
+#'
+#' Ensure timepoint values are the same for all items, for consistency down the table.
+#' Also can restrict/expand data to a specified period here as cannot set xlimits in dygraphs.
+#' # TODO: THIS CURRENTLY ONLY WORKS FOR DAILY TIMEPOINTS
+#'
+#' @return
+#' @noRd
+align_data_timepoints <-
+  function(df,
+           timepoint_limits = c(NA, NA)) {
+
+  # TODO: Need to work out correct limits to use based on df
+  #  in case supplied limits don't match df granularity
+  if (is.na(timepoint_limits[1])) {
+    min_timepoint <- min(df$timepoint)
+  } else{
+    min_timepoint <- timepoint_limits[1]
+  }
+  if (is.na(timepoint_limits[2])) {
+    max_timepoint <- max(df$timepoint)
+  } else{
+    max_timepoint <- timepoint_limits[2]
+  }
+
+  # TODO: Need to work out correct granularity to use based on df
+  #  as don't want to insert unnecessary rows
+  all_timepoints <- seq(min_timepoint, max_timepoint, by = "day")
+
+  df_out <-
+    df %>%
+    tidyr::pivot_wider(names_from = item,
+                       values_from = value,
+                       names_prefix = "piv_") %>%
+    # insert any missing timepoint values
+    dplyr::full_join(data.frame("timepoint" = all_timepoints), by = "timepoint") %>%
+    # restrict to specified limits
+    dplyr::filter(timepoint >= min_timepoint & timepoint <= max_timepoint) %>%
+    tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
+                        names_to = "item",
+                        names_prefix = "piv_")
+
+  df_out
+
+}

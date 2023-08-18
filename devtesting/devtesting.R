@@ -43,3 +43,31 @@ table %>%
     sync_axis_range = FALSE
   )
 
+# set timepoint limits
+prepare_table(
+  df,
+  timepoint_col,
+  item_col,
+  value_col,
+  timepoint_limits = c(as.Date("2022-06-01"), NA)
+) %>%
+output_table_html(
+  item_label = "item",
+  history_style = "bar",
+  summary_cols = c("last_value"),
+  sync_axis_range = FALSE
+)
+
+prepare_table(
+  df %>% dplyr::filter(startsWith(item, "sparse")),
+  timepoint_col,
+  item_col,
+  value_col,
+  timepoint_limits = c(min(df$timepoint), max(df$timepoint))
+) %>%
+  output_table_html(
+    item_label = "item",
+    history_style = "bar",
+    summary_cols = c("last_value"),
+    sync_axis_range = FALSE
+  )
