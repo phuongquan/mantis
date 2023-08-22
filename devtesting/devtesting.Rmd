@@ -5,6 +5,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tinduck)
 ```
 
 ```{r}
@@ -16,6 +18,10 @@ item_col <- "item"
 value_col <- "value"
 
 ```
+
+# {.tabset .tabset-pills}
+
+## Line chart, value
 
 ```{r}
 prepare_table(
@@ -31,6 +37,8 @@ prepare_table(
   
 ```
 
+## Bar chart, delta
+
 ```{r}
 prepare_table(
   df,
@@ -39,9 +47,58 @@ prepare_table(
   value_col,
   history_type = "delta"
   ) %>%
-  output_table(
+  output_table_html(
     item_label = "item",
     history_style = "bar"
   )
   
+```
+
+## tabs rmd loop {.tabset}
+
+```{r}
+dfgroups <- df %>%
+  dplyr::mutate(group = dplyr::case_when(grepl("norm", item) ~ "norm",
+                                         grepl("sparse", item) ~ "sparse",
+                                         TRUE ~ "other"))
+```
+
+```{r, results = 'asis'}
+tab_names <- unique(dfgroups$group)
+
+for (i in seq_along(tab_names)) {
+
+    cat("\n###", tab_names[i], "\n")
+    p <-
+      prepare_table(
+        dfgroups %>% dplyr::filter(group == tab_names[i]),
+        timepoint_col,
+        item_col,
+        value_col,
+        history_type = "value"
+        ) %>%
+        output_table_html(
+          item_label = "item",
+          history_style = "bar"
+        )
+      cat(knitr::knit_print(p))
+      cat("\n")
+}
+```
+
+
+```{r, results = 'asis'}
+construct_rmd_tab_group(
+  tab_group_name = "tabs func loop",
+  dfgroups,
+  timepoint_col,
+  item_col,
+  value_col,
+  tab_col = "group",
+  tab_order = c("norm", "sparse"),
+  history_type = "value",
+  item_label = "item",
+  history_style = "bar"
+)
+
 ```

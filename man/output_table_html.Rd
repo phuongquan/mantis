@@ -6,7 +6,7 @@
 \usage{
 output_table_html(
   table,
-  item_label,
+  item_label = "Item",
   summary_cols = c("last_value", "mean_last14"),
   history_style = "bar",
   sync_axis_range = FALSE
