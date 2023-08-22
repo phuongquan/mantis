@@ -4,6 +4,7 @@ example_data <-
                item_norm = rnorm(n = 365, mean = 10),
                item_norm_step = c(rnorm(n = 100, mean = 5), rnorm(n = 265, mean = 10)),
                item_zero = rep(0, 365),
+               item_na = rep(NA, 365),
                item_zero_norm = c(rep(0, 50), rnorm(n = 315, mean = 10)),
                item_na_norm = c(rep(NA, 200), rnorm(n = 165, mean = 10)),
                item_norm_na = c(rnorm(n = 165, mean = 10), rep(NA, 200)),

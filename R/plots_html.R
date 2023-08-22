@@ -89,11 +89,14 @@ output_table_html <- function(table,
 #' @noRd
 value_range_from_history <- function(value_history) {
   # NOTE: add 1 to max otherwise the tooltip doesn't appear
-  c(min(unlist(lapply(value_history, function(x) {
-    min(c(0, min(x, na.rm = TRUE)))
-  }))),
-    max(unlist(lapply(value_history, function(x) {
-    max(c(0, max(x, na.rm = TRUE)))
-  }))) + 1)
+  # NOTE: min/max return warnings when all values are NA
+  suppressWarnings(
+    c(min(unlist(lapply(value_history, function(x) {
+      min(c(0, min(x, na.rm = TRUE)))
+    }))),
+      max(unlist(lapply(value_history, function(x) {
+      max(c(0, max(x, na.rm = TRUE)))
+    }))) + 1)
+  )
 }
 

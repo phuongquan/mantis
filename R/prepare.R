@@ -61,7 +61,7 @@ prepare_table <-
       )
     ) %>%
     dplyr::summarise(
-      last_timepoint = max(timepoint[!is.na(value)]),
+      last_timepoint = suppressWarnings(max(timepoint[!is.na(value)])),
       last_value = rev(value)[1],
       # TODO: match precision to values
       mean = round(mean(value, na.rm = TRUE),
