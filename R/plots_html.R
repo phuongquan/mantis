@@ -10,7 +10,7 @@
 #' @export
 output_table_html <- function(table,
                          item_label = "Item",
-                         summary_cols = c("last_value", "mean_last14"),
+                         summary_cols = c("max_value"),
                          history_style = "bar",
                          sync_axis_range = FALSE) {
 
@@ -37,6 +37,8 @@ output_table_html <- function(table,
                                          show = "last_timepoint" %in% summary_cols),
       last_value = reactable::colDef(name = "Last value",
                                      show = "last_value" %in% summary_cols),
+      max_value = reactable::colDef(name = "Max value",
+                                     show = "max_value" %in% summary_cols),
       mean = reactable::colDef(name = "Mean",
                                show = "mean" %in% summary_cols),
       mean_last14 = reactable::colDef(name = "Recent Mean",

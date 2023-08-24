@@ -131,6 +131,7 @@ construct_rmd_tab_item(
   tab_name = "new tab",
   history_type = "delta",
   item_label = "item",
+  summary_cols = "max_value",
   history_style = "bar"
 )
 
