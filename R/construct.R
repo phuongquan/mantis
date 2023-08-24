@@ -60,11 +60,16 @@ construct_rmd_tab_group <- function(df,
         timepoint_col,
         item_col,
         value_col,
-        history_type = "value"
+        history_type = history_type,
+        timepoint_limits = timepoint_limits,
+        fill_with_zero = fill_with_zero,
+        item_order = item_order
         ) %>%
         output_table_html(
-          item_label = "item",
-          history_style = "bar"
+          item_label = item_label,
+          summary_cols = summary_cols,
+          history_style = history_style,
+          sync_axis_range = sync_axis_range
         )
       # NOTE: a regular print() doesn't render the widget
       cat(knitr::knit_print(p))
