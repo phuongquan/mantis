@@ -4,7 +4,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 
 library(tinduck)
 ```
@@ -90,6 +90,23 @@ for (i in seq_along(tab_names)) {
 ```{r, results = 'asis'}
 construct_rmd_tab_group(
   tab_group_name = "tabs func loop",
+  dfgroups,
+  timepoint_col,
+  item_col,
+  value_col,
+  tab_col = "group",
+  tab_order = c("norm", "sparse"),
+  history_type = "value",
+  item_label = "item",
+  history_style = "bar"
+)
+
+```
+
+## tabs func loop child tabs only {.tabset}
+
+```{r, results = 'asis'}
+construct_rmd_tab_group(
   dfgroups,
   timepoint_col,
   item_col,

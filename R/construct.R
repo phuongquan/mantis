@@ -22,13 +22,13 @@
 #'
 #' @return
 #' @export
-construct_rmd_tab_group <- function(tab_group_name,
-                                df,
+construct_rmd_tab_group <- function(df,
                                 timepoint_col,
                                 item_col,
                                 value_col,
                                 tab_col,
                                 tab_order = NULL,
+                                tab_group_name = NULL,
                                 history_type = "value",
                                 timepoint_limits = c(NA, NA),
                                 fill_with_zero = FALSE,
@@ -47,7 +47,9 @@ construct_rmd_tab_group <- function(tab_group_name,
   }
 
   # TODO: consider allowing tab level to be passed in as a param
-  cat("\n##", tab_group_name, " {.tabset}\n")
+  if (!is.null(tab_group_name)) {
+    cat("\n##", tab_group_name, " {.tabset}\n")
+  }
 
   for (i in seq_along(tab_names)) {
 
