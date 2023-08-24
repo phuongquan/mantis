@@ -32,7 +32,7 @@ construct_rmd_tab_item <- function(df,
                               fill_with_zero = FALSE,
                               item_order = NULL,
                               item_label = "Item",
-                              summary_cols = c("last_value", "mean_last14"),
+                              summary_cols = c("max_value"),
                               history_style = "bar",
                               sync_axis_range = FALSE) {
 
@@ -99,7 +99,7 @@ construct_rmd_tab_group <- function(df,
                                 fill_with_zero = FALSE,
                                 item_order = NULL,
                                 item_label = "Item",
-                                summary_cols = c("last_value", "mean_last14"),
+                                summary_cols = c("max_value"),
                                 history_style = "bar",
                                 sync_axis_range = FALSE) {
 
@@ -135,28 +135,6 @@ construct_rmd_tab_group <- function(df,
       history_style = history_style,
       sync_axis_range = sync_axis_range
     )
-
-    # cat("\n###", tab_names[i], "\n")
-    # p <-
-    #   prepare_table(
-    #     df %>% dplyr::filter(.data[[tab_col]] == tab_names[i]),
-    #     timepoint_col,
-    #     item_col,
-    #     value_col,
-    #     history_type = history_type,
-    #     timepoint_limits = timepoint_limits,
-    #     fill_with_zero = fill_with_zero,
-    #     item_order = item_order
-    #     ) %>%
-    #     output_table_html(
-    #       item_label = item_label,
-    #       summary_cols = summary_cols,
-    #       history_style = history_style,
-    #       sync_axis_range = sync_axis_range
-    #     )
-    #   # NOTE: a regular print() doesn't render the widget
-    #   cat(knitr::knit_print(p))
-    #   cat("\n")
   }
 
 }

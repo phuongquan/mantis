@@ -17,7 +17,7 @@ construct_rmd_tab_group(
   fill_with_zero = FALSE,
   item_order = NULL,
   item_label = "Item",
-  summary_cols = c("last_value", "mean_last14"),
+  summary_cols = c("max_value"),
   history_style = "bar",
   sync_axis_range = FALSE
 )
