@@ -113,9 +113,25 @@ construct_rmd_tab_group(
   value_col,
   tab_col = "group",
   tab_order = c("norm", "sparse"),
-  history_type = "delta",
+  history_type = "value",
   item_label = "item",
   history_style = "line"
+)
+
+```
+
+## tabs func one child tab only {.tabset}
+
+```{r, results = 'asis'}
+construct_rmd_tab_item(
+  df,
+  timepoint_col,
+  item_col,
+  value_col,
+  tab_name = "new tab",
+  history_type = "delta",
+  item_label = "item",
+  history_style = "bar"
 )
 
 ```
