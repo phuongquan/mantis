@@ -3,6 +3,7 @@
 export("%>%")
 export(construct_rmd_tab_group)
 export(construct_rmd_tab_item)
+export(export_table_html)
 export(output_table_html)
 export(prepare_table)
 importFrom(magrittr,"%>%")

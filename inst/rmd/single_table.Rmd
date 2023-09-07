@@ -1,0 +1,39 @@
+---
+title: "`r params$page_title`"
+output: html_document
+params:
+  df: df
+  colspec: colspec
+  page_title: page_title
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(comment = NA)
+knitr::opts_chunk$set(rownames.print = FALSE)
+```
+
+```{css, echo=FALSE}
+h1.title {
+	font-size: 28px;
+	}
+p.compact {
+	margin-bottom: 0px;
+	margin-top: 0px;
+	}
+```
+
+```{r}
+prepare_table(
+  params$df,
+  params$timepoint_col,
+  params$item_col,
+  params$value_col,
+  history_type = "value"
+  ) %>%
+  output_table_html(
+    item_label = "item",
+    history_style = "bar"
+  )
+```
+

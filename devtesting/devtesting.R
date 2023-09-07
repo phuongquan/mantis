@@ -71,3 +71,10 @@ prepare_table(
     summary_cols = c("last_value"),
     sync_axis_range = FALSE
   )
+
+
+tinduck::export_table_html(df,
+               colspec = list(timepoint_col = "timepoint",
+                              item_col = "item",
+                              value_col = "value")
+               )

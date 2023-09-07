@@ -12,6 +12,7 @@ construct_rmd_tab_group(
   tab_col,
   tab_order = NULL,
   tab_group_name = NULL,
+  tab_group_level = 1,
   history_type = "value",
   timepoint_limits = c(NA, NA),
   fill_with_zero = FALSE,
