@@ -89,13 +89,14 @@ for (i in seq_along(tab_names)) {
 
 ```{r, results = 'asis'}
 construct_rmd_tab_group(
-  tab_group_name = "tabs func loop",
   dfgroups,
   timepoint_col,
   item_col,
   value_col,
   tab_col = "group",
   tab_order = c("norm", "sparse"),
+  tab_group_name = "tabs func loop",
+  tab_group_level = 1,
   history_type = "value",
   item_label = "item",
   history_style = "bar"
@@ -113,6 +114,7 @@ construct_rmd_tab_group(
   value_col,
   tab_col = "group",
   tab_order = c("norm", "sparse"),
+  tab_group_level = 1,
   history_type = "value",
   item_label = "item",
   history_style = "line"
@@ -128,7 +130,24 @@ construct_rmd_tab_item(
   timepoint_col,
   item_col,
   value_col,
-  tab_name = "new tab",
+  tab_name = "tab func level 2",
+  tab_level = 2,
+  history_type = "delta",
+  item_label = "item",
+  summary_cols = "max_value",
+  history_style = "bar"
+)
+
+```
+
+```{r, results = 'asis'}
+construct_rmd_tab_item(
+  df,
+  timepoint_col,
+  item_col,
+  value_col,
+  tab_name = "tab func level 1",
+  tab_level = 1,
   history_type = "delta",
   item_label = "item",
   summary_cols = "max_value",

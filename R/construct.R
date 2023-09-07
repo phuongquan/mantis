@@ -27,6 +27,7 @@ construct_rmd_tab_item <- function(df,
                               item_col,
                               value_col,
                               tab_name = NULL,
+                              tab_level = 1,
                               history_type = "value",
                               timepoint_limits = c(NA, NA),
                               fill_with_zero = FALSE,
@@ -36,10 +37,8 @@ construct_rmd_tab_item <- function(df,
                               history_style = "bar",
                               sync_axis_range = FALSE) {
 
-  # TODO: consider allowing tab level to be passed in as a param
-  if (!is.null(tab_name)) {
-    cat("\n###", tab_name, "\n")
-  }
+  construct_tab_label(tab_name = tab_name,
+                      tab_level = tab_level)
 
   p <-
     prepare_table(
@@ -94,6 +93,7 @@ construct_rmd_tab_group <- function(df,
                                 tab_col,
                                 tab_order = NULL,
                                 tab_group_name = NULL,
+                                tab_group_level = 1,
                                 history_type = "value",
                                 timepoint_limits = c(NA, NA),
                                 fill_with_zero = FALSE,
@@ -111,10 +111,9 @@ construct_rmd_tab_group <- function(df,
       tab_names[order(match(tab_names, tab_order))]
   }
 
-  # TODO: consider allowing tab level to be passed in as a param
-  if (!is.null(tab_group_name)) {
-    cat("\n##", tab_group_name, " {.tabset}\n")
-  }
+  construct_tab_label(tab_name = tab_group_name,
+                      tab_level = tab_group_level,
+                      has_child_tabs = TRUE)
 
   for (i in seq_along(tab_names)) {
     dftab <-
@@ -126,6 +125,7 @@ construct_rmd_tab_group <- function(df,
       item_col = item_col,
       value_col = value_col,
       tab_name = tab_names[i],
+      tab_level = tab_group_level + 1,
       history_type = history_type,
       timepoint_limits = timepoint_limits,
       fill_with_zero = fill_with_zero,
@@ -135,6 +135,18 @@ construct_rmd_tab_group <- function(df,
       history_style = history_style,
       sync_axis_range = sync_axis_range
     )
+  }
+
+}
+
+construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
+  if (!is.null(tab_name)) {
+    cat("\n",
+        paste0(rep("#", tab_level + 1), collapse = ""),
+        " ", tab_name,
+        ifelse(has_child_tabs," {.tabset}", ""),
+        "\n",
+        sep = "")
   }
 
 }
