@@ -1,0 +1,110 @@
+---
+title: "`r params$page_title`"
+output: html_document
+params:
+  df: df
+  colspec: colspec
+  outputspec: outputspec 
+  page_title: page_title
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(comment = NA)
+knitr::opts_chunk$set(rownames.print = FALSE)
+```
+
+```{css, echo=FALSE}
+h1.title {
+	font-size: 28px;
+	}
+p.compact {
+	margin-bottom: 0px;
+	margin-top: 0px;
+	}
+```
+
+```{js}
+// when browser window is resized, all dygraphs on inactive tabs disappear. Reload page to redraw them all.
+window.onresize = function(){ location.reload(); }
+```
+
+#  {.tabset .tabset-pills}
+
+```{r, results='asis'}
+tab_names <- unique(params$df[params$colspec$group_col] %>%
+                      dplyr::pull())
+
+for (tab_name in tab_names) {
+  cat("\n##", tab_name, "\n")
+  
+  dftab <-
+    params$df %>% dplyr::filter(.data[[params$colspec$group_col]] == tab_name)
+
+  p <-
+    prepare_table(
+      df = dftab,
+      timepoint_col = params$colspec$timepoint_col,
+      item_col = params$colspec$item_col,
+      value_col = params$colspec$value_col,
+      history_type = params$outputspec$history_type,
+    ) %>%
+    output_table_html(
+      item_label = params$outputspec$item_label,
+      history_label = params$outputspec$history_label,
+      summary_cols = params$outputspec$summary_cols,
+      history_style = params$outputspec$history_style,
+      sync_axis_range = params$outputspec$sync_axis_range
+    )
+  # NOTE: a regular print() doesn't render the widget
+  cat(knitr::knit_print(p))
+
+}
+
+```
+
+
+```{r, results='asis'}
+# tab_names <- unique(params$df[params$colspec$group_col] %>%
+#                       dplyr::pull())
+# 
+# for (tab_name in tab_names) {
+#   cat("\n##", tab_name, "\n")
+#   
+#   dftab <-
+#     params$df %>% dplyr::filter(.data[[params$colspec$group_col]] == tab_name)
+# 
+#   construct_rmd_tab_item(
+#   df = dftab,
+#   timepoint_col = params$colspec$timepoint_col,
+#   item_col = params$colspec$item_col,
+#   value_col = params$colspec$value_col,
+#   history_type = params$outputspec$history_type,
+#   item_label = params$outputspec$item_label,
+# #  history_label = params$outputspec$history_label,
+#   summary_cols = params$outputspec$summary_cols,
+#   history_style = params$outputspec$history_style,
+#   sync_axis_range = params$outputspec$sync_axis_range
+#   )
+# }
+
+```
+
+
+```{r, results='asis'}
+# construct_rmd_tab_group(
+#   df = params$df,
+#   tab_col = params$colspec$group_col,
+#   timepoint_col = params$colspec$timepoint_col,
+#   item_col = params$colspec$item_col,
+#   value_col = params$colspec$value_col,
+#   history_type = params$outputspec$history_type,
+#   item_label = params$outputspec$item_label,
+# #  history_label = params$outputspec$history_label,
+#   summary_cols = params$outputspec$summary_cols,
+#   history_style = params$outputspec$history_style,
+#   sync_axis_range = params$outputspec$sync_axis_range
+# )
+
+```
+
