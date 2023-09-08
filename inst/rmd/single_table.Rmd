@@ -26,9 +26,9 @@ p.compact {
 ```{r}
 prepare_table(
   params$df,
-  params$timepoint_col,
-  params$item_col,
-  params$value_col,
+  params$colspec$timepoint_col,
+  params$colspec$item_col,
+  params$colspec$value_col,
   history_type = "value"
   ) %>%
   output_table_html(
