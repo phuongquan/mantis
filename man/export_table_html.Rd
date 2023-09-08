@@ -7,6 +7,7 @@
 export_table_html(
   df,
   colspec,
+  outputspec = NULL,
   page_title = "tinduck single table",
   save_directory = ".",
   save_filename = NULL,

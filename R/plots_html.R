@@ -10,6 +10,7 @@
 #' @export
 output_table_html <- function(table,
                          item_label = "Item",
+                         history_label = "History",
                          summary_cols = c("max_value"),
                          history_style = "bar",
                          sync_axis_range = FALSE) {
@@ -45,7 +46,7 @@ output_table_html <- function(table,
                                       show = "mean_last14" %in% summary_cols),
       # cell argument accepts a function with cell _values_, row _index_, and/or column _names_ as arguments, below just uses _values_
       history = reactable::colDef(
-        name = "History",
+        name = history_label,
         width = 410,
         cell = function(value) {
           dy <- dygraphs::dygraph(value,

@@ -85,6 +85,55 @@ prepare_table <-
 }
 
 
+#' Specify relevant columns in df
+#'
+#' @param timepoint_col
+#' @param item_col
+#' @param value_col
+#' @param group_col optional
+#'
+#' @return
+#' @export
+colspec <- function(timepoint_col,
+                    item_col,
+                    value_col,
+                    group_col = NULL){
+  structure(
+    list(timepoint_col = timepoint_col,
+       item_col = item_col,
+       value_col = value_col,
+       group_col = group_col),
+    class = "tinduck_colspec")
+}
+
+#' Specify output options
+#'
+#' @param history_type
+#' @param history_style
+#' @param item_label
+#' @param history_label
+#' @param summary_cols
+#' @param sync_axis_range
+#'
+#' @return
+#' @export
+outputspec <- function(history_type = "value",
+                       history_style = "bar",
+                       item_label = "Item",
+                       history_label = "History",
+                       summary_cols = c("max_value"),
+                       sync_axis_range = FALSE){
+
+  structure(
+    list(history_type = history_type,
+         history_style = history_style,
+         item_label = item_label,
+         history_label = history_label,
+         summary_cols = summary_cols,
+         sync_axis_range = sync_axis_range),
+    class = "tinduck_outputspec")
+}
+
 history_to_list <-
   function(value_for_history,
            timepoint,

@@ -12,6 +12,7 @@
 #' @export
 export_table_html <- function(df,
                         colspec,
+                        outputspec = NULL,
                         page_title = "tinduck single table",
                         save_directory = ".",
                         save_filename = NULL,
@@ -19,6 +20,10 @@ export_table_html <- function(df,
                         ...) {
 
   timestamp_string <- format(Sys.time(), "%Y%m%d%_%H%M%S")
+
+  if (is.null(outputspec)) {
+    outputspec <- outputspec()
+  }
 
   if (is.null(save_filename)) {
     save_filename <-
@@ -54,6 +59,7 @@ export_table_html <- function(df,
     params = list(
       df = df,
       colspec = colspec,
+      outputspec = outputspec,
       page_title = page_title
     ),
     quiet = !show_progress,

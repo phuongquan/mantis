@@ -7,6 +7,7 @@
 output_table_html(
   table,
   item_label = "Item",
+  history_label = "History",
   summary_cols = c("max_value"),
   history_style = "bar",
   sync_axis_range = FALSE

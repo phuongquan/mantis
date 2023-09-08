@@ -4,6 +4,7 @@ output: html_document
 params:
   df: df
   colspec: colspec
+  outputspec: outputspec 
   page_title: page_title
 ---
 
@@ -26,14 +27,17 @@ p.compact {
 ```{r}
 prepare_table(
   params$df,
-  params$colspec$timepoint_col,
-  params$colspec$item_col,
-  params$colspec$value_col,
-  history_type = "value"
+  timepoint_col = params$colspec$timepoint_col,
+  item_col = params$colspec$item_col,
+  value_col = params$colspec$value_col,
+  history_type = params$outputspec$history_type
   ) %>%
   output_table_html(
-    item_label = "item",
-    history_style = "bar"
+    item_label = params$outputspec$item_label,
+    history_label = params$outputspec$history_label,
+    summary_cols = params$outputspec$summary_cols,
+    history_style = params$outputspec$history_style,
+    sync_axis_range = params$outputspec$sync_axis_range
   )
 ```
 
