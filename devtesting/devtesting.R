@@ -78,3 +78,15 @@ tinduck::export_table_html(df,
                               item_col = "item",
                               value_col = "value")
                )
+
+dfgroups <- df %>%
+  dplyr::mutate(group = dplyr::case_when(grepl("norm", item) ~ "norm",
+                                         grepl("sparse", item) ~ "sparse",
+                                         TRUE ~ "other"))
+
+tinduck::export_grouped_table_html(dfgroups,
+                                   colspec = tinduck::colspec(timepoint_col = "timepoint",
+                                                    item_col = "item",
+                                                    value_col = "value",
+                                                    group_col = "group"),
+                                   )

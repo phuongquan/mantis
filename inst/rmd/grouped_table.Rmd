@@ -31,6 +31,13 @@ window.onresize = function(){ location.reload(); }
 
 #  {.tabset .tabset-pills}
 
+```{r}
+# try initialising renderer
+# https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
+# this renders the tables but not the dygraphs
+reactable::reactable(data.frame(a = 1))
+```
+
 ```{r, results='asis'}
 tab_names <- unique(params$df[params$colspec$group_col] %>%
                       dplyr::pull())
