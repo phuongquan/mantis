@@ -29,89 +29,29 @@ p.compact {
 window.onresize = function(){ location.reload(); }
 ```
 
+```{r}
+# initialise htmlwidgets otherwise they won't render
+# this chunk can be placed anywhere
+initialise_widgets(history_style = params$outputspec$history_style)
+```
+
 #  {.tabset .tabset-pills}
 
-```{r}
-# try initialising renderer
-# https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
-# this renders the tables but not the dygraphs
-reactable::reactable(data.frame(a = 1))
-```
-
 ```{r, results='asis'}
-tab_names <- unique(params$df[params$colspec$group_col] %>%
-                      dplyr::pull())
-
-for (tab_name in tab_names) {
-  cat("\n##", tab_name, "\n")
-  
-  dftab <-
-    params$df %>% dplyr::filter(.data[[params$colspec$group_col]] == tab_name)
-
-  p <-
-    prepare_table(
-      df = dftab,
-      timepoint_col = params$colspec$timepoint_col,
-      item_col = params$colspec$item_col,
-      value_col = params$colspec$value_col,
-      history_type = params$outputspec$history_type,
-    ) %>%
-    output_table_html(
-      item_label = params$outputspec$item_label,
-      history_label = params$outputspec$history_label,
-      summary_cols = params$outputspec$summary_cols,
-      history_style = params$outputspec$history_style,
-      sync_axis_range = params$outputspec$sync_axis_range
-    )
-  # NOTE: a regular print() doesn't render the widget
-  cat(knitr::knit_print(p))
-
-}
-
-```
-
-
-```{r, results='asis'}
-# tab_names <- unique(params$df[params$colspec$group_col] %>%
-#                       dplyr::pull())
-# 
-# for (tab_name in tab_names) {
-#   cat("\n##", tab_name, "\n")
-#   
-#   dftab <-
-#     params$df %>% dplyr::filter(.data[[params$colspec$group_col]] == tab_name)
-# 
-#   construct_rmd_tab_item(
-#   df = dftab,
-#   timepoint_col = params$colspec$timepoint_col,
-#   item_col = params$colspec$item_col,
-#   value_col = params$colspec$value_col,
-#   history_type = params$outputspec$history_type,
-#   item_label = params$outputspec$item_label,
-# #  history_label = params$outputspec$history_label,
-#   summary_cols = params$outputspec$summary_cols,
-#   history_style = params$outputspec$history_style,
-#   sync_axis_range = params$outputspec$sync_axis_range
-#   )
-# }
-
-```
-
-
-```{r, results='asis'}
-# construct_rmd_tab_group(
-#   df = params$df,
-#   tab_col = params$colspec$group_col,
-#   timepoint_col = params$colspec$timepoint_col,
-#   item_col = params$colspec$item_col,
-#   value_col = params$colspec$value_col,
-#   history_type = params$outputspec$history_type,
-#   item_label = params$outputspec$item_label,
-# #  history_label = params$outputspec$history_label,
-#   summary_cols = params$outputspec$summary_cols,
-#   history_style = params$outputspec$history_style,
-#   sync_axis_range = params$outputspec$sync_axis_range
-# )
+construct_rmd_tab_group(
+  df = params$df,
+  tab_group_level = 0,
+  tab_col = params$colspec$group_col,
+  timepoint_col = params$colspec$timepoint_col,
+  item_col = params$colspec$item_col,
+  value_col = params$colspec$value_col,
+  history_type = params$outputspec$history_type,
+  item_label = params$outputspec$item_label,
+#  history_label = params$outputspec$history_label,
+  summary_cols = params$outputspec$summary_cols,
+  history_style = params$outputspec$history_style,
+  sync_axis_range = params$outputspec$sync_axis_range
+)
 
 ```
 

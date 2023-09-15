@@ -10,7 +10,9 @@ output_table_html(
   history_label = "History",
   summary_cols = c("max_value"),
   history_style = "bar",
-  sync_axis_range = FALSE
+  sync_axis_range = FALSE,
+  bordered = TRUE,
+  ...
 )
 }
 \arguments{

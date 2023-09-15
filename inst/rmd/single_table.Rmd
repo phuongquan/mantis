@@ -24,6 +24,8 @@ p.compact {
 	}
 ```
 
+<br>
+
 ```{r}
 prepare_table(
   params$df,

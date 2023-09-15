@@ -89,4 +89,5 @@ tinduck::export_grouped_table_html(dfgroups,
                                                     item_col = "item",
                                                     value_col = "value",
                                                     group_col = "group"),
+                                   outputspec = outputspec(history_style = "line")
                                    )

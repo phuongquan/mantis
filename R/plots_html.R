@@ -13,7 +13,9 @@ output_table_html <- function(table,
                          history_label = "History",
                          summary_cols = c("max_value"),
                          history_style = "bar",
-                         sync_axis_range = FALSE) {
+                         sync_axis_range = FALSE,
+                         bordered = TRUE,
+                         ...) {
 
   # initialise column names to avoid R CMD check Notes
   item <- last_timepoint <- last_value <- history <- NULL
@@ -28,7 +30,7 @@ output_table_html <- function(table,
     striped = TRUE,
     highlight = TRUE,
     fullWidth = TRUE,
-    bordered = TRUE,
+    bordered = bordered,
     compact = TRUE,
     columns = list(
       item = reactable::colDef(name = item_label,
@@ -78,7 +80,8 @@ output_table_html <- function(table,
           dy
         }
         )
-      )
+      ),
+    ...
     )
 
 }

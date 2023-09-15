@@ -1,4 +1,32 @@
 
+#' Initialise HTML widgets
+#'
+#' If the output is being constructed in 'asis' chunks, there must also be at least one standard chunk that
+#' contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate history_style
+#'
+#' @return
+#' @export
+#'
+#' @examples
+initialise_widgets <- function(history_style){
+  # https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
+  # Currently appears like a line break when rendered. Could try harder to make it invisible but
+  # people can always put it at the end of the file if required
+  dummy_df <- data.frame(a = as.Date("2023-01-01"), b = "item", c = 1)
+
+  prepare_table(dummy_df,
+                timepoint_col = "a",
+                item_col = "b",
+                value_col = "c") %>%
+    output_table_html(
+      history_style = history_style,
+      summary_cols = "",
+      height = 0,
+      bordered = FALSE
+    )
+
+}
+
 #' Dynamically generate a single tab for an rmd chunk
 #'
 #' Chunk options must contain `results = 'asis'`.
