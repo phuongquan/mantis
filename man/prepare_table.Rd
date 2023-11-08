@@ -9,14 +9,14 @@ prepare_table(
   timepoint_col,
   item_col,
   value_col,
-  history_type = "value",
+  plot_value_type = "value",
   timepoint_limits = c(NA, NA),
   fill_with_zero = FALSE,
   item_order = NULL
 )
 }
 \arguments{
-\item{history_type}{"value" or "delta"}
+\item{plot_value_type}{"value" or "delta"}
 
 \item{timepoint_limits}{set start and end dates for time period to include. Defaults to min/max of timepoint_col}
 

@@ -13,13 +13,14 @@ construct_rmd_tab_group(
   tab_order = NULL,
   tab_group_name = NULL,
   tab_group_level = 1,
-  history_type = "value",
+  plot_value_type = "value",
   timepoint_limits = c(NA, NA),
   fill_with_zero = FALSE,
   item_order = NULL,
   item_label = "Item",
+  plot_label = "History",
   summary_cols = c("max_value"),
-  history_style = "bar",
+  plot_type = "bar",
   sync_axis_range = FALSE
 )
 }

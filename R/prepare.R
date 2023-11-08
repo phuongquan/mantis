@@ -6,7 +6,7 @@
 #' @param timepoint_col
 #' @param item_col
 #' @param value_col
-#' @param history_type "value" or "delta"
+#' @param plot_value_type "value" or "delta"
 #' @param timepoint_limits set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end
@@ -20,7 +20,7 @@ prepare_table <-
            timepoint_col,
            item_col,
            value_col,
-           history_type = "value",
+           plot_value_type = "value",
            timepoint_limits = c(NA, NA),
            fill_with_zero = FALSE,
            item_order = NULL) {
@@ -55,23 +55,23 @@ prepare_table <-
     dplyr::arrange(timepoint) %>%
     dplyr::mutate(
       value_for_history = dplyr::case_when(
-        history_type == "none" ~ NA_integer_,
-        history_type == "value" ~ as.numeric(value),
-        history_type == "delta" ~ as.numeric(value) - dplyr::lag(as.numeric(value))
+        plot_value_type == "value" ~ as.numeric(value),
+        plot_value_type == "delta" ~ as.numeric(value) - dplyr::lag(as.numeric(value))
       )
     ) %>%
     dplyr::summarise(
       last_timepoint = suppressWarnings(max(timepoint[!is.na(value)])),
       last_value = rev(value)[1],
+      # TODO: add last_value_nonmissing
       max_value = suppressWarnings(max(value, na.rm = TRUE)),
       # TODO: match precision to values
-      mean = round(mean(value, na.rm = TRUE),
+      mean_value = round(mean(value, na.rm = TRUE),
                    digits = 1),
-      mean_last14 = round(mean(rev(value)[1:14], na.rm = TRUE),
+      mean_value_last14 = round(mean(rev(value)[1:14], na.rm = TRUE),
                           digits = 1),
       history = history_to_list(value_for_history,
                                 timepoint,
-                                history_type),
+                                plot_value_type),
       .groups = "drop"
     )
 
@@ -85,14 +85,17 @@ prepare_table <-
 }
 
 
-#' Specify relevant columns in df
+#' Specify relevant columns in the source data frame
 #'
-#' @param timepoint_col
-#' @param item_col
-#' @param value_col
-#' @param group_col optional
+#' @param timepoint_col String denoting the (datetime) column which will be used for the x-axes.
+#' @param item_col String denoting the (character) column containing categorical values identifying
+#'   distinct time series.
+#' @param value_col String denoting the (numeric) column containing the time series values which
+#'   will be used for the y-axes.
+#' @param group_col Optional. String denoting the (character) column containing categorical values
+#'   which will be used to group the time series into different tabs on the report.
 #'
-#' @return
+#' @return A `colspec()` object
 #' @export
 colspec <- function(timepoint_col,
                     item_col,
@@ -106,29 +109,32 @@ colspec <- function(timepoint_col,
     class = "tinduck_colspec")
 }
 
-#' Specify output options
+#' Specify output options for the report
 #'
-#' @param history_type
-#' @param history_style
-#' @param item_label
-#' @param history_label
-#' @param summary_cols
-#' @param sync_axis_range
+#' @param plot_value_type Display the raw "`value`" for the time series or display the calculated
+#'   "`delta`" between consecutive values.
+#' @param plot_type Display the time series as a "`bar`" or "`line`" chart.
+#' @param item_label String label to use for the "item" column in the report.
+#' @param plot_label String label to use for the time series column in the report.
+#' @param summary_cols Summary data to include as columns in the report. Options are `c("max_value",
+#'   "last_value", "last_timepoint", "mean_value", "mean_value_last14")`.
+#' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
+#'   X-axes are always synced.
 #'
-#' @return
+#' @return An `outputspec()` object
 #' @export
-outputspec <- function(history_type = "value",
-                       history_style = "bar",
+outputspec <- function(plot_value_type = "value",
+                       plot_type = "bar",
                        item_label = "Item",
-                       history_label = "History",
+                       plot_label = "History",
                        summary_cols = c("max_value"),
                        sync_axis_range = FALSE){
 
   structure(
-    list(history_type = history_type,
-         history_style = history_style,
+    list(plot_value_type = plot_value_type,
+         plot_type = plot_type,
          item_label = item_label,
-         history_label = history_label,
+         plot_label = plot_label,
          summary_cols = summary_cols,
          sync_axis_range = sync_axis_range),
     class = "tinduck_outputspec")
@@ -137,7 +143,7 @@ outputspec <- function(history_type = "value",
 history_to_list <-
   function(value_for_history,
            timepoint,
-           history_type) {
+           plot_value_type) {
 
     ts <-
       data.frame(value_for_history,
@@ -145,7 +151,7 @@ history_to_list <-
                  row.names = 2) %>%
       xts::as.xts() %>%
       list()
-    names(ts[[1]]) <- history_type
+    names(ts[[1]]) <- plot_value_type
     ts
   }
 

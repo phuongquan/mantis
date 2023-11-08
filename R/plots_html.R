@@ -4,15 +4,15 @@
 #' @param sync_axis_range sync all history graphs to same y-axis range
 #' @param item_label Label for first column
 #' @param summary_cols vector of which summary columns to include
-#' @param history_style "bar" or "line"
+#' @param plot_type "bar" or "line"
 #'
 #' @return html table
 #' @export
-output_table_html <- function(table,
+output_table_interactive <- function(table,
                          item_label = "Item",
-                         history_label = "History",
+                         plot_label = "History",
                          summary_cols = c("max_value"),
-                         history_style = "bar",
+                         plot_type = "bar",
                          sync_axis_range = FALSE,
                          bordered = TRUE,
                          ...) {
@@ -42,13 +42,13 @@ output_table_html <- function(table,
                                      show = "last_value" %in% summary_cols),
       max_value = reactable::colDef(name = "Max value",
                                      show = "max_value" %in% summary_cols),
-      mean = reactable::colDef(name = "Mean",
-                               show = "mean" %in% summary_cols),
-      mean_last14 = reactable::colDef(name = "Recent Mean",
-                                      show = "mean_last14" %in% summary_cols),
+      mean_value = reactable::colDef(name = "Mean",
+                               show = "mean_value" %in% summary_cols),
+      mean_value_last14 = reactable::colDef(name = "Recent Mean",
+                                      show = "mean_value_last14" %in% summary_cols),
       # cell argument accepts a function with cell _values_, row _index_, and/or column _names_ as arguments, below just uses _values_
       history = reactable::colDef(
-        name = history_label,
+        name = plot_label,
         width = 410,
         cell = function(value) {
           dy <- dygraphs::dygraph(value,
@@ -72,7 +72,7 @@ output_table_html <- function(table,
               labelHeight = 0,
               axisHeight = 0
             )
-          if (history_style == "bar") {
+          if (plot_type == "bar") {
             dy <-
               dy %>%
               dygraphs::dyBarChart()
@@ -87,7 +87,7 @@ output_table_html <- function(table,
 }
 
 
-#' Set y-axis range based on history_type and values
+#' Set y-axis range based on plot_value_type and values
 #'
 #' @param value_history lists of history values
 #'

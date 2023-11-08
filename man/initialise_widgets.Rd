@@ -4,9 +4,9 @@
 \alias{initialise_widgets}
 \title{Initialise HTML widgets}
 \usage{
-initialise_widgets(history_style)
+initialise_widgets(plot_type)
 }
 \description{
 If the output is being constructed in 'asis' chunks, there must also be at least one standard chunk that
-contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate history_style
+contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate plot_type
 }

@@ -30,9 +30,9 @@ prepare_table(
   item_col,
   value_col
   ) %>%
-  output_table_html(
+  output_table_interactive(
     item_label = "item",
-    history_style = "line"
+    plot_type = "line"
   )
   
 ```
@@ -45,11 +45,11 @@ prepare_table(
   timepoint_col,
   item_col,
   value_col,
-  history_type = "delta"
+  plot_value_type = "delta"
   ) %>%
-  output_table_html(
+  output_table_interactive(
     item_label = "item",
-    history_style = "bar"
+    plot_type = "bar"
   )
   
 ```
@@ -75,11 +75,11 @@ for (i in seq_along(tab_names)) {
         timepoint_col,
         item_col,
         value_col,
-        history_type = "value"
+        plot_value_type = "value"
         ) %>%
-        output_table_html(
+        output_table_interactive(
           item_label = "item",
-          history_style = "bar"
+          plot_type = "bar"
         )
       cat(knitr::knit_print(p))
       cat("\n")
@@ -97,9 +97,9 @@ construct_rmd_tab_group(
   tab_order = c("norm", "sparse"),
   tab_group_name = "tabs func loop",
   tab_group_level = 1,
-  history_type = "value",
+  plot_value_type = "value",
   item_label = "item",
-  history_style = "bar"
+  plot_type = "bar"
 )
 
 ```
@@ -115,9 +115,9 @@ construct_rmd_tab_group(
   tab_col = "group",
   tab_order = c("norm", "sparse"),
   tab_group_level = 1,
-  history_type = "value",
+  plot_value_type = "value",
   item_label = "item",
-  history_style = "line"
+  plot_type = "line"
 )
 
 ```
@@ -132,10 +132,10 @@ construct_rmd_tab_item(
   value_col,
   tab_name = "tab func level 2",
   tab_level = 2,
-  history_type = "delta",
+  plot_value_type = "delta",
   item_label = "item",
   summary_cols = "max_value",
-  history_style = "bar"
+  plot_type = "bar"
 )
 
 ```
@@ -148,10 +148,10 @@ construct_rmd_tab_item(
   value_col,
   tab_name = "tab func level 1",
   tab_level = 1,
-  history_type = "delta",
+  plot_value_type = "delta",
   item_label = "item",
   summary_cols = "max_value",
-  history_style = "bar"
+  plot_type = "bar"
 )
 
 ```

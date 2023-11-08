@@ -18,9 +18,9 @@ table <-
   )
 
 table %>%
-  output_table_html(
+  output_table_interactive(
     item_label = "item",
-    history_style = "bar",
+    plot_type = "bar",
     summary_cols = c("last_value", "mean"),
     sync_axis_range = FALSE
   )
@@ -36,9 +36,9 @@ table <-
   )
 
 table %>%
-  output_table_html(
+  output_table_interactive(
     item_label = "item",
-    history_style = "bar",
+    plot_type = "bar",
     summary_cols = c("last_value", "mean"),
     sync_axis_range = FALSE
   )
@@ -51,9 +51,9 @@ prepare_table(
   value_col,
   timepoint_limits = c(as.Date("2022-06-01"), NA)
 ) %>%
-output_table_html(
+output_table_interactive(
   item_label = "item",
-  history_style = "bar",
+  plot_type = "bar",
   summary_cols = c("last_value"),
   sync_axis_range = FALSE
 )
@@ -65,15 +65,15 @@ prepare_table(
   value_col,
   timepoint_limits = c(min(df$timepoint), max(df$timepoint))
 ) %>%
-  output_table_html(
+  output_table_interactive(
     item_label = "item",
-    history_style = "bar",
+    plot_type = "bar",
     summary_cols = c("last_value"),
     sync_axis_range = FALSE
   )
 
 
-tinduck::export_table_html(df,
+tinduck::tinduck_report(df,
                colspec = list(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value")
@@ -84,10 +84,12 @@ dfgroups <- df %>%
                                          grepl("sparse", item) ~ "sparse",
                                          TRUE ~ "other"))
 
-tinduck::export_grouped_table_html(dfgroups,
+tinduck::tinduck_report(dfgroups,
                                    colspec = tinduck::colspec(timepoint_col = "timepoint",
                                                     item_col = "item",
                                                     value_col = "value",
                                                     group_col = "group"),
-                                   outputspec = outputspec(history_style = "line")
+                                   outputspec = outputspec(plot_type = "line",
+                                                           summary_cols = "last_value")
                                    )
+

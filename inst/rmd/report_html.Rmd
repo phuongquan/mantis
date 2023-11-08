@@ -1,0 +1,78 @@
+---
+title: "`r params$page_title`"
+output: html_document
+params:
+  df: df
+  colspec: colspec
+  outputspec: outputspec 
+  page_title: page_title
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(comment = NA)
+knitr::opts_chunk$set(rownames.print = FALSE)
+```
+
+```{css, echo=FALSE}
+h1.title {
+	font-size: 28px;
+	}
+p.compact {
+	margin-bottom: 0px;
+	margin-top: 0px;
+	}
+```
+
+```{r initialise}
+is_grouped <- !is.null(params$colspec$group_col)
+```
+
+```{r, eval=!is_grouped}
+prepare_table(
+  params$df,
+  timepoint_col = params$colspec$timepoint_col,
+  item_col = params$colspec$item_col,
+  value_col = params$colspec$value_col,
+  plot_value_type = params$outputspec$plot_value_type
+  ) %>%
+  output_table_interactive(
+    item_label = params$outputspec$item_label,
+    plot_label = params$outputspec$plot_label,
+    summary_cols = params$outputspec$summary_cols,
+    plot_type = params$outputspec$plot_type,
+    sync_axis_range = params$outputspec$sync_axis_range
+  )
+```
+
+```{js, eval=is_grouped}
+// when browser window is resized, all dygraphs on inactive tabs disappear. Reload page to redraw them all.
+// unfortunately this also means you lose your active tab
+window.onresize = function(){ location.reload(); }
+```
+
+#  {.tabset .tabset-pills}
+
+```{r, results='asis', eval=is_grouped}
+construct_rmd_tab_group(
+  df = params$df,
+  tab_group_level = 0,
+  tab_col = params$colspec$group_col,
+  timepoint_col = params$colspec$timepoint_col,
+  item_col = params$colspec$item_col,
+  value_col = params$colspec$value_col,
+  plot_value_type = params$outputspec$plot_value_type,
+  item_label = params$outputspec$item_label,
+  plot_label = params$outputspec$plot_label,
+  summary_cols = params$outputspec$summary_cols,
+  plot_type = params$outputspec$plot_type,
+  sync_axis_range = params$outputspec$sync_axis_range
+)
+
+```
+
+```{r, eval=is_grouped}
+# initialise htmlwidgets otherwise they won't render
+# this chunk can be placed anywhere
+initialise_widgets(plot_type = params$outputspec$plot_type)
+```

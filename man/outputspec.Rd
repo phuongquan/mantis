@@ -2,20 +2,36 @@
 % Please edit documentation in R/prepare.R
 \name{outputspec}
 \alias{outputspec}
-\title{Specify output options}
+\title{Specify output options for the report}
 \usage{
 outputspec(
-  history_type = "value",
-  history_style = "bar",
+  plot_value_type = "value",
+  plot_type = "bar",
   item_label = "Item",
-  history_label = "History",
+  plot_label = "History",
   summary_cols = c("max_value"),
   sync_axis_range = FALSE
 )
 }
 \arguments{
-\item{sync_axis_range}{}
+\item{plot_value_type}{Display the raw "`value`" for the time series or display the calculated
+"`delta`" between consecutive values.}
+
+\item{plot_type}{Display the time series as a "`bar`" or "`line`" chart.}
+
+\item{item_label}{String label to use for the "item" column in the report.}
+
+\item{plot_label}{String label to use for the time series column in the report.}
+
+\item{summary_cols}{Summary data to include as columns in the report. Options are `c("max_value",
+"last_value", "last_timepoint", "mean_value", "mean_value_last14")`.}
+
+\item{sync_axis_range}{Set the y-axis to be the same range for all time series in a table.
+X-axes are always synced.}
+}
+\value{
+An `outputspec()` object
 }
 \description{
-Specify output options
+Specify output options for the report
 }

@@ -2,13 +2,13 @@
 #' Initialise HTML widgets
 #'
 #' If the output is being constructed in 'asis' chunks, there must also be at least one standard chunk that
-#' contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate history_style
+#' contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate plot_type
 #'
 #' @return
 #' @export
 #'
 #' @examples
-initialise_widgets <- function(history_style){
+initialise_widgets <- function(plot_type){
   # https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
   # Currently appears like a line break when rendered. Could try harder to make it invisible but
   # people can always put it at the end of the file if required
@@ -18,14 +18,15 @@ initialise_widgets <- function(history_style){
                 timepoint_col = "a",
                 item_col = "b",
                 value_col = "c") %>%
-    output_table_html(
-      history_style = history_style,
+    output_table_interactive(
+      plot_type = plot_type,
       summary_cols = "",
       height = 0,
       bordered = FALSE
     )
 
 }
+
 
 #' Dynamically generate a single tab for an rmd chunk
 #'
@@ -39,13 +40,13 @@ initialise_widgets <- function(history_style){
 #' @param value_col
 #' @param tab_col
 #' @param tab_order
-#' @param history_type
+#' @param plot_value_type
 #' @param timepoint_limits
 #' @param fill_with_zero
 #' @param item_order
 #' @param item_label
 #' @param summary_cols
-#' @param history_style
+#' @param plot_type
 #' @param sync_axis_range
 #'
 #' @return
@@ -56,13 +57,14 @@ construct_rmd_tab_item <- function(df,
                               value_col,
                               tab_name = NULL,
                               tab_level = 1,
-                              history_type = "value",
+                              plot_value_type = "value",
                               timepoint_limits = c(NA, NA),
                               fill_with_zero = FALSE,
                               item_order = NULL,
                               item_label = "Item",
                               summary_cols = c("max_value"),
-                              history_style = "bar",
+                              plot_type = "bar",
+                              plot_label = "History",
                               sync_axis_range = FALSE) {
 
   construct_tab_label(tab_name = tab_name,
@@ -74,15 +76,16 @@ construct_rmd_tab_item <- function(df,
       timepoint_col,
       item_col,
       value_col,
-      history_type = history_type,
+      plot_value_type = plot_value_type,
       timepoint_limits = timepoint_limits,
       fill_with_zero = fill_with_zero,
       item_order = item_order
     ) %>%
-    output_table_html(
+    output_table_interactive(
       item_label = item_label,
+      plot_label = plot_label,
       summary_cols = summary_cols,
-      history_style = history_style,
+      plot_type = plot_type,
       sync_axis_range = sync_axis_range
     )
   # NOTE: a regular print() doesn't render the widget
@@ -103,13 +106,13 @@ construct_rmd_tab_item <- function(df,
 #' @param value_col
 #' @param tab_col
 #' @param tab_order
-#' @param history_type
+#' @param plot_value_type
 #' @param timepoint_limits
 #' @param fill_with_zero
 #' @param item_order
 #' @param item_label
 #' @param summary_cols
-#' @param history_style
+#' @param plot_type
 #' @param sync_axis_range
 #'
 #' @return
@@ -122,13 +125,14 @@ construct_rmd_tab_group <- function(df,
                                 tab_order = NULL,
                                 tab_group_name = NULL,
                                 tab_group_level = 1,
-                                history_type = "value",
+                                plot_value_type = "value",
                                 timepoint_limits = c(NA, NA),
                                 fill_with_zero = FALSE,
                                 item_order = NULL,
                                 item_label = "Item",
+                                plot_label = "History",
                                 summary_cols = c("max_value"),
-                                history_style = "bar",
+                                plot_type = "bar",
                                 sync_axis_range = FALSE) {
 
   tab_names <- unique(df[tab_col] %>%
@@ -154,13 +158,13 @@ construct_rmd_tab_group <- function(df,
       value_col = value_col,
       tab_name = tab_names[i],
       tab_level = tab_group_level + 1,
-      history_type = history_type,
+      plot_value_type = plot_value_type,
       timepoint_limits = timepoint_limits,
       fill_with_zero = fill_with_zero,
       item_order = item_order,
       item_label = item_label,
       summary_cols = summary_cols,
-      history_style = history_style,
+      plot_type = plot_type,
       sync_axis_range = sync_axis_range
     )
   }
