@@ -12,7 +12,7 @@
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end
 #'
 #' @return data frame
-#' @export
+#' @noRd
 #'
 #' @examples
 prepare_table <-

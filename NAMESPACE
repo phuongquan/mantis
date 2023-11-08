@@ -2,11 +2,6 @@
 
 export("%>%")
 export(colspec)
-export(construct_rmd_tab_group)
-export(construct_rmd_tab_item)
-export(initialise_widgets)
-export(output_table_interactive)
 export(outputspec)
-export(prepare_table)
 export(tinduck_report)
 importFrom(magrittr,"%>%")

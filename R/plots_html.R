@@ -7,7 +7,7 @@
 #' @param plot_type "bar" or "line"
 #'
 #' @return html table
-#' @export
+#' @noRd
 output_table_interactive <- function(table,
                          item_label = "Item",
                          plot_label = "History",

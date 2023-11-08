@@ -5,9 +5,7 @@
 #' contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate plot_type
 #'
 #' @return
-#' @export
-#'
-#' @examples
+#' @noRd
 initialise_widgets <- function(plot_type){
   # https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
   # Currently appears like a line break when rendered. Could try harder to make it invisible but
@@ -50,7 +48,7 @@ initialise_widgets <- function(plot_type){
 #' @param sync_axis_range
 #'
 #' @return
-#' @export
+#' @noRd
 construct_rmd_tab_item <- function(df,
                               timepoint_col,
                               item_col,
@@ -116,7 +114,7 @@ construct_rmd_tab_item <- function(df,
 #' @param sync_axis_range
 #'
 #' @return
-#' @export
+#' @noRd
 construct_rmd_tab_group <- function(df,
                                 timepoint_col,
                                 item_col,
