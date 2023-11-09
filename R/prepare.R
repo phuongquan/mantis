@@ -158,8 +158,8 @@ history_to_list <-
 
 #' Align the timepoint values across all items
 #'
-#' @param df
-#' @param timepoint_limits
+#' @param df Data frame with 3 columns: timepoint, item, and value
+#' @param timepoint_limits Vector containing min and max dates for the x-axes. Use Date type.
 #'
 #' Ensure timepoint values are the same for all items, for consistency down the table.
 #' Also can restrict/expand data to a specified period here as cannot set xlimits in dygraphs.
@@ -170,6 +170,9 @@ history_to_list <-
 align_data_timepoints <-
   function(df,
            timepoint_limits = c(NA, NA)) {
+
+  # initialise column names to avoid R CMD check Notes
+  timepoint <- item <- value <- NULL
 
   # TODO: Need to work out correct limits to use based on df
   #  in case supplied limits don't match df granularity
