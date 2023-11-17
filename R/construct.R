@@ -3,8 +3,9 @@
 #'
 #' If the output is being constructed in 'asis' chunks, there must also be at least one standard chunk that
 #' contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate plot_type
+#' @param plot_type "`bar`" or "`line`", depending on what will be used in real tables.
 #'
-#' @return
+#' @return (invisibly) the supplied plot_type
 #' @noRd
 initialise_widgets <- function(plot_type){
   # https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
@@ -23,6 +24,7 @@ initialise_widgets <- function(plot_type){
       bordered = FALSE
     )
 
+  invisible(plot_type)
 }
 
 
@@ -31,23 +33,25 @@ initialise_widgets <- function(plot_type){
 #' Chunk options must contain `results = 'asis'`.
 #' Function writes directly to the chunk using side-effects
 #'
-#' @param tab_name
-#' @param df
-#' @param timepoint_col
-#' @param item_col
-#' @param value_col
-#' @param tab_col
-#' @param tab_order
-#' @param plot_value_type
-#' @param timepoint_limits
-#' @param fill_with_zero
-#' @param item_order
-#' @param item_label
-#' @param summary_cols
-#' @param plot_type
-#' @param sync_axis_range
+#' @param df Data frame containing time series in long format
+#' @param timepoint_col Column to be used for x-axes
+#' @param item_col Column containing categorical values identifying distinct time series
+#' @param value_col Column containing the time series values which will be used for the y-axes.
+#' @param tab_name Character string to appear on parent tab
+#' @param tab_level Child level for tab. Value of 1 creates a tab with rmd level "##".
+#' @param plot_value_type "value" or "delta"
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
+#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param item_order Optional vector containing values from item_col in desired order of display down the table
+#' @param item_label String label to use for the "item" column in the table.
+#' @param summary_cols Summary data to include as columns in the report. Options are `c("max_value",
+#'   "last_value", "last_timepoint", "mean_value", "mean_value_last14")`.
+#' @param plot_type Display the time series as a "`bar`" or "`line`" chart.
+#' @param plot_label String label to use for the time series column in the table.
+#' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
+#'   X-axes are always synced.
 #'
-#' @return
+#' @return (invisibly) the supplied df
 #' @noRd
 construct_rmd_tab_item <- function(df,
                               timepoint_col,
@@ -90,6 +94,7 @@ construct_rmd_tab_item <- function(df,
   cat(knitr::knit_print(p))
   cat("\n")
 
+  invisible(df)
 }
 
 #' Dynamically generate a group of tabs for an rmd chunk
@@ -97,23 +102,26 @@ construct_rmd_tab_item <- function(df,
 #' Chunk options must contain `results = 'asis'`.
 #' Function writes directly to the chunk using side-effects
 #'
-#' @param tab_name
-#' @param df
-#' @param timepoint_col
-#' @param item_col
-#' @param value_col
-#' @param tab_col
-#' @param tab_order
-#' @param plot_value_type
-#' @param timepoint_limits
-#' @param fill_with_zero
-#' @param item_order
-#' @param item_label
-#' @param summary_cols
-#' @param plot_type
-#' @param sync_axis_range
+#' @param tab_name Character string to appear on parent tab
+#' @param df Data frame containing time series in long format
+#' @param timepoint_col Name of column to be used for x-axes
+#' @param item_col Name of column containing categorical values identifying distinct time series
+#' @param value_col Name of column containing the time series values which will be used for the y-axes.
+#' @param tab_col Name of column containing categorical values which will be used to group the time series into different tabs.
+#' @param tab_order Optional vector containing values from tab_col in desired order of display
+#' @param plot_value_type "value" or "delta"
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
+#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param item_order Optional vector containing values from item_col in desired order of display down the table
+#' @param item_label String label to use for the "item" column in the table.
+#' @param summary_cols Summary data to include as columns in the report. Options are `c("max_value",
+#'   "last_value", "last_timepoint", "mean_value", "mean_value_last14")`.
+#' @param plot_type Display the time series as a "`bar`" or "`line`" chart.
+#' @param plot_label String label to use for the time series column in the table.
+#' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
+#'   X-axes are always synced.
 #'
-#' @return
+#' @return (invisibly) the supplied df
 #' @noRd
 construct_rmd_tab_group <- function(df,
                                 timepoint_col,
@@ -167,6 +175,7 @@ construct_rmd_tab_group <- function(df,
     )
   }
 
+  invisible(df)
 }
 
 construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
@@ -178,5 +187,4 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
         "\n",
         sep = "")
   }
-
 }

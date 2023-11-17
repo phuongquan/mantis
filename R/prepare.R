@@ -2,19 +2,17 @@
 #'
 #' Supplied df needs to be long (at least for now)
 #'
-#' @param df
-#' @param timepoint_col
-#' @param item_col
-#' @param value_col
+#' @param df A data frame containing multiple time series in long format
+#' @param timepoint_col Name of column to be used for x-axes
+#' @param item_col Name of column containing categorical values identifying distinct time series
+#' @param value_col Name of column containing the time series values which will be used for the y-axes.
 #' @param plot_value_type "value" or "delta"
-#' @param timepoint_limits set start and end dates for time period to include. Defaults to min/max of timepoint_col
-#' @param fill_with_zero replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
+#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end
 #'
 #' @return data frame
 #' @noRd
-#'
-#' @examples
 prepare_table <-
   function(df,
            timepoint_col,
@@ -34,9 +32,9 @@ prepare_table <-
   # rename cols for ease. may want to figure out how to keep original colnames
   table_df <-
     df %>%
-    dplyr::rename(timepoint = all_of(timepoint_col),
-                  item = all_of(item_col),
-                  value = all_of(value_col))
+    dplyr::rename(timepoint = dplyr::all_of(timepoint_col),
+                  item = dplyr::all_of(item_col),
+                  value = dplyr::all_of(value_col))
 
   table_df <-
     align_data_timepoints(df = table_df,
@@ -165,7 +163,7 @@ history_to_list <-
 #' Also can restrict/expand data to a specified period here as cannot set xlimits in dygraphs.
 #' # TODO: THIS CURRENTLY ONLY WORKS FOR DAILY TIMEPOINTS
 #'
-#' @return
+#' @return Data frame with consistent timepoints
 #' @noRd
 align_data_timepoints <-
   function(df,
