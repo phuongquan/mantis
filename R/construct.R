@@ -5,7 +5,7 @@
 #' contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate plot_type
 #' @param plot_type "`bar`" or "`line`", depending on what will be used in real tables.
 #'
-#' @return (invisibly) the supplied plot_type
+#' @return A (mostly) invisible html widget
 #' @noRd
 initialise_widgets <- function(plot_type){
   # https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
@@ -24,7 +24,6 @@ initialise_widgets <- function(plot_type){
       bordered = FALSE
     )
 
-  invisible(plot_type)
 }
 
 
