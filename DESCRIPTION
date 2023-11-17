@@ -8,8 +8,12 @@ Authors@R: c(
     person(family = "University of Oxford", role = "cph"),
     person(family = "National Institute for Health Research (NIHR)", role = "fnd")
     )
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Generate interactive html reports that enable quick visual review of 
+    multiple related time series, and help identify any 
+    temporal artefacts or unexpected trends. The resulting reports are shareable 
+    and can contribute to forming a transparent record of the entire analysis process. 
+URL: https://github.com/phuongquan/tinduck
+BugReports: https://github.com/phuongquan/tinduck/issues
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -23,7 +27,6 @@ Suggests:
     testthat (>= 3.0.0),
     tidyr,
     rmarkdown
+VignetteBuilder: knitr
 Config/testthat/edition: 3
-Depends: 
-    R (>= 2.10)
 RoxygenNote: 7.2.3
