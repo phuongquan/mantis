@@ -4,3 +4,4 @@
 ^\.Rproj\.user$
 ^data-raw$
 ^devtesting$
+^README\.Rmd$
