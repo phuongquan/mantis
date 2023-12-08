@@ -79,17 +79,20 @@ tinduck::tinduck_report(df,
                               value_col = "value")
                )
 
-dfgroups <- df %>%
-  dplyr::mutate(group = dplyr::case_when(grepl("norm", item) ~ "norm",
-                                         grepl("sparse", item) ~ "sparse",
-                                         TRUE ~ "other"))
-
-tinduck::tinduck_report(dfgroups,
+tinduck::tinduck_report(df,
                                    colspec = tinduck::colspec(timepoint_col = "timepoint",
                                                     item_col = "item",
                                                     value_col = "value",
                                                     group_col = "group"),
                                    outputspec = outputspec(plot_type = "line",
-                                                           summary_cols = "last_value")
+                                                           summary_cols = "max_value")
                                    )
 
+tinduck::tinduck_report(example_prescription_numbers,
+                        colspec = tinduck::colspec(timepoint_col = "PrescriptionDate",
+                                                   item_col = "Antibiotic",
+                                                   value_col = "NumberOfPrescriptions",
+                                                   group_col = "Location"),
+                        outputspec = outputspec(plot_type = "bar",
+                                                summary_cols = "max_value")
+                        )
