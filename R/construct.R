@@ -122,6 +122,7 @@ construct_rmd_tab_item <- function(df,
 #'
 #' @return (invisibly) the supplied df
 #' @noRd
+#' @importFrom dplyr .data
 construct_rmd_tab_group <- function(df,
                                 timepoint_col,
                                 item_col,

@@ -20,14 +20,15 @@ LazyData: true
 Depends: 
     R (>= 2.10)
 Imports:
+    rmarkdown,
+    knitr,
     magrittr,
     reactable,
     dplyr,
+    tidyr,
     dygraphs,
     xts
 Suggests: 
     testthat (>= 3.0.0),
-    tidyr,
-    rmarkdown
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3
