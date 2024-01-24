@@ -5,28 +5,27 @@
 
 The tinduck package generates interactive html reports that enable quick
 visual review of multiple related time series. This can help with
-identification of any temporal artefacts or unexpected trends. The
-resulting reports are shareable and can contribute to forming a
-transparent record of the entire analysis process.
+identification of temporal artefacts and unexpected trends. Each group
+of time series is displayed together, with adjustable axes and tooltips
+showing the individual dates and values.
 
-The supplied data frame should contain multiple time series in long
-format, i.e.: \* one “timepoint” (datetime) column which will be used
-for the x-axes. This currently must be at a daily granularity, but
-values do not have to be consecutive. \* one “item” (character) column
-containing categorical values identifying distinct time series. \* one
-“value” (numeric) column containing the time series values which will be
-used for the y-axes. \* Optionally, a “group” (character) column
-containing categorical values which will be used to group the time
-series into different tabs on the report. The `colspec` parameter maps
-the data frame columns to the above.
+The data frame containing the time series should be in long format,
+i.e.:
 
-It currently expects only time series with daily values, and missing
-timepoints are allowed.
+- one “timepoint” (datetime) column which will be used for the x-axes.
+  This currently must be at a daily granularity, but values do not have
+  to be consecutive.
+- one “item” (character) column containing categorical values
+  identifying distinct time series.
+- one “value” (numeric) column containing the time series values which
+  will be used for the y-axes.
+- Optionally, a “group” (character) column containing categorical values
+  which will be used to group the time series into different tabs on the
+  report.
 
-The resulting html report displays each time series in a row in a table,
-with tooltips showing the individual dates and values.
+The `colspec` parameter maps the data frame columns to the above.
 
-These reports are shareable and can contribute to forming a transparent
+The reports are shareable and can contribute to forming a transparent
 record of the entire analysis process. It is designed with electronic
 health records in mind, but can be used for any types of time series.
 
@@ -43,15 +42,15 @@ remotes::install_github("phuongquan/tinduck")
 ``` r
 library(tinduck)
 
-# the example dataset contains 3 columns: timepoint, item, value
+# the example dataset contains 4 columns: date, item, value, family
 data("example_data")
 
 head(example_data)
 ```
 
     ##    timepoint      item value
-    ## 1 2022-01-01      norm   111
-    ## 2 2022-01-01 norm_step    47
+    ## 1 2022-01-01      norm   109
+    ## 2 2022-01-01 norm_step    29
     ## 3 2022-01-01      zero     0
     ## 4 2022-01-01        na    NA
     ## 5 2022-01-01 zero_norm     0
