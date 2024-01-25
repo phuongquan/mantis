@@ -12,9 +12,9 @@ showing the individual dates and values.
 The data frame containing the time series should be in long format,
 i.e.:
 
-- one “timepoint” (datetime) column which will be used for the x-axes.
-  This currently must be at a daily granularity, but values do not have
-  to be consecutive.
+- one “timepoint” (date) column which will be used for the x-axes. This
+  currently must be at a daily granularity, but values do not have to be
+  consecutive.
 - one “item” (character) column containing categorical values
   identifying distinct time series.
 - one “value” (numeric) column containing the time series values which
@@ -48,13 +48,15 @@ data("example_data")
 head(example_data)
 ```
 
-    ##    timepoint      item value
-    ## 1 2022-01-01      norm   109
-    ## 2 2022-01-01 norm_step    29
-    ## 3 2022-01-01      zero     0
-    ## 4 2022-01-01        na    NA
-    ## 5 2022-01-01 zero_norm     0
-    ## 6 2022-01-01   na_norm    NA
+    ## # A tibble: 6 × 4
+    ##   timepoint  item      value family
+    ##   <date>     <chr>     <dbl> <chr> 
+    ## 1 2022-01-01 norm         96 norm  
+    ## 2 2022-01-01 norm_step    40 norm  
+    ## 3 2022-01-01 zero          0 other 
+    ## 4 2022-01-01 na           NA other 
+    ## 5 2022-01-01 zero_norm     0 norm  
+    ## 6 2022-01-01 na_norm      NA norm
 
 ``` r
 # create a report in the current directory

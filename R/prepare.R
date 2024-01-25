@@ -210,13 +210,20 @@ align_data_timepoints <-
 
 #' Wrapper for max function
 #'
-#' Returns NA (instead of Inf) if all values are NA
+#' Returns NA (instead of Inf) if all values are NA. Retains datatype and avoids using suppressWarnings.
 #'
 #' @param x vector of values
 #'
 #' @return Maximum value excluding NAs
 #' @noRd
 max_else_na <- function(x){
-  max_x <- suppressWarnings(max(x, na.rm = TRUE))
-  ifelse(is.infinite(max_x), NA, max_x)
+  if (all(is.na(x))) {
+    if ("Date" %in% class(x)) {
+      as.Date(NA)
+    } else{
+      NA_real_
+    }
+  } else{
+    max(x, na.rm = TRUE)
+  }
 }
