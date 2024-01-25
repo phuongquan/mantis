@@ -88,11 +88,13 @@ tinduck::tinduck_report(df,
                                                            summary_cols = "max_value")
                                    )
 
-tinduck::tinduck_report(example_prescription_numbers,
+
+data("example_prescription_numbers")
+tinduck::tinduck_report(df = example_prescription_numbers,
                         colspec = tinduck::colspec(timepoint_col = "PrescriptionDate",
                                                    item_col = "Antibiotic",
                                                    value_col = "NumberOfPrescriptions",
                                                    group_col = "Location"),
                         outputspec = outputspec(plot_type = "bar",
-                                                summary_cols = "max_value")
-                        )
+                                                summary_cols = c("max_value","mean_value","last_timepoint")
+                        ))

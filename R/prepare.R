@@ -58,13 +58,14 @@ prepare_table <-
       )
     ) %>%
     dplyr::summarise(
-      last_timepoint = suppressWarnings(max(timepoint[!is.na(value)])),
+      last_timepoint = max_else_na(timepoint[!is.na(value)]),
       last_value = rev(value)[1],
       # TODO: add last_value_nonmissing
-      max_value = suppressWarnings(max(value, na.rm = TRUE)),
+      max_value = max_else_na(value),
       # TODO: match precision to values
       mean_value = round(mean(value, na.rm = TRUE),
                    digits = 1),
+      # TODO: drop this as not useful
       mean_value_last14 = round(mean(rev(value)[1:14], na.rm = TRUE),
                           digits = 1),
       history = history_to_list(value_for_history,
@@ -204,4 +205,18 @@ align_data_timepoints <-
 
   df_out
 
+}
+
+
+#' Wrapper for max function
+#'
+#' Returns NA (instead of Inf) if all values are NA
+#'
+#' @param x vector of values
+#'
+#' @return Maximum value excluding NAs
+#' @noRd
+max_else_na <- function(x){
+  max_x <- suppressWarnings(max(x, na.rm = TRUE))
+  ifelse(is.infinite(max_x), NA, max_x)
 }
