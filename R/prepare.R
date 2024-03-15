@@ -23,11 +23,12 @@ prepare_table <-
            fill_with_zero = FALSE,
            item_order = NULL) {
 
-  # TODO: Validate supplied colnames against df
   # TODO: allow df to be passed in wide with vector of value_cols?
 
   # initialise column names to avoid R CMD check Notes
   timepoint <- item <- value <- value_for_history <- NULL
+
+  # validate inputs
 
   # rename cols for ease. may want to figure out how to keep original colnames
   table_df <-
@@ -226,4 +227,85 @@ max_else_na <- function(x){
   } else{
     max(x, na.rm = TRUE)
   }
+}
+
+#' Validate the supplied df against the supplied colspec
+#'
+#' If there are any validation errors, these are all compiled before calling a
+#' single stop()
+#'
+#' @param df user supplied df
+#' @param colspec user supplied colspec
+#'
+#' @noRd
+validate_df_to_colspec <- function(df,
+                                   colspec){
+
+  # validate - collect all errors together and return only once
+  err_validation <- character()
+
+  # check supplied colnames against df
+  # drop any items in the colspec that are NULL
+  colspec_vector <- unlist(colspec)
+  # ignore any columns in df that are not in specification
+  dfnames <- names(df)[names(df) %in% colspec_vector]
+
+  # check for duplicate names in df
+  if (anyDuplicated(dfnames) > 0) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "Duplicate column names in data: [",
+          paste(dfnames[duplicated(dfnames)], collapse = ", "),
+          "]"
+        )
+      )
+  }
+  # check for duplicate names in colspec
+  if (anyDuplicated(colspec_vector) > 0) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "Duplicate column names in colspec: [",
+          paste(colspec_vector[duplicated(colspec_vector)], collapse = ", "),
+          "]. Each colspec parameter must refer to a different column in the df "
+        )
+      )
+  }
+  # check supplied colnames are present in df
+  for (i in seq_along(colspec_vector)){
+    if (!colspec_vector[i] %in% dfnames) {
+      err_validation <-
+        append(
+          err_validation,
+          paste(
+            names(colspec_vector)[i],
+            "specified to be [",
+            colspec_vector[i],
+            "] but column is not present in the df"
+          )
+        )
+    }
+  }
+
+  # TODO: check timepoints in df are distinct per item
+  # duplicate_timepoints <-
+  #   df %>%
+  #   dplyr::group_by(across(colspec$item_col)) %>%
+  #   dplyr::summarise(duplicate_timepoints = anyDuplicated(timepoint_col)) %>%
+  #   dplyr::filter(duplicate_timepoints > 0)
+
+
+  if (length(err_validation) > 0) {
+    stop_custom(
+      .subclass = "invalid_data",
+      message = paste0(
+        "Invalid data or column names supplied.\n",
+        paste(err_validation, collapse = "\n")
+      )
+    )
+  }
+
 }

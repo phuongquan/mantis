@@ -98,3 +98,16 @@ tinduck::tinduck_report(df = example_prescription_numbers,
                         outputspec = outputspec(plot_type = "bar",
                                                 summary_cols = c("max_value","mean_value","last_timepoint")
                         ))
+
+data("example_data")
+tinduck_report(df = example_data,
+               colspec = colspec(timepoint_col = "timepoint",
+                              item_col = "item",
+                              value_col = "value")
+)
+tinduck_report(df = example_data,
+               colspec = colspec(timepoint_col = "timepoint",
+                              item_col = "item",
+                              value_col = "value",
+                              group_col = "family")
+               )

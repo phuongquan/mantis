@@ -37,6 +37,7 @@ tinduck_report <- function(df,
                         ...) {
 
   #TODO: validate params
+  validate_df_to_colspec(df, colspec)
 
   timestamp_string <- format(Sys.time(), "%Y%m%d%_%H%M%S")
 
