@@ -137,6 +137,14 @@ outputspec <- function(plot_value_type = "value",
     class = "tinduck_outputspec")
 }
 
+#' Create a time series as a list so it can be stored in a df cell
+#'
+#' @param value_for_history vector of values
+#' @param timepoint vector of dates
+#' @param plot_value_type "value" or "delta". Indicates the type of values in the time series
+#'
+#' @return list
+#' @noRd
 history_to_list <-
   function(value_for_history,
            timepoint,
