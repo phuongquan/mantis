@@ -30,10 +30,10 @@ prepare_table <-
 
   # validate inputs
 
-  # rename cols for ease. may want to figure out how to keep original colnames
+  # keep only relevant cols and rename for ease. may want to figure out how to keep original colnames
   table_df <-
     df %>%
-    dplyr::rename(timepoint = dplyr::all_of(timepoint_col),
+    dplyr::select(timepoint = dplyr::all_of(timepoint_col),
                   item = dplyr::all_of(item_col),
                   value = dplyr::all_of(value_col))
 
