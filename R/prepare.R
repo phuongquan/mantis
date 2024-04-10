@@ -66,9 +66,6 @@ prepare_table <-
       # TODO: match precision to values
       mean_value = round(mean(value, na.rm = TRUE),
                    digits = 1),
-      # TODO: drop this as not useful
-      mean_value_last14 = round(mean(rev(value)[1:14], na.rm = TRUE),
-                          digits = 1),
       history = history_to_list(value_for_history,
                                 timepoint,
                                 plot_value_type),
@@ -117,7 +114,7 @@ colspec <- function(timepoint_col,
 #' @param item_label String label to use for the "item" column in the report.
 #' @param plot_label String label to use for the time series column in the report.
 #' @param summary_cols Summary data to include as columns in the report. Options are `c("max_value",
-#'   "last_value", "last_timepoint", "mean_value", "mean_value_last14")`.
+#'   "last_value", "last_timepoint", "mean_value")`.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
 #'   X-axes are always synced.
 #'

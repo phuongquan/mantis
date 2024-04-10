@@ -24,7 +24,7 @@ outputspec(
 \item{plot_label}{String label to use for the time series column in the report.}
 
 \item{summary_cols}{Summary data to include as columns in the report. Options are `c("max_value",
-"last_value", "last_timepoint", "mean_value", "mean_value_last14")`.}
+"last_value", "last_timepoint", "mean_value")`.}
 
 \item{sync_axis_range}{Set the y-axis to be the same range for all time series in a table.
 X-axes are always synced.}

@@ -44,8 +44,6 @@ output_table_interactive <- function(table,
                                      show = "max_value" %in% summary_cols),
       mean_value = reactable::colDef(name = "Mean",
                                show = "mean_value" %in% summary_cols),
-      mean_value_last14 = reactable::colDef(name = "Recent Mean",
-                                      show = "mean_value_last14" %in% summary_cols),
       # cell argument accepts a function with cell _values_, row _index_, and/or column _names_ as arguments, below just uses _values_
       history = reactable::colDef(
         name = plot_label,
