@@ -41,20 +41,24 @@ remotes::install_github("phuongquan/tinduck")
 ```{r}
 library(tinduck)
 
-# the example dataset contains 4 columns: date, item, value, family
-data("example_data")
+# this example data frame contains numbers of antibiotic prescriptions in long format:
+data("example_prescription_numbers")
 
-head(example_data)
+head(example_prescription_numbers)
 
 ```
 
 ```{r, eval = FALSE}
 # create a report in the current directory
-tinduck_report(df = example_data,
-               colspec = list(timepoint_col = "timepoint",
-                              item_col = "item",
-                              value_col = "value")
-               )
+tinduck_report(
+  df = example_prescription_numbers,
+  colspec = colspec(
+    timepoint_col = "PrescriptionDate",
+    item_col = "Antibiotic",
+    value_col = "NumberOfPrescriptions",
+    group_col = "Location"
+  )
+)
 ```
 
 ## Acknowledgements
