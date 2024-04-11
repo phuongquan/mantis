@@ -61,7 +61,7 @@ prepare_table <-
     dplyr::summarise(
       last_timepoint = max_else_na(timepoint[!is.na(value)]),
       last_value = rev(value)[1],
-      # TODO: add last_value_nonmissing
+      last_value_nonmissing = rev(value[!is.na(value)])[1],
       max_value = max_else_na(value),
       # TODO: match precision to values
       mean_value = round(mean(value, na.rm = TRUE),
@@ -114,7 +114,7 @@ colspec <- function(timepoint_col,
 #' @param item_label String label to use for the "item" column in the report.
 #' @param plot_label String label to use for the time series column in the report.
 #' @param summary_cols Summary data to include as columns in the report. Options are `c("max_value",
-#'   "last_value", "last_timepoint", "mean_value")`.
+#'   "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
 #'   X-axes are always synced.
 #'

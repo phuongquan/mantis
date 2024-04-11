@@ -44,7 +44,7 @@ initialise_widgets <- function(plot_type){
 #' @param item_order Optional vector containing values from item_col in desired order of display down the table
 #' @param item_label String label to use for the "item" column in the table.
 #' @param summary_cols Summary data to include as columns in the report. Options are `c("max_value",
-#'   "last_value", "last_timepoint", "mean_value")`.
+#'   "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param plot_type Display the time series as a "`bar`" or "`line`" chart.
 #' @param plot_label String label to use for the time series column in the table.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
@@ -114,7 +114,7 @@ construct_rmd_tab_item <- function(df,
 #' @param item_order Optional vector containing values from item_col in desired order of display down the table
 #' @param item_label String label to use for the "item" column in the table.
 #' @param summary_cols Summary data to include as columns in the report. Options are `c("max_value",
-#'   "last_value", "last_timepoint", "mean_value")`.
+#'   "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param plot_type Display the time series as a "`bar`" or "`line`" chart.
 #' @param plot_label String label to use for the time series column in the table.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
