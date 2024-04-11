@@ -249,7 +249,42 @@ validate_df_to_colspec <- function(df,
   # validate - collect all errors together and return only once
   err_validation <- character()
 
-  # check supplied colnames against df
+  err_validation <-
+    append(err_validation,
+           validate_df_to_colspec_names(df, colspec))
+
+  # only do the following checks if the colspec and df names are valid
+  if (length(err_validation) == 0) {
+    err_validation <-
+      append(err_validation,
+             validate_df_to_colspec_duplicate_timepoints(df, colspec))
+  }
+
+  # call stop() if there are any validation errors
+  if (length(err_validation) > 0) {
+    stop_custom(
+      .subclass = "invalid_data",
+      message = paste0(
+        "Invalid data or column names supplied.\n",
+        paste(err_validation, collapse = "\n")
+      )
+    )
+  }
+
+}
+
+#' Check names in supplied df and colspec
+#'
+#' @param df user supplied df
+#' @param colspec user supplied colspec
+#'
+#' @return character string containing any error messages
+#' @noRd
+validate_df_to_colspec_names <- function(df,
+                                         colspec){
+
+  err_validation <- character()
+
   # drop any items in the colspec that are NULL
   colspec_vector <- unlist(colspec)
   # ignore any columns in df that are not in specification
@@ -295,22 +330,50 @@ validate_df_to_colspec <- function(df,
     }
   }
 
-  # TODO: check timepoints in df are distinct per item
-  # duplicate_timepoints <-
-  #   df %>%
-  #   dplyr::group_by(across(colspec$item_col)) %>%
-  #   dplyr::summarise(duplicate_timepoints = anyDuplicated(timepoint_col)) %>%
-  #   dplyr::filter(duplicate_timepoints > 0)
+  err_validation
+}
 
+#' Check supplied df has only one timepoint per item or item-group
+#'
+#' This assumes that the names in colspec and the df have already been check and are valid
+#'
+#' @param df user supplied df
+#' @param colspec user supplied colspec
+#'
+#' @return character string containing any error message
+#' @noRd
+validate_df_to_colspec_duplicate_timepoints <- function(df,
+                                                        colspec){
 
-  if (length(err_validation) > 0) {
-    stop_custom(
-      .subclass = "invalid_data",
-      message = paste0(
-        "Invalid data or column names supplied.\n",
-        paste(err_validation, collapse = "\n")
-      )
-    )
+  # initialise column names to avoid R CMD check Notes
+  baditem <- NULL
+
+  err_validation <- character()
+
+  duplicate_timepoints <-
+    df %>%
+    dplyr::group_by(dplyr::pick(dplyr::any_of(c(
+      colspec$item_col,
+      colspec$group_col
+    )))) %>%
+    dplyr::summarise(
+      duplicate_timepoints = anyDuplicated(dplyr::pick(dplyr::all_of(
+        colspec$timepoint_col))),
+      .groups = "drop") %>%
+    dplyr::filter(duplicate_timepoints > 0) %>%
+    tidyr::unite(baditem,
+                 dplyr::any_of(c(colspec$item_col,
+                                 colspec$group_col)),
+                 sep = ":")
+
+  if (nrow(duplicate_timepoints) > 0) {
+    err_validation <-
+        paste(
+          "Duplicate timepoints for items: [",
+          paste(duplicate_timepoints$baditem, collapse = ", "),
+          "]. Each timepoint-item-group combination must only appear once in the df"
+        )
   }
 
+  err_validation
 }

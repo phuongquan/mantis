@@ -99,15 +99,30 @@ tinduck::tinduck_report(df = example_prescription_numbers,
                                                 summary_cols = c("max_value","mean_value","last_timepoint")
                         ))
 
+tinduck_report(df = example_prescription_numbers,
+               colspec = colspec(timepoint_col = "PrescriptionDate",
+                                 item_col = "Antibiotic",
+                                 value_col = "NumberOfPrescriptions")
+               )
+
+tinduck_report(df = example_prescription_numbers,
+               colspec = colspec(timepoint_col = "PrescriptionDate",
+                                 item_col = "Antibiotic",
+                                 value_col = "NumberOfPrescriptions",
+                                 group_col = "Location")
+)
+
 data("example_data")
 tinduck_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value")
 )
+
 tinduck_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value",
                               group_col = "family")
                )
+

@@ -89,3 +89,67 @@ test_that("validate_df_to_colspec() checks that supplied colnames are present in
 
 })
 
+
+test_that("validate_df_to_colspec() checks that duplicate timepoint-item combinations not allowed", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 5),
+                   item = c(rep("a", 20), rep("b", 10), rep("c", 20)),
+                   value = rep(3, 50),
+                   stringsAsFactors = FALSE)
+
+  colspec <- colspec(timepoint_col = "timepoint",
+                     item_col = "item",
+                     value_col = "value")
+
+  expect_error(
+    validate_df_to_colspec(
+      df = df,
+      colspec = colspec
+    ),
+    class = "invalid_data"
+  )
+
+})
+
+test_that("validate_df_to_colspec() checks that duplicate timepoint-item-group combinations not allowed", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 5),
+                   item = c(rep("a", 20), rep("b", 10), rep("c", 20)),
+                   value = rep(3, 50),
+                   group = c(rep("G1", 10), rep("G2", 10), rep("G1", 10), rep("G2", 20)),
+                   stringsAsFactors = FALSE)
+
+  colspec <- colspec(timepoint_col = "timepoint",
+                     item_col = "item",
+                     value_col = "value",
+                     group_col = "group")
+
+  expect_error(
+    validate_df_to_colspec(
+      df = df,
+      colspec = colspec
+    ),
+    class = "invalid_data"
+  )
+
+})
+
+test_that("validate_df_to_colspec() allows duplicate timepoint-item combinations if timepoint-item-group combinations are unique", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 5),
+                   item = c(rep("a", 20), rep("b", 10), rep("c", 20)),
+                   value = rep(3, 50),
+                   group = c(rep("G1", 10), rep("G2", 10), rep("G1", 10), rep("G1", 10), rep("G2", 10)),
+                   stringsAsFactors = FALSE)
+
+  colspec <- colspec(timepoint_col = "timepoint",
+                     item_col = "item",
+                     value_col = "value",
+                     group_col = "group")
+
+  expect_silent(
+    validate_df_to_colspec(
+      df = df,
+      colspec = colspec
+    )
+  )
+
+})
+
