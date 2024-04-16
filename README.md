@@ -42,29 +42,34 @@ remotes::install_github("phuongquan/tinduck")
 ``` r
 library(tinduck)
 
-# the example dataset contains 4 columns: date, item, value, family
-data("example_data")
+# this example data frame contains numbers of antibiotic prescriptions in long format, 
+#   plus a column for grouping the output:
+data("example_prescription_numbers")
 
-head(example_data)
+head(example_prescription_numbers)
 ```
 
     ## # A tibble: 6 × 4
-    ##   timepoint  item      value family
-    ##   <date>     <chr>     <dbl> <chr> 
-    ## 1 2022-01-01 norm         96 norm  
-    ## 2 2022-01-01 norm_step    40 norm  
-    ## 3 2022-01-01 zero          0 other 
-    ## 4 2022-01-01 na           NA other 
-    ## 5 2022-01-01 zero_norm     0 norm  
-    ## 6 2022-01-01 na_norm      NA norm
+    ##   PrescriptionDate Antibiotic    NumberOfPrescriptions Location
+    ##   <date>           <chr>                         <dbl> <chr>   
+    ## 1 2022-01-01       Coamoxiclav                      45 SITE1   
+    ## 2 2022-01-01       Gentamicin                       44 SITE1   
+    ## 3 2022-01-01       Ceftriaxone                      26 SITE1   
+    ## 4 2022-01-01       Metronidazole                    22 SITE1   
+    ## 5 2022-01-01       Meropenem                         5 SITE1   
+    ## 6 2022-01-01       Vancomycin                        0 SITE1
 
 ``` r
 # create a report in the current directory
-tinduck_report(df = example_data,
-               colspec = list(timepoint_col = "timepoint",
-                              item_col = "item",
-                              value_col = "value")
-               )
+tinduck_report(
+  df = example_prescription_numbers,
+  colspec = colspec(
+    timepoint_col = "PrescriptionDate",
+    item_col = "Antibiotic",
+    value_col = "NumberOfPrescriptions",
+    group_col = "Location"
+  )
+)
 ```
 
 ## Acknowledgements

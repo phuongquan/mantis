@@ -41,7 +41,8 @@ remotes::install_github("phuongquan/tinduck")
 ```{r}
 library(tinduck)
 
-# this example data frame contains numbers of antibiotic prescriptions in long format:
+# this example data frame contains numbers of antibiotic prescriptions in long format, 
+#   plus a column for grouping the output:
 data("example_prescription_numbers")
 
 head(example_prescription_numbers)
