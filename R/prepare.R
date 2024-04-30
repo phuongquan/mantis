@@ -9,7 +9,62 @@
 #' @param plot_value_type "value" or "delta"
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end
+#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NUll, the original order as given by unique(item_col) will be used.
+#'
+#' @return data frame
+#' @noRd
+prepare_df <-
+  function(df,
+           timepoint_col,
+           item_col,
+           value_col,
+           plot_value_type = "value",
+           timepoint_limits = c(NA, NA),
+           fill_with_zero = FALSE,
+           item_order = NULL) {
+
+  # initialise column names to avoid R CMD check Notes
+  item <- NULL
+
+  # keep only relevant cols and rename for ease. may want to figure out how to keep original colnames
+  prepared_df <-
+    df %>%
+    dplyr::select(timepoint = dplyr::all_of(timepoint_col),
+                  item = dplyr::all_of(item_col),
+                  value = dplyr::all_of(value_col))
+
+  prepared_df <-
+    align_data_timepoints(df = prepared_df,
+                          timepoint_limits = timepoint_limits)
+
+  if (fill_with_zero) {
+    prepared_df <-
+      prepared_df %>%
+      tidyr::replace_na(list(value = 0))
+  }
+
+  if (!is.null(item_order)) {
+    prepared_df <-
+      prepared_df %>%
+      dplyr::arrange(item) %>%
+      dplyr::arrange(factor(item, levels = item_order))
+  }
+
+  prepared_df
+}
+
+#' Convert supplied df into required format for generating tables/plots
+#'
+#' Supplied df needs to be long (at least for now)
+#'
+#' @param df A data frame containing multiple time series in long format
+#' @param timepoint_col Name of column to be used for x-axes
+#' @param item_col Name of column containing categorical values identifying distinct time series
+#' @param value_col Name of column containing the time series values which will be used for the y-axes.
+#' @param plot_value_type "value" or "delta"
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
+#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NUll, the original order as given by unique(item_col) will be used.
 #'
 #' @return data frame
 #' @noRd
@@ -30,22 +85,20 @@ prepare_table <-
 
   # validate inputs
 
-  # keep only relevant cols and rename for ease. may want to figure out how to keep original colnames
-  table_df <-
-    df %>%
-    dplyr::select(timepoint = dplyr::all_of(timepoint_col),
-                  item = dplyr::all_of(item_col),
-                  value = dplyr::all_of(value_col))
+  # prepare df values
+  table_df <- prepare_df(
+    df = df,
+    timepoint_col = timepoint_col,
+    item_col = item_col,
+    value_col = value_col,
+    plot_value_type = plot_value_type,
+    timepoint_limits = timepoint_limits,
+    fill_with_zero = fill_with_zero,
+    item_order = item_order
+  )
 
-  table_df <-
-    align_data_timepoints(df = table_df,
-                          timepoint_limits = timepoint_limits)
-
-  if (fill_with_zero) {
-    table_df <-
-      table_df %>%
-      tidyr::replace_na(list(value = 0))
-  }
+  # store order as later group_by will alphabetise
+  item_order_final <- unique(table_df$item)
 
   # add history column
   table_df <-
@@ -72,11 +125,9 @@ prepare_table <-
       .groups = "drop"
     )
 
-  if (!is.null(item_order)) {
-    table_df <-
-      table_df %>%
-      dplyr::arrange(factor(item, levels = item_order))
-  }
+  table_df <-
+    table_df %>%
+    dplyr::arrange(factor(item, levels = item_order_final))
 
   table_df
 }
