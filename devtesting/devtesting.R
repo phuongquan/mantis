@@ -14,7 +14,8 @@ table <-
     timepoint_col,
     item_col,
     value_col,
-    item_order = c("norm", "norm_na", "na_norm", "zero")
+#    item_order = c("sparse_1")
+    item_order = NULL
   )
 
 table %>%
@@ -25,6 +26,19 @@ table %>%
     sync_axis_range = FALSE
   )
 
+prepared_df <- prepare_df(
+    df,
+    timepoint_col,
+    item_col,
+    value_col,
+#    item_order = c("sparse_1")
+    item_order = NULL
+)
+
+plot_heatmap_static(
+  prepared_df,
+  item_label = "Item"
+)
 
 table <-
   prepare_table(
