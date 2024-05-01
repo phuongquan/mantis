@@ -9,7 +9,7 @@
 #' @param plot_value_type "value" or "delta"
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NUll, the original order as given by unique(item_col) will be used.
+#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
 #'
 #' @return data frame
 #' @noRd
@@ -18,7 +18,6 @@ prepare_df <-
            timepoint_col,
            item_col,
            value_col,
-           plot_value_type = "value",
            timepoint_limits = c(NA, NA),
            fill_with_zero = FALSE,
            item_order = NULL) {
@@ -64,7 +63,7 @@ prepare_df <-
 #' @param plot_value_type "value" or "delta"
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NUll, the original order as given by unique(item_col) will be used.
+#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
 #'
 #' @return data frame
 #' @noRd
