@@ -2,7 +2,9 @@
 
 export("%>%")
 export(colspec)
-export(outputspec)
+export(outputspec_heatmap_static)
+export(outputspec_interactive)
+export(outputspec_multiplot_static)
 export(tinduck_report)
 importFrom(dplyr,.data)
 importFrom(magrittr,"%>%")

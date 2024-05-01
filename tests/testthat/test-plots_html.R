@@ -4,11 +4,11 @@ test_that("output_table_interactive() avoids min/max warnings when all values ar
                    value = rep(NA, 10),
                    stringsAsFactors = FALSE)
 
-  table <- prepare_table(df,
-                         timepoint_col = "timepoint",
-                         item_col = "item",
-                         value_col = "value",
-                         plot_value_type = "value")
+  table <- prepare_df(df,
+                      timepoint_col = "timepoint",
+                      item_col = "item",
+                      value_col = "value") %>%
+    prepare_table(plot_value_type = "value")
 
   expect_no_warning(output_table_interactive(table = table,
                                       item_label = "Item"))
@@ -21,11 +21,11 @@ test_that("output_table_interactive() avoids min/max warnings when all deltas ar
                    value = c(rep(NA, 5), 1, rep(NA, 4)),
                    stringsAsFactors = FALSE)
 
-  table <- prepare_table(df,
-                         timepoint_col = "timepoint",
-                         item_col = "item",
-                         value_col = "value",
-                         plot_value_type = "delta")
+  table <- prepare_df(df,
+                      timepoint_col = "timepoint",
+                      item_col = "item",
+                      value_col = "value") %>%
+    prepare_table(plot_value_type = "delta")
 
   expect_no_warning(output_table_interactive(table = table,
                                       item_label = "Item"))

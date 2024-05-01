@@ -56,26 +56,14 @@ prepare_df <-
 #'
 #' Supplied df needs to be long (at least for now)
 #'
-#' @param df A data frame containing multiple time series in long format
-#' @param timepoint_col Name of column to be used for x-axes
-#' @param item_col Name of column containing categorical values identifying distinct time series
-#' @param value_col Name of column containing the time series values which will be used for the y-axes.
+#' @param prepared_df data frame returned from prepare_df()
 #' @param plot_value_type "value" or "delta"
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
-#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
 #'
 #' @return data frame
 #' @noRd
 prepare_table <-
-  function(df,
-           timepoint_col,
-           item_col,
-           value_col,
-           plot_value_type = "value",
-           timepoint_limits = c(NA, NA),
-           fill_with_zero = FALSE,
-           item_order = NULL) {
+  function(prepared_df,
+           plot_value_type = "value") {
 
   # TODO: allow df to be passed in wide with vector of value_cols?
 
@@ -84,24 +72,12 @@ prepare_table <-
 
   # validate inputs
 
-  # prepare df values
-  table_df <- prepare_df(
-    df = df,
-    timepoint_col = timepoint_col,
-    item_col = item_col,
-    value_col = value_col,
-    plot_value_type = plot_value_type,
-    timepoint_limits = timepoint_limits,
-    fill_with_zero = fill_with_zero,
-    item_order = item_order
-  )
-
   # store order as later group_by will alphabetise
-  item_order_final <- unique(table_df$item)
+  item_order_final <- unique(prepared_df$item)
 
   # add history column
   table_df <-
-    table_df %>%
+    prepared_df %>%
     dplyr::group_by(item) %>%
     dplyr::arrange(timepoint) %>%
     dplyr::mutate(
@@ -170,7 +146,7 @@ colspec <- function(timepoint_col,
 #'
 #' @return An `outputspec()` object
 #' @export
-outputspec <- function(plot_value_type = "value",
+outputspec_interactive <- function(plot_value_type = "value",
                        plot_type = "bar",
                        item_label = "Item",
                        plot_label = "History",
@@ -184,8 +160,85 @@ outputspec <- function(plot_value_type = "value",
          plot_label = plot_label,
          summary_cols = summary_cols,
          sync_axis_range = sync_axis_range),
-    class = "tinduck_outputspec")
+    class = c("tinduck_outputspec", "tinduck_outputspec_interactive")
+  )
 }
+
+#' Specify output options for a static report containing heatmaps
+#'
+#' @param fill_colour colour to use for the tiles
+#' @param y_label string for y-axis label. Optional
+#'
+#' @return An `outputspec()` object
+#' @export
+outputspec_heatmap_static <- function(fill_colour = "blue",
+                                      y_label = NULL) {
+
+  structure(
+    list(fill_colour = fill_colour,
+         y_label = y_label),
+    class = c("tinduck_outputspec", "tinduck_outputspec_static", "tinduck_outputspec_heatmap_static")
+    )
+}
+
+#' Specify output options for a static report containing grids of plots.
+#'
+#' Currently only creates scatter plots
+#'
+#' @param sync_axis_range Set the y-axis to be the same range for all the plots.
+#'   X-axes are always synced.
+#' @param y_label string for y-axis label. Optional
+#'
+#' @return An `outputspec()` object
+#' @export
+outputspec_multiplot_static <- function(sync_axis_range = FALSE,
+                                        y_label = NULL) {
+
+  structure(
+    list(sync_axis_range = sync_axis_range,
+         y_label = y_label),
+    class = c("tinduck_outputspec", "tinduck_outputspec_static", "tinduck_outputspec_multiplot_static")
+  )
+}
+
+#-----------------------------------------------------------------------
+#' Test if object is an outputspec
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_outputspec <- function(x) inherits(x, "tinduck_outputspec")
+
+#' Test if object is an outputspec_interactive
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_outputspec_interactive <- function(x) inherits(x, "tinduck_outputspec_interactive")
+
+#' Test if object is an outputspec_static
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_outputspec_static <- function(x) inherits(x, "tinduck_outputspec_static")
+
+#' Test if object is an outputspec_heatmap_static
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_outputspec_heatmap_static <- function(x) inherits(x, "tinduck_outputspec_heatmap_static")
+
+#' Test if object is an outputspec_multiplot_static
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_outputspec_multiplot_static <- function(x) inherits(x, "tinduck_outputspec_multiplot_static")
+
+
+#-----------------------------------------------------------------------
 
 #' Create a time series as a list so it can be stored in a df cell
 #'

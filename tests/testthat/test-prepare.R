@@ -8,10 +8,12 @@ test_that("prepare_table() avoids min/max warnings when all values in a group ar
                       names_to = "item",
                       values_to = "value")
 
-  expect_no_warning(prepare_table(df,
-                         timepoint_col = "timepoint",
-                         item_col = "item",
-                         value_col = "value"))
+  prepared_df <- prepare_df(df,
+                            timepoint_col = "timepoint",
+                            item_col = "item",
+                            value_col = "value")
+
+  expect_no_warning(prepare_table(prepared_df))
 
 })
 

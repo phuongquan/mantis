@@ -42,7 +42,7 @@ tinduck_report <- function(df,
   timestamp_string <- format(Sys.time(), "%Y%m%d%_%H%M%S")
 
   if (is.null(outputspec)) {
-    outputspec <- outputspec()
+    outputspec <- outputspec_interactive()
   }
 
   if (is.null(save_filename)) {

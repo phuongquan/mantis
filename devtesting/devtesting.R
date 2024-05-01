@@ -37,7 +37,17 @@ prepared_df <- prepare_df(
 
 plot_heatmap_static(
   prepared_df,
-  item_label = "Item"
+  outputspec = outputspec_heatmap_static(
+    fill_colour = "red",
+    y_label = "Value")
+)
+
+plot_heatmap_static(
+  prepared_df
+)
+
+plot_multiplot_static(
+  prepared_df
 )
 
 table <-
@@ -98,7 +108,7 @@ tinduck::tinduck_report(df,
                                                     item_col = "item",
                                                     value_col = "value",
                                                     group_col = "group"),
-                                   outputspec = outputspec(plot_type = "line",
+                                   outputspec = outputspec_interactive(plot_type = "line",
                                                            summary_cols = "max_value")
                                    )
 
@@ -109,7 +119,7 @@ tinduck::tinduck_report(df = example_prescription_numbers,
                                                    item_col = "Antibiotic",
                                                    value_col = "NumberOfPrescriptions",
                                                    group_col = "Location"),
-                        outputspec = outputspec(plot_type = "bar",
+                        outputspec = outputspec_interactive(plot_type = "bar",
                                                 summary_cols = c("max_value",
                                                                  "mean_value",
                                                                  "last_timepoint",
@@ -149,7 +159,7 @@ tinduck_report(df = example_data,
                                  item_col = "item",
                                  value_col = "value",
                                  group_col = "family"),
-               outputspec = outputspec(plot_type = "bar",
+               outputspec = outputspec_interactive(plot_type = "bar",
                                        summary_cols = c("max_value",
                                                         "mean_value",
                                                         "last_timepoint",
@@ -157,4 +167,31 @@ tinduck_report(df = example_data,
                                                         "last_value_nonmissing")
                ))
 
+tinduck_report(df = example_data,
+               colspec = colspec(timepoint_col = "timepoint",
+                                 item_col = "item",
+                                 value_col = "value"),
+               outputspec = outputspec_heatmap_static()
+)
 
+tinduck_report(df = example_data,
+               colspec = colspec(timepoint_col = "timepoint",
+                                 item_col = "item",
+                                 value_col = "value",
+                                 group_col = "family"),
+               outputspec = outputspec_heatmap_static()
+)
+
+tinduck_report(df = example_data,
+               colspec = colspec(timepoint_col = "timepoint",
+                                 item_col = "item",
+                                 value_col = "value"),
+               outputspec = outputspec_multiplot_static()
+)
+
+tinduck_report(df = example_data,
+               colspec = colspec(timepoint_col = "timepoint",
+                                 item_col = "item",
+                                 value_col = "value"),
+               outputspec = outputspec_multiplot_static(sync_axis_range = TRUE)
+)

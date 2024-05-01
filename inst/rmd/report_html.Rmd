@@ -26,26 +26,22 @@ p.compact {
 
 ```{r initialise}
 is_grouped <- !is.null(params$colspec$group_col)
+is_interactive <- is_outputspec_interactive(params$outputspec)
+requires_refresh <- is_grouped && is_interactive
 ```
 
-```{r, eval=!is_grouped}
-prepare_table(
-  params$df,
-  timepoint_col = params$colspec$timepoint_col,
-  item_col = params$colspec$item_col,
-  value_col = params$colspec$value_col,
-  plot_value_type = params$outputspec$plot_value_type
-  ) %>%
-  output_table_interactive(
-    item_label = params$outputspec$item_label,
-    plot_label = params$outputspec$plot_label,
-    summary_cols = params$outputspec$summary_cols,
-    plot_type = params$outputspec$plot_type,
-    sync_axis_range = params$outputspec$sync_axis_range
+```{r, results='asis', eval=!is_grouped}
+construct_rmd_tab_item(
+    params$df,
+    timepoint_col = params$colspec$timepoint_col,
+    item_col = params$colspec$item_col,
+    value_col = params$colspec$value_col,
+    outputspec = params$outputspec
   )
+
 ```
 
-```{js, eval=is_grouped}
+```{js, eval=requires_refresh}
 // when browser window is resized, all dygraphs on inactive tabs disappear. Reload page to redraw them all.
 // unfortunately this also means you lose your active tab
 window.onresize = function(){ location.reload(); }
@@ -61,17 +57,12 @@ construct_rmd_tab_group(
   timepoint_col = params$colspec$timepoint_col,
   item_col = params$colspec$item_col,
   value_col = params$colspec$value_col,
-  plot_value_type = params$outputspec$plot_value_type,
-  item_label = params$outputspec$item_label,
-  plot_label = params$outputspec$plot_label,
-  summary_cols = params$outputspec$summary_cols,
-  plot_type = params$outputspec$plot_type,
-  sync_axis_range = params$outputspec$sync_axis_range
+  outputspec = params$outputspec
 )
 
 ```
 
-```{r, eval=is_grouped}
+```{r, eval=is_interactive}
 # initialise htmlwidgets otherwise they won't render
 # this chunk can be placed anywhere
 initialise_widgets(plot_type = params$outputspec$plot_type)
