@@ -6,7 +6,7 @@
 #' @param plot_type "`bar`" or "`line`", depending on what will be used in real tables.
 #'
 #' @return A (mostly) invisible html widget
-#' @noRd
+#' @export
 initialise_widgets <- function(plot_type){
   # https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
   # Currently appears like a line break when rendered. Could try harder to make it invisible but
