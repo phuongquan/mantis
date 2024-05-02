@@ -6,7 +6,6 @@
 #' @param timepoint_col Name of column to be used for x-axes
 #' @param item_col Name of column containing categorical values identifying distinct time series
 #' @param value_col Name of column containing the time series values which will be used for the y-axes.
-#' @param plot_value_type "value" or "delta"
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.

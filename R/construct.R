@@ -45,7 +45,7 @@ initialise_widgets <- function(plot_type){
 #' @param tab_level Child level for tab. Value of 1 creates a tab with rmd level "##".
 #'
 #' @return (invisibly) the supplied df
-#' @noRd
+#' @export
 construct_rmd_tab_item <- function(df,
                               timepoint_col,
                               item_col,
@@ -120,7 +120,7 @@ construct_rmd_tab_item <- function(df,
 #' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##".
 #'
 #' @return (invisibly) the supplied df
-#' @noRd
+#' @export
 #' @importFrom dplyr .data
 construct_rmd_tab_group <- function(df,
                                 timepoint_col,

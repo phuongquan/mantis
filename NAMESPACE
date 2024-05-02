@@ -2,6 +2,8 @@
 
 export("%>%")
 export(colspec)
+export(construct_rmd_tab_group)
+export(construct_rmd_tab_item)
 export(outputspec_interactive)
 export(outputspec_static_heatmap)
 export(outputspec_static_multipanel)
