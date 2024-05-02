@@ -39,6 +39,9 @@ initialise_widgets <- function(plot_type){
 #' @param item_col Column containing categorical values identifying distinct time series
 #' @param value_col Column containing the time series values which will be used for the y-axes.
 #' @param outputspec Specification for display of tab contents
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
+#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
 #' @param tab_name Character string to appear on parent tab
 #' @param tab_level Child level for tab. Value of 1 creates a tab with rmd level "##".
 #'
@@ -49,6 +52,9 @@ construct_rmd_tab_item <- function(df,
                               item_col,
                               value_col,
                               outputspec,
+                              timepoint_limits = c(NA, NA),
+                              fill_with_zero = FALSE,
+                              item_order = TRUE,
                               tab_name = NULL,
                               tab_level = 1) {
 
@@ -61,7 +67,9 @@ construct_rmd_tab_item <- function(df,
       timepoint_col = timepoint_col,
       item_col = item_col,
       value_col = value_col,
-      item_order = TRUE
+      timepoint_limits = timepoint_limits,
+      fill_with_zero = fill_with_zero,
+      item_order = item_order
     )
 
   if (is_outputspec_static_heatmap(outputspec)) {
@@ -107,6 +115,9 @@ construct_rmd_tab_item <- function(df,
 #' @param value_col Name of column containing the time series values which will be used for the y-axes.
 #' @param tab_col Name of column containing categorical values which will be used to group the time series into different tabs.
 #' @param outputspec Specification for display of tab contents
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
+#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
 #' @param tab_order Optional vector containing values from tab_col in desired order of display
 #' @param tab_group_name Character string to appear on parent tab
 #' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##".
@@ -120,6 +131,9 @@ construct_rmd_tab_group <- function(df,
                                 value_col,
                                 tab_col,
                                 outputspec,
+                                timepoint_limits = c(NA, NA),
+                                fill_with_zero = FALSE,
+                                item_order = TRUE,
                                 tab_order = NULL,
                                 tab_group_name = NULL,
                                 tab_group_level = 1) {
@@ -146,6 +160,9 @@ construct_rmd_tab_group <- function(df,
       item_col = item_col,
       value_col = value_col,
       outputspec = outputspec,
+      timepoint_limits = timepoint_limits,
+      fill_with_zero = fill_with_zero,
+      item_order = item_order,
       tab_name = tab_names[i],
       tab_level = tab_group_level + 1
     )
