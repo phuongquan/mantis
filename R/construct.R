@@ -18,8 +18,7 @@ initialise_widgets <- function(plot_type){
     timepoint_col = "a",
     item_col = "b",
     value_col = "c"
-  ) %>%
-    prepare_table() %>%
+    ) %>%
     output_table_interactive(
       plot_type = plot_type,
       summary_cols = "",
@@ -84,11 +83,9 @@ construct_rmd_tab_item <- function(df,
       print()
   } else if (is_outputspec_interactive(outputspec)) {
     p <-
-      prepare_table(
-        prepared_df,
-        plot_value_type = outputspec$plot_value_type
-      ) %>%
       output_table_interactive(
+        prepared_df,
+        plot_value_type = outputspec$plot_value_type,
         item_label = outputspec$item_label,
         plot_label = outputspec$plot_label,
         summary_cols = outputspec$summary_cols,

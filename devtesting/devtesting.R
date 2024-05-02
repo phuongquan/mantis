@@ -8,23 +8,6 @@ item_col <- "item"
 value_col <- "value"
 item_label <- "Item"
 
-table <-
-  prepare_table(
-    df,
-    timepoint_col,
-    item_col,
-    value_col,
-#    item_order = c("sparse_1")
-    item_order = NULL
-  )
-
-table %>%
-  output_table_interactive(
-    item_label = "item",
-    plot_type = "bar",
-    summary_cols = c("last_value", "mean"),
-    sync_axis_range = FALSE
-  )
 
 prepared_df <- prepare_df(
     df,
@@ -33,6 +16,13 @@ prepared_df <- prepare_df(
     value_col,
 #    item_order = c("sparse_1")
     item_order = NULL
+)
+output_table_interactive(
+  prepared_df,
+  item_label = "item",
+  plot_type = "bar",
+  summary_cols = c("last_value", "mean"),
+  sync_axis_range = FALSE
 )
 
 plot_heatmap_static(
@@ -50,25 +40,8 @@ plot_multipanel_static(
   prepared_df
 )
 
-table <-
-  prepare_table(
-    df,
-    timepoint_col,
-    item_col,
-    value_col,
-    fill_with_zero = TRUE
-  )
-
-table %>%
-  output_table_interactive(
-    item_label = "item",
-    plot_type = "bar",
-    summary_cols = c("last_value", "mean"),
-    sync_axis_range = FALSE
-  )
-
 # set timepoint limits
-prepare_table(
+prepare_df(
   df,
   timepoint_col,
   item_col,
@@ -82,7 +55,7 @@ output_table_interactive(
   sync_axis_range = FALSE
 )
 
-prepare_table(
+prepare_df(
   df %>% dplyr::filter(startsWith(item, "sparse")),
   timepoint_col,
   item_col,

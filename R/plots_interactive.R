@@ -1,6 +1,7 @@
 #' Create html table from prepared data frame
 #'
-#' @param table from prepare_table()
+#' @param prepared_df data frame returned from prepare_df()
+#' @param plot_value_type "value" or "delta"
 #' @param sync_axis_range sync all history graphs to same y-axis range
 #' @param item_label Label for first column
 #' @param summary_cols vector of which summary columns to include
@@ -8,17 +9,23 @@
 #'
 #' @return html table
 #' @noRd
-output_table_interactive <- function(table,
-                         item_label = "Item",
-                         plot_label = "History",
-                         summary_cols = c("max_value"),
-                         plot_type = "bar",
-                         sync_axis_range = FALSE,
-                         bordered = TRUE,
-                         ...) {
+output_table_interactive <- function(prepared_df,
+                                     plot_value_type = "value",
+                                     item_label = "Item",
+                                     plot_label = "History",
+                                     summary_cols = c("max_value"),
+                                     plot_type = "bar",
+                                     sync_axis_range = FALSE,
+                                     bordered = TRUE,
+                                     ...) {
 
   # initialise column names to avoid R CMD check Notes
-  item <- last_timepoint <- last_value <- history <- NULL
+  timepoint <- item <- value <- value_for_history <- NULL
+
+  # TODO: validate inputs
+
+  table <- prepare_table(prepared_df = prepared_df,
+                         plot_value_type = plot_value_type)
 
   reactable::reactable(
     table,
