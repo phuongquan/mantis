@@ -171,13 +171,13 @@ outputspec_interactive <- function(plot_value_type = "value",
 #'
 #' @return An `outputspec()` object
 #' @export
-outputspec_heatmap_static <- function(fill_colour = "blue",
+outputspec_static_heatmap <- function(fill_colour = "blue",
                                       y_label = NULL) {
 
   structure(
     list(fill_colour = fill_colour,
          y_label = y_label),
-    class = c("tinduck_outputspec", "tinduck_outputspec_static", "tinduck_outputspec_heatmap_static")
+    class = c("tinduck_outputspec", "tinduck_outputspec_static", "tinduck_outputspec_static_heatmap")
     )
 }
 
@@ -191,13 +191,13 @@ outputspec_heatmap_static <- function(fill_colour = "blue",
 #'
 #' @return An `outputspec()` object
 #' @export
-outputspec_multiplot_static <- function(sync_axis_range = FALSE,
+outputspec_static_multipanel <- function(sync_axis_range = FALSE,
                                         y_label = NULL) {
 
   structure(
     list(sync_axis_range = sync_axis_range,
          y_label = y_label),
-    class = c("tinduck_outputspec", "tinduck_outputspec_static", "tinduck_outputspec_multiplot_static")
+    class = c("tinduck_outputspec", "tinduck_outputspec_static", "tinduck_outputspec_static_multipanel")
   )
 }
 
@@ -223,19 +223,19 @@ is_outputspec_interactive <- function(x) inherits(x, "tinduck_outputspec_interac
 #' @noRd
 is_outputspec_static <- function(x) inherits(x, "tinduck_outputspec_static")
 
-#' Test if object is an outputspec_heatmap_static
+#' Test if object is an outputspec_static_heatmap
 #'
 #' @param x object to test
 #' @return Logical
 #' @noRd
-is_outputspec_heatmap_static <- function(x) inherits(x, "tinduck_outputspec_heatmap_static")
+is_outputspec_static_heatmap <- function(x) inherits(x, "tinduck_outputspec_static_heatmap")
 
-#' Test if object is an outputspec_multiplot_static
+#' Test if object is an outputspec_static_multipanel
 #'
 #' @param x object to test
 #' @return Logical
 #' @noRd
-is_outputspec_multiplot_static <- function(x) inherits(x, "tinduck_outputspec_multiplot_static")
+is_outputspec_static_multipanel <- function(x) inherits(x, "tinduck_outputspec_static_multipanel")
 
 
 #-----------------------------------------------------------------------

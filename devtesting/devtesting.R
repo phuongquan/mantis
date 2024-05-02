@@ -37,7 +37,7 @@ prepared_df <- prepare_df(
 
 plot_heatmap_static(
   prepared_df,
-  outputspec = outputspec_heatmap_static(
+  outputspec = outputspec_static_heatmap(
     fill_colour = "red",
     y_label = "Value")
 )
@@ -46,7 +46,7 @@ plot_heatmap_static(
   prepared_df
 )
 
-plot_multiplot_static(
+plot_multipanel_static(
   prepared_df
 )
 
@@ -171,7 +171,7 @@ tinduck_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
-               outputspec = outputspec_heatmap_static()
+               outputspec = outputspec_static_heatmap()
 )
 
 tinduck_report(df = example_data,
@@ -179,19 +179,20 @@ tinduck_report(df = example_data,
                                  item_col = "item",
                                  value_col = "value",
                                  group_col = "family"),
-               outputspec = outputspec_heatmap_static()
+               outputspec = outputspec_static_heatmap()
 )
 
 tinduck_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
-               outputspec = outputspec_multiplot_static()
+               outputspec = outputspec_static_multipanel()
 )
 
 tinduck_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
-               outputspec = outputspec_multiplot_static(sync_axis_range = TRUE)
+               outputspec = outputspec_static_multipanel(sync_axis_range = TRUE)
 )
+

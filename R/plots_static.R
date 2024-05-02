@@ -2,13 +2,13 @@
 #' Create a heatmap showing the value across all items
 #'
 #' @param prepared_df data frame returned from prepare_df()
-#' @param outputspec options for plot specified using `outputspec_heatmap_static()`
+#' @param fill_colour colour to use for the tiles
+#' @param y_label string for y-axis label. Optional
 #' @return ggplot
 #' @noRd
 plot_heatmap_static <- function(prepared_df,
-                                outputspec = outputspec_heatmap_static(
-                                  fill_colour = "blue",
-                                  y_label = NULL)) {
+                                fill_colour = "blue",
+                                y_label = NULL) {
 
   # initialise known column names to prevent R CMD check notes
   item <- timepoint <- value <- NULL
@@ -16,7 +16,7 @@ plot_heatmap_static <- function(prepared_df,
   data <- prepared_df %>%
     dplyr::mutate(item = factor(item, levels = unique(prepared_df$item)))
 
-  fill_colour <- outputspec$fill_colour
+  fill_colour <- fill_colour
 
   # when the only values are zero, make sure the fill colour is white (as
   # geom_tile uses the 'high' colour)
@@ -43,7 +43,7 @@ plot_heatmap_static <- function(prepared_df,
       labels = scales::label_date_short(sep = " "),
       expand = c(0, 0)
     ) +
-    ggplot2::labs(y = outputspec$y_label, x = NULL) +
+    ggplot2::labs(y = y_label, x = NULL) +
     # facet by variable (item) to create separate bars
     ggplot2::facet_grid(item ~ ., scales = "free", space = "free") +
     ggplot2::theme_bw() +
@@ -79,16 +79,19 @@ plot_heatmap_static <- function(prepared_df,
 }
 
 # -----------------------------------------------------------------------------
-#' Create a grid of plots showing value across all items
+#' Create a column of plots showing value across all items
+#'
+#' Currently only creates scatter plots
 #'
 #' @param prepared_df data frame returned from prepare_df()
-#' @param outputspec options for plot specified using `outputspec_multiplot_static()`
+#' @param sync_axis_range Set the y-axis to be the same range for all the plots.
+#'   X-axes are always synced.
+#' @param y_label string for y-axis label. Optional
 #' @return ggplot
 #' @noRd
-plot_multiplot_static <- function(prepared_df,
-                                  outputspec = outputspec_multiplot_static(
-                                    sync_axis_range = FALSE,
-                                    y_label = NULL)) {
+plot_multipanel_static <- function(prepared_df,
+                                   sync_axis_range = FALSE,
+                                   y_label = NULL) {
 
   # initialise known column names to prevent R CMD check notes
   item <- timepoint <- value <- NULL
@@ -111,13 +114,13 @@ plot_multiplot_static <- function(prepared_df,
       position = "right",
     ) +
     ggplot2::labs(
-      y = outputspec$y_label,
+      y = y_label,
       x = NULL) +
     # create column of plots
     ggplot2::facet_grid(
       item ~ .,
       switch = "y",
-      scales = ifelse(outputspec$sync_axis_range, "fixed", "free")) +
+      scales = ifelse(sync_axis_range, "fixed", "free")) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       # remove grid lines

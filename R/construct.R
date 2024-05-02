@@ -64,13 +64,15 @@ construct_rmd_tab_item <- function(df,
       item_order = TRUE
     )
 
-  if (is_outputspec_heatmap_static(outputspec)) {
+  if (is_outputspec_static_heatmap(outputspec)) {
       plot_heatmap_static(prepared_df = prepared_df,
-                          outputspec = outputspec) %>%
+                          fill_colour = outputspec$fill_colour,
+                          y_label = outputspec$y_label) %>%
       print()
-  } else if (is_outputspec_multiplot_static(outputspec)) {
-      plot_multiplot_static(prepared_df = prepared_df,
-                            outputspec = outputspec) %>%
+  } else if (is_outputspec_static_multipanel(outputspec)) {
+      plot_multipanel_static(prepared_df = prepared_df,
+                             sync_axis_range = outputspec$sync_axis_range,
+                             y_label = outputspec$y_label) %>%
       print()
   } else if (is_outputspec_interactive(outputspec)) {
     p <-
