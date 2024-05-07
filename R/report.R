@@ -63,7 +63,7 @@ tinduck_report <- function(df,
   file.copy(
     from = system.file(
       "rmd",
-      "report_html.Rmd",
+      "report-html.Rmd",
       package = utils::packageName(),
       mustWork = TRUE
     ),
@@ -73,7 +73,7 @@ tinduck_report <- function(df,
 
   rmarkdown::render(
     input = file.path(temp_dirname,
-                      "report_html.Rmd"),
+                      "report-html.Rmd"),
     output_file = paste0(save_filename, ".html"),
     output_dir = save_directory,
     params = list(
