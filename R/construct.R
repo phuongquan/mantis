@@ -1,3 +1,5 @@
+#----------------------------------------------------------------------
+# EXPORTED FUNCTIONS
 
 #' Initialise HTML widgets
 #'
@@ -7,6 +9,129 @@
 #'
 #' @return A (mostly) invisible html widget
 #' @export
+bespoke_rmd_initialise_widgets <- function(plot_type){
+  initialise_widgets(plot_type = plot_type)
+}
+
+#' Dynamically generate a single tab for an rmd chunk
+#'
+#' Chunk options must contain `results = 'asis'`.
+#' Function writes directly to the chunk using side-effects
+#'
+#' @param df A data frame containing multiple time series in long format. See Details.
+#' @param colspec [`colspec()`] object specifying which columns in the supplied `df` represent the
+#'   "timepoint", "item", and "value" for the time series. If a "group" column is specified, it will be ignored.
+#' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
+#'   not supplied, default values will be used.
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
+#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
+#' @param tab_name Character string to appear on parent tab
+#' @param tab_level Child level for tab. Value of 1 creates a tab with rmd level "##".
+#'
+#' @return (invisibly) the supplied df
+#' @details The supplied data frame should contain multiple time series in long format, i.e.:
+#' * one "timepoint" (datetime) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
+#' * one "item" (character) column containing categorical values identifying distinct time series.
+#' * one "value" (numeric) column containing the time series values which will be used for the y-axes.
+#' The `colspec` parameter maps the data frame columns to the above.
+#' @export
+bespoke_rmd_tab_item <- function(df,
+                                 colspec,
+                                 outputspec,
+                                 timepoint_limits = c(NA, NA),
+                                 fill_with_zero = FALSE,
+                                 item_order = TRUE,
+                                 tab_name = NULL,
+                                 tab_level = 1) {
+
+  #TODO: validate all params
+
+  # only one group allowed per tab
+  colspec$group_col <- NULL
+  validate_df_to_colspec(df, colspec)
+
+  construct_rmd_tab_item(
+    df = df,
+    timepoint_col = colspec$timepoint_col,
+    item_col = colspec$item_col,
+    value_col = colspec$value_col,
+    timepoint_limits = timepoint_limits,
+    fill_with_zero = fill_with_zero,
+    item_order = item_order,
+    tab_name = tab_name,
+    tab_level = tab_level
+  )
+}
+
+#' Dynamically generate a group of tabs for an rmd chunk
+#'
+#' Chunk options must contain `results = 'asis'`.
+#' Function writes directly to the chunk using side-effects
+#'
+#' @param df Data frame containing time series in long format
+#' @param colspec [`colspec()`] object specifying which columns in the supplied `df` represent the
+#'   "timepoint", "item", and "value" for the time series. A separate tab
+#'   will be created for each distinct value in the "group" column.
+#' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
+#'   not supplied, default values will be used.
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
+#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
+#' @param tab_order Optional vector containing values from group_col in desired order of display
+#' @param tab_group_name Character string to appear on parent tab
+#' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##".
+#'
+#' @return (invisibly) the supplied df
+#' @details The supplied data frame should contain multiple time series in long format, i.e.:
+#' * one "timepoint" (datetime) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
+#' * one "item" (character) column containing categorical values identifying distinct time series.
+#' * one "value" (numeric) column containing the time series values which will be used for the y-axes.
+#' * one "group" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
+#' The `colspec` parameter maps the data frame columns to the above.
+#' @export
+bespoke_rmd_tab_group <- function(df,
+                                  colspec,
+                                  outputspec,
+                                  timepoint_limits = c(NA, NA),
+                                  fill_with_zero = FALSE,
+                                  item_order = TRUE,
+                                  tab_order = NULL,
+                                  tab_group_name = NULL,
+                                  tab_group_level = 1) {
+
+  #TODO: validate all params
+  #TODO: check group_col is present
+
+  validate_df_to_colspec(df, colspec)
+
+  construct_rmd_tab_group(
+    df = df,
+    timepoint_col = colspec$timepoint_col,
+    item_col = colspec$item_col,
+    value_col = colspec$value_col,
+    tab_col = colspec$group_col,
+    timepoint_limits = timepoint_limits,
+    fill_with_zero = fill_with_zero,
+    item_order = item_order,
+    tab_order = tab_order,
+    tab_group_name = tab_group_name,
+    tab_group_level = tab_group_level
+  )
+}
+
+
+#----------------------------------------------------------------------
+# INTERNAL FUNCTIONS
+
+#' Initialise HTML widgets (internal)
+#'
+#' If the output is being constructed in 'asis' chunks, there must also be at least one standard chunk that
+#' contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate plot_type
+#' @param plot_type "`bar`" or "`line`", depending on what will be used in real tables.
+#'
+#' @return A (mostly) invisible html widget
+#' @noRd
 initialise_widgets <- function(plot_type){
   # https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
   # Currently appears like a line break when rendered. Could try harder to make it invisible but
@@ -18,7 +143,7 @@ initialise_widgets <- function(plot_type){
     timepoint_col = "a",
     item_col = "b",
     value_col = "c"
-    ) %>%
+  ) %>%
     output_table_interactive(
       plot_type = plot_type,
       summary_cols = "",
@@ -27,8 +152,9 @@ initialise_widgets <- function(plot_type){
     )
 }
 
-
-#' Dynamically generate a single tab for an rmd chunk
+#' Dynamically generate a single tab for an rmd chunk (internal)
+#'
+#' Don't need to repeat validation done previously
 #'
 #' Chunk options must contain `results = 'asis'`.
 #' Function writes directly to the chunk using side-effects
@@ -45,7 +171,7 @@ initialise_widgets <- function(plot_type){
 #' @param tab_level Child level for tab. Value of 1 creates a tab with rmd level "##".
 #'
 #' @return (invisibly) the supplied df
-#' @export
+#' @noRd
 construct_rmd_tab_item <- function(df,
                               timepoint_col,
                               item_col,
@@ -101,7 +227,9 @@ construct_rmd_tab_item <- function(df,
   invisible(df)
 }
 
-#' Dynamically generate a group of tabs for an rmd chunk
+#' Dynamically generate a group of tabs for an rmd chunk (internal)
+#'
+#' Don't need to repeat validation done previously
 #'
 #' Chunk options must contain `results = 'asis'`.
 #' Function writes directly to the chunk using side-effects
@@ -120,7 +248,7 @@ construct_rmd_tab_item <- function(df,
 #' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##".
 #'
 #' @return (invisibly) the supplied df
-#' @export
+#' @noRd
 #' @importFrom dplyr .data
 construct_rmd_tab_group <- function(df,
                                 timepoint_col,
