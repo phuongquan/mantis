@@ -1,3 +1,22 @@
+
+install.packages(
+  c(
+    "rmarkdown",
+    "knitr",
+    "magrittr",
+    "reactable",
+    "dplyr",
+    "tidyr",
+    "dygraphs",
+    "xts",
+    "ggplot2",
+    "scales",
+    "testthat",
+    "roxygen2"
+  )
+)
+
+
 devtools::load_all(".")
 
 data("example_data")
