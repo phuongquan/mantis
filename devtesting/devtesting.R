@@ -197,3 +197,17 @@ mantis_report(df = example_data,
               report_title = "example_data",
               dataset_description = "examples"
 )
+
+monthly_data <- example_data %>%
+  dplyr::mutate(month = as.Date(format(timepoint, format = "%Y-%m-01"))) %>%
+  dplyr::group_by(month, item, tab) %>%
+  dplyr::summarise(value = sum(value, na.rm = TRUE),
+                   .groups = "drop")
+
+
+mantis_report(df = monthly_data,
+              colspec = colspec(timepoint_col = "month",
+                                item_col = "item",
+                                value_col = "value"),
+              outputspec = outputspec_static_multipanel()
+)
