@@ -25,7 +25,7 @@ p.compact {
 ```
 
 ```{r initialise}
-is_grouped <- !is.null(params$colspec$group_col)
+is_grouped <- !is.null(params$colspec$tab_col)
 is_interactive <- is_outputspec_interactive(params$outputspec)
 requires_refresh <- is_grouped && is_interactive
 ```
@@ -53,7 +53,7 @@ window.onresize = function(){ location.reload(); }
 construct_rmd_tab_group(
   df = params$df,
   tab_group_level = 0,
-  tab_col = params$colspec$group_col,
+  tab_col = params$colspec$tab_col,
   timepoint_col = params$colspec$timepoint_col,
   item_col = params$colspec$item_col,
   value_col = params$colspec$value_col,

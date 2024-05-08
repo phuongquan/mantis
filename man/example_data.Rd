@@ -10,8 +10,8 @@ A data frame with 3,903 rows and 4 columns:
 \describe{
   \item{timepoint}{Dates for the time series}
   \item{item}{Labels to identify the different time series}
-  \item{value}{Vaues for the time series}
-  \item{group}{Labels to group related time series}
+  \item{value}{Values for the time series}
+  \item{tab}{Labels to group related time series into tabs}
   ...
 }
 }

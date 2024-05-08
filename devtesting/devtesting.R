@@ -99,7 +99,7 @@ mantis::mantis_report(df,
                                    colspec = mantis::colspec(timepoint_col = "timepoint",
                                                     item_col = "item",
                                                     value_col = "value",
-                                                    group_col = "group"),
+                                                    tab_col = "tab"),
                                    outputspec = outputspec_interactive(plot_type = "line",
                                                            summary_cols = "max_value")
                                    )
@@ -110,7 +110,7 @@ mantis::mantis_report(df = example_prescription_numbers,
                         colspec = mantis::colspec(timepoint_col = "PrescriptionDate",
                                                    item_col = "Antibiotic",
                                                    value_col = "NumberOfPrescriptions",
-                                                   group_col = "Location"),
+                                                   tab_col = "Location"),
                         outputspec = outputspec_interactive(plot_type = "bar",
                                                 summary_cols = c("max_value",
                                                                  "mean_value",
@@ -129,7 +129,7 @@ mantis_report(df = example_prescription_numbers,
                colspec = colspec(timepoint_col = "PrescriptionDate",
                                  item_col = "Antibiotic",
                                  value_col = "NumberOfPrescriptions",
-                                 group_col = "Location")
+                                 tab_col = "Location")
 )
 
 data("example_data")
@@ -143,14 +143,14 @@ mantis_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value",
-                              group_col = "family")
+                              tab_col = "tab")
                )
 
 mantis_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value",
-                                 group_col = "family"),
+                                 tab_col = "tab"),
                outputspec = outputspec_interactive(plot_type = "bar",
                                        summary_cols = c("max_value",
                                                         "mean_value",
@@ -170,7 +170,7 @@ mantis_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value",
-                                 group_col = "family"),
+                                 tab_col = "tab"),
                outputspec = outputspec_static_heatmap()
 )
 

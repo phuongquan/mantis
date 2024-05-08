@@ -31,7 +31,7 @@ example_data <-
     item = "sparse_2",
     value = c(2, 3, 7, 4)
   )) |>
-  dplyr::mutate(group = dplyr::case_when(grepl("norm", item) ~ "norm",
+  dplyr::mutate(tab = dplyr::case_when(grepl("norm", item) ~ "norm",
                                          grepl("sparse", item) ~ "sparse",
                                          TRUE ~ "other"))
 

@@ -4,7 +4,7 @@
 \alias{colspec}
 \title{Specify relevant columns in the source data frame}
 \usage{
-colspec(timepoint_col, item_col, value_col, group_col = NULL)
+colspec(timepoint_col, item_col, value_col, tab_col = NULL)
 }
 \arguments{
 \item{timepoint_col}{String denoting the (datetime) column which will be used for the x-axes.}
@@ -15,7 +15,7 @@ distinct time series.}
 \item{value_col}{String denoting the (numeric) column containing the time series values which
 will be used for the y-axes.}
 
-\item{group_col}{Optional. String denoting the (character) column containing categorical values
+\item{tab_col}{Optional. String denoting the (character) column containing categorical values
 which will be used to group the time series into different tabs on the report.}
 }
 \value{

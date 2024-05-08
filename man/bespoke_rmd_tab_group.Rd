@@ -20,8 +20,8 @@ bespoke_rmd_tab_group(
 \item{df}{Data frame containing time series in long format}
 
 \item{colspec}{[`colspec()`] object specifying which columns in the supplied `df` represent the
-"timepoint", "item", and "value" for the time series. A separate tab
-will be created for each distinct value in the "group" column.}
+"timepoint", "item", "value" and "tab" for the time series. A separate tab
+will be created for each distinct value in the "tab" column.}
 
 \item{outputspec}{[`outputspec()`] object specifying the desired format of the html table(s). If
 not supplied, default values will be used.}
@@ -32,7 +32,7 @@ not supplied, default values will be used.}
 
 \item{item_order}{vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.}
 
-\item{tab_order}{Optional vector containing values from group_col in desired order of display}
+\item{tab_order}{Optional vector containing values from tab_col in desired order of display}
 
 \item{tab_group_name}{Character string to appear on parent tab}
 

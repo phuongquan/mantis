@@ -79,7 +79,7 @@ test_that("validate_df_to_colspec() checks that supplied colnames are present in
   colspec <- colspec(timepoint_col = "timepoint",
                      item_col = "item",
                      value_col = "value",
-                     group_col = "group")
+                     tab_col = "group")
 
   expect_error(
     validate_df_to_colspec(
@@ -122,7 +122,7 @@ test_that("validate_df_to_colspec() checks that duplicate timepoint-item-group c
   colspec <- colspec(timepoint_col = "timepoint",
                      item_col = "item",
                      value_col = "value",
-                     group_col = "group")
+                     tab_col = "group")
 
   expect_error(
     validate_df_to_colspec(
@@ -144,7 +144,7 @@ test_that("validate_df_to_colspec() allows duplicate timepoint-item combinations
   colspec <- colspec(timepoint_col = "timepoint",
                      item_col = "item",
                      value_col = "value",
-                     group_col = "group")
+                     tab_col = "group")
 
   expect_silent(
     validate_df_to_colspec(

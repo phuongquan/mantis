@@ -114,7 +114,7 @@ prepare_table <-
 #'   distinct time series.
 #' @param value_col String denoting the (numeric) column containing the time series values which
 #'   will be used for the y-axes.
-#' @param group_col Optional. String denoting the (character) column containing categorical values
+#' @param tab_col Optional. String denoting the (character) column containing categorical values
 #'   which will be used to group the time series into different tabs on the report.
 #'
 #' @return A `colspec()` object
@@ -122,12 +122,12 @@ prepare_table <-
 colspec <- function(timepoint_col,
                     item_col,
                     value_col,
-                    group_col = NULL){
+                    tab_col = NULL){
   structure(
     list(timepoint_col = timepoint_col,
        item_col = item_col,
        value_col = value_col,
-       group_col = group_col),
+       tab_col = tab_col),
     class = "mantis_colspec")
 }
 
@@ -435,7 +435,7 @@ validate_df_to_colspec_names <- function(df,
   err_validation
 }
 
-#' Check supplied df has only one timepoint per item or item-group
+#' Check supplied df has only one timepoint per item or item-tab
 #'
 #' This assumes that the names in colspec and the df have already been check and are valid
 #'
@@ -456,7 +456,7 @@ validate_df_to_colspec_duplicate_timepoints <- function(df,
     df %>%
     dplyr::group_by(dplyr::pick(dplyr::any_of(c(
       colspec$item_col,
-      colspec$group_col
+      colspec$tab_col
     )))) %>%
     dplyr::summarise(
       duplicate_timepoints = anyDuplicated(dplyr::pick(dplyr::all_of(
@@ -465,7 +465,7 @@ validate_df_to_colspec_duplicate_timepoints <- function(df,
     dplyr::filter(duplicate_timepoints > 0) %>%
     tidyr::unite(baditem,
                  dplyr::any_of(c(colspec$item_col,
-                                 colspec$group_col)),
+                                 colspec$tab_col)),
                  sep = ":")
 
   if (nrow(duplicate_timepoints) > 0) {
@@ -473,7 +473,7 @@ validate_df_to_colspec_duplicate_timepoints <- function(df,
         paste(
           "Duplicate timepoints for items: [",
           paste(duplicate_timepoints$baditem, collapse = ", "),
-          "]. Each timepoint-item-group combination must only appear once in the df"
+          "]. Each timepoint-item-tab combination must only appear once in the df"
         )
   }
 

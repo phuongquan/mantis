@@ -19,7 +19,7 @@ i.e.:
   identifying distinct time series.
 - one “value” (numeric) column containing the time series values which
   will be used for the y-axes.
-- Optionally, a “group” (character) column containing categorical values
+- Optionally, a “tab” (character) column containing categorical values
   which will be used to group the time series into different tabs on the
   report.
 
@@ -67,7 +67,7 @@ mantis_report(
     timepoint_col = "PrescriptionDate",
     item_col = "Antibiotic",
     value_col = "NumberOfPrescriptions",
-    group_col = "Location"
+    tab_col = "Location"
   )
 )
 ```

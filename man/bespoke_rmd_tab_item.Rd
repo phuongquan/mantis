@@ -19,7 +19,7 @@ bespoke_rmd_tab_item(
 \item{df}{A data frame containing multiple time series in long format. See Details.}
 
 \item{colspec}{[`colspec()`] object specifying which columns in the supplied `df` represent the
-"timepoint", "item", and "value" for the time series. If a "group" column is specified, it will be ignored.}
+"timepoint", "item", and "value" for the time series. If a "tab" column is specified, it will be ignored.}
 
 \item{outputspec}{[`outputspec()`] object specifying the desired format of the html table(s). If
 not supplied, default values will be used.}

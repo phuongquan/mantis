@@ -5,8 +5,8 @@
 #'
 #' @param df A data frame containing multiple time series in long format. See Details.
 #' @param colspec [`colspec()`] object specifying which columns in the supplied `df` represent the
-#'   "timepoint", "item", and "value" for the time series. If a "group" column is specified, a separate tab
-#'   will be created for each distinct value in the group.
+#'   "timepoint", "item", "value"  and (optionally) "tab" for the time series. If a "tab" column is specified, a separate tab
+#'   will be created for each distinct value in the column.
 #' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
 #' @param page_title Title to appear on the report.
@@ -24,7 +24,7 @@
 #' * one "timepoint" (datetime) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
 #' * one "item" (character) column containing categorical values identifying distinct time series.
 #' * one "value" (numeric) column containing the time series values which will be used for the y-axes.
-#' * Optionally, a "group" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
+#' * Optionally, a "tab" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
 #' The `colspec` parameter maps the data frame columns to the above.
 #' @export
 mantis_report <- function(df,

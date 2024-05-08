@@ -20,7 +20,7 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #'
 #' @param df A data frame containing multiple time series in long format. See Details.
 #' @param colspec [`colspec()`] object specifying which columns in the supplied `df` represent the
-#'   "timepoint", "item", and "value" for the time series. If a "group" column is specified, it will be ignored.
+#'   "timepoint", "item", and "value" for the time series. If a "tab" column is specified, it will be ignored.
 #' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
@@ -47,8 +47,8 @@ bespoke_rmd_tab_item <- function(df,
 
   #TODO: validate all params
 
-  # only one group allowed per tab
-  colspec$group_col <- NULL
+  # everything will appear in the one tab
+  colspec$tab_col <- NULL
   validate_df_to_colspec(df, colspec)
 
   construct_rmd_tab_item(
@@ -72,14 +72,14 @@ bespoke_rmd_tab_item <- function(df,
 #'
 #' @param df Data frame containing time series in long format
 #' @param colspec [`colspec()`] object specifying which columns in the supplied `df` represent the
-#'   "timepoint", "item", and "value" for the time series. A separate tab
-#'   will be created for each distinct value in the "group" column.
+#'   "timepoint", "item", "value" and "tab" for the time series. A separate tab
+#'   will be created for each distinct value in the "tab" column.
 #' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
-#' @param tab_order Optional vector containing values from group_col in desired order of display
+#' @param tab_order Optional vector containing values from tab_col in desired order of display
 #' @param tab_group_name Character string to appear on parent tab
 #' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##".
 #'
@@ -102,7 +102,7 @@ bespoke_rmd_tab_group <- function(df,
                                   tab_group_level = 1) {
 
   #TODO: validate all params
-  #TODO: check group_col is present
+  #TODO: check tab_col is present
 
   validate_df_to_colspec(df, colspec)
 
@@ -111,7 +111,7 @@ bespoke_rmd_tab_group <- function(df,
     timepoint_col = colspec$timepoint_col,
     item_col = colspec$item_col,
     value_col = colspec$value_col,
-    tab_col = colspec$group_col,
+    tab_col = colspec$tab_col,
     outputspec = outputspec,
     timepoint_limits = timepoint_limits,
     fill_with_zero = fill_with_zero,
