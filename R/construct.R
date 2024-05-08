@@ -298,6 +298,16 @@ construct_rmd_tab_group <- function(df,
   invisible(df)
 }
 
+#' Create markdown for tab label
+#'
+#' @param tab_name string label for the tab
+#' @param tab_level tab_level = 1 corresponds to ###
+#' @param has_child_tabs will there be more tabs underneath
+#'
+#' @return
+#' @export
+#'
+#' @examples
 construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
   if (!is.null(tab_name)) {
     cat("\n",
