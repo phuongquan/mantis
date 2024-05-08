@@ -9,7 +9,9 @@
 #'   will be created for each distinct value in the column.
 #' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
-#' @param page_title Title to appear on the report.
+#' @param report_title Title to appear on the report.
+#' @param dataset_description Short description of the dataset being shown.
+#'   This will appear on the report.
 #' @param save_directory String specifying directory in which to save the report. Default is
 #'   current directory.
 #' @param save_filename String specifying filename for the report, excluding any file extension. If
@@ -30,7 +32,8 @@
 mantis_report <- function(df,
                         colspec,
                         outputspec = NULL,
-                        page_title = "mantis report",
+                        report_title = "mantis report",
+                        dataset_description = "",
                         save_directory = ".",
                         save_filename = NULL,
                         show_progress = TRUE,
@@ -80,7 +83,8 @@ mantis_report <- function(df,
       df = df,
       colspec = colspec,
       outputspec = outputspec,
-      page_title = page_title
+      report_title = report_title,
+      dataset_description = dataset_description
     ),
     quiet = !show_progress,
     ...

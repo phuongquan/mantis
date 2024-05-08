@@ -8,7 +8,8 @@ mantis_report(
   df,
   colspec,
   outputspec = NULL,
-  page_title = "mantis report",
+  report_title = "mantis report",
+  dataset_description = "",
   save_directory = ".",
   save_filename = NULL,
   show_progress = TRUE,
@@ -25,7 +26,10 @@ will be created for each distinct value in the column.}
 \item{outputspec}{[`outputspec()`] object specifying the desired format of the html table(s). If
 not supplied, default values will be used.}
 
-\item{page_title}{Title to appear on the report.}
+\item{report_title}{Title to appear on the report.}
+
+\item{dataset_description}{Short description of the dataset being shown.
+This will appear on the report.}
 
 \item{save_directory}{String specifying directory in which to save the report. Default is
 current directory.}

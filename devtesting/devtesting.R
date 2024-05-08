@@ -171,7 +171,8 @@ mantis_report(df = example_data,
                                  item_col = "item",
                                  value_col = "value",
                                  tab_col = "tab"),
-               outputspec = outputspec_static_heatmap()
+              dataset_description = "examples",
+              outputspec = outputspec_static_heatmap()
 )
 
 mantis_report(df = example_data,
@@ -188,3 +189,11 @@ mantis_report(df = example_data,
                outputspec = outputspec_static_multipanel(sync_axis_range = TRUE)
 )
 
+mantis_report(df = example_data,
+              colspec = colspec(timepoint_col = "timepoint",
+                                item_col = "item",
+                                value_col = "value"),
+              outputspec = outputspec_static_multipanel(),
+              report_title = "example_data",
+              dataset_description = "examples"
+)

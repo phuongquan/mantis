@@ -1,11 +1,12 @@
 ---
-title: "`r params$page_title`"
+title: "`r params$report_title`"
 output: html_document
 params:
   df: df
   colspec: colspec
   outputspec: outputspec 
-  page_title: page_title
+  report_title: report_title
+  dataset_description: dataset_description
 ---
 
 ```{r setup, include=FALSE}
@@ -24,6 +25,14 @@ p.compact {
 	}
 ```
 
+<p class="compact">
+`r if (nchar(params$dataset_description) > 0) {paste0("Dataset: <strong>", encodeString(params$dataset_description), "</strong>")}`
+</p>
+
+<p class="compact">
+Report created on: `r Sys.time()` ; mantis version `r utils::packageVersion(utils::packageName())` ; `r R.Version()$version.string`
+</p>
+
 ```{r initialise}
 is_grouped <- !is.null(params$colspec$tab_col)
 is_interactive <- is_outputspec_interactive(params$outputspec)
@@ -40,7 +49,10 @@ if (is.null(fig_height)){
 
 ```
 
+#  {.tabset .tabset-pills}
+
 ```{r, results='asis', eval=!is_grouped, fig.height=fig_height}
+
 construct_rmd_tab_item(
     params$df,
     timepoint_col = params$colspec$timepoint_col,
@@ -56,8 +68,6 @@ construct_rmd_tab_item(
 // unfortunately this also means you lose your active tab
 window.onresize = function(){ location.reload(); }
 ```
-
-#  {.tabset .tabset-pills}
 
 ```{r, results='asis', eval=is_grouped, fig.height=fig_height}
 construct_rmd_tab_group(
