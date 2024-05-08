@@ -31,11 +31,10 @@ plot_heatmap_static <- function(prepared_df,
     ) +
     ggplot2::geom_tile() +
     ggplot2::scale_fill_gradient(
-      "Instances",
+      "",
       low = "white",
       high = fill_colour,
       na.value = "grey",
-      labels = NULL,
       limits = c(0, NA)
     ) +
     ggplot2::scale_x_date(
@@ -72,7 +71,7 @@ plot_heatmap_static <- function(prepared_df,
         size = 7
       ),
       axis.text.y = ggplot2::element_text(size = 7),
-      legend.position = "none",
+      legend.position = "right",
     )
 
   g
