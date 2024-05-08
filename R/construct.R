@@ -308,3 +308,43 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
         sep = "")
   }
 }
+
+#' Calculate appropriate fig.height for the chunks
+#'
+#' Static plots need this setting explicitly otherwise plots with lots of items look squished.
+#' Interactive plots flex automatically.
+#'
+#' If NULL is returned, the rmd should use the default fig.height.
+#'
+#' @param df
+#' @param colspec
+#' @param outputspec
+#'
+#' @return height in inches or NULL
+#' @noRd
+rmd_fig_height <- function(df, colspec, outputspec){
+
+  fig_height <- NULL
+  if (is_outputspec_static(outputspec)){
+    maxrows <-
+      df %>%
+      dplyr::select(
+        item = dplyr::all_of(colspec$item_col),
+        tab = dplyr::any_of(colspec$tab_col)
+      ) %>%
+      dplyr::group_by(dplyr::pick(dplyr::any_of(
+        colspec$tab_col
+      ))) %>%
+      dplyr::distinct() %>%
+      dplyr::summarise(rows = dplyr::n()) %>%
+      dplyr::ungroup() %>%
+      dplyr::summarise(maxrows = max(rows)) %>%
+      dplyr::pull()
+
+    fig_height <- 1 + maxrows*dplyr::case_when(is_outputspec_static_heatmap(outputspec) ~ 0.5,
+                                               is_outputspec_static_multipanel(outputspec) ~ 0.7,
+                                               TRUE ~ 0.8)
+  }
+
+  fig_height
+}

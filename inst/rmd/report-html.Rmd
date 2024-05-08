@@ -28,9 +28,19 @@ p.compact {
 is_grouped <- !is.null(params$colspec$tab_col)
 is_interactive <- is_outputspec_interactive(params$outputspec)
 requires_refresh <- is_grouped && is_interactive
+
+# NOTE: can't modify chunk options within a chunk to get different fig heights
+# (https://github.com/yihui/knitr/issues/841) so have to make static plots consistent for all tabs
+fig_height <- rmd_fig_height(params$df,
+                             params$colspec,
+                             params$outputspec)
+if (is.null(fig_height)){
+  fig_height <- knitr::opts_chunk$get("fig.height")
+}
+
 ```
 
-```{r, results='asis', eval=!is_grouped}
+```{r, results='asis', eval=!is_grouped, fig.height=fig_height}
 construct_rmd_tab_item(
     params$df,
     timepoint_col = params$colspec$timepoint_col,
@@ -49,7 +59,7 @@ window.onresize = function(){ location.reload(); }
 
 #  {.tabset .tabset-pills}
 
-```{r, results='asis', eval=is_grouped}
+```{r, results='asis', eval=is_grouped, fig.height=fig_height}
 construct_rmd_tab_group(
   df = params$df,
   tab_group_level = 0,
