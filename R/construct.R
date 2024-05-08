@@ -316,9 +316,9 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
 #'
 #' If NULL is returned, the rmd should use the default fig.height.
 #'
-#' @param df
-#' @param colspec
-#' @param outputspec
+#' @param df data frame
+#' @param colspec `colspec()` object
+#' @param outputspec `outputspec()` object
 #'
 #' @return height in inches or NULL
 #' @noRd
@@ -341,8 +341,8 @@ rmd_fig_height <- function(df, colspec, outputspec){
       dplyr::summarise(maxrows = max(rows)) %>%
       dplyr::pull()
 
-    fig_height <- 1 + maxrows*dplyr::case_when(is_outputspec_static_heatmap(outputspec) ~ 0.5,
-                                               is_outputspec_static_multipanel(outputspec) ~ 0.7,
+    fig_height <- maxrows*dplyr::case_when(is_outputspec_static_heatmap(outputspec) ~ 0.6,
+                                               is_outputspec_static_multipanel(outputspec) ~ 0.8,
                                                TRUE ~ 0.8)
   }
 
