@@ -70,14 +70,14 @@ prepare_df(
   )
 
 
-tinduck::tinduck_report(df,
+mantis::mantis_report(df,
                colspec = list(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value")
                )
 
-tinduck::tinduck_report(df,
-                                   colspec = tinduck::colspec(timepoint_col = "timepoint",
+mantis::mantis_report(df,
+                                   colspec = mantis::colspec(timepoint_col = "timepoint",
                                                     item_col = "item",
                                                     value_col = "value",
                                                     group_col = "group"),
@@ -87,8 +87,8 @@ tinduck::tinduck_report(df,
 
 
 data("example_prescription_numbers")
-tinduck::tinduck_report(df = example_prescription_numbers,
-                        colspec = tinduck::colspec(timepoint_col = "PrescriptionDate",
+mantis::mantis_report(df = example_prescription_numbers,
+                        colspec = mantis::colspec(timepoint_col = "PrescriptionDate",
                                                    item_col = "Antibiotic",
                                                    value_col = "NumberOfPrescriptions",
                                                    group_col = "Location"),
@@ -100,13 +100,13 @@ tinduck::tinduck_report(df = example_prescription_numbers,
                                                                  "last_value_nonmissing")
                         ))
 
-tinduck_report(df = example_prescription_numbers,
+mantis_report(df = example_prescription_numbers,
                colspec = colspec(timepoint_col = "PrescriptionDate",
                                  item_col = "Antibiotic",
                                  value_col = "NumberOfPrescriptions")
                )
 
-tinduck_report(df = example_prescription_numbers,
+mantis_report(df = example_prescription_numbers,
                colspec = colspec(timepoint_col = "PrescriptionDate",
                                  item_col = "Antibiotic",
                                  value_col = "NumberOfPrescriptions",
@@ -114,20 +114,20 @@ tinduck_report(df = example_prescription_numbers,
 )
 
 data("example_data")
-tinduck_report(df = example_data,
+mantis_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value")
 )
 
-tinduck_report(df = example_data,
+mantis_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value",
                               group_col = "family")
                )
 
-tinduck_report(df = example_data,
+mantis_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value",
@@ -140,14 +140,14 @@ tinduck_report(df = example_data,
                                                         "last_value_nonmissing")
                ))
 
-tinduck_report(df = example_data,
+mantis_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
                outputspec = outputspec_static_heatmap()
 )
 
-tinduck_report(df = example_data,
+mantis_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value",
@@ -155,14 +155,14 @@ tinduck_report(df = example_data,
                outputspec = outputspec_static_heatmap()
 )
 
-tinduck_report(df = example_data,
+mantis_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
                outputspec = outputspec_static_multipanel()
 )
 
-tinduck_report(df = example_data,
+mantis_report(df = example_data,
                colspec = colspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),

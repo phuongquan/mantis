@@ -1,9 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tinduck
+# mantis
 
-The tinduck package generates interactive html reports that enable quick
+The mantis package generates interactive html reports that enable quick
 visual review of multiple related time series. This can help with
 identification of temporal artefacts and unexpected trends. Each group
 of time series is displayed together, with adjustable axes and tooltips
@@ -34,13 +34,13 @@ health records in mind, but can be used for any types of time series.
 ``` r
 # install direct from source
 # install.packages("remotes")
-remotes::install_github("phuongquan/tinduck")
+remotes::install_github("phuongquan/mantis")
 ```
 
 ## Usage
 
 ``` r
-library(tinduck)
+library(mantis)
 
 # this example data frame contains numbers of antibiotic prescriptions in long format, 
 #   plus a column for grouping the output:
@@ -61,7 +61,7 @@ head(example_prescription_numbers)
 
 ``` r
 # create a report in the current directory
-tinduck_report(
+mantis_report(
   df = example_prescription_numbers,
   colspec = colspec(
     timepoint_col = "PrescriptionDate",
@@ -83,4 +83,4 @@ NIHR Oxford Biomedical Research Centre.
 ## Contributing to this package
 
 Please report any bugs or suggestions by opening a [github
-issue](https://github.com/phuongquan/tinduck/issues).
+issue](https://github.com/phuongquan/mantis/issues).

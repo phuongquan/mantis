@@ -128,7 +128,7 @@ colspec <- function(timepoint_col,
        item_col = item_col,
        value_col = value_col,
        group_col = group_col),
-    class = "tinduck_colspec")
+    class = "mantis_colspec")
 }
 
 #' Specify output options for the report
@@ -159,7 +159,7 @@ outputspec_interactive <- function(plot_value_type = "value",
          plot_label = plot_label,
          summary_cols = summary_cols,
          sync_axis_range = sync_axis_range),
-    class = c("tinduck_outputspec", "tinduck_outputspec_interactive")
+    class = c("mantis_outputspec", "mantis_outputspec_interactive")
   )
 }
 
@@ -176,7 +176,7 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
   structure(
     list(fill_colour = fill_colour,
          y_label = y_label),
-    class = c("tinduck_outputspec", "tinduck_outputspec_static", "tinduck_outputspec_static_heatmap")
+    class = c("mantis_outputspec", "mantis_outputspec_static", "mantis_outputspec_static_heatmap")
     )
 }
 
@@ -196,7 +196,7 @@ outputspec_static_multipanel <- function(sync_axis_range = FALSE,
   structure(
     list(sync_axis_range = sync_axis_range,
          y_label = y_label),
-    class = c("tinduck_outputspec", "tinduck_outputspec_static", "tinduck_outputspec_static_multipanel")
+    class = c("mantis_outputspec", "mantis_outputspec_static", "mantis_outputspec_static_multipanel")
   )
 }
 
@@ -206,35 +206,35 @@ outputspec_static_multipanel <- function(sync_axis_range = FALSE,
 #' @param x object to test
 #' @return Logical
 #' @noRd
-is_outputspec <- function(x) inherits(x, "tinduck_outputspec")
+is_outputspec <- function(x) inherits(x, "mantis_outputspec")
 
 #' Test if object is an outputspec_interactive
 #'
 #' @param x object to test
 #' @return Logical
 #' @noRd
-is_outputspec_interactive <- function(x) inherits(x, "tinduck_outputspec_interactive")
+is_outputspec_interactive <- function(x) inherits(x, "mantis_outputspec_interactive")
 
 #' Test if object is an outputspec_static
 #'
 #' @param x object to test
 #' @return Logical
 #' @noRd
-is_outputspec_static <- function(x) inherits(x, "tinduck_outputspec_static")
+is_outputspec_static <- function(x) inherits(x, "mantis_outputspec_static")
 
 #' Test if object is an outputspec_static_heatmap
 #'
 #' @param x object to test
 #' @return Logical
 #' @noRd
-is_outputspec_static_heatmap <- function(x) inherits(x, "tinduck_outputspec_static_heatmap")
+is_outputspec_static_heatmap <- function(x) inherits(x, "mantis_outputspec_static_heatmap")
 
 #' Test if object is an outputspec_static_multipanel
 #'
 #' @param x object to test
 #' @return Logical
 #' @noRd
-is_outputspec_static_multipanel <- function(x) inherits(x, "tinduck_outputspec_static_multipanel")
+is_outputspec_static_multipanel <- function(x) inherits(x, "mantis_outputspec_static_multipanel")
 
 
 #-----------------------------------------------------------------------

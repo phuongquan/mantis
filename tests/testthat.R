@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(tinduck)
+library(mantis)
 
-test_check("tinduck")
+test_check("mantis")

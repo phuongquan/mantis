@@ -14,7 +14,7 @@
 #'   current directory.
 #' @param save_filename String specifying filename for the report, excluding any file extension. If
 #'   no filename is supplied, one will be automatically generated with the format
-#'   `tinduck_report_YYMMDD_HHMMSS`.
+#'   `mantis_report_YYMMDD_HHMMSS`.
 #' @param show_progress Print progress to console. Default = `TRUE`.
 #' @param ... Further parameters to be passed to `rmarkdown::render()`. Cannot include any of
 #'   `input`, `output_dir`, `output_file`, `params`, `quiet`.
@@ -27,10 +27,10 @@
 #' * Optionally, a "group" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
 #' The `colspec` parameter maps the data frame columns to the above.
 #' @export
-tinduck_report <- function(df,
+mantis_report <- function(df,
                         colspec,
                         outputspec = NULL,
-                        page_title = "tinduck report",
+                        page_title = "mantis report",
                         save_directory = ".",
                         save_filename = NULL,
                         show_progress = TRUE,
@@ -47,7 +47,7 @@ tinduck_report <- function(df,
 
   if (is.null(save_filename)) {
     save_filename <-
-      paste0("tinduck_", timestamp_string)
+      paste0("mantis_", timestamp_string)
   }
 
   file_and_path <- file.path(save_directory, paste0(save_filename, ".html"))
@@ -58,7 +58,7 @@ tinduck_report <- function(df,
   # save_directory or tempdir() causes duplicate chunk label errors when package
   # is run from inside an rmd/qmd
   temp_dirname <-
-    file.path(save_directory, paste0("tinduck_temp_", timestamp_string))
+    file.path(save_directory, paste0("mantis_temp_", timestamp_string))
   dir.create(temp_dirname)
   file.copy(
     from = system.file(
