@@ -211,3 +211,28 @@ mantis_report(df = monthly_data,
                                 value_col = "value"),
               outputspec = outputspec_static_multipanel()
 )
+
+## alerting
+data("example_data")
+
+df <- example_data
+timepoint_col <- "timepoint"
+item_col <- "item"
+value_col <- "value"
+item_label <- "Item"
+
+
+prepared_df <- prepare_df(
+  df,
+  timepoint_col,
+  item_col,
+  value_col,
+  #    item_order = c("sparse_1")
+  item_order = NULL
+)
+
+alert_rules <- alert_rules(alert_missing(missing_extent_type = "all",
+                                         items = "ALL"))
+
+run_alerts(prepared_df,
+           alert_rules)
