@@ -305,9 +305,7 @@ construct_rmd_tab_group <- function(df,
 #' @param has_child_tabs will there be more tabs underneath
 #'
 #' @return
-#' @export
-#'
-#' @examples
+#' @noRd
 construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
   if (!is.null(tab_name)) {
     cat("\n",
@@ -333,6 +331,8 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
 #' @return height in inches or NULL
 #' @noRd
 rmd_fig_height <- function(df, colspec, outputspec){
+
+  rows <- NULL
 
   fig_height <- NULL
   if (is_outputspec_static(outputspec)){
