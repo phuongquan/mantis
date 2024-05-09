@@ -253,10 +253,8 @@ history_to_list <-
            plot_value_type) {
 
     ts <-
-      data.frame(value_for_history,
-                 timepoint,
-                 row.names = 2) %>%
-      xts::as.xts() %>%
+      xts::xts(x = value_for_history,
+               order.by = timepoint) %>%
       list()
     names(ts[[1]]) <- plot_value_type
     ts

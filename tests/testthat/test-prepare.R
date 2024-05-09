@@ -155,3 +155,13 @@ test_that("validate_df_to_colspec() allows duplicate timepoint-item combinations
 
 })
 
+test_that("history_to_list() doesn't convert xts date indexes to datetime indexes", {
+  # daylight savings time conversions can move timepoint values to preceding day in the summer months
+  xtslist <- history_to_list(value_for_history = c(1, 5),
+                  timepoint = c(as.Date("2022-03-01"), as.Date("2022-04-01")),
+                  plot_value_type = "value")
+
+  expect_equal(
+    xts::tclass(xtslist[[1]]), "Date"
+  )
+})
