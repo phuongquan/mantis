@@ -231,8 +231,14 @@ prepared_df <- prepare_df(
   item_order = NULL
 )
 
-alert_rules <- alert_rules(alert_missing(missing_extent_type = "all",
-                                         items = "ALL"))
+allitems <- unique(prepared_df$item)
+
+alert_rules <- alert_rules(alert_missing(extent_type = "all",
+                                         items = "ALL"),
+                           alert_missing(extent_type = "last",
+                                         extent_value = 5,
+                                         items = allitems[grep("norm", allitems)])
+                           )
 
 run_alerts(prepared_df,
            alert_rules)
