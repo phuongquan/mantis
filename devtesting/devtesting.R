@@ -242,3 +242,50 @@ alert_rules <- alert_rules(alert_missing(extent_type = "all",
 
 run_alerts(prepared_df,
            alert_rules)
+
+library(dplyr)
+library(mantis)
+
+pop_monitor <- readRDS("./devtesting/pop_monitor.Rds")
+
+pop_monitor %>% distinct(stat_name)
+
+prepared_df <-
+  pop_monitor %>%
+  filter(stat_name == "Max SpecimenDate per Lab",
+         monitor_point_subname == "sgss_cdr") %>%
+  mutate(run_date = as.Date(monitor_datetime)) %>%
+  # if multiple results in same day then keep the latest
+  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) %>%
+  filter(monitor_datetime == max(monitor_datetime)) %>%
+  ungroup() %>%
+  mutate(days_since_monitor_date = as.integer(
+    run_date - as.Date(lubridate::parse_date_time(value, orders = c("%Y%m%d", "%Y-%m-%d"))))) %>%
+  # filter(groupby_value == "BRIGHTON MICROBIOLOGY LABORATORY") %>%
+  # arrange(monitor_datetime) %>%
+  prepare_df(
+    timepoint_col = "run_date",
+    item_col = "groupby_value",
+    value_col = "days_since_monitor_date",
+  )
+
+alert_rules <- alert_rules(alert_missing(extent_type = "all",
+                                         items = "ALL"),
+                           alert_missing(extent_type = "last",
+                                         extent_value = 14)
+)
+
+alert_rules <- alert_rules(alert_missing(extent_type = "last",
+                                         extent_value = 14),
+                           alert_gt(extent_type = "last",
+                                    extent_value = 14,
+                                    rule_value = 10)
+)
+
+alert_results <-
+  run_alerts(prepared_df,
+             alert_rules)
+
+alert_results %>%
+  filter(if_any(.cols = everything(), .fns = ~ . == TRUE))
+

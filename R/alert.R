@@ -36,7 +36,7 @@ alert_rule <- function(type,
 #' @param extent_type "all", "any", "last"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more missing values in any position
 #'
-#' @return
+#' @return An `alert_rule` object
 #' @export
 alert_missing <- function(extent_type = "all",
                           extent_value = 1,
@@ -68,6 +68,128 @@ alert_missing <- function(extent_type = "all",
   )
 }
 
+#' alert_equals
+#'
+#' @param extent_type "all", "any", "last"
+#' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
+#' @param rule_value value to test against. e.g. `rule_value=0` means alert if value == 0
+#'
+#' @return An `alert_rule` object
+#' @export
+alert_equals <- function(extent_type = "all",
+                     extent_value = 1,
+                     rule_value,
+                     items = "ALL") {
+
+  # TODO: NEED TO THINK ABOUT WHAT TO DO WITH NAs - currently just removing them but may want them in the extent_value
+  # TODO: Need to check datatypes are numeric
+  # TODO: consider allowing different extent_values for different alert severities
+
+  rule_short_name <- paste0("equals_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
+
+  if (extent_type == "all"){
+    function_call <- substitute(all(value == rv, na.rm = TRUE), list(rv = rule_value))
+    rule_description <- paste0("All values are equal to ", rule_value)
+  } else if(extent_type == "any"){
+    function_call <- substitute(sum(value == rv, na.rm = TRUE) >= x, list(x = extent_value, rv = rule_value))
+    rule_description <- paste0("At least ", extent_value, " values are equal to ", rule_value)
+  } else if(extent_type == "last"){
+    function_call <- substitute(all(rev(value)[1:x] == rv, na.rm = TRUE),
+                                list(x = extent_value, rv = rule_value))
+    rule_description <- paste0("The last ", extent_value, " or more values are equal to ", rule_value)
+  }
+
+  alert_rule(
+    type = "equals",
+    function_call = function_call,
+    items = items,
+    short_name = rule_short_name,
+    description = rule_description
+  )
+}
+
+
+
+#' alert_lt
+#'
+#' Less than
+#'
+#' @param extent_type "all", "any", "last"
+#' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
+#' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is less than 1
+#'
+#' @return An `alert_rule` object
+#' @export
+alert_lt <- function(extent_type = "all",
+                     extent_value = 1,
+                     rule_value,
+                     items = "ALL") {
+
+  # TODO: consider allowing different extent_values for different alert severities
+
+  rule_short_name <- paste0("lt_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
+
+  if (extent_type == "all"){
+    function_call <- substitute(all(value < rv, na.rm = TRUE), list(rv = rule_value))
+    rule_description <- paste0("All values are less than ", rule_value)
+  } else if(extent_type == "any"){
+    function_call <- substitute(sum(value < rv, na.rm = TRUE) >= x, list(x = extent_value, rv = rule_value))
+    rule_description <- paste0("At least ", extent_value, " values are less than ", rule_value)
+  } else if(extent_type == "last"){
+    function_call <- substitute(all(rev(value)[1:x] < rv, na.rm = TRUE),
+                                list(x = extent_value, rv = rule_value))
+    rule_description <- paste0("The last ", extent_value, " or more values are less than ", rule_value)
+  }
+
+  alert_rule(
+    type = "lt",
+    function_call = function_call,
+    items = items,
+    short_name = rule_short_name,
+    description = rule_description
+  )
+}
+
+
+#' alert_gt
+#'
+#' Greater than
+#'
+#' @param extent_type "all", "any", "last"
+#' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
+#' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is greater than 1
+#'
+#' @return An `alert_rule` object
+#' @export
+alert_gt <- function(extent_type = "all",
+                     extent_value = 1,
+                     rule_value,
+                     items = "ALL") {
+
+  # TODO: consider allowing different extent_values for different alert severities
+
+  rule_short_name <- paste0("gt_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
+
+  if (extent_type == "all"){
+    function_call <- substitute(all(value > rv, na.rm = TRUE), list(rv = rule_value))
+    rule_description <- paste0("All values are greater than ", rule_value)
+  } else if(extent_type == "any"){
+    function_call <- substitute(sum(value > rv, na.rm = TRUE) >= x, list(x = extent_value, rv = rule_value))
+    rule_description <- paste0("At least ", extent_value, " values are greater than ", rule_value)
+  } else if(extent_type == "last"){
+    function_call <- substitute(all(rev(value)[1:x] > rv, na.rm = TRUE),
+                                list(x = extent_value, rv = rule_value))
+    rule_description <- paste0("The last ", extent_value, " or more values are greater than ", rule_value)
+  }
+
+  alert_rule(
+    type = "gt",
+    function_call = function_call,
+    items = items,
+    short_name = rule_short_name,
+    description = rule_description
+  )
+}
 
 run_alerts <- function(prepared_df,
                        alert_rules){
