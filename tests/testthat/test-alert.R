@@ -1,5 +1,5 @@
 test_that("alert_missing(all) returns condition correctly", {
-  fc <- alert_missing(missing_extent_type = "all")$function_call
+  fc <- alert_missing(extent_type = "all")$function_call
 
   value = rep(NA, 10)
   expect_true(eval(fc))
@@ -10,7 +10,7 @@ test_that("alert_missing(all) returns condition correctly", {
 })
 
 test_that("alert_missing(any) returns condition correctly", {
-  fc <- alert_missing(missing_extent_type = "any", missing_extent_value = 3)$function_call
+  fc <- alert_missing(extent_type = "any", extent_value = 3)$function_call
 
   value = c(1, NA, 2, NA, 3, NA)
   expect_true(eval(fc))
@@ -21,7 +21,7 @@ test_that("alert_missing(any) returns condition correctly", {
 })
 
 test_that("alert_missing(last) returns condition correctly", {
-  fc <- alert_missing(missing_extent_type = "last", missing_extent_value = 3)$function_call
+  fc <- alert_missing(extent_type = "last", extent_value = 3)$function_call
 
   value = c(1, 2, NA, NA, NA)
   expect_true(eval(fc))
@@ -134,4 +134,26 @@ test_that("alert_gt(last) returns condition correctly", {
 })
 
 # TODO: test equals/lt/gt with NAs in
+
+test_that("alert_difference_above_perc() returns condition correctly", {
+  fc <- alert_difference_above_perc(current_period = 2, previous_period = 4, rule_value = 50)$function_call
+
+  value = c(100, 3, 3, 5, 5, 8, 6)
+  expect_true(eval(fc))
+
+  value = c(3, 3, 5, 5, 4, 6)
+  expect_false(eval(fc))
+
+  # includes NAs in period but excludes them from calculation
+  value = c(3, 3, NA, NA, 5, 5, 8, 6)
+  expect_false(eval(fc))
+
+  # returns NA if either period is all NAs
+  value = c(3, 3, 5, 5, 4, 6, NA, NA)
+  expect_equal(eval(fc), NA)
+
+  value = c(3, NA, NA, NA, NA, 4, 6)
+  expect_equal(eval(fc), NA)
+})
+
 

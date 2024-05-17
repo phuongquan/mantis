@@ -12,6 +12,8 @@ alert_equals(extent_type = "all", extent_value = 1, rule_value, items = "ALL")
 \item{extent_value}{lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position}
 
 \item{rule_value}{value to test against. e.g. `rule_value=0` means alert if value == 0}
+
+\item{items}{vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.}
 }
 \value{
 An `alert_rule` object

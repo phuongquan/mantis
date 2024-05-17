@@ -29,7 +29,8 @@ Imports:
     dygraphs,
     xts,
     ggplot2,
-    scales
+    scales,
+    purrr
 Suggests: 
     testthat (>= 3.0.0),
 Config/testthat/edition: 3

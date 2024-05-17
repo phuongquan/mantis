@@ -20,6 +20,7 @@ prepare_df <-
            timepoint_limits = c(NA, NA),
            fill_with_zero = FALSE,
            item_order = NULL) {
+  # TODO: Can this function be rewritten to include the tab_col?
 
   # initialise column names to avoid R CMD check Notes
   item <- NULL

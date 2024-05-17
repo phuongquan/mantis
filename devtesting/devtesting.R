@@ -12,7 +12,8 @@ install.packages(
     "ggplot2",
     "scales",
     "testthat",
-    "roxygen2"
+    "roxygen2",
+    "purrr"
   )
 )
 
@@ -219,7 +220,6 @@ df <- example_data
 timepoint_col <- "timepoint"
 item_col <- "item"
 value_col <- "value"
-item_label <- "Item"
 
 
 prepared_df <- prepare_df(
@@ -288,4 +288,66 @@ alert_results <-
 
 alert_results %>%
   filter(if_any(.cols = everything(), .fns = ~ . == TRUE))
+
+df <-
+  pop_monitor %>%
+  filter(stat_name == "STREPTOCOCCUS PNEUMONIAE  per lab",
+         monitor_point_subname == "FACT_OPIE") %>%
+  mutate(run_date = as.Date(monitor_datetime)) %>%
+  # if multiple results in same day then keep the latest
+  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) %>%
+  filter(monitor_datetime == max(monitor_datetime)) %>%
+  ungroup() %>%
+  mutate(value = as.numeric(value)) %>%
+  filter(run_date < as.Date("2023-08-09"))
+
+prepared_df <-
+  prepare_df(
+    df,
+    timepoint_col = colspec$timepoint_col,
+    item_col = colspec$item_col,
+    value_col = colspec$value_col)
+
+alert_results <-
+  mantis_alerts(
+  df,
+  colspec = colspec("run_date", "groupby_value", "value"),
+  alert_rules = alert_rules(
+    alert_difference_above_perc(
+      current_period = 5,
+      previous_period = 30,
+      rule_value = 5
+    )
+  )
+)
+
+alert_results %>%
+  filter(if_any(.cols = everything(), .fns = ~ . == TRUE))
+
+df <-
+  pop_monitor %>%
+  filter(stat_name == "STREPTOCOCCUS PNEUMONIAE  per lab") %>%
+  mutate(run_date = as.Date(monitor_datetime)) %>%
+  # if multiple results in same day then keep the latest
+  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) %>%
+  filter(monitor_datetime == max(monitor_datetime)) %>%
+  ungroup() %>%
+  mutate(value = as.numeric(value)) %>%
+  filter(run_date < as.Date("2023-08-09"))
+
+alert_results <-
+  mantis_alerts(
+    df,
+    colspec = colspec("run_date", "groupby_value", "value", "monitor_point_subname"),
+    alert_rules = alert_rules(
+      alert_difference_above_perc(
+        current_period = 5,
+        previous_period = 30,
+        rule_value = 5
+      ),
+      alert_missing(extent_type = "last",
+                    extent_value = 14)
+    ),
+    filter_results = TRUE
+  )
 
