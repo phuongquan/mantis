@@ -8,6 +8,7 @@ mantis_report(
   df,
   colspec,
   outputspec = NULL,
+  alert_rules = NULL,
   report_title = "mantis report",
   dataset_description = "",
   save_directory = ".",
@@ -25,6 +26,8 @@ will be created for each distinct value in the column.}
 
 \item{outputspec}{[`outputspec()`] object specifying the desired format of the html table(s). If
 not supplied, default values will be used.}
+
+\item{alert_rules}{[`alert_rules()`] object specifying conditions to test}
 
 \item{report_title}{Title to appear on the report.}
 

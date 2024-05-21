@@ -30,7 +30,9 @@ Imports:
     xts,
     ggplot2,
     scales,
-    purrr
+    purrr,
+    rlang,
+    htmltools
 Suggests: 
     testthat (>= 3.0.0),
 Config/testthat/edition: 3

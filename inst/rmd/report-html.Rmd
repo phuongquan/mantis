@@ -4,7 +4,8 @@ output: html_document
 params:
   df: df
   colspec: colspec
-  outputspec: outputspec 
+  outputspec: outputspec
+  alert_rules: alert_rules
   report_title: report_title
   dataset_description: dataset_description
 ---
@@ -58,7 +59,8 @@ construct_rmd_tab_item(
     timepoint_col = params$colspec$timepoint_col,
     item_col = params$colspec$item_col,
     value_col = params$colspec$value_col,
-    outputspec = params$outputspec
+    outputspec = params$outputspec,
+    alert_rules = params$alert_rules
   )
 
 ```
@@ -77,7 +79,8 @@ construct_rmd_tab_group(
   timepoint_col = params$colspec$timepoint_col,
   item_col = params$colspec$item_col,
   value_col = params$colspec$value_col,
-  outputspec = params$outputspec
+  outputspec = params$outputspec,
+  alert_rules = params$alert_rules
 )
 
 ```

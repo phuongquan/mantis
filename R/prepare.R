@@ -58,24 +58,25 @@ prepare_df <-
 #'
 #' @param prepared_df data frame returned from prepare_df()
 #' @param plot_value_type "value" or "delta"
+#' @param alert_results `alert_results` object returned from `run_alerts()`
 #'
 #' @return data frame
 #' @noRd
 prepare_table <-
   function(prepared_df,
-           plot_value_type = "value") {
+           plot_value_type = "value",
+           alert_results = NULL) {
 
   # TODO: allow df to be passed in wide with vector of value_cols?
 
   # initialise column names to avoid R CMD check Notes
-  timepoint <- item <- value <- value_for_history <- NULL
+  timepoint <- item <- value <- value_for_history <- alert_name <- alert_result <- NULL
 
-  # validate inputs
+  # TODO: validate inputs
 
   # store order as later group_by will alphabetise
   item_order_final <- unique(prepared_df$item)
 
-  # add history column
   table_df <-
     prepared_df %>%
     dplyr::group_by(item) %>%
@@ -87,6 +88,7 @@ prepare_table <-
       )
     ) %>%
     dplyr::summarise(
+      # summary columns
       last_timepoint = max_else_na(timepoint[!is.na(value)]),
       last_value = rev(value)[1],
       last_value_nonmissing = rev(value[!is.na(value)])[1],
@@ -94,11 +96,38 @@ prepare_table <-
       # TODO: match precision to values
       mean_value = round(mean(value, na.rm = TRUE),
                    digits = 1),
+      # history column
       history = history_to_list(value_for_history,
                                 timepoint,
                                 plot_value_type),
       .groups = "drop"
     )
+
+  # add alerts column
+  if (!is.null(alert_results)) {
+    table_df <-
+      table_df %>%
+      dplyr::left_join(
+        alert_results %>%
+          dplyr::group_by(item) %>%
+          dplyr::summarise(
+            alert_overall = ifelse(
+              any(alert_result == "FAIL"),
+              paste0("FAIL (", sum(alert_result == "FAIL"), "/", dplyr::n(), ")"),
+              paste0("PASS (", dplyr::n(), ")")
+            ),
+            alert_details = list(data.frame(
+              alert_name, alert_result, stringsAsFactors = FALSE
+            )),
+            .groups = "drop"
+          ),
+        by = "item",
+      )
+
+  } else{
+    table_df$alert_overall <- NA
+    table_df$alert_details <- list(NULL)
+  }
 
   table_df <-
     table_df %>%

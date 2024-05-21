@@ -3,6 +3,7 @@
 #' @param prepared_df data frame returned from prepare_df()
 #' @param plot_value_type "value" or "delta"
 #' @param sync_axis_range sync all history graphs to same y-axis range
+#' @param alert_results `alert_results` object returned from `run_alerts()`
 #' @param item_label Label for first column
 #' @param summary_cols vector of which summary columns to include
 #' @param plot_type "bar" or "line"
@@ -16,6 +17,7 @@ output_table_interactive <- function(prepared_df,
                                      summary_cols = c("max_value"),
                                      plot_type = "bar",
                                      sync_axis_range = FALSE,
+                                     alert_results = NULL,
                                      bordered = TRUE,
                                      ...) {
 
@@ -25,7 +27,8 @@ output_table_interactive <- function(prepared_df,
   # TODO: validate inputs
 
   table <- prepare_table(prepared_df = prepared_df,
-                         plot_value_type = plot_value_type)
+                         plot_value_type = plot_value_type,
+                         alert_results = alert_results)
 
   reactable::reactable(
     table,
@@ -40,19 +43,21 @@ output_table_interactive <- function(prepared_df,
     bordered = bordered,
     compact = TRUE,
     columns = list(
-      item = reactable::colDef(name = item_label,
-                               searchable = TRUE,
-                               filterable = TRUE),
+      item = reactable::colDef(
+        name = item_label,
+        searchable = TRUE,
+        filterable = TRUE
+      ),
       last_timepoint = reactable::colDef(name = "Last timepoint",
                                          show = "last_timepoint" %in% summary_cols),
       last_value = reactable::colDef(name = "Last value",
                                      show = "last_value" %in% summary_cols),
       last_value_nonmissing = reactable::colDef(name = "Last non-missing value",
-                                     show = "last_value_nonmissing" %in% summary_cols),
+                                                show = "last_value_nonmissing" %in% summary_cols),
       max_value = reactable::colDef(name = "Max value",
-                                     show = "max_value" %in% summary_cols),
+                                    show = "max_value" %in% summary_cols),
       mean_value = reactable::colDef(name = "Mean",
-                               show = "mean_value" %in% summary_cols),
+                                     show = "mean_value" %in% summary_cols),
       # cell argument accepts a function with cell _values_, row _index_, and/or column _names_ as arguments, below just uses _values_
       history = reactable::colDef(
         name = plot_label,
@@ -86,11 +91,42 @@ output_table_interactive <- function(prepared_df,
           }
           dy
         }
-        )
       ),
+      alert_overall = reactable::colDef(
+        name = "Alerts",
+        show = !is.null(alert_results),
+        searchable = TRUE,
+        filterable = TRUE,
+        cell = function(value) {
+          if (!is.na(value)) {
+            paste0(ifelse(grepl("PASS", value), "\u2714\ufe0f", "\u274c"), " ", value)
+          } else{
+            "-"
+          }
+        },
+        details = function(index) {
+          alert_details <- table[index, "alert_details"][[1]][[1]]
+          if (!is.null(alert_details)) {
+            htmltools::div(
+              style = "padding: 1rem",
+              reactable::reactable(
+                alert_details,
+                columns = list(
+                  alert_name = reactable::colDef(name = "Rule"),
+                  alert_result = reactable::colDef(name = "Result")
+                ),
+                outlined = TRUE,
+                highlight = TRUE,
+                fullWidth = TRUE
+              )
+            )
+          }
+        }
+      ),
+      alert_details = reactable::colDef(show = FALSE)
+    ),
     ...
-    )
-
+  )
 }
 
 

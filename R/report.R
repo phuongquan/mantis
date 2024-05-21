@@ -9,6 +9,7 @@
 #'   will be created for each distinct value in the column.
 #' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param report_title Title to appear on the report.
 #' @param dataset_description Short description of the dataset being shown.
 #'   This will appear on the report.
@@ -32,6 +33,7 @@
 mantis_report <- function(df,
                         colspec,
                         outputspec = NULL,
+                        alert_rules = NULL,
                         report_title = "mantis report",
                         dataset_description = "",
                         save_directory = ".",
@@ -83,6 +85,7 @@ mantis_report <- function(df,
       df = df,
       colspec = colspec,
       outputspec = outputspec,
+      alert_rules = alert_rules,
       report_title = report_title,
       dataset_description = dataset_description
     ),

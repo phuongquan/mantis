@@ -8,7 +8,7 @@ mantis_alerts(
   df,
   colspec,
   alert_rules,
-  filter_results = c(TRUE, FALSE),
+  filter_results = c("PASS", "FAIL"),
   timepoint_limits = c(NA, NA),
   fill_with_zero = FALSE
 )

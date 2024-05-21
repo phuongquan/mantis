@@ -232,7 +232,7 @@ alert_difference_above_perc <- function(current_period,
 
 run_alerts <- function(prepared_df,
                        alert_rules,
-                       filter_results = c(TRUE, FALSE)) {
+                       filter_results = c("PASS", "FAIL")) {
   alert_result <- NULL
 
   results <-
@@ -252,7 +252,7 @@ run_alert <- function(prepared_df, alert_rule){
     dplyr::arrange(timepoint) %>%
     dplyr::summarise(alert_name = alert_rule$short_name,
                      alert_description = alert_rule$description,
-                     alert_result = eval(alert_rule$function_call))
+                     alert_result = ifelse(eval(alert_rule$function_call), "FAIL", "PASS"))
 
 }
 
@@ -269,10 +269,11 @@ run_alert <- function(prepared_df, alert_rule){
 #'
 #' @return tibble
 #' @export
+#' @importFrom rlang :=
 mantis_alerts <- function(df,
                           colspec,
                           alert_rules,
-                          filter_results = c(TRUE, FALSE),
+                          filter_results = c("PASS", "FAIL"),
                           timepoint_limits = c(NA, NA),
                           fill_with_zero = FALSE) {
   item <- NULL

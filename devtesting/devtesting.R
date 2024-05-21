@@ -240,8 +240,9 @@ alert_rules <- alert_rules(alert_missing(extent_type = "all",
                                          items = allitems[grep("norm", allitems)])
                            )
 
-run_alerts(prepared_df,
-           alert_rules)
+alert_results <-
+  run_alerts(prepared_df,
+             alert_rules)
 
 library(dplyr)
 library(mantis)
@@ -351,3 +352,81 @@ alert_results <-
     filter_results = TRUE
   )
 
+library(mantis)
+
+alert_results <-
+  mantis_alerts(
+    example_data,
+  colspec = colspec("timepoint", "item", "value"),
+  alert_rules = alert_rules(
+    alert_missing(
+      extent_type = "last",
+      extent_value = 5,
+      items = unique(example_data$item)[grep("norm", unique(example_data$item))]
+    )
+  )
+)
+
+prepared_df <- prepare_df(
+  df,
+  colspec$timepoint_col,
+  colspec$item_col,
+  colspec$value_col,
+  item_order = NULL
+)
+output_table_interactive(
+  prepared_df,
+  item_label = "item",
+  plot_type = "bar",
+  summary_cols = c("last_value"),
+  sync_axis_range = FALSE,
+  alert_results = alert_results
+)
+
+
+mantis_report(df = example_data,
+              colspec = colspec(timepoint_col = "timepoint",
+                                item_col = "item",
+                                value_col = "value",
+                                tab_col = "tab"),
+              alert_rules = alert_rules(alert_missing(extent_type = "all",
+                                                      items = "ALL"),
+                                        alert_missing(extent_type = "last",
+                                                      extent_value = 14)
+              ),
+              save_filename = "alert_test"
+)
+
+mantis_report(
+  df = example_data,
+  colspec = colspec(
+    timepoint_col = "timepoint",
+    item_col = "item",
+    value_col = "value"
+  ),
+  alert_rules = alert_rules(
+    alert_missing(
+      extent_type = "last",
+      extent_value = 5,
+      items = unique(example_data$item)[grep("norm", example_data$item)]
+    )
+  ),
+  save_filename = "alert_norm_only"
+)
+
+
+mantis_report(df = example_data,
+              colspec = colspec(timepoint_col = "timepoint",
+                                item_col = "item",
+                                value_col = "value"),
+              save_filename = "interactive_notabs"
+)
+
+mantis_report(df = example_data,
+              colspec = colspec(timepoint_col = "timepoint",
+                                item_col = "item",
+                                value_col = "value",
+                                tab_col = "tab"),
+              alert_rules = alert_rules,
+              save_filename = "interactive_tabs"
+)

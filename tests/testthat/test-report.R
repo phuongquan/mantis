@@ -63,7 +63,7 @@ test_that("mantis_report() creates single-tab heatmap report and returns path su
   expect_true(file.remove(reportpath))
 })
 
-test_that("mantis_report() creates single-tab multipanel report and returns path successfully", {
+test_that("mantis_report() creates single-tab interactive report and returns path successfully", {
   df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 2),
                    item = c(rep("a", 10), rep("b", 10)),
                    value = rep(3, 20),
@@ -84,3 +84,53 @@ test_that("mantis_report() creates single-tab multipanel report and returns path
   expect_true(file.remove(reportpath))
 })
 
+test_that("mantis_report() creates interactive report with alerts successfully", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+                   item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
+                   value = c(rep(3, 20), rep(NA, 10)),
+                   stringsAsFactors = FALSE)
+
+  reportpath <-
+    mantis_report(
+      df,
+      colspec = colspec(timepoint_col = "timepoint",
+                        item_col = "item",
+                        value_col = "value"),
+      outputspec = outputspec_interactive(),
+      alert_rules = alert_rules(
+        alert_missing(
+          extent_type = "all",
+          items = c("b", "c")
+        ),
+        alert_gt(
+          extent_type = "any",
+          extent_value = 1,
+          rule_value = 5,
+          items = c("b", "c")
+        )
+      )
+    )
+
+  expect_type(reportpath, "character")
+
+  # clean up
+  expect_true(file.remove(reportpath))
+})
+
+
+mantis_report(
+  df = example_data,
+  colspec = colspec(
+    timepoint_col = "timepoint",
+    item_col = "item",
+    value_col = "value"
+  ),
+  alert_rules = alert_rules(
+    alert_missing(
+      extent_type = "last",
+      extent_value = 5,
+      items = unique(example_data$item)[grep("norm", example_data$item)]
+    )
+  ),
+  save_filename = "alert_norm_only"
+)
