@@ -23,6 +23,7 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #'   "timepoint", "item", and "value" for the time series. If a "tab" column is specified, it will be ignored.
 #' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
@@ -39,6 +40,7 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 bespoke_rmd_tab_item <- function(df,
                                  colspec,
                                  outputspec,
+                                 alert_rules = NULL,
                                  timepoint_limits = c(NA, NA),
                                  fill_with_zero = FALSE,
                                  item_order = TRUE,
@@ -57,6 +59,7 @@ bespoke_rmd_tab_item <- function(df,
     item_col = colspec$item_col,
     value_col = colspec$value_col,
     outputspec = outputspec,
+    alert_rules = alert_rules,
     timepoint_limits = timepoint_limits,
     fill_with_zero = fill_with_zero,
     item_order = item_order,
@@ -76,6 +79,7 @@ bespoke_rmd_tab_item <- function(df,
 #'   will be created for each distinct value in the "tab" column.
 #' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
@@ -94,6 +98,7 @@ bespoke_rmd_tab_item <- function(df,
 bespoke_rmd_tab_group <- function(df,
                                   colspec,
                                   outputspec,
+                                  alert_rules = NULL,
                                   timepoint_limits = c(NA, NA),
                                   fill_with_zero = FALSE,
                                   item_order = TRUE,
@@ -113,6 +118,7 @@ bespoke_rmd_tab_group <- function(df,
     value_col = colspec$value_col,
     tab_col = colspec$tab_col,
     outputspec = outputspec,
+    alert_rules = alert_rules,
     timepoint_limits = timepoint_limits,
     fill_with_zero = fill_with_zero,
     item_order = item_order,

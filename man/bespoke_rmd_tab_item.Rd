@@ -8,6 +8,7 @@ bespoke_rmd_tab_item(
   df,
   colspec,
   outputspec,
+  alert_rules = NULL,
   timepoint_limits = c(NA, NA),
   fill_with_zero = FALSE,
   item_order = TRUE,
@@ -23,6 +24,8 @@ bespoke_rmd_tab_item(
 
 \item{outputspec}{[`outputspec()`] object specifying the desired format of the html table(s). If
 not supplied, default values will be used.}
+
+\item{alert_rules}{[`alert_rules()`] object specifying conditions to test}
 
 \item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of timepoint_col}
 
