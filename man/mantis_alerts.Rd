@@ -6,7 +6,7 @@
 \usage{
 mantis_alerts(
   df,
-  colspec,
+  inputspec,
   alert_rules,
   filter_results = c("PASS", "FAIL"),
   timepoint_limits = c(NA, NA),
@@ -16,7 +16,7 @@ mantis_alerts(
 \arguments{
 \item{df}{A data frame containing multiple time series in long format. See Details.}
 
-\item{colspec}{[`colspec()`] object specifying which columns in the supplied `df` represent the
+\item{inputspec}{[`inputspec()`] object specifying which columns in the supplied `df` represent the
 "timepoint", "item", "value"  and (optionally) "tab" for the time series. Each "item-tab" represents an individual time series}
 
 \item{alert_rules}{[`alert_rules()`] object specifying conditions to test}

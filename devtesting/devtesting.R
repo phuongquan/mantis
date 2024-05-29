@@ -91,13 +91,13 @@ prepare_df(
 
 
 mantis::mantis_report(df,
-               colspec = list(timepoint_col = "timepoint",
+               inputspec = list(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value")
                )
 
 mantis::mantis_report(df,
-                                   colspec = mantis::colspec(timepoint_col = "timepoint",
+                                   inputspec = mantis::inputspec(timepoint_col = "timepoint",
                                                     item_col = "item",
                                                     value_col = "value",
                                                     tab_col = "tab"),
@@ -108,7 +108,7 @@ mantis::mantis_report(df,
 
 data("example_prescription_numbers")
 mantis::mantis_report(df = example_prescription_numbers,
-                        colspec = mantis::colspec(timepoint_col = "PrescriptionDate",
+                        inputspec = mantis::inputspec(timepoint_col = "PrescriptionDate",
                                                    item_col = "Antibiotic",
                                                    value_col = "NumberOfPrescriptions",
                                                    tab_col = "Location"),
@@ -121,13 +121,13 @@ mantis::mantis_report(df = example_prescription_numbers,
                         ))
 
 mantis_report(df = example_prescription_numbers,
-               colspec = colspec(timepoint_col = "PrescriptionDate",
+               inputspec = inputspec(timepoint_col = "PrescriptionDate",
                                  item_col = "Antibiotic",
                                  value_col = "NumberOfPrescriptions")
                )
 
 mantis_report(df = example_prescription_numbers,
-               colspec = colspec(timepoint_col = "PrescriptionDate",
+               inputspec = inputspec(timepoint_col = "PrescriptionDate",
                                  item_col = "Antibiotic",
                                  value_col = "NumberOfPrescriptions",
                                  tab_col = "Location")
@@ -135,20 +135,20 @@ mantis_report(df = example_prescription_numbers,
 
 data("example_data")
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value")
 )
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value",
                               tab_col = "tab")
                )
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value",
                                  tab_col = "tab"),
@@ -161,14 +161,14 @@ mantis_report(df = example_data,
                ))
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
                outputspec = outputspec_static_heatmap()
 )
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value",
                                  tab_col = "tab"),
@@ -177,21 +177,21 @@ mantis_report(df = example_data,
 )
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
                outputspec = outputspec_static_multipanel()
 )
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
                outputspec = outputspec_static_multipanel(sync_axis_range = TRUE)
 )
 
 mantis_report(df = example_data,
-              colspec = colspec(timepoint_col = "timepoint",
+              inputspec = inputspec(timepoint_col = "timepoint",
                                 item_col = "item",
                                 value_col = "value"),
               outputspec = outputspec_static_multipanel(),
@@ -199,19 +199,45 @@ mantis_report(df = example_data,
               dataset_description = "examples"
 )
 
+library(dplyr)
 monthly_data <- example_data %>%
-  dplyr::mutate(month = as.Date(format(timepoint, format = "%Y-%m-01"))) %>%
-  dplyr::group_by(month, item, tab) %>%
+  dplyr::mutate(timepoint = as.Date(format(timepoint, format = "%Y-%m-01"))) %>%
+  dplyr::group_by(timepoint, item, tab) %>%
   dplyr::summarise(value = sum(value, na.rm = TRUE),
                    .groups = "drop")
 
 
 mantis_report(df = monthly_data,
-              colspec = colspec(timepoint_col = "month",
+              inputspec = inputspec(timepoint_col = "timepoint",
                                 item_col = "item",
-                                value_col = "value"),
-              outputspec = outputspec_static_multipanel()
+                                value_col = "value",
+                                period = "month"),
+              outputspec = outputspec_interactive(),
+              alert_rules <- alert_rules(alert_missing(extent_type = "all",
+                                                       items = "ALL"),
+                                         alert_equals(extent_type = "last",
+                                                       extent_value = 5,
+                                                      rule_value = 0,
+                                                       items = c("norm", "norm_na"))
+              ),
+              save_filename = "monthly"
 )
+
+prepared_df <- prepare_df(
+  df = monthly_data,
+  inputspec = inputspec(timepoint_col = "timepoint",
+                        item_col = "item",
+                        value_col = "value",
+                        period = "month")
+)
+
+value_for_history <- prepared_df %>%
+  filter(item == "norm_na") %>%
+  pull(value)
+
+timepoint <- prepared_df %>%
+  filter(item == "norm_na") %>%
+  pull(timepoint)
 
 ## alerting
 data("example_data")
@@ -305,14 +331,14 @@ df <-
 prepared_df <-
   prepare_df(
     df,
-    timepoint_col = colspec$timepoint_col,
-    item_col = colspec$item_col,
-    value_col = colspec$value_col)
+    timepoint_col = inputspec$timepoint_col,
+    item_col = inputspec$item_col,
+    value_col = inputspec$value_col)
 
 alert_results <-
   mantis_alerts(
   df,
-  colspec = colspec("run_date", "groupby_value", "value"),
+  inputspec = inputspec("run_date", "groupby_value", "value"),
   alert_rules = alert_rules(
     alert_difference_above_perc(
       current_period = 5,
@@ -339,7 +365,7 @@ df <-
 alert_results <-
   mantis_alerts(
     df,
-    colspec = colspec("run_date", "groupby_value", "value", "monitor_point_subname"),
+    inputspec = inputspec("run_date", "groupby_value", "value", "monitor_point_subname"),
     alert_rules = alert_rules(
       alert_difference_above_perc(
         current_period = 5,
@@ -357,7 +383,7 @@ library(mantis)
 alert_results <-
   mantis_alerts(
     example_data,
-  colspec = colspec("timepoint", "item", "value"),
+  inputspec = inputspec("timepoint", "item", "value"),
   alert_rules = alert_rules(
     alert_missing(
       extent_type = "last",
@@ -369,9 +395,9 @@ alert_results <-
 
 prepared_df <- prepare_df(
   df,
-  colspec$timepoint_col,
-  colspec$item_col,
-  colspec$value_col,
+  inputspec$timepoint_col,
+  inputspec$item_col,
+  inputspec$value_col,
   item_order = NULL
 )
 output_table_interactive(
@@ -385,7 +411,7 @@ output_table_interactive(
 
 
 mantis_report(df = example_data,
-              colspec = colspec(timepoint_col = "timepoint",
+              inputspec = inputspec(timepoint_col = "timepoint",
                                 item_col = "item",
                                 value_col = "value",
                                 tab_col = "tab"),
@@ -399,7 +425,7 @@ mantis_report(df = example_data,
 
 mantis_report(
   df = example_data,
-  colspec = colspec(
+  inputspec = inputspec(
     timepoint_col = "timepoint",
     item_col = "item",
     value_col = "value"
@@ -416,14 +442,14 @@ mantis_report(
 
 
 mantis_report(df = example_data,
-              colspec = colspec(timepoint_col = "timepoint",
+              inputspec = inputspec(timepoint_col = "timepoint",
                                 item_col = "item",
                                 value_col = "value"),
               save_filename = "interactive_notabs"
 )
 
 mantis_report(df = example_data,
-              colspec = colspec(timepoint_col = "timepoint",
+              inputspec = inputspec(timepoint_col = "timepoint",
                                 item_col = "item",
                                 value_col = "value",
                                 tab_col = "tab"),

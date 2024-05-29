@@ -3,7 +3,7 @@ title: "`r params$report_title`"
 output: html_document
 params:
   df: df
-  colspec: colspec
+  inputspec: inputspec
   outputspec: outputspec
   alert_rules: alert_rules
   report_title: report_title
@@ -35,14 +35,14 @@ Report created on: `r Sys.time()` ; mantis version `r utils::packageVersion(util
 </p>
 
 ```{r initialise}
-is_grouped <- !is.null(params$colspec$tab_col)
+is_grouped <- !is.null(params$inputspec$tab_col)
 is_interactive <- is_outputspec_interactive(params$outputspec)
 requires_refresh <- is_grouped && is_interactive
 
 # NOTE: can't modify chunk options within a chunk to get different fig heights
 # (https://github.com/yihui/knitr/issues/841) so have to make static plots consistent for all tabs
 fig_height <- rmd_fig_height(params$df,
-                             params$colspec,
+                             params$inputspec,
                              params$outputspec)
 if (is.null(fig_height)){
   fig_height <- knitr::opts_chunk$get("fig.height")
@@ -56,9 +56,7 @@ if (is.null(fig_height)){
 
 construct_rmd_tab_item(
     params$df,
-    timepoint_col = params$colspec$timepoint_col,
-    item_col = params$colspec$item_col,
-    value_col = params$colspec$value_col,
+    inputspec = params$inputspec,
     outputspec = params$outputspec,
     alert_rules = params$alert_rules
   )
@@ -75,10 +73,7 @@ window.onresize = function(){ location.reload(); }
 construct_rmd_tab_group(
   df = params$df,
   tab_group_level = 0,
-  tab_col = params$colspec$tab_col,
-  timepoint_col = params$colspec$timepoint_col,
-  item_col = params$colspec$item_col,
-  value_col = params$colspec$value_col,
+  inputspec = params$inputspec,
   outputspec = params$outputspec,
   alert_rules = params$alert_rules
 )

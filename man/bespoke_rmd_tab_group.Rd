@@ -6,7 +6,7 @@
 \usage{
 bespoke_rmd_tab_group(
   df,
-  colspec,
+  inputspec,
   outputspec,
   alert_rules = NULL,
   timepoint_limits = c(NA, NA),
@@ -20,7 +20,7 @@ bespoke_rmd_tab_group(
 \arguments{
 \item{df}{Data frame containing time series in long format}
 
-\item{colspec}{[`colspec()`] object specifying which columns in the supplied `df` represent the
+\item{inputspec}{[`inputspec()`] object specifying which columns in the supplied `df` represent the
 "timepoint", "item", "value" and "tab" for the time series. A separate tab
 will be created for each distinct value in the "tab" column.}
 
@@ -54,5 +54,5 @@ The supplied data frame should contain multiple time series in long format, i.e.
 * one "item" (character) column containing categorical values identifying distinct time series.
 * one "value" (numeric) column containing the time series values which will be used for the y-axes.
 * one "group" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
-The `colspec` parameter maps the data frame columns to the above.
+The `inputspec` parameter maps the data frame columns to the above.
 }

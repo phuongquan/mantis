@@ -3,9 +3,7 @@
 #' Supplied df needs to be long (at least for now)
 #'
 #' @param df A data frame containing multiple time series in long format
-#' @param timepoint_col Name of column to be used for x-axes
-#' @param item_col Name of column containing categorical values identifying distinct time series
-#' @param value_col Name of column containing the time series values which will be used for the y-axes.
+#' @param inputspec Specification of data in df
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
@@ -14,9 +12,8 @@
 #' @noRd
 prepare_df <-
   function(df,
-           timepoint_col,
-           item_col,
-           value_col,
+           inputspec,
+           period = "day",
            timepoint_limits = c(NA, NA),
            fill_with_zero = FALSE,
            item_order = NULL) {
@@ -28,13 +25,14 @@ prepare_df <-
   # keep only relevant cols and rename for ease. may want to figure out how to keep original colnames
   prepared_df <-
     df %>%
-    dplyr::select(timepoint = dplyr::all_of(timepoint_col),
-                  item = dplyr::all_of(item_col),
-                  value = dplyr::all_of(value_col))
+    dplyr::select(timepoint = dplyr::all_of(inputspec$timepoint_col),
+                  item = dplyr::all_of(inputspec$item_col),
+                  value = dplyr::all_of(inputspec$value_col))
 
   prepared_df <-
     align_data_timepoints(df = prepared_df,
-                          timepoint_limits = timepoint_limits)
+                          timepoint_limits = timepoint_limits,
+                          period = inputspec$period)
 
   if (fill_with_zero) {
     prepared_df <-
@@ -146,19 +144,22 @@ prepare_table <-
 #'   will be used for the y-axes.
 #' @param tab_col Optional. String denoting the (character) column containing categorical values
 #'   which will be used to group the time series into different tabs on the report.
+#' @param period periodicity of the timepoint_col values. "day"/"month"/"year"
 #'
-#' @return A `colspec()` object
+#' @return A `inputspec()` object
 #' @export
-colspec <- function(timepoint_col,
+inputspec <- function(timepoint_col,
                     item_col,
                     value_col,
-                    tab_col = NULL){
+                    tab_col = NULL,
+                    period = "day"){
   structure(
     list(timepoint_col = timepoint_col,
        item_col = item_col,
        value_col = value_col,
-       tab_col = tab_col),
-    class = "mantis_colspec")
+       tab_col = tab_col,
+       period = period),
+    class = "mantis_inputspec")
 }
 
 #' Specify output options for the report
@@ -298,13 +299,13 @@ history_to_list <-
 #'
 #' Ensure timepoint values are the same for all items, for consistency down the table.
 #' Also can restrict/expand data to a specified period here as cannot set xlimits in dygraphs.
-#' # TODO: THIS CURRENTLY ONLY WORKS FOR DAILY TIMEPOINTS
 #'
 #' @return Data frame with consistent timepoints
 #' @noRd
 align_data_timepoints <-
   function(df,
-           timepoint_limits = c(NA, NA)) {
+           timepoint_limits = c(NA, NA),
+           period = "day") {
 
   # initialise column names to avoid R CMD check Notes
   timepoint <- item <- value <- NULL
@@ -324,7 +325,7 @@ align_data_timepoints <-
 
   # TODO: Need to work out correct granularity to use based on df
   #  as don't want to insert unnecessary rows
-  all_timepoints <- seq(min_timepoint, max_timepoint, by = "day")
+  all_timepoints <- seq(min_timepoint, max_timepoint, by = period)
 
   df_out <-
     df %>%
@@ -364,31 +365,33 @@ max_else_na <- function(x){
   }
 }
 
-#' Validate the supplied df against the supplied colspec
+#' Validate the supplied df against the supplied inputspec
 #'
 #' If there are any validation errors, these are all compiled before calling a
 #' single stop()
 #'
 #' @param df user supplied df
-#' @param colspec user supplied colspec
+#' @param inputspec user supplied inputspec
 #'
 #' @noRd
-validate_df_to_colspec <- function(df,
-                                   colspec){
+validate_df_to_inputspec <- function(df,
+                                   inputspec){
 
   # validate - collect all errors together and return only once
   err_validation <- character()
 
   err_validation <-
     append(err_validation,
-           validate_df_to_colspec_names(df, colspec))
+           validate_df_to_inputspec_cols(df, inputspec))
 
-  # only do the following checks if the colspec and df names are valid
+  # only do the following checks if the inputspec and df names are valid
   if (length(err_validation) == 0) {
     err_validation <-
       append(err_validation,
-             validate_df_to_colspec_duplicate_timepoints(df, colspec))
+             validate_df_to_inputspec_duplicate_timepoints(df, inputspec))
   }
+
+  # TODO: check periodicity
 
   # call stop() if there are any validation errors
   if (length(err_validation) > 0) {
@@ -403,20 +406,22 @@ validate_df_to_colspec <- function(df,
 
 }
 
-#' Check names in supplied df and colspec
+#' Check names in supplied df and inputspec
 #'
 #' @param df user supplied df
-#' @param colspec user supplied colspec
+#' @param inputspec user supplied inputspec
 #'
 #' @return character string containing any error messages
 #' @noRd
-validate_df_to_colspec_names <- function(df,
-                                         colspec){
+validate_df_to_inputspec_cols <- function(df,
+                                         inputspec){
 
   err_validation <- character()
 
-  # drop any items in the colspec that are NULL
-  colspec_vector <- unlist(colspec)
+  # only keep the cols params
+  # and drop any items that are NULL using the unlist()
+  colspec_vector <- unlist(inputspec[endsWith(names(inputspec), "_col")])
+
   # ignore any columns in df that are not in specification
   dfnames <- names(df)[names(df) %in% colspec_vector]
 
@@ -432,15 +437,15 @@ validate_df_to_colspec_names <- function(df,
         )
       )
   }
-  # check for duplicate names in colspec
+  # check for duplicate names in inputspec
   if (anyDuplicated(colspec_vector) > 0) {
     err_validation <-
       append(
         err_validation,
         paste(
-          "Duplicate column names in colspec: [",
+          "Duplicate column names in inputspec: [",
           paste(colspec_vector[duplicated(colspec_vector)], collapse = ", "),
-          "]. Each colspec parameter must refer to a different column in the df "
+          "]. Each inputspec parameter must refer to a different column in the df "
         )
       )
   }
@@ -465,15 +470,15 @@ validate_df_to_colspec_names <- function(df,
 
 #' Check supplied df has only one timepoint per item or item-tab
 #'
-#' This assumes that the names in colspec and the df have already been check and are valid
+#' This assumes that the names in inputspec and the df have already been check and are valid
 #'
 #' @param df user supplied df
-#' @param colspec user supplied colspec
+#' @param inputspec user supplied inputspec
 #'
 #' @return character string containing any error message
 #' @noRd
-validate_df_to_colspec_duplicate_timepoints <- function(df,
-                                                        colspec){
+validate_df_to_inputspec_duplicate_timepoints <- function(df,
+                                                        inputspec){
 
   # initialise column names to avoid R CMD check Notes
   baditem <- NULL
@@ -483,17 +488,17 @@ validate_df_to_colspec_duplicate_timepoints <- function(df,
   duplicate_timepoints <-
     df %>%
     dplyr::group_by(dplyr::pick(dplyr::any_of(c(
-      colspec$item_col,
-      colspec$tab_col
+      inputspec$item_col,
+      inputspec$tab_col
     )))) %>%
     dplyr::summarise(
       duplicate_timepoints = anyDuplicated(dplyr::pick(dplyr::all_of(
-        colspec$timepoint_col))),
+        inputspec$timepoint_col))),
       .groups = "drop") %>%
     dplyr::filter(duplicate_timepoints > 0) %>%
     tidyr::unite(baditem,
-                 dplyr::any_of(c(colspec$item_col,
-                                 colspec$tab_col)),
+                 dplyr::any_of(c(inputspec$item_col,
+                                 inputspec$tab_col)),
                  sep = ":")
 
   if (nrow(duplicate_timepoints) > 0) {

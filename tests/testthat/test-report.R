@@ -7,7 +7,7 @@ test_that("mantis_report() creates single-tab interactive report and returns pat
   reportpath <-
     mantis_report(
       df,
-      colspec = colspec(timepoint_col = "timepoint",
+      inputspec = inputspec(timepoint_col = "timepoint",
                         item_col = "item",
                         value_col = "value"),
       outputspec = outputspec_interactive()
@@ -29,7 +29,7 @@ test_that("mantis_report() creates multi-tab interactive report and returns path
   reportpath <-
     mantis_report(
       df,
-      colspec = colspec(timepoint_col = "timepoint",
+      inputspec = inputspec(timepoint_col = "timepoint",
                         item_col = "item",
                         value_col = "value",
                         tab_col = "tab"),
@@ -51,7 +51,7 @@ test_that("mantis_report() creates single-tab heatmap report and returns path su
   reportpath <-
     mantis_report(
       df,
-      colspec = colspec(timepoint_col = "timepoint",
+      inputspec = inputspec(timepoint_col = "timepoint",
                         item_col = "item",
                         value_col = "value"),
       outputspec = outputspec_static_heatmap()
@@ -72,7 +72,7 @@ test_that("mantis_report() creates single-tab interactive report and returns pat
   reportpath <-
     mantis_report(
       df,
-      colspec = colspec(timepoint_col = "timepoint",
+      inputspec = inputspec(timepoint_col = "timepoint",
                         item_col = "item",
                         value_col = "value"),
       outputspec = outputspec_static_multipanel()
@@ -93,7 +93,7 @@ test_that("mantis_report() creates interactive report with alerts successfully",
   reportpath <-
     mantis_report(
       df,
-      colspec = colspec(timepoint_col = "timepoint",
+      inputspec = inputspec(timepoint_col = "timepoint",
                         item_col = "item",
                         value_col = "value"),
       outputspec = outputspec_interactive(),
@@ -120,7 +120,7 @@ test_that("mantis_report() creates interactive report with alerts successfully",
 
 mantis_report(
   df = example_data,
-  colspec = colspec(
+  inputspec = inputspec(
     timepoint_col = "timepoint",
     item_col = "item",
     value_col = "value"

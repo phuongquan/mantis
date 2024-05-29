@@ -260,7 +260,7 @@ run_alert <- function(prepared_df, alert_rule){
 #' Generate a data frame containing alert results
 #'
 #' @param df A data frame containing multiple time series in long format. See Details.
-#' @param colspec [`colspec()`] object specifying which columns in the supplied `df` represent the
+#' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
 #'   "timepoint", "item", "value"  and (optionally) "tab" for the time series. Each "item-tab" represents an individual time series
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param filter_results only return rows where the alert result is in this vector of values
@@ -271,57 +271,53 @@ run_alert <- function(prepared_df, alert_rule){
 #' @export
 #' @importFrom rlang :=
 mantis_alerts <- function(df,
-                          colspec,
+                          inputspec,
                           alert_rules,
                           filter_results = c("PASS", "FAIL"),
                           timepoint_limits = c(NA, NA),
                           fill_with_zero = FALSE) {
   item <- NULL
 
-  validate_df_to_colspec(df, colspec)
+  validate_df_to_inputspec(df, inputspec)
 
-  if (is.null(colspec$tab_col)) {
+  if (is.null(inputspec$tab_col)) {
     prepared_df <-
       prepare_df(
         df,
-        timepoint_col = colspec$timepoint_col,
-        item_col = colspec$item_col,
-        value_col = colspec$value_col,
+        inputspec = inputspec,
         timepoint_limits = timepoint_limits,
         fill_with_zero = fill_with_zero
       )
     results <-
       run_alerts(prepared_df, alert_rules, filter_results = filter_results) %>%
-      dplyr::rename("{colspec$item_col}" := item)
+      dplyr::rename("{inputspec$item_col}" := item)
   } else{
     resultslist <- list()
 
-    tab_names <- unique(df[colspec$tab_col] %>%
+    tab_names <- unique(df[inputspec$tab_col] %>%
                           dplyr::pull())
 
     for (i in seq_along(tab_names)) {
       dftab <-
-        df %>% dplyr::filter(.data[[colspec$tab_col]] == tab_names[i])
+        df %>% dplyr::filter(.data[[inputspec$tab_col]] == tab_names[i])
 
       # TODO: Would be nice if prepare_df could include tab_col
       prepared_df <-
         prepare_df(
           dftab,
-          timepoint_col = colspec$timepoint_col,
-          item_col = colspec$item_col,
-          value_col = colspec$value_col,
+          inputspec = inputspec,
           timepoint_limits = timepoint_limits,
           fill_with_zero = fill_with_zero
         )
 
       resultslist[[i]] <-
         run_alerts(prepared_df, alert_rules, filter_results = filter_results) %>%
-        dplyr::rename("{colspec$item_col}" := item) %>%
-        dplyr::mutate("{colspec$tab_col}" := tab_names[i])
+        dplyr::rename("{inputspec$item_col}" := item) %>%
+        dplyr::mutate("{inputspec$tab_col}" := tab_names[i])
     }
 
     results <- purrr::reduce(resultslist, dplyr::bind_rows) %>%
-      dplyr::select(dplyr::all_of(c(colspec$tab_col, colspec$item_col)), dplyr::everything())
+      dplyr::select(dplyr::all_of(c(inputspec$tab_col, inputspec$item_col)), dplyr::everything())
 
   }
   results

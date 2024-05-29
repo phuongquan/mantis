@@ -23,7 +23,7 @@ i.e.:
   which will be used to group the time series into different tabs on the
   report.
 
-The `colspec` parameter maps the data frame columns to the above.
+The `inputspec` parameter maps the data frame columns to the above.
 
 The reports are shareable and can contribute to forming a transparent
 record of the entire analysis process. It is designed with electronic
@@ -63,7 +63,7 @@ head(example_prescription_numbers)
 # create a report in the current directory
 mantis_report(
   df = example_prescription_numbers,
-  colspec = colspec(
+  inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
     item_col = "Antibiotic",
     value_col = "NumberOfPrescriptions",
