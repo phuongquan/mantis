@@ -68,7 +68,7 @@ prepare_table <-
   # TODO: allow df to be passed in wide with vector of value_cols?
 
   # initialise column names to avoid R CMD check Notes
-  timepoint <- item <- value <- value_for_history <- alert_name <- alert_result <- NULL
+  timepoint <- item <- value <- value_for_history <- alert_description <- alert_result <- NULL
 
   # TODO: validate inputs
 
@@ -115,7 +115,7 @@ prepare_table <-
               paste0("PASS (", dplyr::n(), ")")
             ),
             alert_details = list(data.frame(
-              alert_name, alert_result, stringsAsFactors = FALSE
+              alert_description, alert_result, stringsAsFactors = FALSE
             )),
             .groups = "drop"
           ),

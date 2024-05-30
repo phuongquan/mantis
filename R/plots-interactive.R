@@ -112,7 +112,7 @@ output_table_interactive <- function(prepared_df,
               reactable::reactable(
                 alert_details,
                 columns = list(
-                  alert_name = reactable::colDef(name = "Rule"),
+                  alert_description = reactable::colDef(name = "Rule"),
                   alert_result = reactable::colDef(name = "Result")
                 ),
                 outlined = TRUE,
