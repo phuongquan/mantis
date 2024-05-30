@@ -304,7 +304,7 @@ alert_rules <- alert_rules(alert_missing(extent_type = "all",
 
 alert_rules <- alert_rules(alert_missing(extent_type = "last",
                                          extent_value = 14),
-                           alert_gt(extent_type = "last",
+                           alert_above(extent_type = "last",
                                     extent_value = 14,
                                     rule_value = 10)
 )

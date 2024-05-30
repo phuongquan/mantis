@@ -102,7 +102,7 @@ test_that("mantis_report() creates interactive report with alerts successfully",
           extent_type = "all",
           items = c("b", "c")
         ),
-        alert_gt(
+        alert_above(
           extent_type = "any",
           extent_value = 1,
           rule_value = 5,

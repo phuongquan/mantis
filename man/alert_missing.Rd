@@ -7,7 +7,7 @@
 alert_missing(extent_type = "all", extent_value = 1, items = "ALL")
 }
 \arguments{
-\item{extent_type}{"all", "any", "last"}
+\item{extent_type}{"all", "any", "last", "consecutive"}
 
 \item{extent_value}{lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more missing values in any position}
 
