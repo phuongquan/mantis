@@ -19,10 +19,11 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' Function writes directly to the chunk using side-effects
 #'
 #' @param df A data frame containing multiple time series in long format. See Details.
-#' @param colspec [`colspec()`] object specifying which columns in the supplied `df` represent the
+#' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
 #'   "timepoint", "item", and "value" for the time series. If a "tab" column is specified, it will be ignored.
 #' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
@@ -34,11 +35,12 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' * one "timepoint" (datetime) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
 #' * one "item" (character) column containing categorical values identifying distinct time series.
 #' * one "value" (numeric) column containing the time series values which will be used for the y-axes.
-#' The `colspec` parameter maps the data frame columns to the above.
+#' The `inputspec` parameter maps the data frame columns to the above.
 #' @export
 bespoke_rmd_tab_item <- function(df,
-                                 colspec,
+                                 inputspec,
                                  outputspec,
+                                 alert_rules = NULL,
                                  timepoint_limits = c(NA, NA),
                                  fill_with_zero = FALSE,
                                  item_order = TRUE,
@@ -48,15 +50,14 @@ bespoke_rmd_tab_item <- function(df,
   #TODO: validate all params
 
   # everything will appear in the one tab
-  colspec$tab_col <- NULL
-  validate_df_to_colspec(df, colspec)
+  inputspec$tab_col <- NULL
+  validate_df_to_inputspec(df, inputspec)
 
   construct_rmd_tab_item(
     df = df,
-    timepoint_col = colspec$timepoint_col,
-    item_col = colspec$item_col,
-    value_col = colspec$value_col,
+    inputspec = inputspec,
     outputspec = outputspec,
+    alert_rules = alert_rules,
     timepoint_limits = timepoint_limits,
     fill_with_zero = fill_with_zero,
     item_order = item_order,
@@ -71,11 +72,12 @@ bespoke_rmd_tab_item <- function(df,
 #' Function writes directly to the chunk using side-effects
 #'
 #' @param df Data frame containing time series in long format
-#' @param colspec [`colspec()`] object specifying which columns in the supplied `df` represent the
+#' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
 #'   "timepoint", "item", "value" and "tab" for the time series. A separate tab
 #'   will be created for each distinct value in the "tab" column.
 #' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
@@ -89,11 +91,12 @@ bespoke_rmd_tab_item <- function(df,
 #' * one "item" (character) column containing categorical values identifying distinct time series.
 #' * one "value" (numeric) column containing the time series values which will be used for the y-axes.
 #' * one "group" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
-#' The `colspec` parameter maps the data frame columns to the above.
+#' The `inputspec` parameter maps the data frame columns to the above.
 #' @export
 bespoke_rmd_tab_group <- function(df,
-                                  colspec,
+                                  inputspec,
                                   outputspec,
+                                  alert_rules = NULL,
                                   timepoint_limits = c(NA, NA),
                                   fill_with_zero = FALSE,
                                   item_order = TRUE,
@@ -104,15 +107,13 @@ bespoke_rmd_tab_group <- function(df,
   #TODO: validate all params
   #TODO: check tab_col is present
 
-  validate_df_to_colspec(df, colspec)
+  validate_df_to_inputspec(df, inputspec)
 
   construct_rmd_tab_group(
     df = df,
-    timepoint_col = colspec$timepoint_col,
-    item_col = colspec$item_col,
-    value_col = colspec$value_col,
-    tab_col = colspec$tab_col,
+    inputspec = inputspec,
     outputspec = outputspec,
+    alert_rules = alert_rules,
     timepoint_limits = timepoint_limits,
     fill_with_zero = fill_with_zero,
     item_order = item_order,
@@ -142,9 +143,11 @@ initialise_widgets <- function(plot_type){
 
   prepare_df(
     dummy_df,
-    timepoint_col = "a",
-    item_col = "b",
-    value_col = "c"
+    inputspec = inputspec(
+      timepoint_col = "a",
+      item_col = "b",
+      value_col = "c"
+    )
   ) %>%
     output_table_interactive(
       plot_type = plot_type,
@@ -162,10 +165,9 @@ initialise_widgets <- function(plot_type){
 #' Function writes directly to the chunk using side-effects
 #'
 #' @param df Data frame containing time series in long format
-#' @param timepoint_col Column to be used for x-axes
-#' @param item_col Column containing categorical values identifying distinct time series
-#' @param value_col Column containing the time series values which will be used for the y-axes.
+#' @param inputspec Specification of data in df
 #' @param outputspec Specification for display of tab contents
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
@@ -175,15 +177,14 @@ initialise_widgets <- function(plot_type){
 #' @return (invisibly) the supplied df
 #' @noRd
 construct_rmd_tab_item <- function(df,
-                              timepoint_col,
-                              item_col,
-                              value_col,
-                              outputspec,
-                              timepoint_limits = c(NA, NA),
-                              fill_with_zero = FALSE,
-                              item_order = TRUE,
-                              tab_name = NULL,
-                              tab_level = 1) {
+                                   inputspec,
+                                   outputspec,
+                                   alert_rules = NULL,
+                                   timepoint_limits = c(NA, NA),
+                                   fill_with_zero = FALSE,
+                                   item_order = TRUE,
+                                   tab_name = NULL,
+                                   tab_level = 1) {
 
   construct_tab_label(tab_name = tab_name,
                       tab_level = tab_level)
@@ -191,13 +192,18 @@ construct_rmd_tab_item <- function(df,
   prepared_df <-
     prepare_df(
       df,
-      timepoint_col = timepoint_col,
-      item_col = item_col,
-      value_col = value_col,
+      inputspec = inputspec,
       timepoint_limits = timepoint_limits,
       fill_with_zero = fill_with_zero,
       item_order = item_order
     )
+
+  if (!is.null(alert_rules)) {
+    alert_results <- run_alerts(prepared_df = prepared_df,
+                                alert_rules = alert_rules)
+  } else {
+    alert_results <- NULL
+  }
 
   if (is_outputspec_static_heatmap(outputspec)) {
       plot_heatmap_static(prepared_df = prepared_df,
@@ -218,7 +224,8 @@ construct_rmd_tab_item <- function(df,
         plot_label = outputspec$plot_label,
         summary_cols = outputspec$summary_cols,
         plot_type = outputspec$plot_type,
-        sync_axis_range = outputspec$sync_axis_range
+        sync_axis_range = outputspec$sync_axis_range,
+        alert_results = alert_results
       )
     # NOTE: a regular print() doesn't render the widget
     cat(knitr::knit_print(p))
@@ -238,10 +245,9 @@ construct_rmd_tab_item <- function(df,
 #'
 #' @param df Data frame containing time series in long format
 #' @param timepoint_col Name of column to be used for x-axes
-#' @param item_col Name of column containing categorical values identifying distinct time series
-#' @param value_col Name of column containing the time series values which will be used for the y-axes.
-#' @param tab_col Name of column containing categorical values which will be used to group the time series into different tabs.
+#' @param inputspec Specification of data in df
 #' @param outputspec Specification for display of tab contents
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
@@ -253,19 +259,17 @@ construct_rmd_tab_item <- function(df,
 #' @noRd
 #' @importFrom dplyr .data
 construct_rmd_tab_group <- function(df,
-                                timepoint_col,
-                                item_col,
-                                value_col,
-                                tab_col,
-                                outputspec,
-                                timepoint_limits = c(NA, NA),
-                                fill_with_zero = FALSE,
-                                item_order = TRUE,
-                                tab_order = NULL,
-                                tab_group_name = NULL,
-                                tab_group_level = 1) {
+                                    inputspec,
+                                    outputspec = NULL,
+                                    alert_rules = NULL,
+                                    timepoint_limits = c(NA, NA),
+                                    fill_with_zero = FALSE,
+                                    item_order = TRUE,
+                                    tab_order = NULL,
+                                    tab_group_name = NULL,
+                                    tab_group_level = 1) {
 
-  tab_names <- unique(df[tab_col] %>%
+  tab_names <- unique(df[inputspec$tab_col] %>%
                         dplyr::pull())
 
   if (!is.null(tab_order)) {
@@ -279,14 +283,13 @@ construct_rmd_tab_group <- function(df,
 
   for (i in seq_along(tab_names)) {
     dftab <-
-      df %>% dplyr::filter(.data[[tab_col]] == tab_names[i])
+      df %>% dplyr::filter(.data[[inputspec$tab_col]] == tab_names[i])
 
     construct_rmd_tab_item(
       df = dftab,
-      timepoint_col = timepoint_col,
-      item_col = item_col,
-      value_col = value_col,
+      inputspec = inputspec,
       outputspec = outputspec,
+      alert_rules = alert_rules,
       timepoint_limits = timepoint_limits,
       fill_with_zero = fill_with_zero,
       item_order = item_order,
@@ -304,7 +307,7 @@ construct_rmd_tab_group <- function(df,
 #' @param tab_level tab_level = 1 corresponds to ###
 #' @param has_child_tabs will there be more tabs underneath
 #'
-#' @return
+#' @return markdown-formatted string
 #' @noRd
 construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
   if (!is.null(tab_name)) {
@@ -325,12 +328,12 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
 #' If NULL is returned, the rmd should use the default fig.height.
 #'
 #' @param df data frame
-#' @param colspec `colspec()` object
+#' @param inputspec `inputspec()` object
 #' @param outputspec `outputspec()` object
 #'
 #' @return height in inches or NULL
 #' @noRd
-rmd_fig_height <- function(df, colspec, outputspec){
+rmd_fig_height <- function(df, inputspec, outputspec){
 
   rows <- NULL
 
@@ -339,11 +342,11 @@ rmd_fig_height <- function(df, colspec, outputspec){
     maxrows <-
       df %>%
       dplyr::select(
-        item = dplyr::all_of(colspec$item_col),
-        tab = dplyr::any_of(colspec$tab_col)
+        item = dplyr::all_of(inputspec$item_col),
+        tab = dplyr::any_of(inputspec$tab_col)
       ) %>%
       dplyr::group_by(dplyr::pick(dplyr::any_of(
-        colspec$tab_col
+        inputspec$tab_col
       ))) %>%
       dplyr::distinct() %>%
       dplyr::summarise(rows = dplyr::n()) %>%

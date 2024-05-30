@@ -12,7 +12,8 @@ install.packages(
     "ggplot2",
     "scales",
     "testthat",
-    "roxygen2"
+    "roxygen2",
+    "purrr"
   )
 )
 
@@ -90,13 +91,13 @@ prepare_df(
 
 
 mantis::mantis_report(df,
-               colspec = list(timepoint_col = "timepoint",
+               inputspec = list(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value")
                )
 
 mantis::mantis_report(df,
-                                   colspec = mantis::colspec(timepoint_col = "timepoint",
+                                   inputspec = mantis::inputspec(timepoint_col = "timepoint",
                                                     item_col = "item",
                                                     value_col = "value",
                                                     tab_col = "tab"),
@@ -107,7 +108,7 @@ mantis::mantis_report(df,
 
 data("example_prescription_numbers")
 mantis::mantis_report(df = example_prescription_numbers,
-                        colspec = mantis::colspec(timepoint_col = "PrescriptionDate",
+                        inputspec = mantis::inputspec(timepoint_col = "PrescriptionDate",
                                                    item_col = "Antibiotic",
                                                    value_col = "NumberOfPrescriptions",
                                                    tab_col = "Location"),
@@ -120,13 +121,13 @@ mantis::mantis_report(df = example_prescription_numbers,
                         ))
 
 mantis_report(df = example_prescription_numbers,
-               colspec = colspec(timepoint_col = "PrescriptionDate",
+               inputspec = inputspec(timepoint_col = "PrescriptionDate",
                                  item_col = "Antibiotic",
                                  value_col = "NumberOfPrescriptions")
                )
 
 mantis_report(df = example_prescription_numbers,
-               colspec = colspec(timepoint_col = "PrescriptionDate",
+               inputspec = inputspec(timepoint_col = "PrescriptionDate",
                                  item_col = "Antibiotic",
                                  value_col = "NumberOfPrescriptions",
                                  tab_col = "Location")
@@ -134,20 +135,20 @@ mantis_report(df = example_prescription_numbers,
 
 data("example_data")
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value")
 )
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                               item_col = "item",
                               value_col = "value",
                               tab_col = "tab")
                )
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value",
                                  tab_col = "tab"),
@@ -160,14 +161,14 @@ mantis_report(df = example_data,
                ))
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
                outputspec = outputspec_static_heatmap()
 )
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value",
                                  tab_col = "tab"),
@@ -176,21 +177,21 @@ mantis_report(df = example_data,
 )
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
                outputspec = outputspec_static_multipanel()
 )
 
 mantis_report(df = example_data,
-               colspec = colspec(timepoint_col = "timepoint",
+               inputspec = inputspec(timepoint_col = "timepoint",
                                  item_col = "item",
                                  value_col = "value"),
                outputspec = outputspec_static_multipanel(sync_axis_range = TRUE)
 )
 
 mantis_report(df = example_data,
-              colspec = colspec(timepoint_col = "timepoint",
+              inputspec = inputspec(timepoint_col = "timepoint",
                                 item_col = "item",
                                 value_col = "value"),
               outputspec = outputspec_static_multipanel(),
@@ -198,16 +199,260 @@ mantis_report(df = example_data,
               dataset_description = "examples"
 )
 
+library(dplyr)
 monthly_data <- example_data %>%
-  dplyr::mutate(month = as.Date(format(timepoint, format = "%Y-%m-01"))) %>%
-  dplyr::group_by(month, item, tab) %>%
+  dplyr::mutate(timepoint = as.Date(format(timepoint, format = "%Y-%m-01"))) %>%
+  dplyr::group_by(timepoint, item, tab) %>%
   dplyr::summarise(value = sum(value, na.rm = TRUE),
                    .groups = "drop")
 
 
 mantis_report(df = monthly_data,
-              colspec = colspec(timepoint_col = "month",
+              inputspec = inputspec(timepoint_col = "timepoint",
+                                item_col = "item",
+                                value_col = "value",
+                                period = "month"),
+              outputspec = outputspec_interactive(),
+              alert_rules <- alert_rules(alert_missing(extent_type = "all",
+                                                       items = "ALL"),
+                                         alert_equals(extent_type = "last",
+                                                       extent_value = 5,
+                                                      rule_value = 0,
+                                                       items = c("norm", "norm_na"))
+              ),
+              save_filename = "monthly"
+)
+
+prepared_df <- prepare_df(
+  df = monthly_data,
+  inputspec = inputspec(timepoint_col = "timepoint",
+                        item_col = "item",
+                        value_col = "value",
+                        period = "month")
+)
+
+value_for_history <- prepared_df %>%
+  filter(item == "norm_na") %>%
+  pull(value)
+
+timepoint <- prepared_df %>%
+  filter(item == "norm_na") %>%
+  pull(timepoint)
+
+## alerting
+data("example_data")
+
+df <- example_data
+timepoint_col <- "timepoint"
+item_col <- "item"
+value_col <- "value"
+
+
+prepared_df <- prepare_df(
+  df,
+  timepoint_col,
+  item_col,
+  value_col,
+  #    item_order = c("sparse_1")
+  item_order = NULL
+)
+
+allitems <- unique(prepared_df$item)
+
+alert_rules <- alert_rules(alert_missing(extent_type = "all",
+                                         items = "ALL"),
+                           alert_missing(extent_type = "last",
+                                         extent_value = 5,
+                                         items = allitems[grep("norm", allitems)])
+                           )
+
+alert_results <-
+  run_alerts(prepared_df,
+             alert_rules)
+
+library(dplyr)
+library(mantis)
+
+pop_monitor <- readRDS("./devtesting/pop_monitor.Rds")
+
+pop_monitor %>% distinct(stat_name)
+
+prepared_df <-
+  pop_monitor %>%
+  filter(stat_name == "Max SpecimenDate per Lab",
+         monitor_point_subname == "sgss_cdr") %>%
+  mutate(run_date = as.Date(monitor_datetime)) %>%
+  # if multiple results in same day then keep the latest
+  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) %>%
+  filter(monitor_datetime == max(monitor_datetime)) %>%
+  ungroup() %>%
+  mutate(days_since_monitor_date = as.integer(
+    run_date - as.Date(lubridate::parse_date_time(value, orders = c("%Y%m%d", "%Y-%m-%d"))))) %>%
+  # filter(groupby_value == "BRIGHTON MICROBIOLOGY LABORATORY") %>%
+  # arrange(monitor_datetime) %>%
+  prepare_df(
+    timepoint_col = "run_date",
+    item_col = "groupby_value",
+    value_col = "days_since_monitor_date",
+  )
+
+alert_rules <- alert_rules(alert_missing(extent_type = "all",
+                                         items = "ALL"),
+                           alert_missing(extent_type = "last",
+                                         extent_value = 14)
+)
+
+alert_rules <- alert_rules(alert_missing(extent_type = "last",
+                                         extent_value = 14),
+                           alert_above(extent_type = "last",
+                                    extent_value = 14,
+                                    rule_value = 10)
+)
+
+alert_results <-
+  run_alerts(prepared_df,
+             alert_rules)
+
+alert_results %>%
+  filter(if_any(.cols = everything(), .fns = ~ . == TRUE))
+
+df <-
+  pop_monitor %>%
+  filter(stat_name == "STREPTOCOCCUS PNEUMONIAE  per lab",
+         monitor_point_subname == "FACT_OPIE") %>%
+  mutate(run_date = as.Date(monitor_datetime)) %>%
+  # if multiple results in same day then keep the latest
+  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) %>%
+  filter(monitor_datetime == max(monitor_datetime)) %>%
+  ungroup() %>%
+  mutate(value = as.numeric(value)) %>%
+  filter(run_date < as.Date("2023-08-09"))
+
+prepared_df <-
+  prepare_df(
+    df,
+    timepoint_col = inputspec$timepoint_col,
+    item_col = inputspec$item_col,
+    value_col = inputspec$value_col)
+
+alert_results <-
+  mantis_alerts(
+  df,
+  inputspec = inputspec("run_date", "groupby_value", "value"),
+  alert_rules = alert_rules(
+    alert_difference_above_perc(
+      current_period = 5,
+      previous_period = 30,
+      rule_value = 5
+    )
+  )
+)
+
+alert_results %>%
+  filter(if_any(.cols = everything(), .fns = ~ . == TRUE))
+
+df <-
+  pop_monitor %>%
+  filter(stat_name == "STREPTOCOCCUS PNEUMONIAE  per lab") %>%
+  mutate(run_date = as.Date(monitor_datetime)) %>%
+  # if multiple results in same day then keep the latest
+  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) %>%
+  filter(monitor_datetime == max(monitor_datetime)) %>%
+  ungroup() %>%
+  mutate(value = as.numeric(value)) %>%
+  filter(run_date < as.Date("2023-08-09"))
+
+alert_results <-
+  mantis_alerts(
+    df,
+    inputspec = inputspec("run_date", "groupby_value", "value", "monitor_point_subname"),
+    alert_rules = alert_rules(
+      alert_difference_above_perc(
+        current_period = 5,
+        previous_period = 30,
+        rule_value = 5
+      ),
+      alert_missing(extent_type = "last",
+                    extent_value = 14)
+    ),
+    filter_results = TRUE
+  )
+
+library(mantis)
+
+alert_results <-
+  mantis_alerts(
+    example_data,
+  inputspec = inputspec("timepoint", "item", "value"),
+  alert_rules = alert_rules(
+    alert_missing(
+      extent_type = "last",
+      extent_value = 5,
+      items = unique(example_data$item)[grep("norm", unique(example_data$item))]
+    )
+  )
+)
+
+prepared_df <- prepare_df(
+  df,
+  inputspec$timepoint_col,
+  inputspec$item_col,
+  inputspec$value_col,
+  item_order = NULL
+)
+output_table_interactive(
+  prepared_df,
+  item_label = "item",
+  plot_type = "bar",
+  summary_cols = c("last_value"),
+  sync_axis_range = FALSE,
+  alert_results = alert_results
+)
+
+
+mantis_report(df = example_data,
+              inputspec = inputspec(timepoint_col = "timepoint",
+                                item_col = "item",
+                                value_col = "value",
+                                tab_col = "tab"),
+              alert_rules = alert_rules(alert_missing(extent_type = "all",
+                                                      items = "ALL"),
+                                        alert_missing(extent_type = "last",
+                                                      extent_value = 14)
+              ),
+              save_filename = "alert_test"
+)
+
+mantis_report(
+  df = example_data,
+  inputspec = inputspec(
+    timepoint_col = "timepoint",
+    item_col = "item",
+    value_col = "value"
+  ),
+  alert_rules = alert_rules(
+    alert_missing(
+      extent_type = "last",
+      extent_value = 5,
+      items = unique(example_data$item)[grep("norm", example_data$item)]
+    )
+  ),
+  save_filename = "alert_norm_only"
+)
+
+
+mantis_report(df = example_data,
+              inputspec = inputspec(timepoint_col = "timepoint",
                                 item_col = "item",
                                 value_col = "value"),
-              outputspec = outputspec_static_multipanel()
+              save_filename = "interactive_notabs"
+)
+
+mantis_report(df = example_data,
+              inputspec = inputspec(timepoint_col = "timepoint",
+                                item_col = "item",
+                                value_col = "value",
+                                tab_col = "tab"),
+              alert_rules = alert_rules,
+              save_filename = "interactive_tabs"
 )
