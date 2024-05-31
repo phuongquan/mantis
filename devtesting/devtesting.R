@@ -395,9 +395,7 @@ alert_results <-
 
 prepared_df <- prepare_df(
   df,
-  inputspec$timepoint_col,
-  inputspec$item_col,
-  inputspec$value_col,
+  inputspec,
   item_order = NULL
 )
 output_table_interactive(
@@ -455,4 +453,46 @@ mantis_report(df = example_data,
                                 tab_col = "tab"),
               alert_rules = alert_rules,
               save_filename = "interactive_tabs"
+)
+
+
+ars <- list(alert_above(extent_type = "any",
+                        extent_value = 1,
+                        rule_value = 10),
+            alert_missing(extent_type = "any",
+                          extent_value = 1))
+
+
+alert_rule <- alert_custom(
+   short_name = "my_rule",
+   description = "Over 3 missing values when max value is > 10",
+   function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
+ )
+
+alert_results <-
+  mantis_alerts(
+    example_data,
+    inputspec = inputspec("timepoint", "item", "value"),
+    alert_rules = alert_rules(
+      alert_custom(
+        short_name = "my_rule_doubled",
+        description = "Last value is over double the first value",
+        function_call = quote(rev(value)[1] > 2*value[1])
+      )
+    )
+  )
+
+mantis_report(df = example_data,
+              inputspec = inputspec(timepoint_col = "timepoint",
+                                    item_col = "item",
+                                    value_col = "value"),
+              alert_rules = alert_rules(
+                alert_custom(
+                  short_name = "my_rule_doubled",
+                  description = "Last value is over double the first value",
+                  function_call = quote(rev(value)[1] > 2*value[1])
+                )
+                ,
+                alert_difference_above_perc(current_period = 2, previous_period = 4, rule_value = 50)
+              )
 )

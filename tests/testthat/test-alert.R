@@ -255,3 +255,22 @@ test_that("alert_difference_below_perc() returns condition correctly", {
 })
 
 
+test_that("alert_custom() returns condition correctly", {
+  fc <- alert_custom(
+    short_name = "my_rule_doubled",
+    description = "Last value is over double the first value",
+    function_call = quote(rev(value)[1] > 2*value[1])
+  )$function_call
+
+
+  value = c(1, 0, 3)
+  expect_true(eval(fc))
+
+  value = c(1, 0, 1)
+  expect_false(eval(fc))
+
+  # returns NA if either value is NA
+  value = c(3, 6, NA, NA)
+  expect_equal(eval(fc), NA)
+})
+

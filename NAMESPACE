@@ -3,6 +3,7 @@
 export("%>%")
 export(alert_above)
 export(alert_below)
+export(alert_custom)
 export(alert_difference_above_perc)
 export(alert_difference_below_perc)
 export(alert_equals)

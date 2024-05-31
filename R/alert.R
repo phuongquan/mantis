@@ -7,7 +7,7 @@ alert_rules <- function(...) {
 
   ars <- list(...)
 
-  # validation
+  # TODO: validation
   # check only one rule of each type
 
   structure(ars, class = "mantis_alert_rules")
@@ -288,10 +288,62 @@ alert_difference_below_perc <- function(current_period,
   )
 }
 
+#' Create a custom alert rule
+#'
+#' @param short_name short name to uniquely identify the rule. Avoid spaces and special characters.
+#' @param description description of what the rule checks for
+#' @param function_call expression to be evaluated per item. See details.
+#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#'
+#' The function_call expression is called using `eval()` within a `dplyr::summarise()` after grouping by the `item_col`.
+#' Column names that can be used explicitly in the expression are: `value`, `item`, `timepoint`
+#'
+#' @return An `alert_rule` object
+#' @export
+#'
+#' @examples
+#' alert_custom(
+#'   short_name = "my_rule_combo",
+#'   description = "Over 3 missing values and max value is > 10",
+#'   function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
+#' )
+#'
+#' alert_custom(
+#'   short_name = "my_rule_doubled",
+#'   description = "Last value is over double the first value",
+#'   function_call = quote(rev(value)[1] > 2*value[1])
+#' )
+alert_custom <- function(short_name,
+                         description,
+                         function_call,
+                         items = "ALL") {
 
+  # TODO: validation
+
+  structure(
+    list(
+      type = "custom",
+      function_call = function_call,
+      short_name = short_name,
+      description = description,
+      items = items
+    ),
+    class = c(paste0("mantis_alert_rule_", "custom"), "mantis_alert_rule")
+  )
+}
+
+
+#' Run all alert rules and return results
+#'
+#' @param prepared_df prepared_df
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
+#' @param filter_results only return rows where the alert result is in this vector of values
+#'
+#' @return tibble
+#' @noRd
 run_alerts <- function(prepared_df,
                        alert_rules,
-                       filter_results = c("PASS", "FAIL")) {
+                       filter_results = c("PASS", "FAIL", "NA")) {
   alert_result <- NULL
 
   results <-
@@ -299,11 +351,21 @@ run_alerts <- function(prepared_df,
     purrr::reduce(dplyr::bind_rows)
 
   results %>%
+    dplyr::mutate(alert_result = tidyr::replace_na(alert_result, "NA")) %>%
     dplyr::filter(alert_result %in% filter_results)
 }
 
+#' Run alert rule and return results
+#'
+#' @param prepared_df prepared_df
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
+#'
+#' @return tibble
+#' @noRd
 run_alert <- function(prepared_df, alert_rule){
   item <- timepoint <- NULL
+
+  # TODO: if it's a custom rule, wrap it in some error handling
 
   prepared_df %>%
     dplyr::filter(item %in% alert_rule$items | all(alert_rule$items == "ALL")) %>%
@@ -332,7 +394,7 @@ run_alert <- function(prepared_df, alert_rule){
 mantis_alerts <- function(df,
                           inputspec,
                           alert_rules,
-                          filter_results = c("PASS", "FAIL"),
+                          filter_results = c("PASS", "FAIL", "NA"),
                           timepoint_limits = c(NA, NA),
                           fill_with_zero = FALSE) {
   item <- NULL
