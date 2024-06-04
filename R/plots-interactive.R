@@ -18,6 +18,7 @@ output_table_interactive <- function(prepared_df,
                                      plot_type = "bar",
                                      sync_axis_range = FALSE,
                                      alert_results = NULL,
+                                     sort_cols = NULL,
                                      bordered = TRUE,
                                      ...) {
 
@@ -28,7 +29,8 @@ output_table_interactive <- function(prepared_df,
 
   table <- prepare_table(prepared_df = prepared_df,
                          plot_value_type = plot_value_type,
-                         alert_results = alert_results)
+                         alert_results = alert_results,
+                         sort_cols = sort_cols)
 
   reactable::reactable(
     table,

@@ -10,7 +10,8 @@ outputspec_interactive(
   item_label = "Item",
   plot_label = "History",
   summary_cols = c("max_value"),
-  sync_axis_range = FALSE
+  sync_axis_range = FALSE,
+  sort_cols = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ outputspec_interactive(
 
 \item{sync_axis_range}{Set the y-axis to be the same range for all time series in a table.
 X-axes are always synced.}
+
+\item{sort_cols}{columns in output table to sort by. If NULL, the original order as given by unique(item_col) will be used.}
 }
 \value{
 An `outputspec()` object

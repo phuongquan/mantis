@@ -57,13 +57,15 @@ prepare_df <-
 #' @param prepared_df data frame returned from prepare_df()
 #' @param plot_value_type "value" or "delta"
 #' @param alert_results `alert_results` object returned from `run_alerts()`
+#' @param sort_cols columns in output table to sort by. If NULL, the original order as given by unique(item_col) will be used.
 #'
 #' @return data frame
 #' @noRd
 prepare_table <-
   function(prepared_df,
            plot_value_type = "value",
-           alert_results = NULL) {
+           alert_results = NULL,
+           sort_cols = NULL) {
 
   # TODO: allow df to be passed in wide with vector of value_cols?
 
@@ -129,7 +131,8 @@ prepare_table <-
 
   table_df <-
     table_df %>%
-    dplyr::arrange(factor(item, levels = item_order_final))
+    dplyr::arrange(dplyr::pick(dplyr::any_of(sort_cols)),
+                   factor(item, levels = item_order_final))
 
   table_df
 }
@@ -173,6 +176,7 @@ inputspec <- function(timepoint_col,
 #'   "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
 #'   X-axes are always synced.
+#' @param sort_cols columns in output table to sort by. If NULL, the original order as given by unique(item_col) will be used.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -181,7 +185,8 @@ outputspec_interactive <- function(plot_value_type = "value",
                        item_label = "Item",
                        plot_label = "History",
                        summary_cols = c("max_value"),
-                       sync_axis_range = FALSE){
+                       sync_axis_range = FALSE,
+                       sort_cols = NULL){
 
   structure(
     list(plot_value_type = plot_value_type,
@@ -189,7 +194,8 @@ outputspec_interactive <- function(plot_value_type = "value",
          item_label = item_label,
          plot_label = plot_label,
          summary_cols = summary_cols,
-         sync_axis_range = sync_axis_range),
+         sync_axis_range = sync_axis_range,
+         sort_cols = sort_cols),
     class = c("mantis_outputspec", "mantis_outputspec_interactive")
   )
 }

@@ -226,7 +226,8 @@ construct_rmd_tab_item <- function(df,
         summary_cols = outputspec$summary_cols,
         plot_type = outputspec$plot_type,
         sync_axis_range = outputspec$sync_axis_range,
-        alert_results = alert_results
+        alert_results = alert_results,
+        sort_cols = outputspec$sort_cols
       )
     # NOTE: a regular print() doesn't render the widget
     cat(knitr::knit_print(p))

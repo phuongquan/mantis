@@ -165,3 +165,41 @@ test_that("history_to_list() doesn't convert xts date indexes to datetime indexe
     xts::tclass(xtslist[[1]]), "Date"
   )
 })
+
+
+test_that("prepare_table() keeps original item order if sort_cols not provided", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+                   item = c(rep("c", 10), rep("b", 10), rep("a", 10)),
+                   value = c(rep(3, 20), rep(1, 10)),
+                   stringsAsFactors = FALSE)
+
+  prepared_df <- prepare_df(df,
+                            inputspec = inputspec(timepoint_col = "timepoint",
+                                                  item_col = "item",
+                                                  value_col = "value"))
+
+  prepared_table <- prepare_table(prepared_df = prepared_df,
+                                  sort_cols = NULL)
+
+  expect_equal(prepared_table$item, c("c", "b", "a"))
+
+})
+
+test_that("prepare_table() sorts by sort_cols then original item_order", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+                   item = c(rep("c", 10), rep("b", 10), rep("a", 10)),
+                   value = c(rep(3, 20), rep(1, 10)),
+                   stringsAsFactors = FALSE)
+
+  prepared_df <- prepare_df(df,
+                            inputspec = inputspec(timepoint_col = "timepoint",
+                                                  item_col = "item",
+                                                  value_col = "value"))
+
+  prepared_table <- prepare_table(prepared_df = prepared_df,
+                                  sort_cols = c("max_value"))
+
+  expect_equal(prepared_table$item, c("a", "c", "b"))
+
+})
+
