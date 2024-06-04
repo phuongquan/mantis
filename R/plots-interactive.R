@@ -99,7 +99,7 @@ output_table_interactive <- function(prepared_df,
         filterable = TRUE,
         cell = function(value) {
           if (!is.na(value)) {
-            paste0(ifelse(grepl("PASS", value), "\u2714\ufe0f", "\u274c"), " ", value)
+            paste0(ifelse(grepl("PASS", value), "\u2714\ufe0f", "\u274c\ufe0f"), " ", value)
           } else{
             "-"
           }

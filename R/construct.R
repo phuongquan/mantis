@@ -186,9 +186,6 @@ construct_rmd_tab_item <- function(df,
                                    tab_name = NULL,
                                    tab_level = 1) {
 
-  construct_tab_label(tab_name = tab_name,
-                      tab_level = tab_level)
-
   prepared_df <-
     prepare_df(
       df,
@@ -204,6 +201,10 @@ construct_rmd_tab_item <- function(df,
   } else {
     alert_results <- NULL
   }
+
+  construct_tab_label(tab_name = tab_name,
+                      tab_level = tab_level,
+                      alert = any(alert_results$alert_result %in% c("FAIL")))
 
   if (is_outputspec_static_heatmap(outputspec)) {
       plot_heatmap_static(prepared_df = prepared_df,
@@ -306,14 +307,16 @@ construct_rmd_tab_group <- function(df,
 #' @param tab_name string label for the tab
 #' @param tab_level tab_level = 1 corresponds to ###
 #' @param has_child_tabs will there be more tabs underneath
+#' @param alert set to TRUE to append an alert icon
 #'
 #' @return markdown-formatted string
 #' @noRd
-construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE){
+construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, alert = FALSE){
   if (!is.null(tab_name)) {
     cat("\n",
         paste0(rep("#", tab_level + 1), collapse = ""),
         " ", tab_name,
+        ifelse(alert," \u2757\ufe0e", ""),
         ifelse(has_child_tabs," {.tabset}", ""),
         "\n",
         sep = "")
