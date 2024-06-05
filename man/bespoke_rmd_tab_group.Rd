@@ -11,7 +11,6 @@ bespoke_rmd_tab_group(
   alert_rules = NULL,
   timepoint_limits = c(NA, NA),
   fill_with_zero = FALSE,
-  item_order = TRUE,
   tab_order = NULL,
   tab_group_name = NULL,
   tab_group_level = 1
@@ -32,8 +31,6 @@ not supplied, default values will be used.}
 \item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of timepoint_col}
 
 \item{fill_with_zero}{Replace any missing or NA values with 0? Useful when value_col is a record count}
-
-\item{item_order}{vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.}
 
 \item{tab_order}{Optional vector containing values from tab_col in desired order of display}
 

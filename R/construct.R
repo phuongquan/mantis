@@ -26,7 +26,6 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
 #' @param tab_name Character string to appear on parent tab
 #' @param tab_level Child level for tab. Value of 1 creates a tab with rmd level "##".
 #'
@@ -43,7 +42,6 @@ bespoke_rmd_tab_item <- function(df,
                                  alert_rules = NULL,
                                  timepoint_limits = c(NA, NA),
                                  fill_with_zero = FALSE,
-                                 item_order = TRUE,
                                  tab_name = NULL,
                                  tab_level = 1) {
 
@@ -60,7 +58,6 @@ bespoke_rmd_tab_item <- function(df,
     alert_rules = alert_rules,
     timepoint_limits = timepoint_limits,
     fill_with_zero = fill_with_zero,
-    item_order = item_order,
     tab_name = tab_name,
     tab_level = tab_level
   )
@@ -80,7 +77,6 @@ bespoke_rmd_tab_item <- function(df,
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
 #' @param tab_order Optional vector containing values from tab_col in desired order of display
 #' @param tab_group_name Character string to appear on parent tab
 #' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##".
@@ -99,7 +95,6 @@ bespoke_rmd_tab_group <- function(df,
                                   alert_rules = NULL,
                                   timepoint_limits = c(NA, NA),
                                   fill_with_zero = FALSE,
-                                  item_order = TRUE,
                                   tab_order = NULL,
                                   tab_group_name = NULL,
                                   tab_group_level = 1) {
@@ -116,7 +111,6 @@ bespoke_rmd_tab_group <- function(df,
     alert_rules = alert_rules,
     timepoint_limits = timepoint_limits,
     fill_with_zero = fill_with_zero,
-    item_order = item_order,
     tab_order = tab_order,
     tab_group_name = tab_group_name,
     tab_group_level = tab_group_level
@@ -170,7 +164,6 @@ initialise_widgets <- function(plot_type){
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
 #' @param tab_name Character string to appear on parent tab
 #' @param tab_level Child level for tab. Value of 1 creates a tab with rmd level "##".
 #'
@@ -182,7 +175,6 @@ construct_rmd_tab_item <- function(df,
                                    alert_rules = NULL,
                                    timepoint_limits = c(NA, NA),
                                    fill_with_zero = FALSE,
-                                   item_order = TRUE,
                                    tab_name = NULL,
                                    tab_level = 1) {
 
@@ -192,7 +184,7 @@ construct_rmd_tab_item <- function(df,
       inputspec = inputspec,
       timepoint_limits = timepoint_limits,
       fill_with_zero = fill_with_zero,
-      item_order = item_order
+      item_order = outputspec$item_order
     )
 
   if (!is.null(alert_rules)) {
@@ -227,7 +219,7 @@ construct_rmd_tab_item <- function(df,
         plot_type = outputspec$plot_type,
         sync_axis_range = outputspec$sync_axis_range,
         alert_results = alert_results,
-        sort_cols = outputspec$sort_cols
+        sort_by = outputspec$sort_by
       )
     # NOTE: a regular print() doesn't render the widget
     cat(knitr::knit_print(p))
@@ -252,7 +244,6 @@ construct_rmd_tab_item <- function(df,
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
 #' @param tab_order Optional vector containing values from tab_col in desired order of display
 #' @param tab_group_name Character string to appear on parent tab
 #' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##".
@@ -266,7 +257,6 @@ construct_rmd_tab_group <- function(df,
                                     alert_rules = NULL,
                                     timepoint_limits = c(NA, NA),
                                     fill_with_zero = FALSE,
-                                    item_order = TRUE,
                                     tab_order = NULL,
                                     tab_group_name = NULL,
                                     tab_group_level = 1) {
@@ -294,7 +284,6 @@ construct_rmd_tab_group <- function(df,
       alert_rules = alert_rules,
       timepoint_limits = timepoint_limits,
       fill_with_zero = fill_with_zero,
-      item_order = item_order,
       tab_name = tab_names[i],
       tab_level = tab_group_level + 1
     )

@@ -4,13 +4,21 @@
 \alias{outputspec_static_multipanel}
 \title{Specify output options for a static report containing grids of plots.}
 \usage{
-outputspec_static_multipanel(sync_axis_range = FALSE, y_label = NULL)
+outputspec_static_multipanel(
+  sync_axis_range = FALSE,
+  y_label = NULL,
+  item_order = NULL
+)
 }
 \arguments{
 \item{sync_axis_range}{Set the y-axis to be the same range for all the plots.
 X-axes are always synced.}
 
 \item{y_label}{string for y-axis label. Optional}
+
+\item{item_order}{vector of values contained in item_col, for explicitly ordering the items in
+the table. Any values not mentioned are included alphabetically at the end. If NULL, the
+original order as given by unique(item_col) will be used.}
 }
 \value{
 An `outputspec()` object

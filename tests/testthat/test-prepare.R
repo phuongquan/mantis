@@ -167,7 +167,7 @@ test_that("history_to_list() doesn't convert xts date indexes to datetime indexe
 })
 
 
-test_that("prepare_table() keeps original item order if sort_cols not provided", {
+test_that("prepare_table() keeps original item order if sort_by not provided", {
   df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
                    item = c(rep("c", 10), rep("b", 10), rep("a", 10)),
                    value = c(rep(3, 20), rep(1, 10)),
@@ -179,13 +179,13 @@ test_that("prepare_table() keeps original item order if sort_cols not provided",
                                                   value_col = "value"))
 
   prepared_table <- prepare_table(prepared_df = prepared_df,
-                                  sort_cols = NULL)
+                                  sort_by = NULL)
 
   expect_equal(prepared_table$item, c("c", "b", "a"))
 
 })
 
-test_that("prepare_table() sorts by sort_cols then original item_order", {
+test_that("prepare_table() sorts by sort_by then original item_order", {
   df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
                    item = c(rep("c", 10), rep("b", 10), rep("a", 10)),
                    value = c(rep(3, 20), rep(1, 10)),
@@ -197,9 +197,26 @@ test_that("prepare_table() sorts by sort_cols then original item_order", {
                                                   value_col = "value"))
 
   prepared_table <- prepare_table(prepared_df = prepared_df,
-                                  sort_cols = c("max_value"))
+                                  sort_by = c("max_value"))
 
   expect_equal(prepared_table$item, c("a", "c", "b"))
 
 })
 
+test_that("prepare_table() sorts by descending sort_by", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+                   item = c(rep("c", 10), rep("b", 10), rep("a", 10)),
+                   value = c(rep(3, 10), rep(4, 10), rep(1, 10)),
+                   stringsAsFactors = FALSE)
+
+  prepared_df <- prepare_df(df,
+                            inputspec = inputspec(timepoint_col = "timepoint",
+                                                  item_col = "item",
+                                                  value_col = "value"))
+
+  prepared_table <- prepare_table(prepared_df = prepared_df,
+                                  sort_by = c("-max_value"))
+
+  expect_equal(prepared_table$item, c("b", "c", "a"))
+
+})

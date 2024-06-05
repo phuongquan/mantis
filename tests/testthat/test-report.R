@@ -117,20 +117,3 @@ test_that("mantis_report() creates interactive report with alerts successfully",
   expect_true(file.remove(reportpath))
 })
 
-
-mantis_report(
-  df = example_data,
-  inputspec = inputspec(
-    timepoint_col = "timepoint",
-    item_col = "item",
-    value_col = "value"
-  ),
-  alert_rules = alert_rules(
-    alert_missing(
-      extent_type = "last",
-      extent_value = 5,
-      items = unique(example_data$item)[grep("norm", example_data$item)]
-    )
-  ),
-  save_filename = "alert_norm_only"
-)

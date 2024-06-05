@@ -11,7 +11,8 @@ outputspec_interactive(
   plot_label = "History",
   summary_cols = c("max_value"),
   sync_axis_range = FALSE,
-  sort_cols = NULL
+  item_order = NULL,
+  sort_by = NULL
 )
 }
 \arguments{
@@ -24,13 +25,19 @@ outputspec_interactive(
 
 \item{plot_label}{String label to use for the time series column in the report.}
 
-\item{summary_cols}{Summary data to include as columns in the report. Options are `c("max_value",
-"last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.}
+\item{summary_cols}{Summary data to include as columns in the report. Options are
+`c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.}
 
 \item{sync_axis_range}{Set the y-axis to be the same range for all time series in a table.
 X-axes are always synced.}
 
-\item{sort_cols}{columns in output table to sort by. If NULL, the original order as given by unique(item_col) will be used.}
+\item{item_order}{vector of values contained in item_col, for explicitly ordering the items in
+the table. Any values not mentioned are included alphabetically at the end. If NULL, the
+original order as given by unique(item_col) will be used.}
+
+\item{sort_by}{column in output table to sort by. Can be one of `item`, `alert_overall`, or one
+of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
+Secondary ordering will be based on `item_order`.}
 }
 \value{
 An `outputspec()` object

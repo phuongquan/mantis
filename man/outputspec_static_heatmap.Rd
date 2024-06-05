@@ -4,12 +4,20 @@
 \alias{outputspec_static_heatmap}
 \title{Specify output options for a static report containing heatmaps}
 \usage{
-outputspec_static_heatmap(fill_colour = "blue", y_label = NULL)
+outputspec_static_heatmap(
+  fill_colour = "blue",
+  y_label = NULL,
+  item_order = NULL
+)
 }
 \arguments{
 \item{fill_colour}{colour to use for the tiles}
 
 \item{y_label}{string for y-axis label. Optional}
+
+\item{item_order}{vector of values contained in item_col, for explicitly ordering the items in
+the table. Any values not mentioned are included alphabetically at the end. If NULL, the
+original order as given by unique(item_col) will be used.}
 }
 \value{
 An `outputspec()` object

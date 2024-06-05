@@ -2,11 +2,14 @@
 #'
 #' @param prepared_df data frame returned from prepare_df()
 #' @param plot_value_type "value" or "delta"
-#' @param sync_axis_range sync all history graphs to same y-axis range
-#' @param alert_results `alert_results` object returned from `run_alerts()`
 #' @param item_label Label for first column
 #' @param summary_cols vector of which summary columns to include
 #' @param plot_type "bar" or "line"
+#' @param sync_axis_range sync all history graphs to same y-axis range
+#' @param alert_results `alert_results` object returned from `run_alerts()`
+#' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
+#'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
+#'   Secondary ordering will be based on `item_order`.
 #'
 #' @return html table
 #' @noRd
@@ -18,7 +21,7 @@ output_table_interactive <- function(prepared_df,
                                      plot_type = "bar",
                                      sync_axis_range = FALSE,
                                      alert_results = NULL,
-                                     sort_cols = NULL,
+                                     sort_by = NULL,
                                      bordered = TRUE,
                                      ...) {
 
@@ -30,7 +33,7 @@ output_table_interactive <- function(prepared_df,
   table <- prepare_table(prepared_df = prepared_df,
                          plot_value_type = plot_value_type,
                          alert_results = alert_results,
-                         sort_cols = sort_cols)
+                         sort_by = sort_by)
 
   reactable::reactable(
     table,

@@ -194,7 +194,7 @@ mantis_report(df = example_data,
               inputspec = inputspec(timepoint_col = "timepoint",
                                 item_col = "item",
                                 value_col = "value"),
-              outputspec = outputspec_static_multipanel(),
+              outputspec = outputspec_static_multipanel(item_order = "sparse 1"),
               report_title = "example_data",
               dataset_description = "examples"
 )
@@ -451,6 +451,7 @@ mantis_report(df = example_data,
                                 item_col = "item",
                                 value_col = "value",
                                 tab_col = "tab"),
+              outputspec = outputspec_interactive(sort_by = "alert_overall"),
               alert_rules = alert_rules,
               save_filename = "interactive_tabs"
 )
@@ -496,3 +497,5 @@ mantis_report(df = example_data,
                 alert_difference_above_perc(current_period = 2, previous_period = 4, rule_value = 50)
               )
 )
+
+

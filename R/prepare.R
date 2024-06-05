@@ -57,7 +57,9 @@ prepare_df <-
 #' @param prepared_df data frame returned from prepare_df()
 #' @param plot_value_type "value" or "delta"
 #' @param alert_results `alert_results` object returned from `run_alerts()`
-#' @param sort_cols columns in output table to sort by. If NULL, the original order as given by unique(item_col) will be used.
+#' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
+#'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
+#'   Secondary ordering will be based on `item_order`.
 #'
 #' @return data frame
 #' @noRd
@@ -65,7 +67,7 @@ prepare_table <-
   function(prepared_df,
            plot_value_type = "value",
            alert_results = NULL,
-           sort_cols = NULL) {
+           sort_by = NULL) {
 
   # TODO: allow df to be passed in wide with vector of value_cols?
 
@@ -129,10 +131,22 @@ prepare_table <-
     table_df$alert_details <- list(NULL)
   }
 
-  table_df <-
-    table_df %>%
-    dplyr::arrange(dplyr::pick(dplyr::any_of(sort_cols)),
-                   factor(item, levels = item_order_final))
+  # sort table
+  if (is.null(sort_by)){
+    table_df <-
+      table_df %>%
+      dplyr::arrange(factor(item, levels = item_order_final))
+  } else if (substring(sort_by, 1, 1) == "-"){
+    table_df <-
+      table_df %>%
+      dplyr::arrange(dplyr::across(dplyr::any_of(substring(sort_by, 2)), dplyr::desc),
+                     factor(item, levels = item_order_final))
+  } else{
+    table_df <-
+      table_df %>%
+      dplyr::arrange(dplyr::pick(dplyr::any_of(sort_by)),
+                     factor(item, levels = item_order_final))
+  }
 
   table_df
 }
@@ -172,11 +186,16 @@ inputspec <- function(timepoint_col,
 #' @param plot_type Display the time series as a "`bar`" or "`line`" chart.
 #' @param item_label String label to use for the "item" column in the report.
 #' @param plot_label String label to use for the time series column in the report.
-#' @param summary_cols Summary data to include as columns in the report. Options are `c("max_value",
-#'   "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
+#' @param summary_cols Summary data to include as columns in the report. Options are
+#'   `c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
 #'   X-axes are always synced.
-#' @param sort_cols columns in output table to sort by. If NULL, the original order as given by unique(item_col) will be used.
+#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
+#'   the table. Any values not mentioned are included alphabetically at the end. If NULL, the
+#'   original order as given by unique(item_col) will be used.
+#' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
+#'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
+#'   Secondary ordering will be based on `item_order`.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -186,7 +205,8 @@ outputspec_interactive <- function(plot_value_type = "value",
                        plot_label = "History",
                        summary_cols = c("max_value"),
                        sync_axis_range = FALSE,
-                       sort_cols = NULL){
+                       item_order = NULL,
+                       sort_by = NULL){
 
   structure(
     list(plot_value_type = plot_value_type,
@@ -195,7 +215,8 @@ outputspec_interactive <- function(plot_value_type = "value",
          plot_label = plot_label,
          summary_cols = summary_cols,
          sync_axis_range = sync_axis_range,
-         sort_cols = sort_cols),
+         item_order = item_order,
+         sort_by = sort_by),
     class = c("mantis_outputspec", "mantis_outputspec_interactive")
   )
 }
@@ -204,15 +225,20 @@ outputspec_interactive <- function(plot_value_type = "value",
 #'
 #' @param fill_colour colour to use for the tiles
 #' @param y_label string for y-axis label. Optional
+#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
+#'   the table. Any values not mentioned are included alphabetically at the end. If NULL, the
+#'   original order as given by unique(item_col) will be used.
 #'
 #' @return An `outputspec()` object
 #' @export
 outputspec_static_heatmap <- function(fill_colour = "blue",
-                                      y_label = NULL) {
+                                      y_label = NULL,
+                                      item_order = NULL) {
 
   structure(
     list(fill_colour = fill_colour,
-         y_label = y_label),
+         y_label = y_label,
+         item_order = item_order),
     class = c("mantis_outputspec", "mantis_outputspec_static", "mantis_outputspec_static_heatmap")
     )
 }
@@ -224,15 +250,20 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 #' @param sync_axis_range Set the y-axis to be the same range for all the plots.
 #'   X-axes are always synced.
 #' @param y_label string for y-axis label. Optional
+#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
+#'   the table. Any values not mentioned are included alphabetically at the end. If NULL, the
+#'   original order as given by unique(item_col) will be used.
 #'
 #' @return An `outputspec()` object
 #' @export
 outputspec_static_multipanel <- function(sync_axis_range = FALSE,
-                                        y_label = NULL) {
+                                        y_label = NULL,
+                                        item_order = NULL) {
 
   structure(
     list(sync_axis_range = sync_axis_range,
-         y_label = y_label),
+         y_label = y_label,
+         item_order = item_order),
     class = c("mantis_outputspec", "mantis_outputspec_static", "mantis_outputspec_static_multipanel")
   )
 }
