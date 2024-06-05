@@ -6,7 +6,10 @@
 #' @param inputspec Specification of data in df
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for ordering the items in the table. Any values not mentioned are included alphabetically at the end. If NULL, the original order as given by unique(item_col) will be used.
+#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
+#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
+#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
+#'   will be used.
 #'
 #' @return data frame
 #' @noRd
@@ -191,8 +194,9 @@ inputspec <- function(timepoint_col,
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
 #'   X-axes are always synced.
 #' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If NULL, the
-#'   original order as given by unique(item_col) will be used.
+#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
+#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
+#'   will be used.
 #' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
 #'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
 #'   Secondary ordering will be based on `item_order`.
@@ -226,8 +230,9 @@ outputspec_interactive <- function(plot_value_type = "value",
 #' @param fill_colour colour to use for the tiles
 #' @param y_label string for y-axis label. Optional
 #' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If NULL, the
-#'   original order as given by unique(item_col) will be used.
+#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
+#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
+#'   will be used.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -251,8 +256,9 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 #'   X-axes are always synced.
 #' @param y_label string for y-axis label. Optional
 #' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If NULL, the
-#'   original order as given by unique(item_col) will be used.
+#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
+#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
+#'   will be used.
 #'
 #' @return An `outputspec()` object
 #' @export

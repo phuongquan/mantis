@@ -32,8 +32,9 @@ outputspec_interactive(
 X-axes are always synced.}
 
 \item{item_order}{vector of values contained in item_col, for explicitly ordering the items in
-the table. Any values not mentioned are included alphabetically at the end. If NULL, the
-original order as given by unique(item_col) will be used.}
+the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
+will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
+will be used.}
 
 \item{sort_by}{column in output table to sort by. Can be one of `item`, `alert_overall`, or one
 of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.

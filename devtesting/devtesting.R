@@ -194,7 +194,7 @@ mantis_report(df = example_data,
               inputspec = inputspec(timepoint_col = "timepoint",
                                 item_col = "item",
                                 value_col = "value"),
-              outputspec = outputspec_static_multipanel(item_order = "sparse 1"),
+              outputspec = outputspec_static_multipanel(item_order = "sparse_1"),
               report_title = "example_data",
               dataset_description = "examples"
 )

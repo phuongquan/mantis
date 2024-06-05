@@ -17,8 +17,9 @@ X-axes are always synced.}
 \item{y_label}{string for y-axis label. Optional}
 
 \item{item_order}{vector of values contained in item_col, for explicitly ordering the items in
-the table. Any values not mentioned are included alphabetically at the end. If NULL, the
-original order as given by unique(item_col) will be used.}
+the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
+will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
+will be used.}
 }
 \value{
 An `outputspec()` object
