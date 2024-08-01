@@ -220,12 +220,12 @@ alert_above <- function(extent_type = "all",
 
 #' Alert when there is a percentage increase in latest values
 #'
-#' Check if latest values are greater than in the previous period, over a particular percentage
+#' Check if latest values are greater than in a previous period, over a particular percentage
 #'
 #' Based on the mean of values in the two periods.
 #'
-#' @param current_period number of values from end to use for comparison
-#' @param previous_period number of values back from `current_period` to use for comparison
+#' @param current_period vector containing positions from end of time series to use for comparison
+#' @param previous_period vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.
 #' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage change is greater or equal to 5
 #' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
 #'
@@ -240,9 +240,17 @@ alert_difference_above_perc <- function(current_period,
 
   rule_short_name <- paste0("diff_above_perc_", rule_value)
 
-  function_call <- substitute(mean(rev(value)[1:cp], na.rm = TRUE) >= (1 + rv/100) * mean(rev(value)[ppstart:ppend], na.rm = TRUE),
-                              list(cp = current_period, ppstart = current_period + 1, ppend = current_period + previous_period, rv = rule_value))
-  rule_description <- paste0("The last ", current_period, " non-missing values are over ", rule_value, "% greater than the previous ", previous_period, " non-missing values")
+  function_call <- substitute(mean(rev(value)[cp], na.rm = TRUE) >= (1 + rv/100) * mean(rev(value)[pp], na.rm = TRUE),
+                              list(cp = current_period, pp = previous_period, rv = rule_value))
+  rule_description <- paste0("The value(s) in position(s)",
+                             ifelse(length(current_period) == 1,
+                                    current_period,
+                                    paste0(current_period[1], "-", rev(current_period)[1])),
+                             " from the end are over ", rule_value, "% greater than the value(s) in position(s)",
+                             ifelse(length(previous_period) == 1,
+                                    previous_period,
+                                    paste0(previous_period[1], "-", rev(previous_period)[1])),
+                             " from the end")
 
   alert_rule(
     type = "diff_above_perc",
@@ -259,8 +267,8 @@ alert_difference_above_perc <- function(current_period,
 #'
 #' Based on the mean of values in the two periods.
 #'
-#' @param current_period number of values from end to use for comparison
-#' @param previous_period number of values back from `current_period` to use for comparison
+#' @param current_period vector containing positions from end of time series to use for comparison
+#' @param previous_period vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.
 #' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage change is greater or equal to 5
 #' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
 #'
@@ -275,9 +283,17 @@ alert_difference_below_perc <- function(current_period,
 
   rule_short_name <- paste0("diff_below_perc_", rule_value)
 
-  function_call <- substitute(mean(rev(value)[1:cp], na.rm = TRUE) <= (1 - rv/100) * mean(rev(value)[ppstart:ppend], na.rm = TRUE),
-                              list(cp = current_period, ppstart = current_period + 1, ppend = current_period + previous_period, rv = rule_value))
-  rule_description <- paste0("The last ", current_period, " non-missing values are over ", rule_value, "% greater than the previous ", previous_period, " non-missing values")
+  function_call <- substitute(mean(rev(value)[cp], na.rm = TRUE) <= (1 - rv/100) * mean(rev(value)[pp], na.rm = TRUE),
+                              list(cp = current_period, pp = previous_period, rv = rule_value))
+  rule_description <- paste0("The value(s) in position(s)",
+                             ifelse(length(current_period) == 1,
+                                    current_period,
+                                    paste0(current_period[1], "-", rev(current_period)[1])),
+                             " from the end are over ", rule_value, "% less than the value(s) in position(s)",
+                             ifelse(length(previous_period) == 1,
+                                    previous_period,
+                                    paste0(previous_period[1], "-", rev(previous_period)[1])),
+                             " from the end")
 
   alert_rule(
     type = "diff_above_perc",

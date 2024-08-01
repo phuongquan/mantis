@@ -12,9 +12,9 @@ alert_difference_above_perc(
 )
 }
 \arguments{
-\item{current_period}{number of values from end to use for comparison}
+\item{current_period}{vector containing positions from end of time series to use for comparison}
 
-\item{previous_period}{number of values back from `current_period` to use for comparison}
+\item{previous_period}{vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.}
 
 \item{rule_value}{value to test against. e.g. `rule_value=5` means alert if percentage change is greater or equal to 5}
 
@@ -24,7 +24,7 @@ alert_difference_above_perc(
 An `alert_rule` object
 }
 \description{
-Check if latest values are greater than in the previous period, over a particular percentage
+Check if latest values are greater than in a previous period, over a particular percentage
 }
 \details{
 Based on the mean of values in the two periods.

@@ -213,7 +213,7 @@ test_that("alert_above(consecutive) returns condition correctly", {
 # TODO: more tests for equals/above/below with NAs in
 
 test_that("alert_difference_above_perc() returns condition correctly", {
-  fc <- alert_difference_above_perc(current_period = 2, previous_period = 4, rule_value = 50)$function_call
+  fc <- alert_difference_above_perc(current_period = 1:2, previous_period = 3:6, rule_value = 50)$function_call
 
   value = c(100, 3, 3, 5, 5, 8, 6)
   expect_true(eval(fc))
@@ -231,10 +231,11 @@ test_that("alert_difference_above_perc() returns condition correctly", {
 
   value = c(3, NA, NA, NA, NA, 4, 6)
   expect_equal(eval(fc), NA)
+
 })
 
 test_that("alert_difference_below_perc() returns condition correctly", {
-  fc <- alert_difference_below_perc(current_period = 2, previous_period = 4, rule_value = 50)$function_call
+  fc <- alert_difference_below_perc(current_period = 1:2, previous_period = 3:6, rule_value = 50)$function_call
 
   value = c(0, 10, 10, 10, 10, 5, 5)
   expect_true(eval(fc))
