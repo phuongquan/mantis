@@ -242,15 +242,14 @@ alert_difference_above_perc <- function(current_period,
 
   function_call <- substitute(mean(rev(value)[cp], na.rm = TRUE) >= (1 + rv/100) * mean(rev(value)[pp], na.rm = TRUE),
                               list(cp = current_period, pp = previous_period, rv = rule_value))
-  rule_description <- paste0("The value(s) in position(s)",
-                             ifelse(length(current_period) == 1,
-                                    current_period,
-                                    paste0(current_period[1], "-", rev(current_period)[1])),
-                             " from the end are over ", rule_value, "% greater than the value(s) in position(s)",
+  rule_description <- paste0(ifelse(length(current_period) == 1,
+                                    paste0("Value ", current_period, " from end is"),
+                                    paste0("Values ", current_period[1], "-", rev(current_period)[1], " from end are")),
+                             " over ", rule_value, "% greater than ",
                              ifelse(length(previous_period) == 1,
-                                    previous_period,
-                                    paste0(previous_period[1], "-", rev(previous_period)[1])),
-                             " from the end")
+                                    paste0("value ", previous_period),
+                                    paste0("values ", previous_period[1], "-", rev(previous_period)[1])),
+                             " from end")
 
   alert_rule(
     type = "diff_above_perc",
@@ -285,15 +284,14 @@ alert_difference_below_perc <- function(current_period,
 
   function_call <- substitute(mean(rev(value)[cp], na.rm = TRUE) <= (1 - rv/100) * mean(rev(value)[pp], na.rm = TRUE),
                               list(cp = current_period, pp = previous_period, rv = rule_value))
-  rule_description <- paste0("The value(s) in position(s)",
-                             ifelse(length(current_period) == 1,
-                                    current_period,
-                                    paste0(current_period[1], "-", rev(current_period)[1])),
-                             " from the end are over ", rule_value, "% less than the value(s) in position(s)",
+  rule_description <- paste0(ifelse(length(current_period) == 1,
+                                    paste0("Value ", current_period, " from end is"),
+                                    paste0("Values ", current_period[1], "-", rev(current_period)[1], " from end are")),
+                             " over ", rule_value, "% less than ",
                              ifelse(length(previous_period) == 1,
-                                    previous_period,
-                                    paste0(previous_period[1], "-", rev(previous_period)[1])),
-                             " from the end")
+                                    paste0("value ", previous_period),
+                                    paste0("values ", previous_period[1], "-", rev(previous_period)[1])),
+                             " from end")
 
   alert_rule(
     type = "diff_above_perc",
