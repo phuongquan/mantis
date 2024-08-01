@@ -105,7 +105,7 @@ test_that("alert_equals(consecutive) returns condition correctly", {
 
 
 test_that("alert_below(all) returns condition correctly", {
-  fc <- alert_below(extent_type = "all", rule_value = 2)$function_call
+  fc <- alert_below(extent_type = "all", rule_value = 3)$function_call
 
   value = rep(0, 10)
   expect_true(eval(fc))
@@ -119,7 +119,7 @@ test_that("alert_below(all) returns condition correctly", {
 })
 
 test_that("alert_below(any) returns condition correctly", {
-  fc <- alert_below(extent_type = "any", extent_value = 3, rule_value = 2)$function_call
+  fc <- alert_below(extent_type = "any", extent_value = 3, rule_value = 3)$function_call
 
   value = c(1, 0, 2, 0, 3, 0)
   expect_true(eval(fc))
@@ -133,7 +133,7 @@ test_that("alert_below(any) returns condition correctly", {
 })
 
 test_that("alert_below(last) returns condition correctly", {
-  fc <- alert_below(extent_type = "last", extent_value = 3, rule_value = 2)$function_call
+  fc <- alert_below(extent_type = "last", extent_value = 3, rule_value = 3)$function_call
 
   value = c(1, 3, 0, 0, 0)
   expect_true(eval(fc))
@@ -144,7 +144,7 @@ test_that("alert_below(last) returns condition correctly", {
 })
 
 test_that("alert_below(consecutive) returns condition correctly", {
-  fc <- alert_below(extent_type = "consecutive", extent_value = 3, rule_value = 2)$function_call
+  fc <- alert_below(extent_type = "consecutive", extent_value = 3, rule_value = 3)$function_call
 
   value = c(10, 20, 2, 1, 2, 10)
   expect_true(eval(fc))
@@ -160,7 +160,7 @@ test_that("alert_below(consecutive) returns condition correctly", {
 
 
 test_that("alert_above(all) returns condition correctly", {
-  fc <- alert_above(extent_type = "all", rule_value = 1)$function_call
+  fc <- alert_above(extent_type = "all", rule_value = 0)$function_call
 
   value = rep(2, 10)
   expect_true(eval(fc))
@@ -174,7 +174,7 @@ test_that("alert_above(all) returns condition correctly", {
 })
 
 test_that("alert_above(any) returns condition correctly", {
-  fc <- alert_above(extent_type = "any", extent_value = 3, rule_value = 1)$function_call
+  fc <- alert_above(extent_type = "any", extent_value = 3, rule_value = 0)$function_call
 
   value = c(1, 2, 0, 3, 0)
   expect_true(eval(fc))
@@ -185,7 +185,7 @@ test_that("alert_above(any) returns condition correctly", {
 })
 
 test_that("alert_above(last) returns condition correctly", {
-  fc <- alert_above(extent_type = "last", extent_value = 3, rule_value = 1)$function_call
+  fc <- alert_above(extent_type = "last", extent_value = 3, rule_value = 0)$function_call
 
   value = c(1, 0, 1, 3, 2)
   expect_true(eval(fc))
@@ -196,7 +196,7 @@ test_that("alert_above(last) returns condition correctly", {
 })
 
 test_that("alert_above(consecutive) returns condition correctly", {
-  fc <- alert_above(extent_type = "consecutive", extent_value = 3, rule_value = 2)$function_call
+  fc <- alert_above(extent_type = "consecutive", extent_value = 3, rule_value = 1)$function_call
 
   value = c(1, 20, 20, 10, 2, 10)
   expect_true(eval(fc))
@@ -221,6 +221,9 @@ test_that("alert_difference_above_perc() returns condition correctly", {
   value = c(3, 3, 5, 5, 4, 6)
   expect_false(eval(fc))
 
+  value = c(0, 0, 0, 0, 0, 0)
+  expect_false(eval(fc))
+
   # includes NAs in period but excludes them from calculation
   value = c(3, 3, NA, NA, 5, 5, 8, 6)
   expect_false(eval(fc))
@@ -237,10 +240,16 @@ test_that("alert_difference_above_perc() returns condition correctly", {
 test_that("alert_difference_below_perc() returns condition correctly", {
   fc <- alert_difference_below_perc(current_period = 1:2, previous_period = 3:6, rule_value = 50)$function_call
 
-  value = c(0, 10, 10, 10, 10, 5, 5)
+  value = c(0, 10, 10, 10, 10, 4, 4)
   expect_true(eval(fc))
 
   value = c(10, 10, 10, 10, 8, 8)
+  expect_false(eval(fc))
+
+  value = rep(10, 6)
+  expect_false(eval(fc))
+
+  value = c(0, 0, 0, 0, 0, 0)
   expect_false(eval(fc))
 
   # includes NAs in period but excludes them from calculation

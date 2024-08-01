@@ -16,7 +16,7 @@ alert_difference_above_perc(
 
 \item{previous_period}{vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.}
 
-\item{rule_value}{value to test against. e.g. `rule_value=5` means alert if percentage change is greater or equal to 5}
+\item{rule_value}{value to test against. e.g. `rule_value=5` means alert if percentage change is greater than 5}
 
 \item{items}{vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.}
 }

@@ -11,7 +11,7 @@ alert_below(extent_type = "all", extent_value = 1, rule_value, items = "ALL")
 
 \item{extent_value}{lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position}
 
-\item{rule_value}{value to test against. e.g. `rule_value=1` means alert if value is less than or equal to 1}
+\item{rule_value}{value to test against. e.g. `rule_value=1` means alert if value is less than 1}
 
 \item{items}{vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.}
 }
@@ -19,5 +19,5 @@ alert_below(extent_type = "all", extent_value = 1, rule_value, items = "ALL")
 An `alert_rule` object
 }
 \description{
-Less than or equal to
+Less than
 }

@@ -125,11 +125,11 @@ alert_equals <- function(extent_type = "all",
 
 #' alert_below
 #'
-#' Less than or equal to
+#' Less than
 #'
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
-#' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is less than or equal to 1
+#' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is less than 1
 #' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
 #'
 #' @return An `alert_rule` object
@@ -144,21 +144,21 @@ alert_below <- function(extent_type = "all",
   rule_short_name <- paste0("below_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
 
   if (extent_type == "all"){
-    function_call <- substitute(all(value[!is.na(value)] <= rv), list(rv = rule_value))
-    rule_description <- paste0("All (non-missing) values are <= ", rule_value)
+    function_call <- substitute(all(value[!is.na(value)] < rv), list(rv = rule_value))
+    rule_description <- paste0("All (non-missing) values are < ", rule_value)
   } else if(extent_type == "any"){
-    function_call <- substitute(sum(value[!is.na(value)] <= rv) >= x, list(x = extent_value, rv = rule_value))
-    rule_description <- paste0("At least ", extent_value, " (non-missing) values are <= ", rule_value)
+    function_call <- substitute(sum(value[!is.na(value)] < rv) >= x, list(x = extent_value, rv = rule_value))
+    rule_description <- paste0("At least ", extent_value, " (non-missing) values are < ", rule_value)
   } else if(extent_type == "last"){
-    function_call <- substitute(all(rev(value[!is.na(value)])[1:x] <= rv),
+    function_call <- substitute(all(rev(value[!is.na(value)])[1:x] < rv),
                                 list(x = extent_value, rv = rule_value))
-    rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are <= ", rule_value)
+    rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are < ", rule_value)
   } else if(extent_type == "consecutive"){
     function_call <- substitute(
-      {run_lengths <- rle(value[!is.na(value)] <= rv);
+      {run_lengths <- rle(value[!is.na(value)] < rv);
       any(run_lengths$lengths[run_lengths$values] >= x)},
       list(x = extent_value, rv = rule_value))
-    rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are <= ", rule_value)
+    rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are < ", rule_value)
   }
 
   alert_rule(
@@ -173,11 +173,11 @@ alert_below <- function(extent_type = "all",
 
 #' alert_above
 #'
-#' Greater than or equal to
+#' Greater than
 #'
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
-#' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is greater than or equal to 1
+#' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is greater than 1
 #' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
 #'
 #' @return An `alert_rule` object
@@ -192,21 +192,21 @@ alert_above <- function(extent_type = "all",
   rule_short_name <- paste0("above_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
 
   if (extent_type == "all"){
-    function_call <- substitute(all(value[!is.na(value)] >= rv), list(rv = rule_value))
-    rule_description <- paste0("All (non-missing) values are >= ", rule_value)
+    function_call <- substitute(all(value[!is.na(value)] > rv), list(rv = rule_value))
+    rule_description <- paste0("All (non-missing) values are > ", rule_value)
   } else if(extent_type == "any"){
-    function_call <- substitute(sum(value[!is.na(value)] >= rv) >= x, list(x = extent_value, rv = rule_value))
-    rule_description <- paste0("At least ", extent_value, " (non-missing) values are >= ", rule_value)
+    function_call <- substitute(sum(value[!is.na(value)] > rv) >= x, list(x = extent_value, rv = rule_value))
+    rule_description <- paste0("At least ", extent_value, " (non-missing) values are > ", rule_value)
   } else if(extent_type == "last"){
-    function_call <- substitute(all(rev(value[!is.na(value)])[1:x] >= rv),
+    function_call <- substitute(all(rev(value[!is.na(value)])[1:x] > rv),
                                 list(x = extent_value, rv = rule_value))
-    rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are >= ", rule_value)
+    rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are > ", rule_value)
   } else if(extent_type == "consecutive"){
     function_call <- substitute(
-      {run_lengths <- rle(value[!is.na(value)] >= rv);
+      {run_lengths <- rle(value[!is.na(value)] > rv);
       any(run_lengths$lengths[run_lengths$values] >= x)},
       list(x = extent_value, rv = rule_value))
-    rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are >= ", rule_value)
+    rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are > ", rule_value)
   }
 
   alert_rule(
@@ -226,7 +226,7 @@ alert_above <- function(extent_type = "all",
 #'
 #' @param current_period vector containing positions from end of time series to use for comparison
 #' @param previous_period vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.
-#' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage change is greater or equal to 5
+#' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage change is greater than 5
 #' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
 #'
 #' @return An `alert_rule` object
@@ -240,7 +240,7 @@ alert_difference_above_perc <- function(current_period,
 
   rule_short_name <- paste0("diff_above_perc_", rule_value)
 
-  function_call <- substitute(mean(rev(value)[cp], na.rm = TRUE) >= (1 + rv/100) * mean(rev(value)[pp], na.rm = TRUE),
+  function_call <- substitute(mean(rev(value)[cp], na.rm = TRUE) > (1 + rv/100) * mean(rev(value)[pp], na.rm = TRUE),
                               list(cp = current_period, pp = previous_period, rv = rule_value))
   rule_description <- paste0(ifelse(length(current_period) == 1,
                                     paste0("Value ", current_period, " from end is"),
@@ -268,7 +268,7 @@ alert_difference_above_perc <- function(current_period,
 #'
 #' @param current_period vector containing positions from end of time series to use for comparison
 #' @param previous_period vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.
-#' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage change is greater or equal to 5
+#' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage change is greater than 5
 #' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
 #'
 #' @return An `alert_rule` object
@@ -282,7 +282,7 @@ alert_difference_below_perc <- function(current_period,
 
   rule_short_name <- paste0("diff_below_perc_", rule_value)
 
-  function_call <- substitute(mean(rev(value)[cp], na.rm = TRUE) <= (1 - rv/100) * mean(rev(value)[pp], na.rm = TRUE),
+  function_call <- substitute(mean(rev(value)[cp], na.rm = TRUE) < (1 - rv/100) * mean(rev(value)[pp], na.rm = TRUE),
                               list(cp = current_period, pp = previous_period, rv = rule_value))
   rule_description <- paste0(ifelse(length(current_period) == 1,
                                     paste0("Value ", current_period, " from end is"),
