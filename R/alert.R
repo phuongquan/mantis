@@ -238,7 +238,13 @@ alert_difference_above_perc <- function(current_period,
 
   # TODO: consider allowing different rule_values for different alert severities
 
-  rule_short_name <- paste0("diff_above_perc_", rule_value)
+  rule_short_name <- paste0("diff_above_perc_", rule_value,
+                            "_period_", ifelse(length(current_period) == 1,
+                                               current_period,
+                                               paste0(current_period[1], "-", rev(current_period)[1])),
+                            "_v_", ifelse(length(previous_period) == 1,
+                                          previous_period,
+                                          paste0(previous_period[1], "-", rev(previous_period)[1])))
 
   function_call <- substitute(mean(rev(value)[cp], na.rm = TRUE) > (1 + rv/100) * mean(rev(value)[pp], na.rm = TRUE),
                               list(cp = current_period, pp = previous_period, rv = rule_value))
@@ -280,7 +286,13 @@ alert_difference_below_perc <- function(current_period,
 
   # TODO: consider allowing different rule_values for different alert severities
 
-  rule_short_name <- paste0("diff_below_perc_", rule_value)
+  rule_short_name <- paste0("diff_below_perc_", rule_value,
+                            "_period_", ifelse(length(current_period) == 1,
+                                               current_period,
+                                               paste0(current_period[1], "-", rev(current_period)[1])),
+                            "_v_", ifelse(length(previous_period) == 1,
+                                          previous_period,
+                                          paste0(previous_period[1], "-", rev(previous_period)[1])))
 
   function_call <- substitute(mean(rev(value)[cp], na.rm = TRUE) < (1 - rv/100) * mean(rev(value)[pp], na.rm = TRUE),
                               list(cp = current_period, pp = previous_period, rv = rule_value))
@@ -294,7 +306,7 @@ alert_difference_below_perc <- function(current_period,
                              " from end")
 
   alert_rule(
-    type = "diff_above_perc",
+    type = "diff_below_perc",
     function_call = function_call,
     items = items,
     short_name = rule_short_name,
