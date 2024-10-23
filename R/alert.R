@@ -372,6 +372,16 @@ run_alerts <- function(prepared_df,
                        filter_results = c("PASS", "FAIL", "NA")) {
   alert_result <- NULL
 
+  # if there is no data, return a formatted (empty) df
+  if(nrow(prepared_df) == 0){
+    return(tibble::tibble(
+      item = character(),
+      alert_name = character(),
+      alert_description = character(),
+      alert_result = character()
+    ))
+  }
+
   results <-
     lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df) %>%
     purrr::reduce(dplyr::bind_rows)
@@ -427,7 +437,7 @@ mantis_alerts <- function(df,
 
   validate_df_to_inputspec(df, inputspec)
 
-  # if there is no data, return a formatted (empty) df
+  # if there is no data, return a formatted (empty) df, only needed when tab_col is specified
   if(nrow(df) == 0){
     return(tibble::tibble(
       item = character(),
