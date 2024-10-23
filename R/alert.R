@@ -427,6 +427,16 @@ mantis_alerts <- function(df,
 
   validate_df_to_inputspec(df, inputspec)
 
+  # if there is no data, return a formatted (empty) df
+  if(nrow(df) == 0){
+    return(tibble::tibble(
+      item = character(),
+      alert_name = character(),
+      alert_description = character(),
+      alert_result = character()
+    ))
+  }
+
   if (is.null(inputspec$tab_col)) {
     prepared_df <-
       prepare_df(
