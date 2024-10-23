@@ -13,6 +13,10 @@ plot_heatmap_static <- function(prepared_df,
   # initialise known column names to prevent R CMD check notes
   item <- timepoint <- value <- NULL
 
+  if (nrow(prepared_df) == 0){
+    return(empty_plot_static())
+  }
+
   data <- prepared_df %>%
     dplyr::mutate(item = factor(item, levels = unique(prepared_df$item)))
 
@@ -95,6 +99,10 @@ plot_multipanel_static <- function(prepared_df,
   # initialise known column names to prevent R CMD check notes
   item <- timepoint <- value <- NULL
 
+  if (nrow(prepared_df) == 0){
+    return(empty_plot_static())
+  }
+
   data <- prepared_df %>%
     dplyr::mutate(item = factor(item, levels = unique(prepared_df$item)))
 
@@ -148,4 +156,35 @@ plot_multipanel_static <- function(prepared_df,
     )
 
   g
+}
+
+
+#' Create an empty gglot object
+#'
+#' Use when there is no data but you still want to display a ggplot (for consistency)
+#'
+#' @return ggplot
+#' @noRd
+empty_plot_static <- function(){
+
+  # initialise known column names to prevent R CMD check notes
+  x <- y <- NULL
+
+  ggplot2::ggplot(data.frame(x = 0, y = 0),
+                  ggplot2::aes(x = x, y = y)) +
+    ggplot2::theme_bw() +
+    ggplot2::geom_blank() +
+    ggplot2::labs(x = NULL, y = NULL) +
+    ggplot2::theme(
+      # remove axis ticks and labels
+      axis.ticks.x = ggplot2::element_blank(),
+      axis.ticks.y = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_blank(),
+      # remove grid lines
+      panel.grid.major = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank()
+    ) +
+    ggplot2::annotate("text", x = 0, y = 0, label = "No data")
+
 }

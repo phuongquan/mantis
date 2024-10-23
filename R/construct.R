@@ -347,9 +347,11 @@ rmd_fig_height <- function(df, inputspec, outputspec){
       dplyr::summarise(maxrows = max(rows)) %>%
       dplyr::pull()
 
-    fig_height <- maxrows*dplyr::case_when(is_outputspec_static_heatmap(outputspec) ~ 0.6,
-                                               is_outputspec_static_multipanel(outputspec) ~ 0.8,
-                                               TRUE ~ 0.8)
+    if (maxrows > 0){
+      fig_height <- maxrows*dplyr::case_when(is_outputspec_static_heatmap(outputspec) ~ 0.6,
+                                             is_outputspec_static_multipanel(outputspec) ~ 0.8,
+                                             TRUE ~ 0.8)
+    }
   }
 
   fig_height

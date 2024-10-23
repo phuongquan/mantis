@@ -32,6 +32,11 @@ prepare_df <-
                   item = dplyr::all_of(inputspec$item_col),
                   value = dplyr::all_of(inputspec$value_col))
 
+  # if there is no data, return the formatted (empty) df
+  if(nrow(prepared_df) == 0){
+    return(prepared_df)
+  }
+
   prepared_df <-
     align_data_timepoints(df = prepared_df,
                           timepoint_limits = timepoint_limits,
@@ -330,7 +335,11 @@ history_to_list <-
       xts::xts(x = value_for_history,
                order.by = timepoint) %>%
       list()
-    names(ts[[1]]) <- plot_value_type
+
+    if (length(ts[[1]]) > 0){
+      names(ts[[1]]) <- plot_value_type
+    }
+
     ts
   }
 
