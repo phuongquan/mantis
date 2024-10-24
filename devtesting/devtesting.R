@@ -499,3 +499,57 @@ mantis_report(df = example_data,
 )
 
 
+### run_alert() returns chr/lgl for alert_result when using lapply despite returning lgl when run individually
+# probably caused by the ifelse()
+# actually want it to always return chr
+report_datetime <- Sys.time()
+last_complete_month <- 2 + ifelse(format(report_datetime, format = "%d") < 16, 1, 0)
+
+alert_rules <-
+  mantis::alert_rules(
+    mantis::alert_custom(
+      short_name = "zeros_and_mean_over_3",
+      description = "Nil return in last year and non-zero mean value >3",
+      function_call = quote(
+        any(
+          rev(value)[last_complete_month:12] == 0,
+          na.rm = TRUE)
+        && mean(rev(value)[last_complete_month:12][rev(value)[last_complete_month:12] > 0], na.rm = TRUE) > 3
+      )
+    ),
+    mantis::alert_custom(
+      short_name = "last_q_change_50_v_prev_year_and_mean_over_5",
+      description = "Last 3 complete months >50% change compared to previous year and non-zero mean value >5",
+      function_call = quote(
+        (
+          mean(rev(value)[(last_complete_month):(last_complete_month + 2)],
+               na.rm = TRUE) < (1 - 50/100) * mean(rev(value)[(last_complete_month + 12):(last_complete_month + 14)],
+                                                   na.rm = TRUE)
+          || mean(rev(value)[(last_complete_month):(last_complete_month + 2)],
+                  na.rm = TRUE) > (1 + 50/100) * mean(rev(value)[(last_complete_month + 12):(last_complete_month + 14)],
+                                                      na.rm = TRUE)
+        ) && mean(rev(value)[last_complete_month:12][rev(value)[last_complete_month:12] > 0], na.rm = TRUE) > 5
+      )
+    )
+  )
+
+df <- data.frame(specimen_month = as.Date(numeric()), reporting_organisation = character(), value = numeric())
+
+inputspec <- inputspec(
+  timepoint_col = "specimen_month",
+  item_col = "reporting_organisation",
+  value_col = "value",
+  period = "month"
+)
+prepared_df <- prepare_df(df, inputspec)
+
+# this fails
+lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df) %>%
+  purrr::reduce(dplyr::bind_rows)
+
+# this returns one chr and one lgl
+lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df)
+# these both return lgl
+run_alert(prepared_df, alert_rules[1])
+run_alert(prepared_df, alert_rules[2])
+

@@ -286,11 +286,10 @@ test_that("alert_custom() returns condition correctly", {
 
 
 test_that("mantis_alerts() returns an empty df if supplied an empty df", {
-  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
-                   item = c(rep("c", 10), rep("b", 10), rep("a", 10)),
-                   value = c(rep(3, 20), rep(1, 10)),
-                   stringsAsFactors = FALSE) %>%
-    dplyr::slice(0)
+  df <- data.frame(timepoint = as.Date(numeric()),
+                   item = character(),
+                   value = numeric(),
+                   tab = character())
 
   results <- mantis_alerts(df,
                            inputspec = inputspec(timepoint_col = "timepoint",
@@ -304,18 +303,16 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df", {
 })
 
 test_that("mantis_alerts() returns an empty df if supplied an empty df with tab_col", {
-  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
-                   item = c(rep("c", 10), rep("b", 10), rep("a", 10)),
-                   value = c(rep(3, 20), rep(1, 10)),
-                   tabname = "tab",
-                   stringsAsFactors = FALSE) %>%
-    dplyr::slice(0)
+  df <- data.frame(timepoint = as.Date(numeric()),
+                   item = character(),
+                   value = numeric(),
+                   tab = character())
 
   results <- mantis_alerts(df,
                            inputspec = inputspec(timepoint_col = "timepoint",
                                                  item_col = "item",
                                                  value_col = "value",
-                                                 tab_col = "tabname"),
+                                                 tab_col = "tab"),
                            alert_rules = list(alert_missing()),
                            timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
                            fill_with_zero = FALSE)

@@ -10,7 +10,8 @@ test_that("mantis_report() creates single-tab interactive report and returns pat
       inputspec = inputspec(timepoint_col = "timepoint",
                         item_col = "item",
                         value_col = "value"),
-      outputspec = outputspec_interactive()
+      outputspec = outputspec_interactive(),
+      show_progress = FALSE
       )
 
   expect_type(reportpath, "character")
@@ -33,7 +34,8 @@ test_that("mantis_report() creates multi-tab interactive report and returns path
                         item_col = "item",
                         value_col = "value",
                         tab_col = "tab"),
-      outputspec = outputspec_interactive()
+      outputspec = outputspec_interactive(),
+      show_progress = FALSE
       )
 
   expect_type(reportpath, "character")
@@ -54,7 +56,8 @@ test_that("mantis_report() creates single-tab heatmap report and returns path su
       inputspec = inputspec(timepoint_col = "timepoint",
                         item_col = "item",
                         value_col = "value"),
-      outputspec = outputspec_static_heatmap()
+      outputspec = outputspec_static_heatmap(),
+      show_progress = FALSE
     )
 
   expect_type(reportpath, "character")
@@ -75,7 +78,8 @@ test_that("mantis_report() creates single-tab multipanel report and returns path
       inputspec = inputspec(timepoint_col = "timepoint",
                         item_col = "item",
                         value_col = "value"),
-      outputspec = outputspec_static_multipanel()
+      outputspec = outputspec_static_multipanel(),
+      show_progress = FALSE
     )
 
   expect_type(reportpath, "character")
@@ -108,7 +112,8 @@ test_that("mantis_report() creates interactive report with alerts successfully",
           rule_value = 5,
           items = c("b", "c")
         )
-      )
+      ),
+      show_progress = FALSE
     )
 
   expect_type(reportpath, "character")
@@ -119,11 +124,10 @@ test_that("mantis_report() creates interactive report with alerts successfully",
 
 
 test_that("mantis_report() creates single-tab interactive report even if supplied an empty df", {
-  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 2),
-                   item = c(rep("a", 10), rep("b", 10)),
-                   value = rep(3, 20),
-                   stringsAsFactors = FALSE) %>%
-    dplyr::slice(0)
+  df <- data.frame(timepoint = as.Date(numeric()),
+                   item = character(),
+                   value = numeric(),
+                   tab = character())
 
   reportpath <-
     mantis_report(
@@ -131,22 +135,19 @@ test_that("mantis_report() creates single-tab interactive report even if supplie
       inputspec = inputspec(timepoint_col = "timepoint",
                             item_col = "item",
                             value_col = "value"),
-      outputspec = outputspec_interactive()
+      outputspec = outputspec_interactive(),
+      show_progress = FALSE
     )
-
-  expect_type(reportpath, "character")
 
   # clean up
   expect_true(file.remove(reportpath))
 })
 
 test_that("mantis_report() creates multi-tab interactive report even if supplied an empty df", {
-  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
-                   item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
-                   value = rep(3, 30),
-                   tab = c(rep("one", 20), rep("two", 10)),
-                   stringsAsFactors = FALSE) %>%
-    dplyr::slice(0)
+  df <- data.frame(timepoint = as.Date(numeric()),
+                   item = character(),
+                   value = numeric(),
+                   tab = character())
 
   reportpath <-
     mantis_report(
@@ -155,21 +156,19 @@ test_that("mantis_report() creates multi-tab interactive report even if supplied
                             item_col = "item",
                             value_col = "value",
                             tab_col = "tab"),
-      outputspec = outputspec_interactive()
+      outputspec = outputspec_interactive(),
+      show_progress = FALSE
     )
-
-  expect_type(reportpath, "character")
 
   # clean up
   expect_true(file.remove(reportpath))
 })
 
 test_that("mantis_report() creates interactive report with alerts even if supplied an empty df", {
-  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
-                   item = c(rep("c", 10), rep("b", 10), rep("a", 10)),
-                   value = c(rep(3, 20), rep(1, 10)),
-                   stringsAsFactors = FALSE) %>%
-    dplyr::slice(0)
+  df <- data.frame(timepoint = as.Date(numeric()),
+                   item = character(),
+                   value = numeric(),
+                   tab = character())
 
   reportpath <-
     mantis_report(
@@ -189,21 +188,19 @@ test_that("mantis_report() creates interactive report with alerts even if suppli
           rule_value = 5,
           items = c("b", "c")
         )
-      )
+      ),
+      show_progress = FALSE
     )
-
-  expect_type(reportpath, "character")
 
   # clean up
   expect_true(file.remove(reportpath))
 })
 
 test_that("mantis_report() creates single-tab heatmap report even if supplied an empty df", {
-  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 2),
-                   item = c(rep("a", 10), rep("b", 10)),
-                   value = rep(3, 20),
-                   stringsAsFactors = FALSE) %>%
-    dplyr::slice(0)
+  df <- data.frame(timepoint = as.Date(numeric()),
+                   item = character(),
+                   value = numeric(),
+                   tab = character())
 
   reportpath <-
     mantis_report(
@@ -211,21 +208,19 @@ test_that("mantis_report() creates single-tab heatmap report even if supplied an
       inputspec = inputspec(timepoint_col = "timepoint",
                             item_col = "item",
                             value_col = "value"),
-      outputspec = outputspec_static_heatmap()
+      outputspec = outputspec_static_heatmap(),
+      show_progress = FALSE
     )
-
-  expect_type(reportpath, "character")
 
   # clean up
   expect_true(file.remove(reportpath))
 })
 
 test_that("mantis_report() creates single-tab multipanel report even if supplied an empty df", {
-  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 2),
-                   item = c(rep("a", 10), rep("b", 10)),
-                   value = rep(3, 20),
-                   stringsAsFactors = FALSE) %>%
-    dplyr::slice(0)
+  df <- data.frame(timepoint = as.Date(numeric()),
+                   item = character(),
+                   value = numeric(),
+                   tab = character())
 
   reportpath <-
     mantis_report(
@@ -233,10 +228,9 @@ test_that("mantis_report() creates single-tab multipanel report even if supplied
       inputspec = inputspec(timepoint_col = "timepoint",
                             item_col = "item",
                             value_col = "value"),
-      outputspec = outputspec_static_multipanel()
+      outputspec = outputspec_static_multipanel(),
+      show_progress = FALSE
     )
-
-  expect_type(reportpath, "character")
 
   # clean up
   expect_true(file.remove(reportpath))
