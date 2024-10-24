@@ -67,7 +67,7 @@ prepare_df(
   item_col,
   value_col,
   timepoint_limits = c(as.Date("2022-06-01"), NA)
-) %>%
+) |>
 output_table_interactive(
   item_label = "item",
   plot_type = "bar",
@@ -76,12 +76,12 @@ output_table_interactive(
 )
 
 prepare_df(
-  df %>% dplyr::filter(startsWith(item, "sparse")),
+  df |> dplyr::filter(startsWith(item, "sparse")),
   timepoint_col,
   item_col,
   value_col,
   timepoint_limits = c(min(df$timepoint), max(df$timepoint))
-) %>%
+) |>
   output_table_interactive(
     item_label = "item",
     plot_type = "bar",
@@ -200,9 +200,9 @@ mantis_report(df = example_data,
 )
 
 library(dplyr)
-monthly_data <- example_data %>%
-  dplyr::mutate(timepoint = as.Date(format(timepoint, format = "%Y-%m-01"))) %>%
-  dplyr::group_by(timepoint, item, tab) %>%
+monthly_data <- example_data |>
+  dplyr::mutate(timepoint = as.Date(format(timepoint, format = "%Y-%m-01"))) |>
+  dplyr::group_by(timepoint, item, tab) |>
   dplyr::summarise(value = sum(value, na.rm = TRUE),
                    .groups = "drop")
 
@@ -231,12 +231,12 @@ prepared_df <- prepare_df(
                         period = "month")
 )
 
-value_for_history <- prepared_df %>%
-  filter(item == "norm_na") %>%
+value_for_history <- prepared_df |>
+  filter(item == "norm_na") |>
   pull(value)
 
-timepoint <- prepared_df %>%
-  filter(item == "norm_na") %>%
+timepoint <- prepared_df |>
+  filter(item == "norm_na") |>
   pull(timepoint)
 
 ## alerting
@@ -275,21 +275,21 @@ library(mantis)
 
 pop_monitor <- readRDS("./devtesting/pop_monitor.Rds")
 
-pop_monitor %>% distinct(stat_name)
+pop_monitor |> distinct(stat_name)
 
 prepared_df <-
-  pop_monitor %>%
+  pop_monitor |>
   filter(stat_name == "Max SpecimenDate per Lab",
-         monitor_point_subname == "sgss_cdr") %>%
-  mutate(run_date = as.Date(monitor_datetime)) %>%
+         monitor_point_subname == "sgss_cdr") |>
+  mutate(run_date = as.Date(monitor_datetime)) |>
   # if multiple results in same day then keep the latest
-  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) %>%
-  filter(monitor_datetime == max(monitor_datetime)) %>%
-  ungroup() %>%
+  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) |>
+  filter(monitor_datetime == max(monitor_datetime)) |>
+  ungroup() |>
   mutate(days_since_monitor_date = as.integer(
-    run_date - as.Date(lubridate::parse_date_time(value, orders = c("%Y%m%d", "%Y-%m-%d"))))) %>%
-  # filter(groupby_value == "BRIGHTON MICROBIOLOGY LABORATORY") %>%
-  # arrange(monitor_datetime) %>%
+    run_date - as.Date(lubridate::parse_date_time(value, orders = c("%Y%m%d", "%Y-%m-%d"))))) |>
+  # filter(groupby_value == "BRIGHTON MICROBIOLOGY LABORATORY") |>
+  # arrange(monitor_datetime) |>
   prepare_df(
     timepoint_col = "run_date",
     item_col = "groupby_value",
@@ -313,19 +313,19 @@ alert_results <-
   run_alerts(prepared_df,
              alert_rules)
 
-alert_results %>%
+alert_results |>
   filter(if_any(.cols = everything(), .fns = ~ . == TRUE))
 
 df <-
-  pop_monitor %>%
+  pop_monitor |>
   filter(stat_name == "STREPTOCOCCUS PNEUMONIAE  per lab",
-         monitor_point_subname == "FACT_OPIE") %>%
-  mutate(run_date = as.Date(monitor_datetime)) %>%
+         monitor_point_subname == "FACT_OPIE") |>
+  mutate(run_date = as.Date(monitor_datetime)) |>
   # if multiple results in same day then keep the latest
-  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) %>%
-  filter(monitor_datetime == max(monitor_datetime)) %>%
-  ungroup() %>%
-  mutate(value = as.numeric(value)) %>%
+  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) |>
+  filter(monitor_datetime == max(monitor_datetime)) |>
+  ungroup() |>
+  mutate(value = as.numeric(value)) |>
   filter(run_date < as.Date("2023-08-09"))
 
 prepared_df <-
@@ -348,18 +348,18 @@ alert_results <-
   )
 )
 
-alert_results %>%
+alert_results |>
   filter(if_any(.cols = everything(), .fns = ~ . == TRUE))
 
 df <-
-  pop_monitor %>%
-  filter(stat_name == "STREPTOCOCCUS PNEUMONIAE  per lab") %>%
-  mutate(run_date = as.Date(monitor_datetime)) %>%
+  pop_monitor |>
+  filter(stat_name == "STREPTOCOCCUS PNEUMONIAE  per lab") |>
+  mutate(run_date = as.Date(monitor_datetime)) |>
   # if multiple results in same day then keep the latest
-  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) %>%
-  filter(monitor_datetime == max(monitor_datetime)) %>%
-  ungroup() %>%
-  mutate(value = as.numeric(value)) %>%
+  group_by(run_date, monitor_point_name, monitor_point_subname, stat_name) |>
+  filter(monitor_datetime == max(monitor_datetime)) |>
+  ungroup() |>
+  mutate(value = as.numeric(value)) |>
   filter(run_date < as.Date("2023-08-09"))
 
 alert_results <-
@@ -544,7 +544,7 @@ inputspec <- inputspec(
 prepared_df <- prepare_df(df, inputspec)
 
 # this fails
-lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df) %>%
+lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df) |>
   purrr::reduce(dplyr::bind_rows)
 
 # this returns one chr and one lgl

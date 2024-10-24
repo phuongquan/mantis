@@ -142,7 +142,7 @@ initialise_widgets <- function(plot_type){
       item_col = "b",
       value_col = "c"
     )
-  ) %>%
+  ) |>
     output_table_interactive(
       plot_type = plot_type,
       summary_cols = "",
@@ -201,12 +201,12 @@ construct_rmd_tab_item <- function(df,
   if (is_outputspec_static_heatmap(outputspec)) {
       plot_heatmap_static(prepared_df = prepared_df,
                           fill_colour = outputspec$fill_colour,
-                          y_label = outputspec$y_label) %>%
+                          y_label = outputspec$y_label) |>
       print()
   } else if (is_outputspec_static_multipanel(outputspec)) {
       plot_multipanel_static(prepared_df = prepared_df,
                              sync_axis_range = outputspec$sync_axis_range,
-                             y_label = outputspec$y_label) %>%
+                             y_label = outputspec$y_label) |>
       print()
   } else if (is_outputspec_interactive(outputspec)) {
     p <-
@@ -261,7 +261,7 @@ construct_rmd_tab_group <- function(df,
                                     tab_group_name = NULL,
                                     tab_group_level = 1) {
 
-  tab_names <- unique(df[inputspec$tab_col] %>%
+  tab_names <- unique(df[inputspec$tab_col] |>
                         dplyr::pull())
 
   if (!is.null(tab_order)) {
@@ -275,7 +275,7 @@ construct_rmd_tab_group <- function(df,
 
   for (i in seq_along(tab_names)) {
     dftab <-
-      df %>% dplyr::filter(.data[[inputspec$tab_col]] == tab_names[i])
+      df |> dplyr::filter(.data[[inputspec$tab_col]] == tab_names[i])
 
     construct_rmd_tab_item(
       df = dftab,
@@ -333,18 +333,18 @@ rmd_fig_height <- function(df, inputspec, outputspec){
   fig_height <- NULL
   if (is_outputspec_static(outputspec)){
     maxrows <-
-      df %>%
+      df |>
       dplyr::select(
         item = dplyr::all_of(inputspec$item_col),
         tab = dplyr::any_of(inputspec$tab_col)
-      ) %>%
+      ) |>
       dplyr::group_by(dplyr::pick(dplyr::any_of(
         inputspec$tab_col
-      ))) %>%
-      dplyr::distinct() %>%
-      dplyr::summarise(rows = dplyr::n()) %>%
-      dplyr::ungroup() %>%
-      dplyr::summarise(maxrows = max(rows)) %>%
+      ))) |>
+      dplyr::distinct() |>
+      dplyr::summarise(rows = dplyr::n()) |>
+      dplyr::ungroup() |>
+      dplyr::summarise(maxrows = max(rows)) |>
       dplyr::pull()
 
     if (maxrows > 0){

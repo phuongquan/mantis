@@ -17,7 +17,7 @@ plot_heatmap_static <- function(prepared_df,
     return(empty_plot_static())
   }
 
-  data <- prepared_df %>%
+  data <- prepared_df |>
     dplyr::mutate(item = factor(item, levels = unique(prepared_df$item)))
 
   fill_colour <- fill_colour
@@ -103,7 +103,7 @@ plot_multipanel_static <- function(prepared_df,
     return(empty_plot_static())
   }
 
-  data <- prepared_df %>%
+  data <- prepared_df |>
     dplyr::mutate(item = factor(item, levels = unique(prepared_df$item)))
 
   g <-

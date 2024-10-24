@@ -383,11 +383,11 @@ run_alerts <- function(prepared_df,
   }
 
   results <-
-    lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df) %>%
+    lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df) |>
     purrr::reduce(dplyr::bind_rows)
 
-  results %>%
-    dplyr::mutate(alert_result = tidyr::replace_na(alert_result, "NA")) %>%
+  results |>
+    dplyr::mutate(alert_result = tidyr::replace_na(alert_result, "NA")) |>
     dplyr::filter(alert_result %in% filter_results)
 }
 
@@ -403,10 +403,10 @@ run_alert <- function(prepared_df, alert_rule){
 
   # TODO: if it's a custom rule, wrap it in some error handling
 
-  prepared_df %>%
-    dplyr::filter(item %in% alert_rule$items | all(alert_rule$items == "ALL")) %>%
-    dplyr::group_by(item) %>%
-    dplyr::arrange(timepoint) %>%
+  prepared_df |>
+    dplyr::filter(item %in% alert_rule$items | all(alert_rule$items == "ALL")) |>
+    dplyr::group_by(item) |>
+    dplyr::arrange(timepoint) |>
     dplyr::summarise(alert_name = alert_rule$short_name,
                      alert_description = alert_rule$description,
                      alert_result = ifelse(eval(alert_rule$function_call), "FAIL", "PASS"))
@@ -456,17 +456,17 @@ mantis_alerts <- function(df,
         fill_with_zero = fill_with_zero
       )
     results <-
-      run_alerts(prepared_df, alert_rules, filter_results = filter_results) %>%
+      run_alerts(prepared_df, alert_rules, filter_results = filter_results) |>
       dplyr::rename("{inputspec$item_col}" := item)
   } else{
     resultslist <- list()
 
-    tab_names <- unique(df[inputspec$tab_col] %>%
+    tab_names <- unique(df[inputspec$tab_col] |>
                           dplyr::pull())
 
     for (i in seq_along(tab_names)) {
       dftab <-
-        df %>% dplyr::filter(.data[[inputspec$tab_col]] == tab_names[i])
+        df |> dplyr::filter(.data[[inputspec$tab_col]] == tab_names[i])
 
       # TODO: Would be nice if prepare_df could include tab_col
       prepared_df <-
@@ -478,12 +478,12 @@ mantis_alerts <- function(df,
         )
 
       resultslist[[i]] <-
-        run_alerts(prepared_df, alert_rules, filter_results = filter_results) %>%
-        dplyr::rename("{inputspec$item_col}" := item) %>%
+        run_alerts(prepared_df, alert_rules, filter_results = filter_results) |>
+        dplyr::rename("{inputspec$item_col}" := item) |>
         dplyr::mutate("{inputspec$tab_col}" := tab_names[i])
     }
 
-    results <- purrr::reduce(resultslist, dplyr::bind_rows) %>%
+    results <- purrr::reduce(resultslist, dplyr::bind_rows) |>
       dplyr::select(dplyr::all_of(c(inputspec$tab_col, inputspec$item_col)), dplyr::everything())
 
   }

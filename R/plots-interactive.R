@@ -70,19 +70,19 @@ output_table_interactive <- function(prepared_df,
         cell = function(value) {
           dy <- dygraphs::dygraph(value,
                                   height = 40,
-                                  width = 400) %>%
+                                  width = 400) |>
             dygraphs::dyOptions(
               drawXAxis = FALSE,
               drawYAxis = FALSE,
               drawGrid = FALSE,
               drawPoints = FALSE
-            ) %>%
+            ) |>
             dygraphs::dyAxis(name = "y",
                              valueRange = if (sync_axis_range) {
                                value_range_from_history(value_history = table$history)
                              } else {
                                value_range_from_history(value_history = value)
-                             }) %>%
+                             }) |>
             dygraphs::dyAxis(
               name = "x",
               rangePad = 10,
@@ -91,7 +91,7 @@ output_table_interactive <- function(prepared_df,
             )
           if (plot_type == "bar") {
             dy <-
-              dy %>%
+              dy |>
               dygraphs::dyBarChart()
           }
           dy

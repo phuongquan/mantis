@@ -27,7 +27,7 @@ prepare_df <-
 
   # keep only relevant cols and rename for ease. may want to figure out how to keep original colnames
   prepared_df <-
-    df %>%
+    df |>
     dplyr::select(timepoint = dplyr::all_of(inputspec$timepoint_col),
                   item = dplyr::all_of(inputspec$item_col),
                   value = dplyr::all_of(inputspec$value_col))
@@ -44,14 +44,14 @@ prepare_df <-
 
   if (fill_with_zero) {
     prepared_df <-
-      prepared_df %>%
+      prepared_df |>
       tidyr::replace_na(list(value = 0))
   }
 
   if (!is.null(item_order)) {
     prepared_df <-
-      prepared_df %>%
-      dplyr::arrange(item) %>%
+      prepared_df |>
+      dplyr::arrange(item) |>
       dplyr::arrange(factor(item, levels = item_order))
   }
 
@@ -88,15 +88,15 @@ prepare_table <-
   item_order_final <- unique(prepared_df$item)
 
   table_df <-
-    prepared_df %>%
-    dplyr::group_by(item) %>%
-    dplyr::arrange(timepoint) %>%
+    prepared_df |>
+    dplyr::group_by(item) |>
+    dplyr::arrange(timepoint) |>
     dplyr::mutate(
       value_for_history = dplyr::case_when(
         plot_value_type == "value" ~ as.numeric(value),
         plot_value_type == "delta" ~ as.numeric(value) - dplyr::lag(as.numeric(value))
       )
-    ) %>%
+    ) |>
     dplyr::summarise(
       # summary columns
       last_timepoint = max_else_na(timepoint[!is.na(value)]),
@@ -116,10 +116,10 @@ prepare_table <-
   # add alerts column
   if (!is.null(alert_results)) {
     table_df <-
-      table_df %>%
+      table_df |>
       dplyr::left_join(
-        alert_results %>%
-          dplyr::group_by(item) %>%
+        alert_results |>
+          dplyr::group_by(item) |>
           dplyr::summarise(
             alert_overall = ifelse(
               any(alert_result == "FAIL"),
@@ -142,16 +142,16 @@ prepare_table <-
   # sort table
   if (is.null(sort_by)){
     table_df <-
-      table_df %>%
+      table_df |>
       dplyr::arrange(factor(item, levels = item_order_final))
   } else if (substring(sort_by, 1, 1) == "-"){
     table_df <-
-      table_df %>%
+      table_df |>
       dplyr::arrange(dplyr::across(dplyr::any_of(substring(sort_by, 2)), dplyr::desc),
                      factor(item, levels = item_order_final))
   } else{
     table_df <-
-      table_df %>%
+      table_df |>
       dplyr::arrange(dplyr::pick(dplyr::any_of(sort_by)),
                      factor(item, levels = item_order_final))
   }
@@ -333,7 +333,7 @@ history_to_list <-
 
     ts <-
       xts::xts(x = value_for_history,
-               order.by = timepoint) %>%
+               order.by = timepoint) |>
       list()
 
     if (length(ts[[1]]) > 0){
@@ -380,14 +380,14 @@ align_data_timepoints <-
   all_timepoints <- seq(min_timepoint, max_timepoint, by = period)
 
   df_out <-
-    df %>%
+    df |>
     tidyr::pivot_wider(names_from = item,
                        values_from = value,
-                       names_prefix = "piv_") %>%
+                       names_prefix = "piv_") |>
     # insert any missing timepoint values
-    dplyr::full_join(data.frame("timepoint" = all_timepoints), by = "timepoint") %>%
+    dplyr::full_join(data.frame("timepoint" = all_timepoints), by = "timepoint") |>
     # restrict to specified limits
-    dplyr::filter(timepoint >= min_timepoint & timepoint <= max_timepoint) %>%
+    dplyr::filter(timepoint >= min_timepoint & timepoint <= max_timepoint) |>
     tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
                         names_to = "item",
                         names_prefix = "piv_")
@@ -538,16 +538,16 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
   err_validation <- character()
 
   duplicate_timepoints <-
-    df %>%
+    df |>
     dplyr::group_by(dplyr::pick(dplyr::any_of(c(
       inputspec$item_col,
       inputspec$tab_col
-    )))) %>%
+    )))) |>
     dplyr::summarise(
       duplicate_timepoints = anyDuplicated(dplyr::pick(dplyr::all_of(
         inputspec$timepoint_col))),
-      .groups = "drop") %>%
-    dplyr::filter(duplicate_timepoints > 0) %>%
+      .groups = "drop") |>
+    dplyr::filter(duplicate_timepoints > 0) |>
     tidyr::unite(baditem,
                  dplyr::any_of(c(inputspec$item_col,
                                  inputspec$tab_col)),
