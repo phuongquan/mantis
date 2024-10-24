@@ -374,7 +374,7 @@ run_alerts <- function(prepared_df,
 
   # if there is no data, return a formatted (empty) df
   if(nrow(prepared_df) == 0){
-    return(tibble::tibble(
+    return(dplyr::tibble(
       item = character(),
       alert_name = character(),
       alert_description = character(),
@@ -439,7 +439,7 @@ mantis_alerts <- function(df,
 
   # if there is no data, return a formatted (empty) df, only needed when tab_col is specified
   if(nrow(df) == 0){
-    return(tibble::tibble(
+    return(dplyr::tibble(
       item = character(),
       alert_name = character(),
       alert_description = character(),
