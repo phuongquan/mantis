@@ -331,12 +331,12 @@ rmd_fig_height <- function(df, inputspec, outputspec){
   rows <- NULL
 
   fig_height <- NULL
-  if (is_outputspec_static(outputspec)){
+  if (is_outputspec_static(outputspec) && nrow(df) > 0){
     maxrows <-
       df |>
       dplyr::select(
-        item = dplyr::all_of(inputspec$item_col),
-        tab = dplyr::any_of(inputspec$tab_col)
+        dplyr::all_of(inputspec$item_col),
+        dplyr::any_of(inputspec$tab_col)
       ) |>
       dplyr::group_by(dplyr::pick(dplyr::any_of(
         inputspec$tab_col
@@ -347,11 +347,9 @@ rmd_fig_height <- function(df, inputspec, outputspec){
       dplyr::summarise(maxrows = max(rows)) |>
       dplyr::pull()
 
-    if (maxrows > 0){
-      fig_height <- maxrows*dplyr::case_when(is_outputspec_static_heatmap(outputspec) ~ 0.6,
-                                             is_outputspec_static_multipanel(outputspec) ~ 0.8,
-                                             TRUE ~ 0.8)
-    }
+    fig_height <- maxrows*dplyr::case_when(is_outputspec_static_heatmap(outputspec) ~ 0.6,
+                                           is_outputspec_static_multipanel(outputspec) ~ 0.8,
+                                           TRUE ~ 0.8)
   }
 
   fig_height
