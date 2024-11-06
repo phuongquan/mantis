@@ -553,3 +553,32 @@ lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df)
 run_alert(prepared_df, alert_rules[1])
 run_alert(prepared_df, alert_rules[2])
 
+
+mantis_report(df = example_prescription_numbers,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_col = "Antibiotic",
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = outputspec_static_heatmap(
+    y_label = "Antibiotic"
+  ),
+  report_title = "mantis report",
+  dataset_description = "Antibiotic prescriptions by site"
+)
+
+
+mantis_report(df = example_prescription_numbers,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_col = "Antibiotic",
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = outputspec_interactive(
+    item_label = "Antibiotic"
+  ),
+  report_title = "mantis report",
+  dataset_description = "Antibiotic prescriptions by site"
+)

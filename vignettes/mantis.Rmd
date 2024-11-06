@@ -67,7 +67,7 @@ There are some options for adjusting the output, such as changing column labels,
 
 For the `example_prescription_numbers` dataset above, we will save a report in the current directory, with separate tabs for each hospital site, and changing the first column header to be "Antibiotic".
 
-```{r, include=FALSE}
+```{r interactive-test, include=FALSE}
 # quietly test can create the report from an rmd but show the code in the next chunk in the vignette
 filename <- 
   mantis_report(
@@ -92,7 +92,7 @@ filename <-
 file.remove(filename)
 ```
 
-```{r, eval=FALSE}
+```{r interactive-display, eval=FALSE}
 mantis_report(
   df = example_prescription_numbers,
   inputspec = inputspec(
@@ -112,8 +112,102 @@ mantis_report(
 )
 ```
 
+<img src="../man/figures/example_prescription_numbers_interactive.png" width="500" />
+
 ### Static plots
 
-Alternatively, the report can output static plots, if interactivity is not needed, or if file sizes need to be kept small. There are currently two types of static visualisations: heatmap or multipanel, and are selected by using the `outputspec_static_heatmap()` or `outputspec_static_multipanel()` function when supplying the `outputspec` parameter.
+Alternatively, the report can output static plots. This can be useful if interactivity is not needed, or if file sizes need to be kept small. There are currently two types of static visualisations: heatmap or multipanel, and are selected by using the `outputspec_static_heatmap()` or `outputspec_static_multipanel()` function when supplying the `outputspec` parameter.
 
-TODO: pictures of static plots
+#### Heatmap
+
+```{r heatmap-test, include=FALSE}
+# quietly test can create the report from an rmd but show the code in the next chunk in the vignette
+filename <- 
+  mantis_report(
+  df = example_prescription_numbers,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_col = "Antibiotic",
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = outputspec_static_heatmap(
+    y_label = "Antibiotic"
+  ),
+  report_title = "mantis report",
+  dataset_description = "Antibiotic prescriptions by site",
+  save_filename = "example_prescription_numbers_heatmap",
+  show_progress = FALSE
+)
+
+# clean up
+file.remove(filename)
+```
+
+```{r heatmap-display, eval=FALSE}
+mantis_report(
+  df = example_prescription_numbers,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_col = "Antibiotic",
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = outputspec_static_heatmap(
+    y_label = "Antibiotic"
+  ),
+  report_title = "mantis report",
+  dataset_description = "Antibiotic prescriptions by site",
+  save_filename = "example_prescription_numbers_heatmap",
+  show_progress = TRUE
+)
+```
+
+<img src="../man/figures/example_prescription_numbers_heatmap.png" width="500" />
+
+#### Multipanel
+
+```{r multipanel-test, include=FALSE}
+# quietly test can create the report from an rmd but show the code in the next chunk in the vignette
+filename <- 
+  mantis_report(
+  df = example_prescription_numbers,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_col = "Antibiotic",
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = outputspec_static_multipanel(
+    y_label = "Antibiotic"
+  ),
+  report_title = "mantis report",
+  dataset_description = "Antibiotic prescriptions by site",
+  save_filename = "example_prescription_numbers_multipanel",
+  show_progress = FALSE
+)
+
+# clean up
+file.remove(filename)
+```
+
+```{r multipanel-display, eval=FALSE}
+mantis_report(
+  df = example_prescription_numbers,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_col = "Antibiotic",
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = outputspec_static_multipanel(
+    y_label = "Antibiotic"
+  ),
+  report_title = "mantis report",
+  dataset_description = "Antibiotic prescriptions by site",
+  save_filename = "example_prescription_numbers_multipanel",
+  show_progress = TRUE
+)
+```
+
+<img src="../man/figures/example_prescription_numbers_multipanel.png" width="500" />
