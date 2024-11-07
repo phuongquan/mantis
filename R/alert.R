@@ -1,3 +1,4 @@
+# -----------------------------------------------------------------------------
 #' Create set of alert rules
 #'
 #' @param ... alerts to apply to the time series
@@ -13,6 +14,16 @@ alert_rules <- function(...) {
   structure(ars, class = "mantis_alert_rules")
 }
 
+# -----------------------------------------------------------------------------
+#' Test if object is an alert_rules object
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_alert_rules <- function(x) inherits(x, "mantis_alert_rules")
+
+
+# -----------------------------------------------------------------------------
 alert_rule <- function(type,
                        function_call,
                        short_name,

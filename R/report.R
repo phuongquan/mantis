@@ -41,7 +41,19 @@ mantis_report <- function(df,
                         show_progress = TRUE,
                         ...) {
 
-  #TODO: validate params
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       df = df,
+                       inputspec = inputspec,
+                       outputspec = outputspec,
+                       alert_rules = alert_rules,
+                       report_title = report_title,
+                       dataset_description = dataset_description,
+                       save_directory = save_directory,
+                       save_filename = save_filename,
+                       show_progress = show_progress
+  )
+
   validate_df_to_inputspec(df, inputspec)
 
   timestamp_string <- format(Sys.time(), "%Y%m%d%_%H%M%S")
