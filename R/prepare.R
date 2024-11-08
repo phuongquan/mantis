@@ -238,6 +238,18 @@ outputspec_interactive <- function(plot_value_type = "value",
                        item_order = NULL,
                        sort_by = NULL){
 
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       plot_value_type = plot_value_type,
+                       plot_type = plot_type,
+                       item_label = item_label,
+                       plot_label = plot_label,
+                       summary_cols = summary_cols,
+                       sync_axis_range = sync_axis_range,
+                       item_order = item_order,
+                       sort_by = sort_by
+                       )
+
   structure(
     list(plot_value_type = plot_value_type,
          plot_type = plot_type,
