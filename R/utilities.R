@@ -83,191 +83,163 @@ validate_params_type <- function(call, ...) {
     param_value <- params_passed[[i]]
 
     if (param_name == "df") {
-      if (!is.data.frame(param_value)) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ": Expected a data frame but found: [ class = ",
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 100),
-            "]."
-          )
-        )
-      }
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = FALSE,
+                       expect_scalar = FALSE,
+                       validation_function = is.data.frame,
+                       error_message = "Expected a data frame",
+                       error_contents_max_length = 100)
+      )
     } else if (param_name == "inputspec") {
-      if (!is_inputspec(param_value)) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ": Expected an inputspec object but found: [ class = ",
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 100),
-            "]"
-          )
-        )
-      }
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = FALSE,
+                       expect_scalar = FALSE,
+                       validation_function = is_inputspec,
+                       error_message = "Expected an inputspec object",
+                       error_contents_max_length = 100)
+      )
     } else if (param_name == "outputspec") {
-      if (!is.null(param_value) &&
-          !is_outputspec(param_value)) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ": Expected an outputspec object but found: [ class = ",
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 100),
-            "]"
-          )
-        )
-      }
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = TRUE,
+                       expect_scalar = FALSE,
+                       validation_function = is_outputspec,
+                       error_message = "Expected an outputspec object",
+                       error_contents_max_length = 100)
+      )
     } else if (param_name == "alert_rules") {
-      if (!is.null(param_value) &&
-          !is_alert_rules(param_value)) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ": Expected an alert_rules object but found: [ class = ",
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 100),
-            "]"
-          )
-        )
-      }
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = TRUE,
+                       expect_scalar = FALSE,
+                       validation_function = is_alert_rules,
+                       error_message = "Expected an alert_rules object",
+                       error_contents_max_length = 100)
+      )
     } else if (param_name %in% c("show_progress")) {
-      if (!is.logical(param_value)) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ": Expected TRUE/FALSE but found: [ class = ",
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 100),
-            "]"
-          )
-        )
-      }
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = FALSE,
+                       expect_scalar = TRUE,
+                       validation_function = is.logical,
+                       error_message = "Expected TRUE/FALSE",
+                       error_contents_max_length = 100)
+      )
     } else if (param_name %in% c("save_directory")) {
-      if (!is.character(param_value) ||
-          !dir.exists(param_value)) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ": Directory not found: [ class = ",
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 255),
-            "]"
-          )
-        )
-      }
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = FALSE,
+                       expect_scalar = TRUE,
+                       validation_function = function(x){is.character(x) && dir.exists(x)},
+                       error_message = "Directory not found. Expected a single path to an existing directory",
+                       error_contents_max_length = 255)
+      )
     } else if (param_name %in% c("save_filename")) {
-      if (!is.null(param_value) &&
-          (grepl("[^a-zA-Z0-9_-]", param_value) ||
-           nchar(param_value) == 0)) {
-        # NOTE: this is very restrictive and I'm not sure how it works in different locales
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ": Invalid filename: ",
-            param_value,
-            ". Filename can only contain alphanumeric, '-', and '_' characters, and should not include the file extension."
-          )
-        )
-      }
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = TRUE,
+                       expect_scalar = TRUE,
+                       validation_function = function(x){!grepl("[^a-zA-Z0-9_-]", x) && nchar(x) > 0},
+                       error_message = "Filename can only contain alphanumeric, '-', and '_' characters, and should not include the file extension",
+                       error_contents_max_length = 255)
+      )
     } else if (param_name %in% c("dataset_description",
                                  "report_title",
-                                 "timepoint_col",
+                                 "tab_col")) {
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = TRUE,
+                       expect_scalar = TRUE,
+                       validation_function = is.character,
+                       error_message = "Expected a character string",
+                       error_contents_max_length = 500)
+      )
+    } else if (param_name %in% c("timepoint_col",
                                  "item_col",
                                  "value_col",
-                                 "tab_col",
                                  "plot_value_type",
                                  "plot_type",
                                  "item_label",
-                                 "plot_label")
-               ) {
-      if (!is.null(param_value) &&
-          (!is.character(param_value) ||
-           length(param_value) != 1)) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ": Expected a character string but found: [ class = ",
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 500),
-            "]"
-          )
-        )
-      }
+                                 "plot_label")) {
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = FALSE,
+                       expect_scalar = TRUE,
+                       validation_function = is.character,
+                       error_message = "Expected a character string",
+                       error_contents_max_length = 100)
+      )
     } else if (param_name %in% c("period")) {
-      if (length(param_value) != 1 ||
-          !(param_value %in% c("day", "week", "month", "quarter", "year"))) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ": Values allowed are: day, week, month, quarter, year but found: [ class = ",
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 100),
-            "]"
-          )
-        )
-      }
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = FALSE,
+                       expect_scalar = TRUE,
+                       validation_function = function(x){x %in% c("day", "week", "month", "quarter", "year")},
+                       error_message = "Values allowed are: day, week, month, quarter, year",
+                       error_contents_max_length = 100)
+      )
     } else if (param_name == "summary_cols") {
-      if (!is_summary_cols(param_value)) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ': Expected a subset of c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value") but found: [ class = ',
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 500),
-            "]"
-          )
-        )
-      }
+      # TODO: if they provide a colname that doesn't exist, is it better to error or ignore?
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = TRUE,
+                       expect_scalar = FALSE,
+                       validation_function = function(x){all(x %in% c("max_value",
+                                                                      "last_value",
+                                                                      "last_value_nonmissing",
+                                                                      "last_timepoint",
+                                                                      "mean_value"))},
+                       error_message = "Expected a subset of c('max_value', 'last_value', 'last_value_nonmissing', 'last_timepoint', 'mean_value')",
+                       error_contents_max_length = 500)
+      )
     } else if (param_name %in% c("item_order")) {
-      if (!is.null(param_value) &&
-          !is_true_or_character_vector(param_value)) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ": Expected either TRUE or a vector of character strings but found: [ class = ",
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 500),
-            "]"
-          )
-        )
-      }
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = TRUE,
+                       expect_scalar = FALSE,
+                       validation_function = function(x){(length(x) == 1 && x == TRUE) || is.character(x)},
+                       error_message = "Expected either TRUE or a vector of character strings",
+                       error_contents_max_length = 500)
+      )
     } else if (param_name == "sort_by") {
-      if (!is_sort_by(param_value)) {
-        err_validation <- append(
-          err_validation,
-          paste0(
-            param_name,
-            ': Expected a subset of c(item", "alert_overall", "max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value") but found: [ class = ',
-            class(param_value),
-            "; contents = ",
-            substr(toString(param_value), 1, 500),
-            "]"
-          )
-        )
-      }
+      # NOTE: if they provide a colname that doesn't exist, just ignore it, as you may want to
+      # supply a standard superset for everything
+      err_validation <- append(
+        err_validation,
+        validate_param(param_name = param_name,
+                       param_value = param_value,
+                       allow_null = TRUE,
+                       expect_scalar = FALSE,
+                       validation_function = is.character,
+                       error_message = "Expected a vector of character strings",
+                       error_contents_max_length = 500)
+      )
     }
   }
 
@@ -282,54 +254,72 @@ validate_params_type <- function(call, ...) {
   }
 }
 
-#' Check if object is TRUE or a character vector
-#'
-#' Helper for `validate_params_type()`
-#'
-#' @param x parameter value to test
-#'
-#' @return logical
-#' @noRd
-is_true_or_character_vector <- function(x){
-  (length(x) == 1 && x == TRUE) || all(is.character(x))
+validate_param <- function(param_name,
+                           param_value,
+                           allow_null,
+                           expect_scalar,
+                           validation_function,
+                           error_message,
+                           error_contents_max_length) {
+
+  # null value supplied
+  if (is.null(param_value)) {
+    if (allow_null) {
+      return(character())
+    } else{
+      return(
+        validation_failed_message(
+          param_name = param_name,
+          param_value = param_value,
+          error_message = error_message,
+          error_contents_max_length = error_contents_max_length
+        )
+      )
+    }
+  }
+
+  # a vector has been supplied when only a single value is expected
+  if (expect_scalar && length(param_value) > 1) {
+    return(
+      validation_failed_message(
+        param_name = param_name,
+        param_value = param_value,
+        error_message = error_message,
+        error_contents_max_length = error_contents_max_length
+      )
+    )
+  }
+
+  # else do the validation
+  if (validation_function(param_value)) {
+    return(character())
+  } else{
+    return(
+      validation_failed_message(
+        param_name = param_name,
+        param_value = param_value,
+        error_message = error_message,
+        error_contents_max_length = error_contents_max_length
+      )
+    )
+  }
 }
 
-#' Check if object is valid for summary_cols param
-#'
-#' Helper for `validate_params_type()`
-#'
-#' @param x object to test
-#' @return logical
-#' @noRd
-is_summary_cols <- function(x){
-  is.null(x) ||
-  length(base::setdiff(x, c("max_value",
-                                      "last_value",
-                                      "last_value_nonmissing",
-                                      "last_timepoint",
-                                      "mean_value"))) == 0
-
+validation_failed_message <- function(param_name,
+                                      param_value,
+                                      error_message,
+                                      error_contents_max_length) {
+  paste0(
+    param_name,
+    ": ",
+    error_message,
+    ": Found [ class = ",
+    paste(class(param_value), collapse = ";"),
+    "; contents = ",
+    substr(toString(param_value), 1, error_contents_max_length),
+    "]."
+  )
 }
-
-is_sort_by <- function(x){
-  is.null(x) ||
-  length(base::setdiff(x, c("item",
-                                      "alert_overall",
-                                      "max_value",
-                                      "last_value",
-                                      "last_value_nonmissing",
-                                      "last_timepoint",
-                                      "mean_value",
-                                      "-item",
-                                      "-alert_overall",
-                                      "-max_value",
-                                      "-last_value",
-                                      "-last_value_nonmissing",
-                                      "-last_timepoint",
-                                      "-mean_value"))) == 0
-
-}
-
 
 # -----------------------------------------------------------------------------
 # DUMMY FUNCTIONS SET UP PURELY FOR UNIT TESTING
@@ -364,9 +354,16 @@ testfn_params_type <- function(df,
                                item_col = "item_col",
                                value_col = "value_col",
                                tab_col = "tab_col",
-                               period = "day"
-
-) {
+                               period = "day",
+                               plot_value_type = "value",
+                               plot_type = "bar",
+                               item_label = "Item",
+                               plot_label = "History",
+                               summary_cols = c("max_value"),
+                               sync_axis_range = FALSE,
+                               item_order = NULL,
+                               sort_by = NULL
+                               ) {
   if (missing(df)) {
     df <- data.frame("Fieldname" = 123)
   }
@@ -398,7 +395,15 @@ testfn_params_type <- function(df,
     item_col = item_col,
     value_col = value_col,
     tab_col = tab_col,
-    period = period
+    period = period,
+    plot_value_type = plot_value_type,
+    plot_type = plot_type,
+    item_label = item_label,
+    plot_label = plot_label,
+    summary_cols = summary_cols,
+    sync_axis_range = sync_axis_range,
+    item_order = item_order,
+    sort_by = sort_by
   )
 }
 
