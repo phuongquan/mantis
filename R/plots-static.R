@@ -20,8 +20,6 @@ plot_heatmap_static <- function(prepared_df,
   data <- prepared_df |>
     dplyr::mutate(item = factor(item, levels = unique(prepared_df$item)))
 
-  fill_colour <- fill_colour
-
   # when the only values are zero, make sure the fill colour is white (as
   # geom_tile uses the 'high' colour)
   if (all(data$value == 0, na.rm = TRUE)) {

@@ -23,7 +23,7 @@ mantis_alerts(
 
 \item{filter_results}{only return rows where the alert result is in this vector of values}
 
-\item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of timepoint_col}
+\item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of timepoint_col. Can be either Date values or NAs.}
 
 \item{fill_with_zero}{Replace any missing or NA values with 0? Useful when value_col is a record count}
 }

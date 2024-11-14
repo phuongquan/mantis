@@ -432,7 +432,7 @@ run_alert <- function(prepared_df, alert_rule){
 #'   "timepoint", "item", "value"  and (optionally) "tab" for the time series. Each "item-tab" represents an individual time series
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param filter_results only return rows where the alert result is in this vector of values
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col. Can be either Date values or NAs.
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #'
 #' @return tibble
@@ -445,6 +445,17 @@ mantis_alerts <- function(df,
                           timepoint_limits = c(NA, NA),
                           fill_with_zero = FALSE) {
   item <- NULL
+
+  validate_params_required(match.call())
+  # TODO: alert_rules are required here, but optional in mantis_report()
+  validate_params_type(match.call(),
+                       df = df,
+                       inputspec = inputspec,
+                       alert_rules = alert_rules,
+                       filter_results = filter_results,
+                       timepoint_limits = timepoint_limits,
+                       fill_with_zero = fill_with_zero
+                       )
 
   validate_df_to_inputspec(df, inputspec)
 

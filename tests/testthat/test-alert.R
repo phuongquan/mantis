@@ -295,7 +295,7 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df", {
                            inputspec = inputspec(timepoint_col = "timepoint",
                                                  item_col = "item",
                                                  value_col = "value"),
-                           alert_rules = list(alert_missing()),
+                           alert_rules = alert_rules(alert_missing()),
                            timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
                            fill_with_zero = FALSE)
 
@@ -313,7 +313,7 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df with tab_
                                                  item_col = "item",
                                                  value_col = "value",
                                                  tab_col = "tab"),
-                           alert_rules = list(alert_missing()),
+                           alert_rules = alert_rules(alert_missing()),
                            timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
                            fill_with_zero = FALSE)
 

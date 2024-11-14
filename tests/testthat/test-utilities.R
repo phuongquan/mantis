@@ -25,6 +25,7 @@ test_that("validate_params_type() is silent if all params are of correct type", 
   expect_silent(testfn_params_type())
 })
 
+
 test_that("validate_params_type() checks df params are of correct type", {
   # more careful validation is done by validate_df_to_inputspec()
   expect_error(testfn_params_type(df = c("Fieldname" = 123)),
@@ -33,6 +34,7 @@ test_that("validate_params_type() checks df params are of correct type", {
                class = "invalid_param_type")
 })
 
+
 test_that("validate_params_type() checks inputspec params are of correct type", {
   expect_error(testfn_params_type(inputspec = 1),
                class = "invalid_param_type")
@@ -40,11 +42,107 @@ test_that("validate_params_type() checks inputspec params are of correct type", 
                class = "invalid_param_type")
 })
 
+test_that("validate_params_type() checks timepoint_col params are of correct type", {
+  expect_silent(testfn_params_type(timepoint_col = "col1"))
+
+  expect_error(testfn_params_type(timepoint_col = ""),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(timepoint_col = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(timepoint_col = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(timepoint_col = c("col1", "col2")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks item_col params are of correct type", {
+  expect_silent(testfn_params_type(item_col = "col1"))
+
+  expect_error(testfn_params_type(item_col = ""),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(item_col = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(item_col = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(item_col = c("col1", "col2")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks value_col params are of correct type", {
+  expect_silent(testfn_params_type(value_col = "col1"))
+
+  expect_error(testfn_params_type(value_col = ""),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(value_col = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(value_col = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(value_col = c("col1", "col2")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks tab_col params are of correct type", {
+  expect_silent(testfn_params_type(tab_col = "col1"))
+  expect_silent(testfn_params_type(tab_col = NULL))
+
+  expect_error(testfn_params_type(tab_col = ""),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_col = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_col = c("col1", "col2")),
+               class = "invalid_param_type")
+})
+
+
 test_that("validate_params_type() checks outputspec params are of correct type", {
   expect_silent(testfn_params_type(outputspec = NULL))
   expect_error(testfn_params_type(outputspec = 1),
                class = "invalid_param_type")
 })
+
+test_that("validate_params_type() checks plot_label params are of correct type", {
+  expect_silent(testfn_params_type(plot_label = ""))
+  expect_silent(testfn_params_type(plot_label = NULL))
+
+  expect_error(testfn_params_type(plot_label = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(plot_label = c("col1", "col2")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks item_label params are of correct type", {
+  expect_silent(testfn_params_type(item_label = ""))
+  expect_silent(testfn_params_type(item_label = NULL))
+
+  expect_error(testfn_params_type(item_label = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(item_label = c("col1", "col2")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks fill_colour params are of correct type", {
+  expect_silent(testfn_params_type(fill_colour = "blue"))
+
+  expect_error(testfn_params_type(fill_colour = ""),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(fill_colour = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(fill_colour = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(fill_colour = c("blue", "red")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks y_label params are of correct type", {
+  expect_silent(testfn_params_type(y_label = ""))
+  expect_silent(testfn_params_type(y_label = NULL))
+
+  expect_error(testfn_params_type(y_label = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(y_label = c("col1", "col2")),
+               class = "invalid_param_type")
+})
+
 
 test_that("validate_params_type() checks alert_rules params are of correct type", {
   expect_silent(testfn_params_type(alert_rules = NULL))
@@ -122,11 +220,39 @@ test_that("validate_params_type() checks show_progress params are of correct typ
   expect_silent(testfn_params_type(show_progress = TRUE))
   expect_silent(testfn_params_type(show_progress = FALSE))
 
-  expect_error(testfn_params_type(show_progress = 1),
-               class = "invalid_param_type")
   expect_error(testfn_params_type(show_progress = NULL),
                class = "invalid_param_type")
+  expect_error(testfn_params_type(show_progress = 1),
+               class = "invalid_param_type")
   expect_error(testfn_params_type(show_progress = c(TRUE, FALSE)),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks plot_value_type params are of correct type", {
+  expect_silent(testfn_params_type(plot_value_type = "value"))
+  expect_silent(testfn_params_type(plot_value_type = "delta"))
+
+  expect_error(testfn_params_type(plot_value_type = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(plot_value_type = 1),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(plot_value_type = "hello"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(plot_value_type = c("value", "delta")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks plot_type params are of correct type", {
+  expect_silent(testfn_params_type(plot_type = "bar"))
+  expect_silent(testfn_params_type(plot_type = "line"))
+
+  expect_error(testfn_params_type(plot_type = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(plot_type = 1),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(plot_type = "hello"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(plot_type = c("bar", "line")),
                class = "invalid_param_type")
 })
 
@@ -191,6 +317,57 @@ test_that("validate_params_type() checks sort_by params contain valid values", {
   expect_error(testfn_params_type(sort_by = 1:3),
                class = "invalid_param_type")
 })
+
+
+test_that("validate_params_type() checks filter_results params contain valid values", {
+  expect_silent(testfn_params_type(filter_results = "PASS"))
+  expect_silent(testfn_params_type(filter_results = c("PASS",
+                                                    "FAIL",
+                                                    "NA")))
+
+  expect_error(testfn_params_type(filter_results = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(filter_results = NA),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(filter_results = "hello"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(filter_results = c("PASS", "hello")),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(filter_results = 1:3),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks timepoint_limits params contain valid values", {
+  expect_silent(testfn_params_type(timepoint_limits = c(NA, NA)))
+  expect_silent(testfn_params_type(timepoint_limits = c(NA, as.Date("2024-01-01"))))
+  expect_silent(testfn_params_type(timepoint_limits = c(as.Date("2024-01-01"), NA)))
+  expect_silent(testfn_params_type(timepoint_limits = c(as.Date("2024-01-01"), as.Date("2024-02-01"))))
+
+  expect_error(testfn_params_type(timepoint_limits = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(timepoint_limits = NA),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(timepoint_limits = "hello"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(timepoint_limits = c("2024-01-01", "2024-02-01")),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(timepoint_limits = 1:3),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks fill_with_zero params are of correct type", {
+  expect_silent(testfn_params_type(fill_with_zero = TRUE))
+  expect_silent(testfn_params_type(fill_with_zero = FALSE))
+
+  expect_error(testfn_params_type(fill_with_zero = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(fill_with_zero = 1),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(fill_with_zero = c(TRUE, FALSE)),
+               class = "invalid_param_type")
+})
+
+
 
 test_that("validate_params_type() works with package prefix", {
   expect_error(mantis::inputspec(timepoint_col = 1, item_col = "a", value_col = "b"),

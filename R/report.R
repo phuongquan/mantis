@@ -42,6 +42,7 @@ mantis_report <- function(df,
                         ...) {
 
   validate_params_required(match.call())
+  # TODO: alert_rules are optional here, but required in mantis_alerts()
   validate_params_type(match.call(),
                        df = df,
                        inputspec = inputspec,
