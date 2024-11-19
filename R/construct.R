@@ -45,7 +45,18 @@ bespoke_rmd_tab_item <- function(df,
                                  tab_name = NULL,
                                  tab_level = 1) {
 
-  #TODO: validate all params
+  validate_params_required(match.call())
+  # TODO: alert_rules are optional here, but required in mantis_alerts()
+  validate_params_type(match.call(),
+                       df = df,
+                       inputspec = inputspec,
+                       outputspec = outputspec,
+                       alert_rules = alert_rules,
+                       timepoint_limits = timepoint_limits,
+                       fill_with_zero = fill_with_zero,
+                       tab_name = tab_name,
+                       tab_level = tab_level
+  )
 
   # everything will appear in the one tab
   inputspec$tab_col <- NULL
@@ -86,7 +97,7 @@ bespoke_rmd_tab_item <- function(df,
 #' * one "timepoint" (datetime) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
 #' * one "item" (character) column containing categorical values identifying distinct time series.
 #' * one "value" (numeric) column containing the time series values which will be used for the y-axes.
-#' * one "group" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
+#' * one "tab" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
 #' The `inputspec` parameter maps the data frame columns to the above.
 #' @export
 bespoke_rmd_tab_group <- function(df,
@@ -99,8 +110,29 @@ bespoke_rmd_tab_group <- function(df,
                                   tab_group_name = NULL,
                                   tab_group_level = 1) {
 
-  #TODO: validate all params
-  #TODO: check tab_col is present
+  validate_params_required(match.call())
+  # TODO: alert_rules are optional here, but required in mantis_alerts()
+  validate_params_type(match.call(),
+                       df = df,
+                       inputspec = inputspec,
+                       outputspec = outputspec,
+                       alert_rules = alert_rules,
+                       timepoint_limits = timepoint_limits,
+                       fill_with_zero = fill_with_zero,
+                       tab_order = tab_order,
+                       tab_group_name = tab_group_name,
+                       tab_group_level = tab_group_level
+  )
+  #TODO: tab_col is required here but optional everywhere else
+  if (is.null(inputspec$tab_col)) {
+    stop_custom(
+      .subclass = "invalid_param_type",
+      message = paste0(
+        "Invalid argument(s) supplied.\n",
+        paste("tab_col cannot be NULL in the inputspec", collapse = "\n")
+      )
+    )
+  }
 
   validate_df_to_inputspec(df, inputspec)
 

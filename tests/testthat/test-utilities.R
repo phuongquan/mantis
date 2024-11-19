@@ -367,8 +367,75 @@ test_that("validate_params_type() checks fill_with_zero params are of correct ty
                class = "invalid_param_type")
 })
 
+test_that("validate_params_type() checks tab_name params are of correct type", {
+  expect_silent(testfn_params_type(tab_name = ""))
+  expect_silent(testfn_params_type(tab_name = NULL))
 
+  expect_error(testfn_params_type(tab_name = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_name = c("col1", "col2")),
+               class = "invalid_param_type")
+})
 
+test_that("validate_params_type() checks tab_group_name params are of correct type", {
+  expect_silent(testfn_params_type(tab_group_name = ""))
+  expect_silent(testfn_params_type(tab_group_name = NULL))
+
+  expect_error(testfn_params_type(tab_group_name = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_group_name = c("col1", "col2")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks tab_order params are either TRUE or all strings", {
+  expect_silent(testfn_params_type(tab_order = "a"))
+  expect_silent(testfn_params_type(tab_order = c("a", "b")))
+  expect_silent(testfn_params_type(tab_order = TRUE))
+  expect_silent(testfn_params_type(tab_order = NULL))
+
+  expect_error(testfn_params_type(tab_order = FALSE),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_order = 1:3),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks tab_level params are of correct type", {
+  expect_silent(testfn_params_type(tab_level = 1))
+  expect_silent(testfn_params_type(tab_level = 5))
+
+  expect_error(testfn_params_type(tab_level = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_level = "col1"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_level = 0),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_level = 1.5),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_level = c(1, "col2")),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_level = c(1, 5)),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks tab_group_level params are of correct type", {
+  expect_silent(testfn_params_type(tab_group_level = 1))
+  expect_silent(testfn_params_type(tab_group_level = 5))
+
+  expect_error(testfn_params_type(tab_group_level = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_group_level = "col1"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_group_level = 0),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_group_level = 1.5),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_group_level = c(1, "col2")),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(tab_group_level = c(1, 5)),
+               class = "invalid_param_type")
+})
+
+# TODO: don't think this is needed any more?
 test_that("validate_params_type() works with package prefix", {
   expect_error(mantis::inputspec(timepoint_col = 1, item_col = "a", value_col = "b"),
                class = "invalid_param_type")

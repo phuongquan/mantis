@@ -174,6 +174,8 @@ validate_param_byname <- function(param_name, param_value){
       error_message = "Filename can only contain alphanumeric, '-', and '_' characters, and should not include the file extension",
       error_contents_max_length = 255
     ),
+    "tab_group_name" = ,
+    "tab_name" = ,
     "dataset_description" = ,
     "report_title" = ,
     "item_label" = ,
@@ -265,6 +267,7 @@ validate_param_byname <- function(param_name, param_value){
       error_message = 'Expected a subset of c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")',
       error_contents_max_length = 500
     ),
+    "tab_order" = ,
     "item_order" = validate_param(
       param_name = param_name,
       param_value = param_value,
@@ -309,7 +312,17 @@ validate_param_byname <- function(param_name, param_value){
       },
       error_message = 'Expected a vector of two Dates or NAs',
       error_contents_max_length = 100
-    )
+    ),
+    "tab_group_level" = ,
+    "tab_level" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = FALSE,
+      expect_scalar = TRUE,
+      validation_function = function(x){is.numeric(x) && x == as.integer(x) && x >= 1},
+      error_message = "Expected an integer >= 1",
+      error_contents_max_length = 100
+    ),
   )
 
 }
@@ -428,15 +441,15 @@ testfn_params_type <- function(df,
                                inputspec,
                                outputspec,
                                alert_rules,
-                               dataset_description = "shortdesc",
-                               report_title = "title",
+                               dataset_description = "",
+                               report_title = "mantis report",
                                save_directory = ".",
                                save_filename = "filename",
                                show_progress = TRUE,
                                timepoint_col = "timepoint_col",
                                item_col = "item_col",
                                value_col = "value_col",
-                               tab_col = "tab_col",
+                               tab_col = NULL,
                                period = "day",
                                plot_value_type = "value",
                                plot_type = "bar",
@@ -447,10 +460,15 @@ testfn_params_type <- function(df,
                                item_order = NULL,
                                sort_by = NULL,
                                fill_colour = "blue",
-                               y_label = "value",
-                               filter_results = "FAIL",
+                               y_label = NULL,
+                               filter_results = c("PASS", "FAIL", "NA"),
                                timepoint_limits = c(NA, NA),
-                               fill_with_zero = FALSE
+                               fill_with_zero = FALSE,
+                               tab_name = NULL,
+                               tab_level = 1,
+                               tab_order = NULL,
+                               tab_group_name = NULL,
+                               tab_group_level = 1
 ) {
   if (missing(df)) {
     df <- data.frame("Fieldname" = 123)
@@ -497,7 +515,12 @@ testfn_params_type <- function(df,
     y_label = y_label,
     filter_results = filter_results,
     timepoint_limits = timepoint_limits,
-    fill_with_zero = fill_with_zero
+    fill_with_zero = fill_with_zero,
+    tab_name = tab_name,
+    tab_level = tab_level,
+    tab_order = tab_order,
+    tab_group_name = tab_group_name,
+    tab_group_level = tab_group_level
   )
 }
 
