@@ -15,3 +15,11 @@ An `alert_rules` object
 \description{
 Create set of alert rules
 }
+\examples{
+# alert if any values are NA
+# or if all values are zero
+ars <- alert_rules(
+  alert_missing(extent_type = "any", extent_value = 1),
+  alert_equals(extent_type = "all", rule_value = 0)
+)
+}

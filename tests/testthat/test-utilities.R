@@ -435,7 +435,13 @@ test_that("validate_params_type() checks tab_group_level params are of correct t
                class = "invalid_param_type")
 })
 
-# TODO: don't think this is needed any more?
+# See https://github.com/ropensci/daiquiri/issues/10
+test_that("validate_params_required() works with package prefix", {
+  expect_error(mantis::inputspec(),
+               class = "invalid_param_missing")
+})
+
+# See https://github.com/ropensci/daiquiri/issues/10
 test_that("validate_params_type() works with package prefix", {
   expect_error(mantis::inputspec(timepoint_col = 1, item_col = "a", value_col = "b"),
                class = "invalid_param_type")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/alert.R
 \name{alert_missing}
 \alias{alert_missing}
-\title{alert_missing}
+\title{Test for missing values}
 \usage{
 alert_missing(extent_type = "all", extent_value = 1, items = "ALL")
 }
@@ -17,5 +17,21 @@ alert_missing(extent_type = "all", extent_value = 1, items = "ALL")
 An `alert_rule` object
 }
 \description{
-alert_missing
+Configure a rule to test the time series for the presence of NA values. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
+}
+\examples{
+# alert if all values are NA
+ars <- alert_rules(alert_missing(extent_type = "all"))
+
+# alert if there are 10 or more missing values in total
+# or if the last 3 or more values are missing
+# or if 5 or more values in a row are missing
+ars <- alert_rules(
+  alert_missing(extent_type = "any", extent_value = 10),
+  alert_missing(extent_type = "last", extent_value = 3),
+  alert_missing(extent_type = "consecutive", extent_value = 5)
+)
+}
+\seealso{
+[alert_rules()], [alert_equals()]
 }

@@ -25,15 +25,16 @@ An `alert_rule` object
 Create a custom alert rule
 }
 \examples{
-alert_custom(
-  short_name = "my_rule_combo",
-  description = "Over 3 missing values and max value is > 10",
-  function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
-)
-
-alert_custom(
-  short_name = "my_rule_doubled",
-  description = "Last value is over double the first value",
-  function_call = quote(rev(value)[1] > 2*value[1])
+ars <- alert_rules(
+  alert_custom(
+    short_name = "my_rule_combo",
+    description = "Over 3 missing values and max value is > 10",
+    function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
+  ),
+  alert_custom(
+    short_name = "my_rule_doubled",
+    description = "Last value is over double the first value",
+    function_call = quote(rev(value)[1] > 2*value[1])
+  )
 )
 }

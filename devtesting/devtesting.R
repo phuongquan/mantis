@@ -393,6 +393,13 @@ alert_results <-
   )
 )
 
+alert_results <-
+  mantis_alerts(
+    example_data,
+  inputspec = inputspec("timepoint", "item", "value"),
+  alert_rules = NULL
+)
+
 prepared_df <- prepare_df(
   df,
   inputspec,

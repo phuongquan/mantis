@@ -10,6 +10,11 @@
 #' @return A (mostly) invisible html widget
 #' @export
 bespoke_rmd_initialise_widgets <- function(plot_type){
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       plot_type = plot_type
+  )
+
   initialise_widgets(plot_type = plot_type)
 }
 
