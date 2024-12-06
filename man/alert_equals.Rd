@@ -4,7 +4,12 @@
 \alias{alert_equals}
 \title{Test for specific values}
 \usage{
-alert_equals(extent_type = "all", extent_value = 1, rule_value, items = "ALL")
+alert_equals(
+  extent_type = "all",
+  extent_value = 1,
+  rule_value,
+  items = "[ALL]"
+)
 }
 \arguments{
 \item{extent_type}{"all", "any", "last", "consecutive"}
@@ -13,7 +18,7 @@ alert_equals(extent_type = "all", extent_value = 1, rule_value, items = "ALL")
 
 \item{rule_value}{value to test against. e.g. `rule_value=0` means alert if value == 0}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.}
+\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
 }
 \value{
 An `alert_rule` object

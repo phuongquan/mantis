@@ -15,8 +15,34 @@ alert_rules <- function(...) {
 
   ars <- list(...)
 
-  # TODO: validation
-  # check only one rule of each type
+  # TODO: check only one rule of each type
+
+  err_validation <- character()
+  is_alert_rule <- vapply(ars, is_alert_rule, logical(1))
+  if (any(!is_alert_rule)) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "Unrecognised alert rule(s) in positions: [",
+          paste(which(!is_alert_rule), collapse = ", "),
+          "]",
+          ": Found [ class =",
+          paste(vapply(ars[which(!is_alert_rule)], class, character(1)), collapse = ", "),
+          "]"
+        )
+      )
+  }
+
+  if (length(err_validation) > 0) {
+    stop_custom(
+      .subclass = "invalid_alert_rules",
+      message = paste0(
+        "Invalid items passed into alert_rules() specification.\n",
+        paste(err_validation, collapse = "\n")
+      )
+    )
+  }
 
   structure(ars, class = "mantis_alert_rules")
 }
@@ -37,13 +63,13 @@ is_alert_rules <- function(x) inherits(x, "mantis_alert_rules")
 #' @param function_call expression to pass to `eval()`, that returns either `TRUE` or `FALSE`. Return value of `TRUE` means alert result is FAIL
 #' @param short_name a short computer-friendly name to uniquely identify the rule
 #' @param description brief but user-friendly explanation of why the rule result is FAIL
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #' @noRd
 alert_rule <- function(type,
                        function_call,
                        short_name,
                        description,
-                       items = "ALL") {
+                       items = "[ALL]") {
 
   structure(
     list(
@@ -57,14 +83,23 @@ alert_rule <- function(type,
   )
 }
 
+# -----------------------------------------------------------------------------
+#' Test if object is an alert_rule object
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
 
+
+# -----------------------------------------------------------------------------
 #' Test for missing values
 #'
 #' Configure a rule to test the time series for the presence of NA values. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
 #'
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more missing values in any position
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #' @return An `alert_rule` object
 #' @seealso [alert_rules()], [alert_equals()]
 #' @examples
@@ -82,9 +117,13 @@ alert_rule <- function(type,
 #' @export
 alert_missing <- function(extent_type = "all",
                           extent_value = 1,
-                          items = "ALL") {
+                          items = "[ALL]") {
 
-  # TODO: consider allowing different extent_values for different alert severities
+  validate_params_type(match.call(),
+                       extent_type = extent_type,
+                       extent_value = extent_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("missing_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
 
@@ -122,7 +161,7 @@ alert_missing <- function(extent_type = "all",
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
 #' @param rule_value value to test against. e.g. `rule_value=0` means alert if value == 0
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #'
 #' @return An `alert_rule` object
 #' @examples
@@ -141,11 +180,16 @@ alert_missing <- function(extent_type = "all",
 alert_equals <- function(extent_type = "all",
                      extent_value = 1,
                      rule_value,
-                     items = "ALL") {
+                     items = "[ALL]") {
 
   # TODO: NEED TO THINK ABOUT WHAT TO DO WITH NAs - currently just removing them but may want them in the extent_value
-  # TODO: Need to check datatypes are numeric
-  # TODO: consider allowing different extent_values for different alert severities
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       extent_type = extent_type,
+                       extent_value = extent_value,
+                       rule_value = rule_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("equals_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
 
@@ -185,7 +229,7 @@ alert_equals <- function(extent_type = "all",
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
 #' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is less than 1
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #'
 #' @return An `alert_rule` object
 #' @examples
@@ -204,9 +248,15 @@ alert_equals <- function(extent_type = "all",
 alert_below <- function(extent_type = "all",
                      extent_value = 1,
                      rule_value,
-                     items = "ALL") {
+                     items = "[ALL]") {
 
-  # TODO: consider allowing different extent_values for different alert severities
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       extent_type = extent_type,
+                       extent_value = extent_value,
+                       rule_value = rule_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("below_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
 
@@ -245,7 +295,7 @@ alert_below <- function(extent_type = "all",
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
 #' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is greater than 1
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #'
 #' @return An `alert_rule` object
 #' @examples
@@ -264,9 +314,15 @@ alert_below <- function(extent_type = "all",
 alert_above <- function(extent_type = "all",
                      extent_value = 1,
                      rule_value,
-                     items = "ALL") {
+                     items = "[ALL]") {
 
-  # TODO: consider allowing different extent_values for different alert severities
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       extent_type = extent_type,
+                       extent_value = extent_value,
+                       rule_value = rule_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("above_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
 
@@ -306,7 +362,7 @@ alert_above <- function(extent_type = "all",
 #' @param current_period vector containing positions from end of time series to use for comparison
 #' @param previous_period vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.
 #' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage increase is greater than 5
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #'
 #' @return An `alert_rule` object
 #' @examples
@@ -318,9 +374,15 @@ alert_above <- function(extent_type = "all",
 alert_difference_above_perc <- function(current_period,
                                         previous_period,
                                         rule_value,
-                                        items = "ALL") {
+                                        items = "[ALL]") {
 
-  # TODO: consider allowing different rule_values for different alert severities
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       current_period = current_period,
+                       previous_period = previous_period,
+                       rule_value = rule_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("diff_above_perc_", rule_value,
                             "_period_", ifelse(length(current_period) == 1,
@@ -359,7 +421,7 @@ alert_difference_above_perc <- function(current_period,
 #' @param current_period vector containing positions from end of time series to use for comparison
 #' @param previous_period vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.
 #' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage drop is greater than 5
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #'
 #' @return An `alert_rule` object
 #' @examples
@@ -371,9 +433,15 @@ alert_difference_above_perc <- function(current_period,
 alert_difference_below_perc <- function(current_period,
                                         previous_period,
                                         rule_value,
-                                        items = "ALL") {
+                                        items = "[ALL]") {
 
-  # TODO: consider allowing different rule_values for different alert severities
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       current_period = current_period,
+                       previous_period = previous_period,
+                       rule_value = rule_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("diff_below_perc_", rule_value,
                             "_period_", ifelse(length(current_period) == 1,
@@ -405,13 +473,20 @@ alert_difference_below_perc <- function(current_period,
 
 #' Create a custom alert rule
 #'
-#' @param short_name short name to uniquely identify the rule. Avoid spaces and special characters.
-#' @param description description of what the rule checks for
-#' @param function_call expression to be evaluated per item. See details.
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' TODO: Consider renaming function_call to quoted_expression
 #'
-#' The function_call expression is called using `eval()` within a `dplyr::summarise()` after grouping by the `item_col`.
-#' Column names that can be used explicitly in the expression are: `value`, `item`, `timepoint`
+#' @param short_name short name to uniquely identify the rule. Only include alphanumeric, '-', and
+#'   '_' characters.
+#' @param description short description of what the rule checks for
+#' @param function_call call to be evaluated per item, that returns either `TRUE` or `FALSE`. Return
+#'   value of `TRUE` means alert result is "FAIL". See Details.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply
+#'   it to all items.
+#'
+#'   The supplied `function_call` is passed to `eval()` within a `dplyr::summarise()` after grouping
+#'   by the `item_col` and ordering by the `timepoint_col`. Column names that can be used explicitly
+#'   in the expression are: `value`, `item`, `timepoint`; and which refer to the values in the
+#'   `value_col`, `item_col`, `timepoint_col` columns of the data respectively
 #'
 #' @return An `alert_rule` object
 #' @export
@@ -432,9 +507,15 @@ alert_difference_below_perc <- function(current_period,
 alert_custom <- function(short_name,
                          description,
                          function_call,
-                         items = "ALL") {
+                         items = "[ALL]") {
 
-  # TODO: validation
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       short_name = short_name,
+                       description = description,
+                       function_call = function_call,
+                       items = items
+  )
 
   structure(
     list(
@@ -494,7 +575,7 @@ run_alert <- function(prepared_df, alert_rule){
   # TODO: if it's a custom rule, wrap it in some error handling
 
   prepared_df |>
-    dplyr::filter(item %in% alert_rule$items | all(alert_rule$items == "ALL")) |>
+    dplyr::filter(item %in% alert_rule$items | all(alert_rule$items == "[ALL]")) |>
     dplyr::group_by(item) |>
     dplyr::arrange(timepoint) |>
     dplyr::summarise(alert_name = alert_rule$short_name,

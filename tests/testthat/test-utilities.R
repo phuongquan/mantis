@@ -267,6 +267,8 @@ test_that("validate_params_type() checks period params are of correct type", {
                class = "invalid_param_type")
   expect_error(testfn_params_type(period = 123),
                class = "invalid_param_type")
+  expect_error(testfn_params_type(extent_type = "hello"),
+               class = "invalid_param_type")
   expect_error(testfn_params_type(period = c("day", "week")),
                class = "invalid_param_type")
 })
@@ -434,6 +436,120 @@ test_that("validate_params_type() checks tab_group_level params are of correct t
   expect_error(testfn_params_type(tab_group_level = c(1, 5)),
                class = "invalid_param_type")
 })
+
+
+test_that("validate_params_type() checks extent_type params are of correct type", {
+  expect_silent(testfn_params_type(extent_type = "all"))
+  expect_silent(testfn_params_type(extent_type = "any"))
+  expect_silent(testfn_params_type(extent_type = "last"))
+  expect_silent(testfn_params_type(extent_type = "consecutive"))
+
+  expect_error(testfn_params_type(extent_type = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(extent_type = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(extent_type = "hello"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(extent_type = c("any", "all")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks extent_value params are of correct type", {
+  expect_silent(testfn_params_type(extent_value = 1))
+  expect_silent(testfn_params_type(extent_value = 5))
+
+  expect_error(testfn_params_type(extent_value = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(extent_value = "col1"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(extent_value = 0),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(extent_value = 1.5),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(extent_value = c(1, "col2")),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(extent_value = c(1, 5)),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks rule_value params are of correct type", {
+  expect_silent(testfn_params_type(rule_value = -1))
+  expect_silent(testfn_params_type(rule_value = 1))
+  expect_silent(testfn_params_type(rule_value = 2.5))
+
+  expect_error(testfn_params_type(rule_value = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(rule_value = "col1"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(rule_value = c(1, "col2")),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(rule_value = c(1, 5)),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks items params contain valid values", {
+  # NOTE: if they provide values that don't exist in the data, just ignore them, as you may want to
+  # supply a standard superset for everything
+  expect_silent(testfn_params_type(items = "[ALL]"))
+  expect_silent(testfn_params_type(items = c("this", "that")))
+  expect_silent(testfn_params_type(items = NULL))
+
+  expect_error(testfn_params_type(items = FALSE),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(items = 1:3),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks current_period params are of correct type", {
+  expect_silent(testfn_params_type(current_period = 1))
+  expect_silent(testfn_params_type(current_period = 1:5))
+
+  expect_error(testfn_params_type(current_period = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(current_period = "col1"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(current_period = 1.7),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(current_period = c(1, "col2")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks previous_period params are of correct type", {
+  expect_silent(testfn_params_type(previous_period = 1))
+  expect_silent(testfn_params_type(previous_period = 1:5))
+
+  expect_error(testfn_params_type(previous_period = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(previous_period = "col1"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(previous_period = 1.7),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(previous_period = c(1, "col2")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks description params are of correct type", {
+  expect_silent(testfn_params_type(description = "short desc"))
+
+  expect_error(testfn_params_type(description = ""),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(description = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(description = 123),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(description = c("col1", "col2")),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks function_call params are of correct type", {
+  expect_silent(testfn_params_type(function_call = quote(all(is.na(value)))))
+
+  expect_error(testfn_params_type(function_call = "all(is.na(value))"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(function_call = NULL),
+               class = "invalid_param_type")
+})
+
 
 # See https://github.com/ropensci/daiquiri/issues/10
 test_that("validate_params_required() works with package prefix", {

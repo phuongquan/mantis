@@ -4,14 +4,14 @@
 \alias{alert_missing}
 \title{Test for missing values}
 \usage{
-alert_missing(extent_type = "all", extent_value = 1, items = "ALL")
+alert_missing(extent_type = "all", extent_value = 1, items = "[ALL]")
 }
 \arguments{
 \item{extent_type}{"all", "any", "last", "consecutive"}
 
 \item{extent_value}{lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more missing values in any position}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.}
+\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
 }
 \value{
 An `alert_rule` object

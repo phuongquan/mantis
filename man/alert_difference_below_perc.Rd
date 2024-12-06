@@ -8,7 +8,7 @@ alert_difference_below_perc(
   current_period,
   previous_period,
   rule_value,
-  items = "ALL"
+  items = "[ALL]"
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ alert_difference_below_perc(
 
 \item{rule_value}{value to test against. e.g. `rule_value=5` means alert if percentage drop is greater than 5}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.}
+\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
 }
 \value{
 An `alert_rule` object

@@ -189,6 +189,7 @@ validate_param_byname <- function(param_name, param_value){
       error_message = "Expected a character string",
       error_contents_max_length = 500
     ),
+    "description" = ,
     "fill_colour" = ,
     "timepoint_col" = ,
     "item_col" = ,
@@ -279,8 +280,9 @@ validate_param_byname <- function(param_name, param_value){
       error_message = "Expected either TRUE or a vector of character strings",
       error_contents_max_length = 500
     ),
-    # NOTE: if they provide a colname that doesn't exist, just ignore it, as you may want to
+    # NOTE: if they provide values that don't exist in the data, just ignore them, as you may want to
     # supply a standard superset for everything
+    "items" = ,
     "sort_by" = validate_param(
       param_name = param_name,
       param_value = param_value,
@@ -313,6 +315,7 @@ validate_param_byname <- function(param_name, param_value){
       error_message = 'Expected a vector of two Dates or NAs',
       error_contents_max_length = 100
     ),
+    "extent_value" = ,
     "tab_group_level" = ,
     "tab_level" = validate_param(
       param_name = param_name,
@@ -321,6 +324,56 @@ validate_param_byname <- function(param_name, param_value){
       expect_scalar = TRUE,
       validation_function = function(x){is.numeric(x) && x == as.integer(x) && x >= 1},
       error_message = "Expected an integer >= 1",
+      error_contents_max_length = 100
+    ),
+    "extent_type" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = FALSE,
+      expect_scalar = TRUE,
+      validation_function = function(x){
+        x %in% c("all", "any", "last", "consecutive")
+        },
+      error_message = "Values allowed are: all, any, last, consecutive",
+      error_contents_max_length = 100
+    ),
+    "rule_value" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = FALSE,
+      expect_scalar = TRUE,
+      validation_function = is.numeric,
+      error_message = "Expected a numeric value",
+      error_contents_max_length = 100
+    ),
+    "current_period" = ,
+    "previous_period" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = FALSE,
+      expect_scalar = FALSE,
+      validation_function = function(x){all(is.numeric(x)) && all(x == as.integer(x))},
+      error_message = "Expected a vector of integers",
+      error_contents_max_length = 100
+    ),
+    "short_name" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = FALSE,
+      expect_scalar = TRUE,
+      validation_function = function(x) {
+        !grepl("[^a-zA-Z0-9_-]", x) && nchar(x) > 0
+      },
+      error_message = "Should only contain alphanumeric, '-', and '_' characters",
+      error_contents_max_length = 255
+    ),
+    "function_call" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = FALSE,
+      expect_scalar = FALSE,
+      validation_function = is.call,
+      error_message = "Expected a call",
       error_contents_max_length = 100
     ),
   )
@@ -468,7 +521,16 @@ testfn_params_type <- function(df,
                                tab_level = 1,
                                tab_order = NULL,
                                tab_group_name = NULL,
-                               tab_group_level = 1
+                               tab_group_level = 1,
+                               extent_type = "all",
+                               extent_value = 1,
+                               rule_value = 0,
+                               items = "[ALL]",
+                               current_period = 1:3,
+                               previous_period = 4:9,
+                               short_name = "my_rule",
+                               description = "rule_description",
+                               function_call = quote(all(is.na(value)))
 ) {
   if (missing(df)) {
     df <- data.frame("Fieldname" = 123)
@@ -520,7 +582,16 @@ testfn_params_type <- function(df,
     tab_level = tab_level,
     tab_order = tab_order,
     tab_group_name = tab_group_name,
-    tab_group_level = tab_group_level
+    tab_group_level = tab_group_level,
+    extent_type = extent_type,
+    extent_value = extent_value,
+    rule_value = rule_value,
+    items = items,
+    current_period = current_period,
+    previous_period = previous_period,
+    short_name = short_name,
+    description = description,
+    function_call = function_call
   )
 }
 
