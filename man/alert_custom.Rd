@@ -4,19 +4,24 @@
 \alias{alert_custom}
 \title{Create a custom alert rule}
 \usage{
-alert_custom(short_name, description, function_call, items = "ALL")
+alert_custom(short_name, description, function_call, items = "[ALL]")
 }
 \arguments{
-\item{short_name}{short name to uniquely identify the rule. Avoid spaces and special characters.}
+\item{short_name}{short name to uniquely identify the rule. Only include alphanumeric, '-', and
+'_' characters.}
 
-\item{description}{description of what the rule checks for}
+\item{description}{short description of what the rule checks for}
 
-\item{function_call}{expression to be evaluated per item. See details.}
+\item{function_call}{call to be evaluated per item, that returns either `TRUE` or `FALSE`. Return
+value of `TRUE` means alert result is "FAIL". See Details.}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply
+  it to all items.
 
-The function_call expression is called using `eval()` within a `dplyr::summarise()` after grouping by the `item_col`.
-Column names that can be used explicitly in the expression are: `value`, `item`, `timepoint`}
+  The supplied `function_call` is passed to `eval()` within a `dplyr::summarise()` after grouping
+  by the `item_col` and ordering by the `timepoint_col`. Column names that can be used explicitly
+  in the expression are: `value`, `item`, `timepoint`; and which refer to the values in the
+  `value_col`, `item_col`, `timepoint_col` columns of the data respectively}
 }
 \value{
 An `alert_rule` object
@@ -25,15 +30,16 @@ An `alert_rule` object
 Create a custom alert rule
 }
 \examples{
-alert_custom(
-  short_name = "my_rule_combo",
-  description = "Over 3 missing values and max value is > 10",
-  function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
-)
-
-alert_custom(
-  short_name = "my_rule_doubled",
-  description = "Last value is over double the first value",
-  function_call = quote(rev(value)[1] > 2*value[1])
+ars <- alert_rules(
+  alert_custom(
+    short_name = "my_rule_combo",
+    description = "Over 3 missing values and max value is > 10",
+    function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
+  ),
+  alert_custom(
+    short_name = "my_rule_doubled",
+    description = "Last value is over double the first value",
+    function_call = quote(rev(value)[1] > 2*value[1])
+  )
 )
 }

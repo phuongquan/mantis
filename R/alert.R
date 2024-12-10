@@ -1,23 +1,75 @@
+# -----------------------------------------------------------------------------
 #' Create set of alert rules
 #'
 #' @param ... alerts to apply to the time series
 #' @return An `alert_rules` object
 #' @export
+#' @examples
+#' # alert if any values are NA
+#' # or if all values are zero
+#' ars <- alert_rules(
+#'   alert_missing(extent_type = "any", extent_value = 1),
+#'   alert_equals(extent_type = "all", rule_value = 0)
+#' )
 alert_rules <- function(...) {
 
   ars <- list(...)
 
-  # TODO: validation
-  # check only one rule of each type
+  # TODO: check only one rule of each type
+
+  err_validation <- character()
+  is_alert_rule <- vapply(ars, is_alert_rule, logical(1))
+  if (any(!is_alert_rule)) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "Unrecognised alert rule(s) in positions: [",
+          paste(which(!is_alert_rule), collapse = ", "),
+          "]",
+          ": Found [ class =",
+          paste(vapply(ars[which(!is_alert_rule)], class, character(1)), collapse = ", "),
+          "]"
+        )
+      )
+  }
+
+  if (length(err_validation) > 0) {
+    stop_custom(
+      .subclass = "invalid_alert_rules",
+      message = paste0(
+        "Invalid items passed into alert_rules() specification.\n",
+        paste(err_validation, collapse = "\n")
+      )
+    )
+  }
 
   structure(ars, class = "mantis_alert_rules")
 }
 
+# -----------------------------------------------------------------------------
+#' Test if object is an alert_rules object
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_alert_rules <- function(x) inherits(x, "mantis_alert_rules")
+
+
+# -----------------------------------------------------------------------------
+#' Constructor for an alert_rule
+#'
+#' @param type type of rule
+#' @param function_call expression to pass to `eval()`, that returns either `TRUE` or `FALSE`. Return value of `TRUE` means alert result is FAIL
+#' @param short_name a short computer-friendly name to uniquely identify the rule
+#' @param description brief but user-friendly explanation of why the rule result is FAIL
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
+#' @noRd
 alert_rule <- function(type,
                        function_call,
                        short_name,
                        description,
-                       items = "ALL") {
+                       items = "[ALL]") {
 
   structure(
     list(
@@ -31,19 +83,47 @@ alert_rule <- function(type,
   )
 }
 
-#' alert_missing
+# -----------------------------------------------------------------------------
+#' Test if object is an alert_rule object
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
+
+
+# -----------------------------------------------------------------------------
+#' Test for missing values
+#'
+#' Configure a rule to test the time series for the presence of NA values. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
 #'
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more missing values in any position
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #' @return An `alert_rule` object
+#' @seealso [alert_rules()], [alert_equals()]
+#' @examples
+#' # alert if all values are NA
+#' ars <- alert_rules(alert_missing(extent_type = "all"))
+#'
+#' # alert if there are 10 or more missing values in total
+#' # or if the last 3 or more values are missing
+#' # or if 5 or more values in a row are missing
+#' ars <- alert_rules(
+#'   alert_missing(extent_type = "any", extent_value = 10),
+#'   alert_missing(extent_type = "last", extent_value = 3),
+#'   alert_missing(extent_type = "consecutive", extent_value = 5)
+#' )
 #' @export
 alert_missing <- function(extent_type = "all",
                           extent_value = 1,
-                          items = "ALL") {
+                          items = "[ALL]") {
 
-  # TODO: consider allowing different extent_values for different alert severities
-  # TODO: "consecutive" type. rle doesn't handle runs of NAs so will need a wrapper for it
+  validate_params_type(match.call(),
+                       extent_type = extent_type,
+                       extent_value = extent_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("missing_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
 
@@ -74,23 +154,42 @@ alert_missing <- function(extent_type = "all",
   )
 }
 
-#' alert_equals
+#' Test for specific values
+#'
+#' Configure a rule to test the time series for the presence of specific values. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
 #'
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
 #' @param rule_value value to test against. e.g. `rule_value=0` means alert if value == 0
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #'
 #' @return An `alert_rule` object
+#' @examples
+#' # alert if all values are zero
+#' ars <- alert_rules(alert_equals(extent_type = "all", rule_value = 0))
+#'
+#' # alert if there are 10 or more zero values in total
+#' # or if the last 3 or more values are zero
+#' # or if 5 or more values in a row are zero
+#' ars <- alert_rules(
+#'   alert_equals(extent_type = "any", extent_value = 10, rule_value = 0),
+#'   alert_equals(extent_type = "last", extent_value = 3, rule_value = 0),
+#'   alert_equals(extent_type = "consecutive", extent_value = 5, rule_value = 0)
+#' )
 #' @export
 alert_equals <- function(extent_type = "all",
                      extent_value = 1,
                      rule_value,
-                     items = "ALL") {
+                     items = "[ALL]") {
 
   # TODO: NEED TO THINK ABOUT WHAT TO DO WITH NAs - currently just removing them but may want them in the extent_value
-  # TODO: Need to check datatypes are numeric
-  # TODO: consider allowing different extent_values for different alert severities
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       extent_type = extent_type,
+                       extent_value = extent_value,
+                       rule_value = rule_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("equals_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
 
@@ -123,23 +222,41 @@ alert_equals <- function(extent_type = "all",
 
 
 
-#' alert_below
+#' Test for values less than a specific value
 #'
-#' Less than
+#' Configure a rule to test the time series for the presence of values less than a specific value. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
 #'
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
 #' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is less than 1
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #'
 #' @return An `alert_rule` object
+#' @examples
+#' # alert if all values are less than 2
+#' ars <- alert_rules(alert_below(extent_type = "all", rule_value = 2))
+#'
+#' # alert if there are 10 or more values that are less than 7
+#' # or if the last 3 or more values are less than 2
+#' # or if 5 or more values in a row are less than 7
+#' ars <- alert_rules(
+#'   alert_below(extent_type = "any", extent_value = 10, rule_value = 7),
+#'   alert_below(extent_type = "last", extent_value = 3, rule_value = 2),
+#'   alert_below(extent_type = "consecutive", extent_value = 5, rule_value = 7)
+#' )
 #' @export
 alert_below <- function(extent_type = "all",
                      extent_value = 1,
                      rule_value,
-                     items = "ALL") {
+                     items = "[ALL]") {
 
-  # TODO: consider allowing different extent_values for different alert severities
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       extent_type = extent_type,
+                       extent_value = extent_value,
+                       rule_value = rule_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("below_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
 
@@ -171,23 +288,41 @@ alert_below <- function(extent_type = "all",
 }
 
 
-#' alert_above
+#' Test for values greater than a specific value
 #'
-#' Greater than
+#' Configure a rule to test the time series for the presence of values greater than a specific value. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
 #'
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position
 #' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is greater than 1
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #'
 #' @return An `alert_rule` object
+#' @examples
+#' # alert if all values are greater than 50
+#' ars <- alert_rules(alert_below(extent_type = "all", rule_value = 50))
+#'
+#' # alert if there are 10 or more values that are greater than 50
+#' # or if the last 3 or more values are greater than 60
+#' # or if 5 or more values in a row are greater than 40
+#' ars <- alert_rules(
+#'   alert_below(extent_type = "any", extent_value = 10, rule_value = 50),
+#'   alert_below(extent_type = "last", extent_value = 3, rule_value = 60),
+#'   alert_below(extent_type = "consecutive", extent_value = 5, rule_value = 40)
+#' )
 #' @export
 alert_above <- function(extent_type = "all",
                      extent_value = 1,
                      rule_value,
-                     items = "ALL") {
+                     items = "[ALL]") {
 
-  # TODO: consider allowing different extent_values for different alert severities
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       extent_type = extent_type,
+                       extent_value = extent_value,
+                       rule_value = rule_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("above_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
 
@@ -218,7 +353,7 @@ alert_above <- function(extent_type = "all",
   )
 }
 
-#' Alert when there is a percentage increase in latest values
+#' Test for when there is a percentage increase in latest values
 #'
 #' Check if latest values are greater than in a previous period, over a particular percentage
 #'
@@ -226,17 +361,28 @@ alert_above <- function(extent_type = "all",
 #'
 #' @param current_period vector containing positions from end of time series to use for comparison
 #' @param previous_period vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.
-#' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage change is greater than 5
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage increase is greater than 5
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #'
 #' @return An `alert_rule` object
+#' @examples
+#' # alert if mean of last 3 values is over 20% greater than mean of the previous 12 values
+#' ars <- alert_rules(
+#'   alert_difference_above_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
+#' )
 #' @export
 alert_difference_above_perc <- function(current_period,
                                         previous_period,
                                         rule_value,
-                                        items = "ALL") {
+                                        items = "[ALL]") {
 
-  # TODO: consider allowing different rule_values for different alert severities
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       current_period = current_period,
+                       previous_period = previous_period,
+                       rule_value = rule_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("diff_above_perc_", rule_value,
                             "_period_", ifelse(length(current_period) == 1,
@@ -266,7 +412,7 @@ alert_difference_above_perc <- function(current_period,
   )
 }
 
-#' Alert when there is a percentage drop in latest values
+#' Test for when there is a percentage drop in latest values
 #'
 #' Check if latest values are lower than in the previous period, over a particular percentage
 #'
@@ -274,17 +420,28 @@ alert_difference_above_perc <- function(current_period,
 #'
 #' @param current_period vector containing positions from end of time series to use for comparison
 #' @param previous_period vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.
-#' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage change is greater than 5
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage drop is greater than 5
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.
 #'
 #' @return An `alert_rule` object
+#' @examples
+#' # alert if mean of last 3 values is over 20% lower than mean of the previous 12 values
+#' ars <- alert_rules(
+#'   alert_difference_below_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
+#' )
 #' @export
 alert_difference_below_perc <- function(current_period,
                                         previous_period,
                                         rule_value,
-                                        items = "ALL") {
+                                        items = "[ALL]") {
 
-  # TODO: consider allowing different rule_values for different alert severities
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       current_period = current_period,
+                       previous_period = previous_period,
+                       rule_value = rule_value,
+                       items = items
+  )
 
   rule_short_name <- paste0("diff_below_perc_", rule_value,
                             "_period_", ifelse(length(current_period) == 1,
@@ -316,35 +473,49 @@ alert_difference_below_perc <- function(current_period,
 
 #' Create a custom alert rule
 #'
-#' @param short_name short name to uniquely identify the rule. Avoid spaces and special characters.
-#' @param description description of what the rule checks for
-#' @param function_call expression to be evaluated per item. See details.
-#' @param items vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.
+#' TODO: Consider renaming function_call to quoted_expression
 #'
-#' The function_call expression is called using `eval()` within a `dplyr::summarise()` after grouping by the `item_col`.
-#' Column names that can be used explicitly in the expression are: `value`, `item`, `timepoint`
+#' @param short_name short name to uniquely identify the rule. Only include alphanumeric, '-', and
+#'   '_' characters.
+#' @param description short description of what the rule checks for
+#' @param function_call call to be evaluated per item, that returns either `TRUE` or `FALSE`. Return
+#'   value of `TRUE` means alert result is "FAIL". See Details.
+#' @param items vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply
+#'   it to all items.
+#'
+#'   The supplied `function_call` is passed to `eval()` within a `dplyr::summarise()` after grouping
+#'   by the `item_col` and ordering by the `timepoint_col`. Column names that can be used explicitly
+#'   in the expression are: `value`, `item`, `timepoint`; and which refer to the values in the
+#'   `value_col`, `item_col`, `timepoint_col` columns of the data respectively
 #'
 #' @return An `alert_rule` object
 #' @export
 #'
 #' @examples
-#' alert_custom(
-#'   short_name = "my_rule_combo",
-#'   description = "Over 3 missing values and max value is > 10",
-#'   function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
-#' )
-#'
-#' alert_custom(
-#'   short_name = "my_rule_doubled",
-#'   description = "Last value is over double the first value",
-#'   function_call = quote(rev(value)[1] > 2*value[1])
+#' ars <- alert_rules(
+#'   alert_custom(
+#'     short_name = "my_rule_combo",
+#'     description = "Over 3 missing values and max value is > 10",
+#'     function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
+#'   ),
+#'   alert_custom(
+#'     short_name = "my_rule_doubled",
+#'     description = "Last value is over double the first value",
+#'     function_call = quote(rev(value)[1] > 2*value[1])
+#'   )
 #' )
 alert_custom <- function(short_name,
                          description,
                          function_call,
-                         items = "ALL") {
+                         items = "[ALL]") {
 
-  # TODO: validation
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       short_name = short_name,
+                       description = description,
+                       function_call = function_call,
+                       items = items
+  )
 
   structure(
     list(
@@ -404,7 +575,7 @@ run_alert <- function(prepared_df, alert_rule){
   # TODO: if it's a custom rule, wrap it in some error handling
 
   prepared_df |>
-    dplyr::filter(item %in% alert_rule$items | all(alert_rule$items == "ALL")) |>
+    dplyr::filter(item %in% alert_rule$items | all(alert_rule$items == "[ALL]")) |>
     dplyr::group_by(item) |>
     dplyr::arrange(timepoint) |>
     dplyr::summarise(alert_name = alert_rule$short_name,
@@ -421,7 +592,7 @@ run_alert <- function(prepared_df, alert_rule){
 #'   "timepoint", "item", "value"  and (optionally) "tab" for the time series. Each "item-tab" represents an individual time series
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param filter_results only return rows where the alert result is in this vector of values
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col. Can be either Date values or NAs.
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #'
 #' @return tibble
@@ -434,6 +605,17 @@ mantis_alerts <- function(df,
                           timepoint_limits = c(NA, NA),
                           fill_with_zero = FALSE) {
   item <- NULL
+
+  validate_params_required(match.call())
+  # TODO: alert_rules are required here, but optional in mantis_report()
+  validate_params_type(match.call(),
+                       df = df,
+                       inputspec = inputspec,
+                       alert_rules = alert_rules,
+                       filter_results = filter_results,
+                       timepoint_limits = timepoint_limits,
+                       fill_with_zero = fill_with_zero
+                       )
 
   validate_df_to_inputspec(df, inputspec)
 

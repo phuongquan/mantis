@@ -160,6 +160,7 @@ prepare_table <-
 }
 
 
+# -----------------------------------------------------------------------------
 #' Specify relevant columns in the source data frame
 #'
 #' @param timepoint_col String denoting the (datetime) column which will be used for the x-axes.
@@ -178,6 +179,16 @@ inputspec <- function(timepoint_col,
                     value_col,
                     tab_col = NULL,
                     period = "day"){
+
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       timepoint_col = timepoint_col,
+                       item_col = item_col,
+                       value_col = value_col,
+                       tab_col = tab_col,
+                       period = period
+  )
+
   structure(
     list(timepoint_col = timepoint_col,
        item_col = item_col,
@@ -187,6 +198,16 @@ inputspec <- function(timepoint_col,
     class = "mantis_inputspec")
 }
 
+# -----------------------------------------------------------------------------
+#' Test if object is an inputspec object
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_inputspec <- function(x) inherits(x, "mantis_inputspec")
+
+
+# -----------------------------------------------------------------------------
 #' Specify output options for the report
 #'
 #' @param plot_value_type Display the raw "`value`" for the time series or display the calculated
@@ -216,6 +237,18 @@ outputspec_interactive <- function(plot_value_type = "value",
                        sync_axis_range = FALSE,
                        item_order = NULL,
                        sort_by = NULL){
+
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       plot_value_type = plot_value_type,
+                       plot_type = plot_type,
+                       item_label = item_label,
+                       plot_label = plot_label,
+                       summary_cols = summary_cols,
+                       sync_axis_range = sync_axis_range,
+                       item_order = item_order,
+                       sort_by = sort_by
+                       )
 
   structure(
     list(plot_value_type = plot_value_type,

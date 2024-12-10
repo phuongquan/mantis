@@ -1,3 +1,33 @@
+test_that("Valid alert_rules can be specified", {
+  expect_s3_class(
+    alert_rules(
+      alert_missing(),
+      alert_equals(rule_value = 0),
+      alert_above(rule_value = 0),
+      alert_below(rule_value = 0),
+      alert_difference_above_perc(current_period = 1,
+                                  previous_period = 2,
+                                  rule_value = 10),
+      alert_difference_below_perc(current_period = 1,
+                                  previous_period = 2,
+                                  rule_value = 10),
+      alert_custom(
+        short_name = "my_rule_doubled",
+        description = "Last value is over double the first value",
+        function_call = quote(rev(value)[1] > 2 * value[1])
+      )
+    ),
+    "mantis_alert_rules"
+  )
+})
+
+test_that("Invalid alert_rules cannot be specified", {
+  expect_error(alert_rules(alert_missing(),
+                           quote(rev(value)[1] > 2 * value[1]),
+                           "hello"),
+               class = "invalid_alert_rules")
+})
+
 test_that("alert_missing(all) returns condition correctly", {
   fc <- alert_missing(extent_type = "all")$function_call
 
@@ -295,7 +325,7 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df", {
                            inputspec = inputspec(timepoint_col = "timepoint",
                                                  item_col = "item",
                                                  value_col = "value"),
-                           alert_rules = list(alert_missing()),
+                           alert_rules = alert_rules(alert_missing()),
                            timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
                            fill_with_zero = FALSE)
 
@@ -313,7 +343,7 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df with tab_
                                                  item_col = "item",
                                                  value_col = "value",
                                                  tab_col = "tab"),
-                           alert_rules = list(alert_missing()),
+                           alert_rules = alert_rules(alert_missing()),
                            timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
                            fill_with_zero = FALSE)
 

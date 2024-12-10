@@ -2,13 +2,13 @@
 % Please edit documentation in R/alert.R
 \name{alert_difference_below_perc}
 \alias{alert_difference_below_perc}
-\title{Alert when there is a percentage drop in latest values}
+\title{Test for when there is a percentage drop in latest values}
 \usage{
 alert_difference_below_perc(
   current_period,
   previous_period,
   rule_value,
-  items = "ALL"
+  items = "[ALL]"
 )
 }
 \arguments{
@@ -16,9 +16,9 @@ alert_difference_below_perc(
 
 \item{previous_period}{vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.}
 
-\item{rule_value}{value to test against. e.g. `rule_value=5` means alert if percentage change is greater than 5}
+\item{rule_value}{value to test against. e.g. `rule_value=5` means alert if percentage drop is greater than 5}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.}
+\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
 }
 \value{
 An `alert_rule` object
@@ -28,4 +28,10 @@ Check if latest values are lower than in the previous period, over a particular 
 }
 \details{
 Based on the mean of values in the two periods.
+}
+\examples{
+# alert if mean of last 3 values is over 20\% lower than mean of the previous 12 values
+ars <- alert_rules(
+  alert_difference_below_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
+)
 }

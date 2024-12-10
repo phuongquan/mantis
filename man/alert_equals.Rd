@@ -2,9 +2,14 @@
 % Please edit documentation in R/alert.R
 \name{alert_equals}
 \alias{alert_equals}
-\title{alert_equals}
+\title{Test for specific values}
 \usage{
-alert_equals(extent_type = "all", extent_value = 1, rule_value, items = "ALL")
+alert_equals(
+  extent_type = "all",
+  extent_value = 1,
+  rule_value,
+  items = "[ALL]"
+)
 }
 \arguments{
 \item{extent_type}{"all", "any", "last", "consecutive"}
@@ -13,11 +18,24 @@ alert_equals(extent_type = "all", extent_value = 1, rule_value, items = "ALL")
 
 \item{rule_value}{value to test against. e.g. `rule_value=0` means alert if value == 0}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.}
+\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
 }
 \value{
 An `alert_rule` object
 }
 \description{
-alert_equals
+Configure a rule to test the time series for the presence of specific values. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
+}
+\examples{
+# alert if all values are zero
+ars <- alert_rules(alert_equals(extent_type = "all", rule_value = 0))
+
+# alert if there are 10 or more zero values in total
+# or if the last 3 or more values are zero
+# or if 5 or more values in a row are zero
+ars <- alert_rules(
+  alert_equals(extent_type = "any", extent_value = 10, rule_value = 0),
+  alert_equals(extent_type = "last", extent_value = 3, rule_value = 0),
+  alert_equals(extent_type = "consecutive", extent_value = 5, rule_value = 0)
+)
 }

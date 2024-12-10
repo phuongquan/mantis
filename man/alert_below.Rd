@@ -2,9 +2,9 @@
 % Please edit documentation in R/alert.R
 \name{alert_below}
 \alias{alert_below}
-\title{alert_below}
+\title{Test for values less than a specific value}
 \usage{
-alert_below(extent_type = "all", extent_value = 1, rule_value, items = "ALL")
+alert_below(extent_type = "all", extent_value = 1, rule_value, items = "[ALL]")
 }
 \arguments{
 \item{extent_type}{"all", "any", "last", "consecutive"}
@@ -13,11 +13,24 @@ alert_below(extent_type = "all", extent_value = 1, rule_value, items = "ALL")
 
 \item{rule_value}{value to test against. e.g. `rule_value=1` means alert if value is less than 1}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "ALL" to apply it to all items.}
+\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
 }
 \value{
 An `alert_rule` object
 }
 \description{
-Less than
+Configure a rule to test the time series for the presence of values less than a specific value. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
+}
+\examples{
+# alert if all values are less than 2
+ars <- alert_rules(alert_below(extent_type = "all", rule_value = 2))
+
+# alert if there are 10 or more values that are less than 7
+# or if the last 3 or more values are less than 2
+# or if 5 or more values in a row are less than 7
+ars <- alert_rules(
+  alert_below(extent_type = "any", extent_value = 10, rule_value = 7),
+  alert_below(extent_type = "last", extent_value = 3, rule_value = 2),
+  alert_below(extent_type = "consecutive", extent_value = 5, rule_value = 7)
+)
 }

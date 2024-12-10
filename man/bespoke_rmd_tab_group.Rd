@@ -50,6 +50,6 @@ The supplied data frame should contain multiple time series in long format, i.e.
 * one "timepoint" (datetime) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
 * one "item" (character) column containing categorical values identifying distinct time series.
 * one "value" (numeric) column containing the time series values which will be used for the y-axes.
-* one "group" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
+* one "tab" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
 The `inputspec` parameter maps the data frame columns to the above.
 }

@@ -214,7 +214,7 @@ mantis_report(df = monthly_data,
                                 period = "month"),
               outputspec = outputspec_interactive(),
               alert_rules <- alert_rules(alert_missing(extent_type = "all",
-                                                       items = "ALL"),
+                                                       items = "[ALL]"),
                                          alert_equals(extent_type = "last",
                                                        extent_value = 5,
                                                       rule_value = 0,
@@ -260,7 +260,7 @@ prepared_df <- prepare_df(
 allitems <- unique(prepared_df$item)
 
 alert_rules <- alert_rules(alert_missing(extent_type = "all",
-                                         items = "ALL"),
+                                         items = "[ALL]"),
                            alert_missing(extent_type = "last",
                                          extent_value = 5,
                                          items = allitems[grep("norm", allitems)])
@@ -297,7 +297,7 @@ prepared_df <-
   )
 
 alert_rules <- alert_rules(alert_missing(extent_type = "all",
-                                         items = "ALL"),
+                                         items = "[ALL]"),
                            alert_missing(extent_type = "last",
                                          extent_value = 14)
 )
@@ -393,6 +393,13 @@ alert_results <-
   )
 )
 
+alert_results <-
+  mantis_alerts(
+    example_data,
+  inputspec = inputspec("timepoint", "item", "value"),
+  alert_rules = NULL
+)
+
 prepared_df <- prepare_df(
   df,
   inputspec,
@@ -414,7 +421,7 @@ mantis_report(df = example_data,
                                 value_col = "value",
                                 tab_col = "tab"),
               alert_rules = alert_rules(alert_missing(extent_type = "all",
-                                                      items = "ALL"),
+                                                      items = "[ALL]"),
                                         alert_missing(extent_type = "last",
                                                       extent_value = 14)
               ),
