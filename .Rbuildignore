@@ -5,3 +5,7 @@
 ^data-raw$
 ^devtesting$
 ^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$

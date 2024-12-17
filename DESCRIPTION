@@ -12,7 +12,8 @@ Description: Generate interactive html reports that enable quick visual review o
     multiple related time series. This can help with identification of any 
     temporal artefacts or unexpected trends. The resulting reports are shareable 
     and can contribute to forming a transparent record of the entire analysis process. 
-URL: https://github.com/phuongquan/mantis
+URL: https://github.com/phuongquan/mantis,
+    https://phuongquan.github.io/mantis/
 BugReports: https://github.com/phuongquan/mantis/issues
 License: GPL (>= 3)
 Encoding: UTF-8
