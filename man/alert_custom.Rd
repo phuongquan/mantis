@@ -27,7 +27,7 @@ value of `TRUE` means alert result is "FAIL". See Details.}
 An `alert_rule` object
 }
 \description{
-Create a custom alert rule
+TODO: Consider renaming function_call to quoted_expression
 }
 \examples{
 ars <- alert_rules(
