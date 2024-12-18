@@ -18,13 +18,13 @@ bespoke_rmd_tab_item(
 \arguments{
 \item{df}{A data frame containing multiple time series in long format. See Details.}
 
-\item{inputspec}{[`inputspec()`] object specifying which columns in the supplied `df` represent the
+\item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the supplied \code{df} represent the
 "timepoint", "item", and "value" for the time series. If a "tab" column is specified, it will be ignored.}
 
-\item{outputspec}{[`outputspec()`] object specifying the desired format of the html table(s). If
+\item{outputspec}{\code{\link[=outputspec]{outputspec()}} object specifying the desired format of the html table(s). If
 not supplied, default values will be used.}
 
-\item{alert_rules}{[`alert_rules()`] object specifying conditions to test}
+\item{alert_rules}{\code{\link[=alert_rules]{alert_rules()}} object specifying conditions to test}
 
 \item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of timepoint_col}
 
@@ -38,13 +38,18 @@ not supplied, default values will be used.}
 (invisibly) the supplied df
 }
 \description{
-Chunk options must contain `results = 'asis'`.
+Chunk options must contain \code{results = 'asis'}.
 Function writes directly to the chunk using side-effects
 }
 \details{
 The supplied data frame should contain multiple time series in long format, i.e.:
-* one "timepoint" (datetime) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
-* one "item" (character) column containing categorical values identifying distinct time series.
-* one "value" (numeric) column containing the time series values which will be used for the y-axes.
-The `inputspec` parameter maps the data frame columns to the above.
+
+\itemize{
+\item one "timepoint" (date) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
+\item one "item" (character) column containing categorical values identifying distinct time series.
+\item one "value" (numeric) column containing the time series values which will be used for the y-axes.
+\item Optionally, a "tab" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
+}
+
+The \code{inputspec} parameter maps the data frame columns to the above.
 }

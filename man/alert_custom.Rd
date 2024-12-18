@@ -12,19 +12,19 @@ alert_custom(short_name, description, function_call, items = "[ALL]")
 
 \item{description}{short description of what the rule checks for}
 
-\item{function_call}{call to be evaluated per item, that returns either `TRUE` or `FALSE`. Return
-value of `TRUE` means alert result is "FAIL". See Details.}
+\item{function_call}{call to be evaluated per item, that returns either \code{TRUE} or \code{FALSE}. Return
+value of \code{TRUE} means alert result is "FAIL". See Details.}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply
-  it to all items.
+\item{items}{vector of values in item_col that the rule should be applied to. Or "\link{ALL}" to apply
+it to all items.
 
-  The supplied `function_call` is passed to `eval()` within a `dplyr::summarise()` after grouping
-  by the `item_col` and ordering by the `timepoint_col`. Column names that can be used explicitly
-  in the expression are: `value`, `item`, `timepoint`; and which refer to the values in the
-  `value_col`, `item_col`, `timepoint_col` columns of the data respectively}
+The supplied \code{function_call} is passed to \code{eval()} within a \code{dplyr::summarise()} after grouping
+by the \code{item_col} and ordering by the \code{timepoint_col}. Column names that can be used explicitly
+in the expression are: \code{value}, \code{item}, \code{timepoint}; and which refer to the values in the
+\code{value_col}, \code{item_col}, \code{timepoint_col} columns of the data respectively}
 }
 \value{
-An `alert_rule` object
+An \code{alert_rule} object
 }
 \description{
 TODO: Consider renaming function_call to quoted_expression

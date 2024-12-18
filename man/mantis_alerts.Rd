@@ -16,10 +16,10 @@ mantis_alerts(
 \arguments{
 \item{df}{A data frame containing multiple time series in long format. See Details.}
 
-\item{inputspec}{[`inputspec()`] object specifying which columns in the supplied `df` represent the
+\item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the supplied \code{df} represent the
 "timepoint", "item", "value"  and (optionally) "tab" for the time series. Each "item-tab" represents an individual time series}
 
-\item{alert_rules}{[`alert_rules()`] object specifying conditions to test}
+\item{alert_rules}{\code{\link[=alert_rules]{alert_rules()}} object specifying conditions to test}
 
 \item{filter_results}{only return rows where the alert result is in this vector of values}
 

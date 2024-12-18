@@ -9,15 +9,15 @@ alert_missing(extent_type = "all", extent_value = 1, items = "[ALL]")
 \arguments{
 \item{extent_type}{"all", "any", "last", "consecutive"}
 
-\item{extent_value}{lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more missing values in any position}
+\item{extent_value}{lower limit of extent. e.g. \code{extent_type="any"} and \code{extent_value=5} means alert if there are 5 or more missing values in any position}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
+\item{items}{vector of values in item_col that the rule should be applied to. Or "\link{ALL}" to apply it to all items.}
 }
 \value{
-An `alert_rule` object
+An \code{alert_rule} object
 }
 \description{
-Configure a rule to test the time series for the presence of NA values. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
+Configure a rule to test the time series for the presence of NA values. Tolerance can be adjusted using the \code{extent_type} and \code{extent_value} parameters, see Examples for details.
 }
 \examples{
 # alert if all values are NA
@@ -33,5 +33,5 @@ ars <- alert_rules(
 )
 }
 \seealso{
-[alert_rules()], [alert_equals()]
+\code{\link[=alert_rules]{alert_rules()}}, \code{\link[=alert_equals]{alert_equals()}}
 }

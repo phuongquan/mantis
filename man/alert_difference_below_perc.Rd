@@ -14,14 +14,14 @@ alert_difference_below_perc(
 \arguments{
 \item{current_period}{vector containing positions from end of time series to use for comparison}
 
-\item{previous_period}{vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.}
+\item{previous_period}{vector containing positions from end of time series to use for comparison. Can overlap with \code{current_period} if desired.}
 
-\item{rule_value}{value to test against. e.g. `rule_value=5` means alert if percentage drop is greater than 5}
+\item{rule_value}{value to test against. e.g. \code{rule_value=5} means alert if percentage drop is greater than 5}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
+\item{items}{vector of values in item_col that the rule should be applied to. Or "\link{ALL}" to apply it to all items.}
 }
 \value{
-An `alert_rule` object
+An \code{alert_rule} object
 }
 \description{
 Check if latest values are lower than in the previous period, over a particular percentage

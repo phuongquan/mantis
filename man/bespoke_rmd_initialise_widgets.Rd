@@ -7,7 +7,7 @@
 bespoke_rmd_initialise_widgets(plot_type)
 }
 \arguments{
-\item{plot_type}{"`bar`" or "`line`", depending on what will be used in real tables.}
+\item{plot_type}{"\code{bar}" or "\code{line}", depending on what will be used in real tables.}
 }
 \value{
 A (mostly) invisible html widget

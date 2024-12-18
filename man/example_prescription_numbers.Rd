@@ -5,14 +5,16 @@
 \alias{example_prescription_numbers}
 \title{Example data frame containing numbers of antibiotic prescriptions in long format}
 \format{
-## `example_prescription_numbers`
+\subsection{\code{example_prescription_numbers}}{
+
 A data frame with 6,570 rows and 4 columns:
 \describe{
-  \item{PrescriptionDate}{Date that the prescriptions were given}
-  \item{Antibiotic}{The type of antibiotic prescribed}
-  \item{NumberOfPrescriptions}{Number of prescriptions given}
-  \item{Location}{Location of the patient}
-  ...
+\item{PrescriptionDate}{Date that the prescriptions were given}
+\item{Antibiotic}{The type of antibiotic prescribed}
+\item{NumberOfPrescriptions}{Number of prescriptions given}
+\item{Location}{Location of the patient}
+...
+}
 }
 }
 \usage{

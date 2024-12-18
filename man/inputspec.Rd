@@ -7,7 +7,7 @@
 inputspec(timepoint_col, item_col, value_col, tab_col = NULL, period = "day")
 }
 \arguments{
-\item{timepoint_col}{String denoting the (datetime) column which will be used for the x-axes.}
+\item{timepoint_col}{String denoting the (date) column which will be used for the x-axes.}
 
 \item{item_col}{String denoting the (character) column containing categorical values identifying
 distinct time series.}
@@ -21,7 +21,7 @@ which will be used to group the time series into different tabs on the report.}
 \item{period}{periodicity of the timepoint_col values. "day"/"month"/"year"}
 }
 \value{
-A `inputspec()` object
+A \code{inputspec()} object
 }
 \description{
 Specify relevant columns in the source data frame

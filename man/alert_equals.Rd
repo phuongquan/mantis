@@ -14,17 +14,17 @@ alert_equals(
 \arguments{
 \item{extent_type}{"all", "any", "last", "consecutive"}
 
-\item{extent_value}{lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means alert if there are 5 or more values that satisfy the condition, in any position}
+\item{extent_value}{lower limit of extent. e.g. \code{extent_type="any"} and \code{extent_value=5} means alert if there are 5 or more values that satisfy the condition, in any position}
 
-\item{rule_value}{value to test against. e.g. `rule_value=0` means alert if value == 0}
+\item{rule_value}{value to test against. e.g. \code{rule_value=0} means alert if value == 0}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
+\item{items}{vector of values in item_col that the rule should be applied to. Or "\link{ALL}" to apply it to all items.}
 }
 \value{
-An `alert_rule` object
+An \code{alert_rule} object
 }
 \description{
-Configure a rule to test the time series for the presence of specific values. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
+Configure a rule to test the time series for the presence of specific values. Tolerance can be adjusted using the \code{extent_type} and \code{extent_value} parameters, see Examples for details.
 }
 \examples{
 # alert if all values are zero

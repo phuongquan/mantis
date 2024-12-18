@@ -21,7 +21,7 @@ will be sorted in ascending order. If NULL, the original order as given by uniqu
 will be used.}
 }
 \value{
-An `outputspec()` object
+An \code{outputspec()} object
 }
 \description{
 Specify output options for a static report containing heatmaps

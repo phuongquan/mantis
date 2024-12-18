@@ -5,14 +5,16 @@
 \alias{example_data}
 \title{Example data frame containing multiple time series in long format}
 \format{
-## `example_data`
+\subsection{\code{example_data}}{
+
 A data frame with 3,903 rows and 4 columns:
 \describe{
-  \item{timepoint}{Dates for the time series}
-  \item{item}{Labels to identify the different time series}
-  \item{value}{Values for the time series}
-  \item{tab}{Labels to group related time series into tabs}
-  ...
+\item{timepoint}{Dates for the time series}
+\item{item}{Labels to identify the different time series}
+\item{value}{Values for the time series}
+\item{tab}{Labels to group related time series into tabs}
+...
+}
 }
 }
 \usage{

@@ -10,7 +10,7 @@ alert_rules(...)
 \item{...}{alerts to apply to the time series}
 }
 \value{
-An `alert_rules` object
+An \code{alert_rules} object
 }
 \description{
 Create set of alert rules
