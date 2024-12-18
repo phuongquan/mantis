@@ -310,7 +310,7 @@ validate_param_byname <- function(param_name, param_value){
       expect_scalar = FALSE,
       validation_function = function(x) {
         # NOTE: can't just test for Date class as if first value is NA, second value gets converted to numeric implicitly
-        length(x) == 2 && all(inherits(x, "Date") | is.numeric(x) | is.na(x))
+        length(x) == 2 && all(is_datetime(x) | is.numeric(x) | is.na(x))
       },
       error_message = 'Expected a vector of two Dates or NAs',
       error_contents_max_length = 100
@@ -621,3 +621,13 @@ stop_custom <- function(.subclass, message, call = NULL, ...) {
   stop(err)
 }
 
+
+#' Test if object is Date or POSIXt class
+#'
+#' @param x object to test
+#'
+#' @return logical(1)
+#' @noRd
+is_datetime <- function(x){
+  inherits(x, what = "Date") || inherits(x, what = "POSIXt")
+}

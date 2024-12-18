@@ -163,7 +163,7 @@ prepare_table <-
 # -----------------------------------------------------------------------------
 #' Specify relevant columns in the source data frame
 #'
-#' @param timepoint_col String denoting the (datetime) column which will be used for the x-axes.
+#' @param timepoint_col String denoting the (date) column which will be used for the x-axes.
 #' @param item_col String denoting the (character) column containing categorical values identifying
 #'   distinct time series.
 #' @param value_col String denoting the (numeric) column containing the time series values which
@@ -460,17 +460,21 @@ max_else_na <- function(x){
 #'
 #' @noRd
 validate_df_to_inputspec <- function(df,
-                                   inputspec){
+                                     inputspec){
 
   # validate - collect all errors together and return only once
   err_validation <- character()
 
+  # check the inputspec and df names are valid first
   err_validation <-
     append(err_validation,
-           validate_df_to_inputspec_cols(df, inputspec))
+           validate_df_to_inputspec_col_names(df, inputspec))
 
   # only do the following checks if the inputspec and df names are valid
   if (length(err_validation) == 0) {
+    err_validation <-
+      append(err_validation,
+             validate_df_to_inputspec_col_types(df, inputspec))
     err_validation <-
       append(err_validation,
              validate_df_to_inputspec_duplicate_timepoints(df, inputspec))
@@ -498,8 +502,8 @@ validate_df_to_inputspec <- function(df,
 #'
 #' @return character string containing any error messages
 #' @noRd
-validate_df_to_inputspec_cols <- function(df,
-                                         inputspec){
+validate_df_to_inputspec_col_names <- function(df,
+                                               inputspec){
 
   err_validation <- character()
 
@@ -548,6 +552,70 @@ validate_df_to_inputspec_cols <- function(df,
           )
         )
     }
+  }
+
+  err_validation
+}
+
+#' Check datatypes in supplied df and inputspec
+#'
+#' Only run if supplied df and inputspec column names are valid
+#'
+#' @param df user supplied df
+#' @param inputspec user supplied inputspec
+#'
+#' @return character string containing any error messages
+#' @noRd
+validate_df_to_inputspec_col_types <- function(df,
+                                               inputspec){
+
+  err_validation <- character()
+
+  # check timepoint col is datetime type
+  timepoint_vals <- df |> dplyr::pull(dplyr::all_of(inputspec$timepoint_col))
+  if (!is_datetime(timepoint_vals)) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "The timepoint_col column [",
+          inputspec$timepoint_col,
+          "] must be a Date or POSIXt type. Instead found [",
+          paste(class(timepoint_vals), collapse = ", "),
+          "]"
+        )
+      )
+  }
+  # check no missing timepoints
+  if (any(is.na(timepoint_vals))) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "The timepoint_col column [",
+          inputspec$timepoint_col,
+          "] must not contain missing values. Found [",
+          sum(is.na(timepoint_vals)),
+          "] NAs"
+        )
+      )
+  }
+
+  # check value col is numeric type
+  # Note: Infs and NaNs can be left in, they should be treated like NAs
+  value_vals <- df |> dplyr::pull(dplyr::all_of(inputspec$value_col))
+  if (!is.numeric(value_vals)) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "The value_col column [",
+          inputspec$value_col,
+          "] must be a numeric type. Instead found [",
+          paste(class(value_vals), collapse = ", "),
+          "]"
+        )
+      )
   }
 
   err_validation
