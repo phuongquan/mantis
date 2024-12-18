@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,7 +32,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="basic-usage">Basic usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a></h2>
 
 
 
@@ -44,82 +44,10 @@
 
       <dl><dt>
 
-          <code><a href="alert_above.html">alert_above()</a></code>
+          <code><a href="mantis_report.html">mantis_report()</a></code>
 
         </dt>
-        <dd>Test for values greater than a specific value</dd>
-      </dl><dl><dt>
-
-          <code><a href="alert_below.html">alert_below()</a></code>
-
-        </dt>
-        <dd>Test for values less than a specific value</dd>
-      </dl><dl><dt>
-
-          <code><a href="alert_custom.html">alert_custom()</a></code>
-
-        </dt>
-        <dd>Create a custom alert rule</dd>
-      </dl><dl><dt>
-
-          <code><a href="alert_difference_above_perc.html">alert_difference_above_perc()</a></code>
-
-        </dt>
-        <dd>Test for when there is a percentage increase in latest values</dd>
-      </dl><dl><dt>
-
-          <code><a href="alert_difference_below_perc.html">alert_difference_below_perc()</a></code>
-
-        </dt>
-        <dd>Test for when there is a percentage drop in latest values</dd>
-      </dl><dl><dt>
-
-          <code><a href="alert_equals.html">alert_equals()</a></code>
-
-        </dt>
-        <dd>Test for specific values</dd>
-      </dl><dl><dt>
-
-          <code><a href="alert_missing.html">alert_missing()</a></code>
-
-        </dt>
-        <dd>Test for missing values</dd>
-      </dl><dl><dt>
-
-          <code><a href="alert_rules.html">alert_rules()</a></code>
-
-        </dt>
-        <dd>Create set of alert rules</dd>
-      </dl><dl><dt>
-
-          <code><a href="bespoke_rmd_initialise_widgets.html">bespoke_rmd_initialise_widgets()</a></code>
-
-        </dt>
-        <dd>Initialise HTML widgets</dd>
-      </dl><dl><dt>
-
-          <code><a href="bespoke_rmd_tab_group.html">bespoke_rmd_tab_group()</a></code>
-
-        </dt>
-        <dd>Dynamically generate a group of tabs for an rmd chunk</dd>
-      </dl><dl><dt>
-
-          <code><a href="bespoke_rmd_tab_item.html">bespoke_rmd_tab_item()</a></code>
-
-        </dt>
-        <dd>Dynamically generate a single tab for an rmd chunk</dd>
-      </dl><dl><dt>
-
-          <code><a href="example_data.html">example_data</a></code>
-
-        </dt>
-        <dd>Example data frame containing multiple time series in long format</dd>
-      </dl><dl><dt>
-
-          <code><a href="example_prescription_numbers.html">example_prescription_numbers</a></code>
-
-        </dt>
-        <dd>Example data frame containing numbers of antibiotic prescriptions in long format</dd>
+        <dd>Create an interactive time series report from a data frame</dd>
       </dl><dl><dt>
 
           <code><a href="inputspec.html">inputspec()</a></code>
@@ -128,17 +56,22 @@
         <dd>Specify relevant columns in the source data frame</dd>
       </dl><dl><dt>
 
-          <code><a href="mantis_alerts.html">mantis_alerts()</a></code>
+          <code><a href="example_prescription_numbers.html">example_prescription_numbers</a></code>
 
         </dt>
-        <dd>Generate a data frame containing alert results</dd>
-      </dl><dl><dt>
+        <dd>Example data frame containing numbers of antibiotic prescriptions in long format</dd>
+      </dl></div><div class="section level2">
+      <h2 id="specifying-the-output-format">Specifying the output format<a class="anchor" aria-label="anchor" href="#specifying-the-output-format"></a></h2>
 
-          <code><a href="mantis_report.html">mantis_report()</a></code>
 
-        </dt>
-        <dd>Create an interactive time series report from a data frame</dd>
-      </dl><dl><dt>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="outputspec_interactive.html">outputspec_interactive()</a></code>
 
@@ -156,12 +89,107 @@
 
         </dt>
         <dd>Specify output options for a static report containing grids of plots.</dd>
+      </dl></div><div class="section level2">
+      <h2 id="specifying-alerting-rules">Specifying alerting rules<a class="anchor" aria-label="anchor" href="#specifying-alerting-rules"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="alert_rules.html">alert_rules()</a></code>
+
+        </dt>
+        <dd>Create set of alert rules</dd>
+      </dl><dl><dt>
+
+          <code><a href="alert_missing.html">alert_missing()</a></code>
+
+        </dt>
+        <dd>Test for missing values</dd>
+      </dl><dl><dt>
+
+          <code><a href="alert_equals.html">alert_equals()</a></code>
+
+        </dt>
+        <dd>Test for specific values</dd>
+      </dl><dl><dt>
+
+          <code><a href="alert_above.html">alert_above()</a></code>
+
+        </dt>
+        <dd>Test for values greater than a specific value</dd>
+      </dl><dl><dt>
+
+          <code><a href="alert_below.html">alert_below()</a></code>
+
+        </dt>
+        <dd>Test for values less than a specific value</dd>
+      </dl><dl><dt>
+
+          <code><a href="alert_difference_above_perc.html">alert_difference_above_perc()</a></code>
+
+        </dt>
+        <dd>Test for when there is a percentage increase in latest values</dd>
+      </dl><dl><dt>
+
+          <code><a href="alert_difference_below_perc.html">alert_difference_below_perc()</a></code>
+
+        </dt>
+        <dd>Test for when there is a percentage drop in latest values</dd>
+      </dl><dl><dt>
+
+          <code><a href="alert_custom.html">alert_custom()</a></code>
+
+        </dt>
+        <dd>Create a custom alert rule</dd>
+      </dl><dl><dt>
+
+          <code><a href="mantis_alerts.html">mantis_alerts()</a></code>
+
+        </dt>
+        <dd>Generate a data frame containing alert results</dd>
+      </dl></div><div class="section level2">
+      <h2 id="creating-a-bespoke-report">Creating a bespoke report<a class="anchor" aria-label="anchor" href="#creating-a-bespoke-report"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="bespoke_rmd_initialise_widgets.html">bespoke_rmd_initialise_widgets()</a></code>
+
+        </dt>
+        <dd>Initialise HTML widgets</dd>
+      </dl><dl><dt>
+
+          <code><a href="bespoke_rmd_tab_group.html">bespoke_rmd_tab_group()</a></code>
+
+        </dt>
+        <dd>Dynamically generate a group of tabs for an rmd chunk</dd>
+      </dl><dl><dt>
+
+          <code><a href="bespoke_rmd_tab_item.html">bespoke_rmd_tab_item()</a></code>
+
+        </dt>
+        <dd>Dynamically generate a single tab for an rmd chunk</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by T. Phuong Quan, National Institute for Health Research (NIHR).</p>
+  <p>Developed by T. Phuong Quan, University of Oxford.</p>
 </div>
 
 <div class="pkgdown-footer-right">

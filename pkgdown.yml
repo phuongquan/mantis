@@ -3,7 +3,4 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   mantis: mantis.html
-last_built: 2024-12-17T17:47Z
-urls:
-  reference: https://phuongquan.github.io/mantis/reference
-  article: https://phuongquan.github.io/mantis/articles
+last_built: 2024-12-18T17:55Z
