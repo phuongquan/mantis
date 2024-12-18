@@ -1,4 +1,51 @@
-url: https://phuongquan.github.io/mantis/
+url: ~
 template:
   bootstrap: 5
+development:
+  mode: release
 
+navbar:
+  structure:
+    left:  [intro, reference, news]
+    right: [search, github]
+
+reference:
+- title: Basic usage
+  contents:
+  - mantis_report
+  - inputspec
+  - example_prescription_numbers
+
+- title: Specifying the output format
+  contents:
+  - outputspec_interactive
+  - outputspec_static_heatmap
+  - outputspec_static_multipanel
+
+- title: Specifying alerting rules
+  contents:
+  - alert_rules
+  - alert_missing
+  - alert_equals
+  - alert_above
+  - alert_below
+  - alert_difference_above_perc
+  - alert_difference_below_perc
+  - alert_custom
+  - mantis_alerts
+
+- title: Creating a bespoke report
+  contents:
+  - bespoke_rmd_initialise_widgets
+  - bespoke_rmd_tab_group
+  - bespoke_rmd_tab_item
+
+- title: internal
+  contents:
+  - example_data
+
+authors:
+  footer:
+    roles: [cre, cph]
+  sidebar:
+    roles: [cre, cph]
