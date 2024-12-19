@@ -601,6 +601,25 @@ validate_df_to_inputspec_col_types <- function(df,
       )
   }
 
+  # item col will be coerced to character type
+  # Check it doesn't contain both NA values and string "NA" values
+  item_vals <- df |> dplyr::pull(dplyr::all_of(inputspec$item_col))
+  if (any(is.na(item_vals)) && any(item_vals == "NA", na.rm = TRUE)) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "The item_col column [",
+          inputspec$item_col,
+          '] cannot contain both NA values and "NA" strings. Found [',
+          sum(is.na(item_vals)),
+          "] NA values and [",
+          sum(item_vals == "NA", na.rm = TRUE),
+          '] "NA" strings'
+        )
+      )
+  }
+
   # check value col is numeric type
   # Note: Infs and NaNs can be left in, they should be treated like NAs
   value_vals <- df |> dplyr::pull(dplyr::all_of(inputspec$value_col))

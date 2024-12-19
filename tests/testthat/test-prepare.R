@@ -215,6 +215,43 @@ test_that("validate_df_to_inputspec() checks that timepoint column doesn't conta
   )
 })
 
+test_that("validate_df_to_inputspec() checks that item column can contain NA values", {
+  df <- data.frame(timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+                   item = c(NA, NA, NA, rep(1, 7)),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  inputspec <- inputspec(timepoint_col = "timepoint",
+                     item_col = "item",
+                     value_col = "value")
+mantis_report(df,inputspec)
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+      )
+    )
+})
+
+test_that("validate_df_to_inputspec() checks that item column doesn't contain both NA values and 'NA' strings", {
+  df <- data.frame(timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+                   item = c(NA, NA, "NA", rep(1, 7)),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  inputspec <- inputspec(timepoint_col = "timepoint",
+                     item_col = "item",
+                     value_col = "value")
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+})
+
 
 test_that("validate_df_to_inputspec() checks that duplicate timepoint-item combinations not allowed", {
   df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 5),
