@@ -15,7 +15,7 @@ alert_custom(short_name, description, function_call, items = "[ALL]")
 \item{function_call}{call to be evaluated per item, that returns either \code{TRUE} or \code{FALSE}. Return
 value of \code{TRUE} means alert result is "FAIL". See Details.}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "\link{ALL}" to apply
+\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply
 it to all items.
 
 The supplied \code{function_call} is passed to \code{eval()} within a \code{dplyr::summarise()} after grouping

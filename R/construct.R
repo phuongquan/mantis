@@ -26,7 +26,7 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' @param df A data frame containing multiple time series in long format. See Details.
 #' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
 #'   "timepoint", "item", and "value" for the time series. If a "tab" column is specified, it will be ignored.
-#' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
+#' @param outputspec `outputspec` object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
@@ -93,7 +93,7 @@ bespoke_rmd_tab_item <- function(df,
 #' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
 #'   "timepoint", "item", "value" and "tab" for the time series. A separate tab
 #'   will be created for each distinct value in the "tab" column.
-#' @param outputspec [`outputspec()`] object specifying the desired format of the html table(s). If
+#' @param outputspec `outputspec` object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col

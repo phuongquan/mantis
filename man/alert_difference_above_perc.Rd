@@ -18,7 +18,7 @@ alert_difference_above_perc(
 
 \item{rule_value}{value to test against. e.g. \code{rule_value=5} means alert if percentage increase is greater than 5}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "\link{ALL}" to apply it to all items.}
+\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
 }
 \value{
 An \code{alert_rule} object

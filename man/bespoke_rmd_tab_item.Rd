@@ -21,7 +21,7 @@ bespoke_rmd_tab_item(
 \item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the supplied \code{df} represent the
 "timepoint", "item", and "value" for the time series. If a "tab" column is specified, it will be ignored.}
 
-\item{outputspec}{\code{\link[=outputspec]{outputspec()}} object specifying the desired format of the html table(s). If
+\item{outputspec}{\code{outputspec} object specifying the desired format of the html table(s). If
 not supplied, default values will be used.}
 
 \item{alert_rules}{\code{\link[=alert_rules]{alert_rules()}} object specifying conditions to test}

@@ -23,7 +23,7 @@ bespoke_rmd_tab_group(
 "timepoint", "item", "value" and "tab" for the time series. A separate tab
 will be created for each distinct value in the "tab" column.}
 
-\item{outputspec}{\code{\link[=outputspec]{outputspec()}} object specifying the desired format of the html table(s). If
+\item{outputspec}{\code{outputspec} object specifying the desired format of the html table(s). If
 not supplied, default values will be used.}
 
 \item{alert_rules}{\code{\link[=alert_rules]{alert_rules()}} object specifying conditions to test}
