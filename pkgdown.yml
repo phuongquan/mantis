@@ -2,5 +2,9 @@ pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
+  bespoke-reports: bespoke-reports.html
+  articles/example-report-interactive: example-report-interactive.html
+  articles/example-report-static-heatmap: example-report-static-heatmap.html
+  articles/example-report-static-multipanel: example-report-static-multipanel.html
   mantis: mantis.html
-last_built: 2024-12-19T10:07Z
+last_built: 2024-12-19T18:06Z
