@@ -1,8 +1,8 @@
 ---
-title: "mantis"
+title: "Get started with mantis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{mantis}
+  %\VignetteIndexEntry{Get started with mantis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -33,8 +33,6 @@ The `example_prescription_numbers` dataset is provided with this package, and co
 * Antibiotic - The name of the antibiotic prescribed
 * NumberOfPrescriptions - The number of prescriptions written for this antibiotic on this day
 * Location - The hospital site where the prescription was written
-
-TODO: Columns that can or can't contain NA values
 
 ```{r data}
 # first, attach the package if you haven't already

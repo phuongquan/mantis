@@ -1,0 +1,45 @@
+---
+title: "Creating bespoke mantis reports"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Creating bespoke mantis reports}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This article introduces the basics of how to generate a bespoke html report containing tabs and visualisations from the `mantis` package. The easiest way to get started is to clone the [mantis-templates](https://github.com/phuongquan/mantis-templates) project to see it in action, then choose a template Rmd file that you can adapt.
+
+Note: Currently, `mantis` uses `rmarkdown` to generate its reports, though in future it will add functionality to create quarto reports.
+
+
+## Overview 
+
+You can use existing `rmarkdown` functionality to create your own bespoke html report, and insert `mantis` content and/or tabs as desired. At a minimum, you need to know how to generate html documents from a Rmd file, including creating tabsets. If you don't, take a look at the official documentation and/or the many other online resources available.
+
+`mantis` includes two main functions for creating content for bespoke reports. These functions use side-effects to generate the desired markdown, and must be placed inside a `{r, results='asis'}` chunk.
+
+* `bespoke_rmd_tab_item()` will add a single visualisation, with or without creating the container tab.
+
+* `bespoke_rmd_tab_group()` will add a set of tabs, each based on the same output specification, with or without creating the parent tab.
+
+These functions also include a few additional parameters not available in the standard `mantis_report()` to allow some extra control over the display.
+
+## Extra requirements for interactive reports
+
+Due to complexities in the way `dygraph` widgets are rendered, there are two additional chunks that must be included in the Rmd file, otherwise the graphs can disappear unexpectedly.
+
+Firstly, add the following code to a `{r, results='asis'}` chunk to initialise the `dygraph` widgets. Remember to set the same `plot_type` as the one you are using. This is best placed at the bottom of the Rmd file as it can lead to an extra line space.
+
+`mantis::bespoke_rmd_initialise_widgets(plot_type = "bar")`
+
+Secondly, when the browser window is resized, all `dygraph`s on inactive tabs disappear, so we need to reload the page to redraw them all. To do this, add the following code to a `{js}` chunk at the top of the Rmd file:
+
+`window.onresize = function(){ location.reload(); }`
+

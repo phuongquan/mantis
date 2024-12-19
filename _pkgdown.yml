@@ -6,9 +6,14 @@ development:
 
 navbar:
   structure:
-    left:  [intro, reference, example-report, news]
+    left:  [intro, reference, articles, example-report, news]
     right: [search, github]
   components:
+    articles:
+      text: Articles
+      menu:
+      - text: Creating bespoke mantis reports
+        href: articles/bespoke-reports.html
     example-report:
       text: Example reports
       menu:
