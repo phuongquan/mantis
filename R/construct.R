@@ -30,9 +30,9 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #'   not supplied, default values will be used.
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
-#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param tab_name Character string to appear on parent tab
-#' @param tab_level Child level for tab. Value of 1 creates a tab with rmd level "##".
+#' @param fill_with_zero Logical. Replace any missing or NA values with 0? Useful when `value_col` is a record count
+#' @param tab_name Character string to appear on tab label. If omitted or `NULL`, only the content (and not the tab itself) will be created.
+#' @param tab_level Integer specifying the nesting level for the tab. Value of 1 creates a tab with rmd level "##".
 #'
 #' @return (invisibly) the supplied df
 #' @details The supplied data frame should contain multiple time series in long format, i.e.:
@@ -97,10 +97,10 @@ bespoke_rmd_tab_item <- function(df,
 #'   not supplied, default values will be used.
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
-#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param fill_with_zero Logical. Replace any missing or NA values with 0? Useful when `value_col` is a record count
 #' @param tab_order Optional vector containing values from tab_col in desired order of display
-#' @param tab_group_name Character string to appear on parent tab
-#' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##".
+#' @param tab_group_name Character string to appear on parent tab label. If omitted or `NULL`, only the child tabs (and not the parent tab) will be created.
+#' @param tab_group_level Integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##". This is unaffected by the presence or not of `tab_group_name`.
 #'
 #' @return (invisibly) the supplied df
 #' @details The supplied data frame should contain multiple time series in long format, i.e.:
@@ -209,9 +209,9 @@ initialise_widgets <- function(plot_type){
 #' @param outputspec Specification for display of tab contents
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
-#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param tab_name Character string to appear on parent tab
-#' @param tab_level Child level for tab. Value of 1 creates a tab with rmd level "##".
+#' @param fill_with_zero Logical. Replace any missing or NA values with 0? Useful when `value_col` is a record count
+#' @param tab_name Character string to appear on tab label. If omitted or `NULL`, only the content (and not the tab itself) will be created.
+#' @param tab_level Nesting level for tab. Value of 1 creates a tab with rmd level "##".
 #'
 #' @return (invisibly) the supplied df
 #' @noRd
@@ -289,10 +289,10 @@ construct_rmd_tab_item <- function(df,
 #' @param outputspec Specification for display of tab contents
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
-#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
+#' @param fill_with_zero Logical. Replace any missing or NA values with 0? Useful when `value_col` is a record count
 #' @param tab_order Optional vector containing values from tab_col in desired order of display
-#' @param tab_group_name Character string to appear on parent tab
-#' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##".
+#' @param tab_group_name Character string to appear on parent tab label. If omitted or `NULL`, only the child tabs (and not the parent tab) will be created.
+#' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##". This is unaffected by the presence or not of `tab_group_name`.
 #'
 #' @return (invisibly) the supplied df
 #' @noRd

@@ -28,11 +28,11 @@ not supplied, default values will be used.}
 
 \item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of timepoint_col}
 
-\item{fill_with_zero}{Replace any missing or NA values with 0? Useful when value_col is a record count}
+\item{fill_with_zero}{Logical. Replace any missing or NA values with 0? Useful when \code{value_col} is a record count}
 
-\item{tab_name}{Character string to appear on parent tab}
+\item{tab_name}{Character string to appear on tab label. If omitted or \code{NULL}, only the content (and not the tab itself) will be created.}
 
-\item{tab_level}{Child level for tab. Value of 1 creates a tab with rmd level "##".}
+\item{tab_level}{Integer specifying the nesting level for the tab. Value of 1 creates a tab with rmd level "##".}
 }
 \value{
 (invisibly) the supplied df
