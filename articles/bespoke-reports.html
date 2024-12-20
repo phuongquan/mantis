@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Creating bespoke mantis reports • mantis</title>
+<title>Creating bespoke reports • mantis</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Creating bespoke mantis reports">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Creating bespoke reports">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/bespoke-reports.html">Creating bespoke mantis reports</a></li>
+<li><a class="dropdown-item" href="../articles/bespoke-reports.html">Creating bespoke reports</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -64,7 +64,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Creating bespoke mantis reports</h1>
+      <h1>Creating bespoke reports</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/main/vignettes/bespoke-reports.Rmd" class="external-link"><code>vignettes/bespoke-reports.Rmd</code></a></small>
@@ -73,14 +73,14 @@
 
     
     
-<p>This article introduces the basics of how to generate a bespoke html
+<p>This vignette introduces the basics of how to generate a bespoke html
 report containing tabs and visualisations from the <code>mantis</code>
 package. The easiest way to get started is to clone the <a href="https://github.com/phuongquan/mantis-templates" class="external-link">mantis-templates</a>
 project to see it in action, then choose a template Rmd file that you
 can adapt.</p>
 <p>Note: Currently, <code>mantis</code> uses <code>rmarkdown</code> to
-generate its reports, though in future it will add functionality to
-create quarto reports.</p>
+generate its reports. In future it will add functionality to create
+Quarto reports.</p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -108,20 +108,29 @@ extra control over the display.</p>
 <div class="section level2">
 <h2 id="extra-requirements-for-interactive-reports">Extra requirements for interactive reports<a class="anchor" aria-label="anchor" href="#extra-requirements-for-interactive-reports"></a>
 </h2>
-<p>Due to complexities in the way <code>dygraph</code> widgets are
+<p>Due to complexities in the way <code>dygraphs</code> widgets are
 rendered, there are two additional chunks that must be included in the
 Rmd file, otherwise the graphs can disappear unexpectedly.</p>
-<p>Firstly, add the following code to a <code>{r, results='asis'}</code>
-chunk to initialise the <code>dygraph</code> widgets. Remember to set
-the same <code>plot_type</code> as the one you are using. This is best
-placed at the bottom of the Rmd file as it can lead to an extra line
-space.</p>
-<p><code>mantis::bespoke_rmd_initialise_widgets(plot_type = "bar")</code></p>
+<p>Firstly, add the following chunk to the Rmd file to ensure the
+<code>dygraphs</code> plots are initialised. Remember to set the same
+<code>plot_type</code> as the one you are using for the rest of the
+report. This is best placed at the bottom of the file as it can lead to
+an extra line space.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>```{r}</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a># this chunk is necessary when using mantis::outputspec_interactive(). </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a># it ensures that the dygraphs render when built using `cat()`</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a># set the plot_type to the same plot_type as the real output</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>mantis::bespoke_rmd_initialise_widgets(plot_type = "bar")</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>```</span></code></pre></div>
 <p>Secondly, when the browser window is resized, all
-<code>dygraph</code>s on inactive tabs disappear, so we need to reload
-the page to redraw them all. To do this, add the following code to a
-<a href="https://jeroen.r-universe.dev/js" class="external-link">js</a> chunk at the top of the Rmd file:</p>
-<p><code>window.onresize = function(){ location.reload(); }</code></p>
+<code>dygraphs</code> plots on inactive tabs disappear. A workaround for
+this is to redraw them all by reloading the page. To do this, add the
+following chunk at the top of the Rmd file.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>```{js}</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>// this chunk is necessary when using mantis::outputspec_interactive(). </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>// when the browser window is resized, all dygraphs on inactive tabs disappear. Reload page to redraw them all.</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>window.onresize = function(){ location.reload(); }</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>```</span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
