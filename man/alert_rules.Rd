@@ -13,7 +13,7 @@ alert_rules(...)
 An \code{alert_rules} object
 }
 \description{
-Create set of alert rules
+Note: this functionality is currently only implemented for interactive outputs and will be ignored for static outputs.
 }
 \examples{
 # alert if any values are NA

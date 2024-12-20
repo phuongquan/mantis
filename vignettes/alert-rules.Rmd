@@ -1,0 +1,117 @@
+---
+title: "Specifying alerting rules"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Specifying alerting rules}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+While visual inspection is probably the most reliable way of identifying anomalies in time series, things can be missed when there are large numbers of time series to inspect. In this case, it can be useful to additionally test the individual time series for certain conditions, such as the presence of missing values or for values breaching pre-set limits, and to alert the user to them.
+
+The alerting rules functionality is currently only available for interactive outputs. They will be ignored when choosing static visualisations.
+
+Note: This functionality is still in the early stages of development, and can increase the document size and rendering time of the report considerably.
+
+## Overview
+
+One or more alerting rules can be specified within an `alert_rules()` object, which is then passed into the `alert_rules` parameter.
+
+## Built-in rules
+
+There are a number of built-in rules that can be used to test for simple conditions, the simplest of which is testing for the presence of missing values. The `extent_type` and `extent_value` parameters can be used to adjust the tolerance. E.g.
+
+```{r, eval=FALSE}
+# alert if all values are NA
+ars <- alert_rules(alert_missing(extent_type = "all"))
+
+# alert if there are 10 or more missing values in total
+# or if the last 3 or more values are missing
+# or if 5 or more values in a row are missing
+ars <- alert_rules(
+  alert_missing(extent_type = "any", extent_value = 10),
+  alert_missing(extent_type = "last", extent_value = 3),
+  alert_missing(extent_type = "consecutive", extent_value = 5)
+)
+```
+
+
+The `alert_equals()`, `alert_below()`, `alert_above()` rules work similarly.
+
+It is also possible to compare a range of values with another range of values using the `alert_difference_above_perc()` and `alert_difference_below_perc()` rules.
+
+TO COMPLETE
+
+
+## Custom rules
+
+If you want to apply a more complex rule, you can specify your own using `alert_custom()`. E.g.
+
+```{r, eval=FALSE}
+ars <- alert_rules(
+  alert_custom(
+    short_name = "my_rule_combo",
+    description = "Over 3 missing values and max value is > 10",
+    function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
+  ),
+  alert_custom(
+    short_name = "my_rule_doubled",
+    description = "Last value is over double the first value",
+    function_call = quote(rev(value)[1] > 2*value[1])
+  )
+)
+```
+
+## Walkthrough 
+
+Generate an interactive `mantis` report for the `example_prescription_numbers` dataset supplied with the `mantis` package.
+
+```{r}
+library(mantis)
+
+data("example_prescription_numbers")
+
+```
+
+```{r interactive-display, eval=FALSE}
+mantis_report(
+  df = example_prescription_numbers,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_col = "Antibiotic",
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = outputspec_interactive(
+    item_label = "Antibiotic",
+    sync_axis_range = FALSE
+  ),
+  report_title = "mantis report",
+  dataset_description = "Antibiotic prescriptions by site",
+  save_filename = "example_prescription_numbers_interactive",
+  show_progress = TRUE
+)
+```
+
+In the SITE1 tab, the Vancomycin time series contains a block of NA values but it is not easy to distinguish between NA values and zero values unless you zoom in on the plot (by selecting a section of it with the mouse) or hover the mouse over the relevant time points and read the tooltips.
+
+We can add a rule to test for missing values.
+
+
+```{r}
+# alert if any values are NA
+ars <- alert_rules(
+  alert_missing(extent_type = "any", extent_value = 1)
+)
+
+```
+
+TO COMPLETE
+

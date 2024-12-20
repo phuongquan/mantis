@@ -12,6 +12,8 @@ navbar:
       menu:
       - text: Creating bespoke reports
         href: articles/bespoke-reports.html
+      - text: Specifying alerting rules
+        href: articles/alert-rules.html
     example-report:
       text: Example reports
       menu:

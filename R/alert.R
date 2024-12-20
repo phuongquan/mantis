@@ -1,6 +1,8 @@
 # -----------------------------------------------------------------------------
 #' Create set of alert rules
 #'
+#' Note: this functionality is currently only implemented for interactive outputs and will be ignored for static outputs.
+#'
 #' @param ... alerts to apply to the time series
 #' @return An `alert_rules` object
 #' @export
