@@ -1,8 +1,6 @@
 url: ~
 template:
   bootstrap: 5
-development:
-  mode: release
 
 navbar:
   structure:
@@ -12,7 +10,7 @@ navbar:
     articles:
       text: Articles
       menu:
-      - text: Creating bespoke mantis reports
+      - text: Creating bespoke reports
         href: articles/bespoke-reports.html
     example-report:
       text: Example reports

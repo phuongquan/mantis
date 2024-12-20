@@ -28,18 +28,18 @@ not supplied, default values will be used.}
 
 \item{alert_rules}{\code{\link[=alert_rules]{alert_rules()}} object specifying conditions to test}
 
-\item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of timepoint_col}
+\item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of \code{timepoint_col}}
 
-\item{fill_with_zero}{Logical. Replace any missing or NA values with 0? Useful when \code{value_col} is a record count}
+\item{fill_with_zero}{Logical. Replace any missing or \code{NA} values with 0? Useful when \code{value_col} is a record count}
 
-\item{tab_order}{Optional vector containing values from tab_col in desired order of display}
+\item{tab_order}{Optional vector containing values from \code{tab_col} in desired order of display}
 
 \item{tab_group_name}{Character string to appear on parent tab label. If omitted or \code{NULL}, only the child tabs (and not the parent tab) will be created.}
 
 \item{tab_group_level}{Integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##". This is unaffected by the presence or not of \code{tab_group_name}.}
 }
 \value{
-(invisibly) the supplied df
+(invisibly) the supplied \code{df}
 }
 \description{
 Chunk options must contain \code{results = 'asis'}.

@@ -3,8 +3,11 @@
 
 #' Initialise HTML widgets
 #'
-#' If the output is being constructed in 'asis' chunks, there must also be at least one standard chunk that
-#' contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate plot_type
+#' If the output is being constructed in `results='asis'` chunks, there must also be at least one standard chunk that
+#' contains the relevant widgets, otherwise they won't render. The `dygraph` also needs to be initialised with the appropriate `plot_type`.
+#' See https://github.com/rstudio/rmarkdown/issues/1877 for more info.
+#' Note: The chunk currently appears like a line break when rendered.
+#'
 #' @param plot_type "`bar`" or "`line`", depending on what will be used in real tables.
 #'
 #' @return A (mostly) invisible html widget
@@ -29,12 +32,12 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' @param outputspec `outputspec` object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
-#' @param fill_with_zero Logical. Replace any missing or NA values with 0? Useful when `value_col` is a record count
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`
+#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when `value_col` is a record count
 #' @param tab_name Character string to appear on tab label. If omitted or `NULL`, only the content (and not the tab itself) will be created.
 #' @param tab_level Integer specifying the nesting level for the tab. Value of 1 creates a tab with rmd level "##".
 #'
-#' @return (invisibly) the supplied df
+#' @return (invisibly) the supplied `df`
 #' @details The supplied data frame should contain multiple time series in long format, i.e.:
 #'
 #' \itemize{
@@ -96,13 +99,13 @@ bespoke_rmd_tab_item <- function(df,
 #' @param outputspec `outputspec` object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
-#' @param fill_with_zero Logical. Replace any missing or NA values with 0? Useful when `value_col` is a record count
-#' @param tab_order Optional vector containing values from tab_col in desired order of display
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`
+#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when `value_col` is a record count
+#' @param tab_order Optional vector containing values from `tab_col` in desired order of display
 #' @param tab_group_name Character string to appear on parent tab label. If omitted or `NULL`, only the child tabs (and not the parent tab) will be created.
 #' @param tab_group_level Integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##". This is unaffected by the presence or not of `tab_group_name`.
 #'
-#' @return (invisibly) the supplied df
+#' @return (invisibly) the supplied `df`
 #' @details The supplied data frame should contain multiple time series in long format, i.e.:
 #'
 #' \itemize{
@@ -169,14 +172,15 @@ bespoke_rmd_tab_group <- function(df,
 
 #' Initialise HTML widgets (internal)
 #'
-#' If the output is being constructed in 'asis' chunks, there must also be at least one standard chunk that
-#' contains the relevant widgets, otherwise they won't render. dyGraph also needs to be rendered with appropriate plot_type
+#' If the output is being constructed in `results='asis'` chunks, there must also be at least one standard chunk that
+#' contains the relevant widgets, otherwise they won't render. The `dygraph` also needs to be initialised with the appropriate `plot_type`.
 #' @param plot_type "`bar`" or "`line`", depending on what will be used in real tables.
 #'
 #' @return A (mostly) invisible html widget
 #' @noRd
 initialise_widgets <- function(plot_type){
   # https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
+  # https://github.com/rstudio/rmarkdown/issues/1877
   # Currently appears like a line break when rendered. Could try harder to make it invisible but
   # people can always put it at the end of the file if required
   dummy_df <- data.frame(a = as.Date("2023-01-01"), b = "item", c = 1)
@@ -205,11 +209,11 @@ initialise_widgets <- function(plot_type){
 #' Function writes directly to the chunk using side-effects
 #'
 #' @param df Data frame containing time series in long format
-#' @param inputspec Specification of data in df
+#' @param inputspec Specification of data in `df`
 #' @param outputspec Specification for display of tab contents
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
-#' @param fill_with_zero Logical. Replace any missing or NA values with 0? Useful when `value_col` is a record count
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`
+#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when `value_col` is a record count
 #' @param tab_name Character string to appear on tab label. If omitted or `NULL`, only the content (and not the tab itself) will be created.
 #' @param tab_level Nesting level for tab. Value of 1 creates a tab with rmd level "##".
 #'
@@ -285,16 +289,16 @@ construct_rmd_tab_item <- function(df,
 #'
 #' @param df Data frame containing time series in long format
 #' @param timepoint_col Name of column to be used for x-axes
-#' @param inputspec Specification of data in df
+#' @param inputspec Specification of data in `df`
 #' @param outputspec Specification for display of tab contents
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
-#' @param fill_with_zero Logical. Replace any missing or NA values with 0? Useful when `value_col` is a record count
-#' @param tab_order Optional vector containing values from tab_col in desired order of display
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`
+#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when `value_col` is a record count
+#' @param tab_order Optional vector containing values from `tab_col` in desired order of display
 #' @param tab_group_name Character string to appear on parent tab label. If omitted or `NULL`, only the child tabs (and not the parent tab) will be created.
 #' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##". This is unaffected by the presence or not of `tab_group_name`.
 #'
-#' @return (invisibly) the supplied df
+#' @return (invisibly) the supplied `df`
 #' @noRd
 #' @importFrom dplyr .data
 construct_rmd_tab_group <- function(df,
@@ -341,9 +345,9 @@ construct_rmd_tab_group <- function(df,
 #' Create markdown for tab label
 #'
 #' @param tab_name string label for the tab
-#' @param tab_level tab_level = 1 corresponds to ###
+#' @param tab_level `tab_level` = 1 corresponds to ###
 #' @param has_child_tabs will there be more tabs underneath
-#' @param alert set to TRUE to append an alert icon
+#' @param alert set to `TRUE` to append an alert icon
 #'
 #' @return markdown-formatted string
 #' @noRd
