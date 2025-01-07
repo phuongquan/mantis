@@ -114,18 +114,27 @@ tolerance. E.g.</p>
 <span>  <span class="fu"><a href="../reference/alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"consecutive"</span>, extent_value <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The <code><a href="../reference/alert_equals.html">alert_equals()</a></code>, <code><a href="../reference/alert_below.html">alert_below()</a></code>,
-<code><a href="../reference/alert_above.html">alert_above()</a></code> rules work similarly.</p>
+<code><a href="../reference/alert_above.html">alert_above()</a></code> rules work similarly, but with an extra
+parameter <code>rule_value</code> to compare against.</p>
 <p>It is also possible to compare a range of values with another range
 of values using the <code><a href="../reference/alert_difference_above_perc.html">alert_difference_above_perc()</a></code> and
-<code><a href="../reference/alert_difference_below_perc.html">alert_difference_below_perc()</a></code> rules.</p>
-<p>TO COMPLETE</p>
+<code><a href="../reference/alert_difference_below_perc.html">alert_difference_below_perc()</a></code> rules. This can be useful for
+checking if recent values are lower/higher than in a previous period,
+over a particular percentage. This comparison is based on the mean of
+values in the two periods. The ranges should be contiguous, and denote
+positions from the end of the time series. E.g.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># alert if the mean of last 3 values is more than 20% higher than the mean of the preceding 12 values</span></span>
+<span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/alert_difference_above_perc.html">alert_difference_above_perc</a></span><span class="op">(</span>current_period <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, previous_period <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">15</span>, rule_value <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="custom-rules">Custom rules<a class="anchor" aria-label="anchor" href="#custom-rules"></a>
 </h2>
 <p>If you want to apply a more complex rule, you can specify your own
 using <code><a href="../reference/alert_custom.html">alert_custom()</a></code>. E.g.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/alert_custom.html">alert_custom</a></span><span class="op">(</span></span>
 <span>    short_name <span class="op">=</span> <span class="st">"my_rule_combo"</span>,</span>
@@ -138,6 +147,26 @@ using <code><a href="../reference/alert_custom.html">alert_custom()</a></code>. 
 <span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">*</span><span class="va">value</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>The function_call is evaluated per time series, and the expression
+inside <code><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote()</a></code> must return either <code>TRUE</code> or
+<code>FALSE</code>. A return value of <code>TRUE</code> means the alert
+result is “FAIL”</p>
+<p>Column names that can be used explicitly in the expression are:
+<code>value</code>, <code>item</code>, <code>timepoint</code>; and which
+refer to the values in the <code>value_col</code>,
+<code>item_col</code>, <code>timepoint_col</code> columns of the data
+respectively. Before evaluating the <code>function_call</code>, the
+dataframe is grouped by the <code>item_col</code> and ordered by the
+<code>timepoint_col</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="applying-different-rules-to-different-time-series">Applying different rules to different time series<a class="anchor" aria-label="anchor" href="#applying-different-rules-to-different-time-series"></a>
+</h2>
+<p>By default, the specified rules will be run on all time series in the
+supplied dataframe. You can specify different sets of rules for
+different time series by providing a vector of the <code>item_col</code>
+values that the particular rule should be applied to in the
+<code>items</code> parameter.</p>
 </div>
 <div class="section level2">
 <h2 id="walkthrough">Walkthrough<a class="anchor" aria-label="anchor" href="#walkthrough"></a>
@@ -145,13 +174,13 @@ using <code><a href="../reference/alert_custom.html">alert_custom()</a></code>. 
 <p>Generate an interactive <code>mantis</code> report for the
 <code>example_prescription_numbers</code> dataset supplied with the
 <code>mantis</code> package.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/phuongquan/mantis" class="external-link">mantis</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
 <span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_prescription_numbers"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mantis_report.html">mantis_report</a></span><span class="op">(</span></span>
 <span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
 <span>  inputspec <span class="op">=</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
@@ -174,13 +203,45 @@ values but it is not easy to distinguish between NA values and zero
 values unless you zoom in on the plot (by selecting a section of it with
 the mouse) or hover the mouse over the relevant time points and read the
 tooltips.</p>
-<p>We can add a rule to test for missing values.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># alert if any values are NA</span></span>
-<span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<p><img src="../reference/figures/vancomycin_zoomed.png" width="500"></p>
+<p>We can easily add a rule to test for any missing values. While we’re
+here, we will also add a custom rule to try to catch the fact that
+Coamoxiclav prescriptions have become much higher than they were at the
+start.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/alert_custom.html">alert_custom</a></span><span class="op">(</span></span>
+<span>    short_name <span class="op">=</span> <span class="st">"my_rule_doubled"</span>,</span>
+<span>    description <span class="op">=</span> <span class="st">"Last 7 values are over double the first 7 values"</span>,</span>
+<span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">value</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create a new report</span></span>
+<span><span class="fu"><a href="../reference/mantis_report.html">mantis_report</a></span><span class="op">(</span></span>
+<span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
+<span>  inputspec <span class="op">=</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
+<span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
+<span>    item_col <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
+<span>    value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
+<span>    tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_interactive.html">outputspec_interactive</a></span><span class="op">(</span></span>
+<span>    item_label <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
+<span>    sync_axis_range <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  alert_rules <span class="op">=</span> <span class="va">ars</span>,</span>
+<span>  report_title <span class="op">=</span> <span class="st">"mantis report with alerts"</span>,</span>
+<span>  dataset_description <span class="op">=</span> <span class="st">"Antibiotic prescriptions by site"</span>,</span>
+<span>  save_filename <span class="op">=</span> <span class="st">"example_prescription_numbers_interactive_alerts"</span>,</span>
+<span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>TO COMPLETE</p>
+<p>The report now includes a column for the alert results, and details
+can be seen by clicking on the triangles. Also, the tab label includes
+an exclamation mark if any items in that tab have failed an alert
+rule.</p>
+<p><img src="../reference/figures/alert_results.png" width="500"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
