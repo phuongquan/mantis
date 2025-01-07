@@ -357,9 +357,9 @@ alert_above <- function(extent_type = "all",
 
 #' Test for when there is a percentage increase in latest values
 #'
-#' Check if latest values are greater than in a previous period, over a particular percentage
+#' Check if latest values are greater than in a previous period, over a particular percentage.
 #'
-#' Based on the mean of values in the two periods.
+#' Based on the mean of values in the two periods. Ranges should be contiguous, and denote positions from the end of the time series.
 #'
 #' @param current_period vector containing positions from end of time series to use for comparison
 #' @param previous_period vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.
@@ -416,9 +416,9 @@ alert_difference_above_perc <- function(current_period,
 
 #' Test for when there is a percentage drop in latest values
 #'
-#' Check if latest values are lower than in the previous period, over a particular percentage
+#' Check if latest values are lower than in the previous period, over a particular percentage.
 #'
-#' Based on the mean of values in the two periods.
+#' Based on the mean of values in the two periods. Ranges should be contiguous, and denote positions from the end of the time series.
 #'
 #' @param current_period vector containing positions from end of time series to use for comparison
 #' @param previous_period vector containing positions from end of time series to use for comparison. Can overlap with `current_period` if desired.

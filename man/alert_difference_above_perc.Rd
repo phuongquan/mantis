@@ -24,10 +24,10 @@ alert_difference_above_perc(
 An \code{alert_rule} object
 }
 \description{
-Check if latest values are greater than in a previous period, over a particular percentage
+Check if latest values are greater than in a previous period, over a particular percentage.
 }
 \details{
-Based on the mean of values in the two periods.
+Based on the mean of values in the two periods. Ranges should be contiguous, and denote positions from the end of the time series.
 }
 \examples{
 # alert if mean of last 3 values is over 20\% greater than mean of the previous 12 values
