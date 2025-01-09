@@ -356,7 +356,7 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, ale
     cat("\n",
         paste0(rep("#", tab_level + 1), collapse = ""),
         " ", tab_name,
-        ifelse(alert," \u2757\ufe0e", ""),
+        ifelse(alert," <b>!</b>", ""),
         ifelse(has_child_tabs," {.tabset}", ""),
         "\n",
         sep = "")
