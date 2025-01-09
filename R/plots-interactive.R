@@ -104,7 +104,25 @@ output_table_interactive <- function(prepared_df,
         filterable = TRUE,
         cell = function(value) {
           if (!is.na(value)) {
-            paste0(ifelse(grepl("PASS", value), "\u2714\ufe0f", "\u274c\ufe0f"), " ", value)
+            img_src <- ifelse(grepl("PASS", value),
+                              knitr::image_uri(system.file(
+                                "images",
+                                "tick.png",
+                                package = utils::packageName(),
+                                mustWork = FALSE
+                              )),
+                              knitr::image_uri(system.file(
+                                "images",
+                                "cross.png",
+                                package = utils::packageName(),
+                                mustWork = FALSE
+                              ))
+                              )
+            image <- htmltools::img(src = img_src, style = "height: 14px; padding: 0 3px 2px 0; vertical-align: middle;", alt = "")
+            htmltools::tagList(
+              htmltools::div(style = "display: inline-block;", image),
+              value
+            )
           } else{
             "-"
           }
