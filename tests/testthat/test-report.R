@@ -280,3 +280,26 @@ test_that("mantis_report() creates multipanel report even if supplied an empty d
   expect_true(file.remove(reportpath))
 })
 
+test_that("mantis_report() creates multi-item_col interactive report and returns path successfully", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+                   item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
+                   value = rep(3, 30),
+                   tab = c(rep("one", 20), rep("two", 10)),
+                   stringsAsFactors = FALSE)
+
+  reportpath <-
+    mantis_report(
+      df,
+      inputspec = inputspec(timepoint_col = "timepoint",
+                            item_col = c("item", "tab"),
+                            value_col = "value"),
+      outputspec = outputspec_interactive(item_label = c("Item")),
+      show_progress = FALSE
+    )
+
+  expect_type(reportpath, "character")
+
+  # clean up
+  expect_true(file.remove(reportpath))
+})
+

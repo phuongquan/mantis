@@ -185,15 +185,18 @@ initialise_widgets <- function(plot_type){
   # people can always put it at the end of the file if required
   dummy_df <- data.frame(a = as.Date("2023-01-01"), b = "item", c = 1)
 
+  inputspec <- inputspec(
+    timepoint_col = "a",
+    item_col = "b",
+    value_col = "c"
+  )
+
   prepare_df(
     dummy_df,
-    inputspec = inputspec(
-      timepoint_col = "a",
-      item_col = "b",
-      value_col = "c"
-    )
+    inputspec = inputspec
   ) |>
     output_table_interactive(
+      inputspec = inputspec,
       plot_type = plot_type,
       summary_cols = "",
       height = 0,
@@ -262,6 +265,7 @@ construct_rmd_tab_item <- function(df,
     p <-
       output_table_interactive(
         prepared_df,
+        inputspec = inputspec,
         plot_value_type = outputspec$plot_value_type,
         item_label = outputspec$item_label,
         plot_label = outputspec$plot_label,

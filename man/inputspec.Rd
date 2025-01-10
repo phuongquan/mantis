@@ -10,7 +10,7 @@ inputspec(timepoint_col, item_col, value_col, tab_col = NULL, period = "day")
 \item{timepoint_col}{String denoting the (date) column which will be used for the x-axes.}
 
 \item{item_col}{String denoting the (character) column containing categorical values identifying
-distinct time series.}
+distinct time series. Multiple columns that together identify a time series can be provided as a vector}
 
 \item{value_col}{String denoting the (numeric) column containing the time series values which
 will be used for the y-axes.}

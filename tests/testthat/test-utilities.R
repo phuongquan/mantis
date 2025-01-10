@@ -57,14 +57,13 @@ test_that("validate_params_type() checks timepoint_col params are of correct typ
 
 test_that("validate_params_type() checks item_col params are of correct type", {
   expect_silent(testfn_params_type(item_col = "col1"))
+  expect_silent(testfn_params_type(item_col = c("col1", "col2")))
 
   expect_error(testfn_params_type(item_col = ""),
                class = "invalid_param_type")
   expect_error(testfn_params_type(item_col = NULL),
                class = "invalid_param_type")
   expect_error(testfn_params_type(item_col = 123),
-               class = "invalid_param_type")
-  expect_error(testfn_params_type(item_col = c("col1", "col2")),
                class = "invalid_param_type")
 })
 
@@ -113,10 +112,9 @@ test_that("validate_params_type() checks plot_label params are of correct type",
 test_that("validate_params_type() checks item_label params are of correct type", {
   expect_silent(testfn_params_type(item_label = ""))
   expect_silent(testfn_params_type(item_label = NULL))
+  expect_silent(testfn_params_type(item_label = c("col1", "col2")))
 
   expect_error(testfn_params_type(item_label = 123),
-               class = "invalid_param_type")
-  expect_error(testfn_params_type(item_label = c("col1", "col2")),
                class = "invalid_param_type")
 })
 

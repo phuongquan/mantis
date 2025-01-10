@@ -589,3 +589,46 @@ mantis_report(df = example_prescription_numbers,
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site"
 )
+
+data("example_prescription_numbers")
+
+df <- example_prescription_numbers
+
+mantis_report(df = example_prescription_numbers,
+              inputspec = inputspec(
+                timepoint_col = "PrescriptionDate",
+                item_col = "Antibiotic",
+                value_col = "NumberOfPrescriptions",
+                tab_col = "Location"
+              ),
+              outputspec = outputspec_interactive(
+                item_label = "Antibiotic"
+              ),
+              report_title = "mantis report",
+              dataset_description = "Antibiotic prescriptions by site"
+)
+
+mantis_report(df = example_prescription_numbers,
+              inputspec = inputspec(
+                timepoint_col = "PrescriptionDate",
+                item_col = c("Antibiotic", "Location"),
+                value_col = "NumberOfPrescriptions"
+              ),
+              outputspec = outputspec_interactive(
+              ),
+              report_title = "mantis report",
+              dataset_description = "Antibiotic prescriptions by site"
+)
+
+mantis_report(df = example_prescription_numbers,
+              inputspec = inputspec(
+                timepoint_col = "PrescriptionDate",
+                item_col = c("Antibiotic", "Location"),
+                value_col = "NumberOfPrescriptions"
+              ),
+              outputspec = outputspec_static_multipanel(
+              ),
+              report_title = "mantis report",
+              dataset_description = "Antibiotic prescriptions by site"
+)
+

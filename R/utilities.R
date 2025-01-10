@@ -178,7 +178,6 @@ validate_param_byname <- function(param_name, param_value){
     "tab_name" = ,
     "dataset_description" = ,
     "report_title" = ,
-    "item_label" = ,
     "y_label" = ,
     "plot_label" = validate_param(
       param_name = param_name,
@@ -192,7 +191,6 @@ validate_param_byname <- function(param_name, param_value){
     "description" = ,
     "fill_colour" = ,
     "timepoint_col" = ,
-    "item_col" = ,
     "value_col" = validate_param(
       param_name = param_name,
       param_value = param_value,
@@ -202,6 +200,17 @@ validate_param_byname <- function(param_name, param_value){
         is.character(x) && nchar(x) > 0
       },
       error_message = "Expected a non-empty character string",
+      error_contents_max_length = 100
+    ),
+    "item_col" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = FALSE,
+      expect_scalar = FALSE,
+      validation_function = function(x) {
+        all(is.character(x)) && all(nchar(x) > 0)
+      },
+      error_message = "Expected a vector of non-empty character strings",
       error_contents_max_length = 100
     ),
     "tab_col" = validate_param(
@@ -282,6 +291,7 @@ validate_param_byname <- function(param_name, param_value){
     ),
     # NOTE: if they provide values that don't exist in the data, just ignore them, as you may want to
     # supply a standard superset for everything
+    "item_label" = ,
     "items" = ,
     "sort_by" = validate_param(
       param_name = param_name,
@@ -506,8 +516,8 @@ testfn_params_type <- function(df,
                                period = "day",
                                plot_value_type = "value",
                                plot_type = "bar",
-                               item_label = "Item",
-                               plot_label = "History",
+                               item_label = NULL,
+                               plot_label = NULL,
                                summary_cols = c("max_value"),
                                sync_axis_range = FALSE,
                                item_order = NULL,

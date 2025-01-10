@@ -28,8 +28,11 @@ prepare_df <-
   # keep only relevant cols and rename for ease. may want to figure out how to keep original colnames
   prepared_df <-
     df |>
+    # if there are multiple fields in item_col, combine them into one field
+    # use an unusual separator as we want to separate them out again later and don't want to accidentally separate actual values
+    tidyr::unite(col = "item", dplyr::all_of(inputspec$item_col), sep = ":~:") |>
     dplyr::select(timepoint = dplyr::all_of(inputspec$timepoint_col),
-                  item = dplyr::all_of(inputspec$item_col),
+                  item,
                   value = dplyr::all_of(inputspec$value_col))
 
   # if there is no data, return the formatted (empty) df
@@ -63,6 +66,7 @@ prepare_df <-
 #' Supplied df needs to be long (at least for now)
 #'
 #' @param prepared_df data frame returned from prepare_df()
+#' @param inputspec Specification of data in df
 #' @param plot_value_type "value" or "delta"
 #' @param alert_results `alert_results` object returned from `run_alerts()`
 #' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
@@ -73,6 +77,7 @@ prepare_df <-
 #' @noRd
 prepare_table <-
   function(prepared_df,
+           inputspec,
            plot_value_type = "value",
            alert_results = NULL,
            sort_by = NULL) {
@@ -99,6 +104,7 @@ prepare_table <-
     ) |>
     dplyr::summarise(
       # summary columns
+      # TODO: only generate these if requested
       last_timepoint = max_else_na(timepoint[!is.na(value)]),
       last_value = rev(value)[1],
       last_value_nonmissing = rev(value[!is.na(value)])[1],
@@ -156,6 +162,13 @@ prepare_table <-
                      factor(item, levels = item_order_final))
   }
 
+  # split item_cols out if multiple columns were specified
+  table_df <-
+    tidyr::separate(table_df,
+                    col = item,
+                    into = inputspec$item_col,
+                    sep = ":~:")
+
   table_df
 }
 
@@ -165,7 +178,7 @@ prepare_table <-
 #'
 #' @param timepoint_col String denoting the (date) column which will be used for the x-axes.
 #' @param item_col String denoting the (character) column containing categorical values identifying
-#'   distinct time series.
+#'   distinct time series. Multiple columns that together identify a time series can be provided as a vector
 #' @param value_col String denoting the (numeric) column containing the time series values which
 #'   will be used for the y-axes.
 #' @param tab_col Optional. String denoting the (character) column containing categorical values
@@ -213,8 +226,8 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #' @param plot_value_type Display the raw "`value`" for the time series or display the calculated
 #'   "`delta`" between consecutive values.
 #' @param plot_type Display the time series as a "`bar`" or "`line`" chart.
-#' @param item_label String label to use for the "item" column in the report.
-#' @param plot_label String label to use for the time series column in the report.
+#' @param item_label String label(s) to use for the "item" column(s) in the report. If NULL, the original columns name(s) will be used.
+#' @param plot_label String label to use for the time series column in the report. If NULL, the original `value_col` name will be used.
 #' @param summary_cols Summary data to include as columns in the report. Options are
 #'   `c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
@@ -231,8 +244,8 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #' @export
 outputspec_interactive <- function(plot_value_type = "value",
                        plot_type = "bar",
-                       item_label = "Item",
-                       plot_label = "History",
+                       item_label = NULL,
+                       plot_label = NULL,
                        summary_cols = c("max_value"),
                        sync_axis_range = FALSE,
                        item_order = NULL,
@@ -603,21 +616,24 @@ validate_df_to_inputspec_col_types <- function(df,
 
   # item col will be coerced to character type
   # Check it doesn't contain both NA values and string "NA" values
-  item_vals <- df |> dplyr::pull(dplyr::all_of(inputspec$item_col))
-  if (any(is.na(item_vals)) && any(item_vals == "NA", na.rm = TRUE)) {
-    err_validation <-
-      append(
-        err_validation,
-        paste(
-          "The item_col column [",
-          inputspec$item_col,
-          '] cannot contain both NA values and "NA" strings. Found [',
-          sum(is.na(item_vals)),
-          "] NA values and [",
-          sum(item_vals == "NA", na.rm = TRUE),
-          '] "NA" strings'
+  # TODO: Confirm this is valid for multi-item_cols
+  for (col in inputspec$item_col) {
+    item_vals <- df |> dplyr::pull(dplyr::all_of(col))
+    if (any(is.na(item_vals)) && any(item_vals == "NA", na.rm = TRUE)) {
+      err_validation <-
+        append(
+          err_validation,
+          paste(
+            "The item_col column [",
+            col,
+            '] cannot contain both NA values and "NA" strings. Found [',
+            sum(is.na(item_vals)),
+            "] NA values and [",
+            sum(item_vals == "NA", na.rm = TRUE),
+            '] "NA" strings'
+          )
         )
-      )
+    }
   }
 
   # check value col is numeric type

@@ -18,7 +18,10 @@ plot_heatmap_static <- function(prepared_df,
   }
 
   data <- prepared_df |>
-    dplyr::mutate(item = factor(item, levels = unique(prepared_df$item)))
+    # replace separator with prettier one if multiple item_cols were specified.
+    # assumes the separator is unusual enough to not bother checking the inputspec
+    dplyr::mutate(item = gsub(":~:", " - ", item, fixed = TRUE)) |>
+    dplyr::mutate(item = factor(item, levels = unique(item)))
 
   # when the only values are zero, make sure the fill colour is white (as
   # geom_tile uses the 'high' colour)
@@ -102,7 +105,10 @@ plot_multipanel_static <- function(prepared_df,
   }
 
   data <- prepared_df |>
-    dplyr::mutate(item = factor(item, levels = unique(prepared_df$item)))
+    # replace separator with prettier one if multiple item_cols were specified.
+    # assumes the separator is unusual enough to not bother checking the inputspec
+    dplyr::mutate(item = gsub(":~:", " - ", item, fixed = TRUE)) |>
+    dplyr::mutate(item = factor(item, levels = unique(item)))
 
   g <-
     ggplot2::ggplot(
