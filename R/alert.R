@@ -535,12 +535,14 @@ alert_custom <- function(short_name,
 #' Run all alert rules and return results
 #'
 #' @param prepared_df prepared_df
+#' @param inputspec Specification of data in df
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param filter_results only return rows where the alert result is in this vector of values
 #'
 #' @return tibble
 #' @noRd
 run_alerts <- function(prepared_df,
+                       inputspec,
                        alert_rules,
                        filter_results = c("PASS", "FAIL", "NA")) {
   alert_result <- NULL
@@ -556,7 +558,7 @@ run_alerts <- function(prepared_df,
   }
 
   results <-
-    lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df) |>
+    lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df, inputspec = inputspec) |>
     purrr::reduce(dplyr::bind_rows)
 
   results |>
@@ -567,18 +569,20 @@ run_alerts <- function(prepared_df,
 #' Run alert rule and return results
 #'
 #' @param prepared_df prepared_df
+#' @param inputspec Specification of data in df
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #'
 #' @return tibble
 #' @noRd
-run_alert <- function(prepared_df, alert_rule){
+run_alert <- function(prepared_df, inputspec, alert_rule){
   item <- timepoint <- NULL
 
   # TODO: if it's a custom rule, wrap it in some error handling
 
   prepared_df |>
-    dplyr::filter(item %in% alert_rule$items | all(alert_rule$items == "[ALL]")) |>
-    dplyr::group_by(item) |>
+    # TODO: deal with filtering on multiple item_cols
+#    dplyr::filter(item %in% alert_rule$items | all(alert_rule$items == "[ALL]")) |>
+    dplyr::group_by(across(dplyr::all_of(inputspec$item_col))) |>
     dplyr::arrange(timepoint) |>
     dplyr::summarise(alert_name = alert_rule$short_name,
                      alert_description = alert_rule$description,
@@ -640,8 +644,12 @@ mantis_alerts <- function(df,
         fill_with_zero = fill_with_zero
       )
     results <-
-      run_alerts(prepared_df, alert_rules, filter_results = filter_results) |>
-      dplyr::rename("{inputspec$item_col}" := item)
+      run_alerts(
+        prepared_df = prepared_df,
+        inputspec = inputspec,
+        alert_rules = alert_rules,
+        filter_results = filter_results
+      )
   } else{
     resultslist <- list()
 
@@ -662,8 +670,12 @@ mantis_alerts <- function(df,
         )
 
       resultslist[[i]] <-
-        run_alerts(prepared_df, alert_rules, filter_results = filter_results) |>
-        dplyr::rename("{inputspec$item_col}" := item) |>
+        run_alerts(
+          prepared_df = prepared_df,
+          inputspec = inputspec,
+          alert_rules = alert_rules,
+          filter_results = filter_results
+        ) |>
         dplyr::mutate("{inputspec$tab_col}" := tab_names[i])
     }
 

@@ -2,11 +2,13 @@
 #' Create a heatmap showing the value across all items
 #'
 #' @param prepared_df data frame returned from prepare_df()
+#' @param inputspec Specification of data in df
 #' @param fill_colour colour to use for the tiles
 #' @param y_label string for y-axis label. Optional
 #' @return ggplot
 #' @noRd
 plot_heatmap_static <- function(prepared_df,
+                                inputspec,
                                 fill_colour = "blue",
                                 y_label = NULL) {
 
@@ -18,9 +20,8 @@ plot_heatmap_static <- function(prepared_df,
   }
 
   data <- prepared_df |>
-    # replace separator with prettier one if multiple item_cols were specified.
-    # assumes the separator is unusual enough to not bother checking the inputspec
-    dplyr::mutate(item = gsub(":~:", " - ", item, fixed = TRUE)) |>
+    # combine item_col into single variable
+    tidyr::unite(col = "item", dplyr::all_of(inputspec$item_col), sep = " - ") |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
 
   # when the only values are zero, make sure the fill colour is white (as
@@ -88,12 +89,14 @@ plot_heatmap_static <- function(prepared_df,
 #' Currently only creates scatter plots
 #'
 #' @param prepared_df data frame returned from prepare_df()
+#' @param inputspec Specification of data in df
 #' @param sync_axis_range Set the y-axis to be the same range for all the plots.
 #'   X-axes are always synced.
 #' @param y_label string for y-axis label. Optional
 #' @return ggplot
 #' @noRd
 plot_multipanel_static <- function(prepared_df,
+                                   inputspec,
                                    sync_axis_range = FALSE,
                                    y_label = NULL) {
 
@@ -105,9 +108,8 @@ plot_multipanel_static <- function(prepared_df,
   }
 
   data <- prepared_df |>
-    # replace separator with prettier one if multiple item_cols were specified.
-    # assumes the separator is unusual enough to not bother checking the inputspec
-    dplyr::mutate(item = gsub(":~:", " - ", item, fixed = TRUE)) |>
+    # combine item_col into single variable
+    tidyr::unite(col = "item", dplyr::all_of(inputspec$item_col), sep = " - ") |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
 
   g <-

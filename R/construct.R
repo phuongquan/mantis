@@ -242,6 +242,7 @@ construct_rmd_tab_item <- function(df,
 
   if (!is.null(alert_rules)) {
     alert_results <- run_alerts(prepared_df = prepared_df,
+                                inputspec = inputspec,
                                 alert_rules = alert_rules)
   } else {
     alert_results <- NULL
@@ -253,11 +254,13 @@ construct_rmd_tab_item <- function(df,
 
   if (is_outputspec_static_heatmap(outputspec)) {
       plot_heatmap_static(prepared_df = prepared_df,
+                          inputspec = inputspec,
                           fill_colour = outputspec$fill_colour,
                           y_label = outputspec$y_label) |>
       print()
   } else if (is_outputspec_static_multipanel(outputspec)) {
       plot_multipanel_static(prepared_df = prepared_df,
+                             inputspec = inputspec,
                              sync_axis_range = outputspec$sync_axis_range,
                              y_label = outputspec$y_label) |>
       print()

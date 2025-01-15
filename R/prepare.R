@@ -25,15 +25,20 @@ prepare_df <-
   # initialise column names to avoid R CMD check Notes
   item <- NULL
 
-  # keep only relevant cols and rename for ease. may want to figure out how to keep original colnames
+  # keep only relevant cols and rename for ease. may want to keep original colnames for timepoint and value too
   prepared_df <-
     df |>
-    # if there are multiple fields in item_col, combine them into one field
-    # use an unusual separator as we want to separate them out again later and don't want to accidentally separate actual values
-    tidyr::unite(col = "item", dplyr::all_of(inputspec$item_col), sep = ":~:") |>
-    dplyr::select(timepoint = dplyr::all_of(inputspec$timepoint_col),
-                  item,
-                  value = dplyr::all_of(inputspec$value_col))
+    dplyr::select(dplyr::all_of(
+      c(
+        inputspec$item_col,
+        inputspec$timepoint_col,
+        inputspec$value_col
+      )
+    )) |>
+    dplyr::rename(
+      timepoint = dplyr::all_of(inputspec$timepoint_col),
+      value = dplyr::all_of(inputspec$value_col)
+    )
 
   # if there is no data, return the formatted (empty) df
   if(nrow(prepared_df) == 0){
@@ -42,6 +47,7 @@ prepare_df <-
 
   prepared_df <-
     align_data_timepoints(df = prepared_df,
+                          inputspec = inputspec,
                           timepoint_limits = timepoint_limits,
                           period = inputspec$period)
 
@@ -51,12 +57,13 @@ prepare_df <-
       tidyr::replace_na(list(value = 0))
   }
 
-  if (!is.null(item_order)) {
-    prepared_df <-
-      prepared_df |>
-      dplyr::arrange(item) |>
-      dplyr::arrange(factor(item, levels = item_order))
-  }
+  # TODO: arrange by multiple item columns
+  # if (!is.null(item_order)) {
+  #   prepared_df <-
+  #     prepared_df |>
+  #     dplyr::arrange(item) |>
+  #     dplyr::arrange(factor(item, levels = item_order))
+  # }
 
   prepared_df
 }
@@ -85,16 +92,17 @@ prepare_table <-
   # TODO: allow df to be passed in wide with vector of value_cols?
 
   # initialise column names to avoid R CMD check Notes
-  timepoint <- item <- value <- value_for_history <- alert_description <- alert_result <- NULL
+  timepoint <- value <- value_for_history <- alert_description <- alert_result <- NULL
 
   # TODO: validate inputs
 
   # store order as later group_by will alphabetise
-  item_order_final <- unique(prepared_df$item)
+  # TODO: arrange by multiple item columns
+  #item_order_final <- unique(prepared_df$item)
 
   table_df <-
     prepared_df |>
-    dplyr::group_by(item) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(inputspec$item_col))) |>
     dplyr::arrange(timepoint) |>
     dplyr::mutate(
       value_for_history = dplyr::case_when(
@@ -125,7 +133,7 @@ prepare_table <-
       table_df |>
       dplyr::left_join(
         alert_results |>
-          dplyr::group_by(item) |>
+          dplyr::group_by(dplyr::across(dplyr::all_of(inputspec$item_col))) |>
           dplyr::summarise(
             alert_overall = ifelse(
               any(alert_result == "FAIL"),
@@ -137,7 +145,7 @@ prepare_table <-
             )),
             .groups = "drop"
           ),
-        by = "item",
+        by = dplyr::all_of(inputspec$item_col),
       )
 
   } else{
@@ -145,29 +153,23 @@ prepare_table <-
     table_df$alert_details <- list(NULL)
   }
 
-  # sort table
-  if (is.null(sort_by)){
-    table_df <-
-      table_df |>
-      dplyr::arrange(factor(item, levels = item_order_final))
-  } else if (substring(sort_by, 1, 1) == "-"){
-    table_df <-
-      table_df |>
-      dplyr::arrange(dplyr::across(dplyr::any_of(substring(sort_by, 2)), dplyr::desc),
-                     factor(item, levels = item_order_final))
-  } else{
-    table_df <-
-      table_df |>
-      dplyr::arrange(dplyr::pick(dplyr::any_of(sort_by)),
-                     factor(item, levels = item_order_final))
-  }
-
-  # split item_cols out if multiple columns were specified
-  table_df <-
-    tidyr::separate(table_df,
-                    col = item,
-                    into = inputspec$item_col,
-                    sep = ":~:")
+  # TODO: arrange by multiple item columns
+  # # sort table
+  # if (is.null(sort_by)){
+  #   table_df <-
+  #     table_df |>
+  #     dplyr::arrange(factor(item, levels = item_order_final))
+  # } else if (substring(sort_by, 1, 1) == "-"){
+  #   table_df <-
+  #     table_df |>
+  #     dplyr::arrange(dplyr::across(dplyr::any_of(substring(sort_by, 2)), dplyr::desc),
+  #                    factor(item, levels = item_order_final))
+  # } else{
+  #   table_df <-
+  #     table_df |>
+  #     dplyr::arrange(dplyr::pick(dplyr::any_of(sort_by)),
+  #                    factor(item, levels = item_order_final))
+  # }
 
   table_df
 }
@@ -392,7 +394,8 @@ history_to_list <-
 
 #' Align the timepoint values across all items
 #'
-#' @param df Data frame with 3 columns: timepoint, item, and value
+#' @param df Data frame with 2 columns named timepoint and value, plus the item_cols
+#' @param inputspec Specification of data in df
 #' @param timepoint_limits Vector containing min and max dates for the x-axes. Use Date type.
 #'
 #' Ensure timepoint values are the same for all items, for consistency down the table.
@@ -402,11 +405,12 @@ history_to_list <-
 #' @noRd
 align_data_timepoints <-
   function(df,
+           inputspec = inputspec,
            timepoint_limits = c(NA, NA),
            period = "day") {
 
   # initialise column names to avoid R CMD check Notes
-  timepoint <- item <- value <- NULL
+  timepoint <- value <- NULL
 
   # TODO: Need to work out correct limits to use based on df
   #  in case supplied limits don't match df granularity
@@ -425,18 +429,21 @@ align_data_timepoints <-
   #  as don't want to insert unnecessary rows
   all_timepoints <- seq(min_timepoint, max_timepoint, by = period)
 
+  # NOTE: uses an unusual separator :~: to separate multiple item_cols,
+  # assuming the string won't appear in the column names
   df_out <-
     df |>
-    tidyr::pivot_wider(names_from = item,
+    tidyr::pivot_wider(names_from = dplyr::all_of(inputspec$item_col),
                        values_from = value,
-                       names_prefix = "piv_") |>
+                       names_glue = paste0("piv_{", paste(inputspec$item_col, collapse = "}:~:{"), "}")) |>
     # insert any missing timepoint values
     dplyr::full_join(data.frame("timepoint" = all_timepoints), by = "timepoint") |>
     # restrict to specified limits
     dplyr::filter(timepoint >= min_timepoint & timepoint <= max_timepoint) |>
     tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
-                        names_to = "item",
-                        names_prefix = "piv_")
+                        names_to = inputspec$item_col,
+                        names_pattern = paste0("piv_?(.*)", rep(":~:(.*)", length(inputspec$item_col) - 1)))
+
 
   df_out
 
