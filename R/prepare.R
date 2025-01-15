@@ -57,13 +57,42 @@ prepare_df <-
       tidyr::replace_na(list(value = 0))
   }
 
-  # TODO: arrange by multiple item columns
-  # if (!is.null(item_order)) {
-  #   prepared_df <-
-  #     prepared_df |>
-  #     dplyr::arrange(item) |>
-  #     dplyr::arrange(factor(item, levels = item_order))
-  # }
+  # TODO: move out into separate function
+  if (!is.null(item_order)) {
+    # keep only the items which match a column in the df other than timepoint or value
+    items <- item_order[which(names(item_order) %in% names(prepared_df))]
+
+    prepared_df <-
+      prepared_df |>
+      # sort ascending on all named columns (if present) first
+      dplyr::arrange(dplyr::across(dplyr::any_of(names(items))))
+
+    # then sort by any named values
+    item_factors <- items[vapply(items, function(x){all(is.character(x))}, FUN.VALUE = TRUE)]
+    # this is super ugly but temporarily just limit it to 3 factors until find better way
+    if (length(item_factors) == 1){
+      prepared_df <-
+        prepared_df |>
+        dplyr::arrange(
+          factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]])
+        )
+    } else if (length(item_factors) == 2){
+      prepared_df <-
+        prepared_df |>
+        dplyr::arrange(
+          factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]]),
+          factor(.data[[names(item_factors)[2]]], levels = item_factors[2][[1]])
+        )
+    } else if (length(item_factors) == 3){
+      prepared_df <-
+        prepared_df |>
+        dplyr::arrange(
+          factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]]),
+          factor(.data[[names(item_factors)[2]]], levels = item_factors[2][[1]]),
+          factor(.data[[names(item_factors)[3]]], levels = item_factors[3][[1]])
+        )
+    }
+  }
 
   prepared_df
 }

@@ -106,6 +106,23 @@ data("example_prescription_numbers")
 
 df <- example_prescription_numbers
 
+item_order = list("Location" = c("SITE2"), "Antibiotic" = TRUE)
+item_order = list("Location" = TRUE, "Antibiotic" = TRUE, "Other" = TRUE)
+item_order = list("Antibiotic" = TRUE)
+item_order = list("Other")
+item_order = list("Location" = c("SITE2"), "Antibiotic" = c("Vancomycin", "Linezolid"))
+item_order = list("Antibiotic" = c("Vancomycin", "Linezolid"), "Location" = c("SITE2"))
+
+prepare_df(
+  df,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_col = c("Antibiotic", "Location"),
+    value_col = "NumberOfPrescriptions"
+  ),
+  item_order = item_order
+)
+
 mantis_report(df = example_prescription_numbers,
               inputspec = inputspec(
                 timepoint_col = "PrescriptionDate",
