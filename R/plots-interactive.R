@@ -44,7 +44,7 @@ output_table_interactive <- function(prepared_df,
   item_colDefs <- list()
   for(i in seq_along(item_col)){
     # if item_label isn't same length as item_col, just use as many as you have
-    item_colDefs[[item_col[i]]] <- reactable::colDef(name = ifelse(i <= length(item_label),
+    item_colDefs[[paste0("item.", item_col[i])]] <- reactable::colDef(name = ifelse(i <= length(item_label),
                                                                     item_label[i],
                                                                     item_col[i]),
                                                      filterable = TRUE)

@@ -582,7 +582,7 @@ run_alert <- function(prepared_df, inputspec, alert_rule){
   prepared_df |>
     # TODO: deal with filtering on multiple item_cols
 #    dplyr::filter(item %in% alert_rule$items | all(alert_rule$items == "[ALL]")) |>
-    dplyr::group_by(across(dplyr::all_of(inputspec$item_col))) |>
+    dplyr::group_by(across(dplyr::all_of(paste0("item.", inputspec$item_col)))) |>
     dplyr::arrange(timepoint) |>
     dplyr::summarise(alert_name = alert_rule$short_name,
                      alert_description = alert_rule$description,

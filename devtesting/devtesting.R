@@ -113,6 +113,7 @@ item_order = list("Other")
 item_order = list("Location" = c("SITE2"), "Antibiotic" = c("Vancomycin", "Linezolid"))
 item_order = list("Antibiotic" = c("Vancomycin", "Linezolid"), "Location" = c("SITE2"))
 
+prepared_df<-
 prepare_df(
   df,
   inputspec = inputspec(
@@ -144,14 +145,14 @@ mantis_report(df = example_prescription_numbers,
                 value_col = "NumberOfPrescriptions"
               ),
               outputspec = outputspec_interactive(
-              ),
-              alert_rules = alert_rules(
-                alert_custom(
-                  short_name = "my_rule_doubled",
-                  description = "Last value is over double the first value",
-                  function_call = quote(rev(value)[1] > 2*value[1])
-                )
-              ),
+                item_order = item_order),
+              # alert_rules = alert_rules(
+              #   alert_custom(
+              #     short_name = "my_rule_doubled",
+              #     description = "Last value is over double the first value",
+              #     function_call = quote(rev(value)[1] > 2*value[1])
+              #   )
+              # ),
               report_title = "mantis report",
               dataset_description = "Antibiotic prescriptions by site"
 )

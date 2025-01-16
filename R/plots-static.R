@@ -21,7 +21,7 @@ plot_heatmap_static <- function(prepared_df,
 
   data <- prepared_df |>
     # combine item_col into single variable
-    tidyr::unite(col = "item", dplyr::all_of(inputspec$item_col), sep = " - ") |>
+    tidyr::unite(col = "item", dplyr::all_of(paste0("item.", inputspec$item_col)), sep = " - ") |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
 
   # when the only values are zero, make sure the fill colour is white (as
@@ -109,7 +109,7 @@ plot_multipanel_static <- function(prepared_df,
 
   data <- prepared_df |>
     # combine item_col into single variable
-    tidyr::unite(col = "item", dplyr::all_of(inputspec$item_col), sep = " - ") |>
+    tidyr::unite(col = "item", dplyr::all_of(paste0("item.", inputspec$item_col)), sep = " - ") |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
 
   g <-

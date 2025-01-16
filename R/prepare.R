@@ -25,7 +25,7 @@ prepare_df <-
   # initialise column names to avoid R CMD check Notes
   item <- NULL
 
-  # keep only relevant cols and rename for ease. may want to keep original colnames for timepoint and value too
+  # keep only relevant cols and rename for ease. prefix item_cols with "item." to ensure uniqueness
   prepared_df <-
     df |>
     dplyr::select(dplyr::all_of(
@@ -38,7 +38,11 @@ prepare_df <-
     dplyr::rename(
       timepoint = dplyr::all_of(inputspec$timepoint_col),
       value = dplyr::all_of(inputspec$value_col)
-    )
+    ) |>
+    dplyr::rename_with(
+      .cols = dplyr::all_of(inputspec$item_col),
+      .fn = function(x){paste0("item.", x)}
+      )
 
   # if there is no data, return the formatted (empty) df
   if(nrow(prepared_df) == 0){
@@ -48,8 +52,7 @@ prepare_df <-
   prepared_df <-
     align_data_timepoints(df = prepared_df,
                           inputspec = inputspec,
-                          timepoint_limits = timepoint_limits,
-                          period = inputspec$period)
+                          timepoint_limits = timepoint_limits)
 
   if (fill_with_zero) {
     prepared_df <-
@@ -57,41 +60,14 @@ prepare_df <-
       tidyr::replace_na(list(value = 0))
   }
 
-  # TODO: move out into separate function
-  if (!is.null(item_order)) {
-    # keep only the items which match a column in the df other than timepoint or value
-    items <- item_order[which(names(item_order) %in% names(prepared_df))]
+  if (!is.null(item_order)){
+    # df has item columns renamed so pass in renamed item_order
+    item_order_renamed <- item_order
+    names(item_order_renamed) <- paste0("item.", names(item_order))
 
     prepared_df <-
-      prepared_df |>
-      # sort ascending on all named columns (if present) first
-      dplyr::arrange(dplyr::across(dplyr::any_of(names(items))))
-
-    # then sort by any named values
-    item_factors <- items[vapply(items, function(x){all(is.character(x))}, FUN.VALUE = TRUE)]
-    # this is super ugly but temporarily just limit it to 3 factors until find better way
-    if (length(item_factors) == 1){
-      prepared_df <-
-        prepared_df |>
-        dplyr::arrange(
-          factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]])
-        )
-    } else if (length(item_factors) == 2){
-      prepared_df <-
-        prepared_df |>
-        dplyr::arrange(
-          factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]]),
-          factor(.data[[names(item_factors)[2]]], levels = item_factors[2][[1]])
-        )
-    } else if (length(item_factors) == 3){
-      prepared_df <-
-        prepared_df |>
-        dplyr::arrange(
-          factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]]),
-          factor(.data[[names(item_factors)[2]]], levels = item_factors[2][[1]]),
-          factor(.data[[names(item_factors)[3]]], levels = item_factors[3][[1]])
-        )
-    }
+      arrange_items(df = prepared_df,
+                    item_order = item_order_renamed)
   }
 
   prepared_df
@@ -105,7 +81,7 @@ prepare_df <-
 #' @param inputspec Specification of data in df
 #' @param plot_value_type "value" or "delta"
 #' @param alert_results `alert_results` object returned from `run_alerts()`
-#' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
+#' @param sort_by column in output table to sort by. Can be one of `alert_overall`, or one
 #'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
 #'   Secondary ordering will be based on `item_order`.
 #'
@@ -125,13 +101,12 @@ prepare_table <-
 
   # TODO: validate inputs
 
-  # store order as later group_by will alphabetise
-  # TODO: arrange by multiple item columns
-  #item_order_final <- unique(prepared_df$item)
-
   table_df <-
     prepared_df |>
-    dplyr::group_by(dplyr::across(dplyr::all_of(inputspec$item_col))) |>
+    # store original sort order as later group_by will alphabetise
+    dplyr::mutate(item_order_final = dplyr::row_number()) |>
+    # remember prepared_df has had its item_cols renamed to ensure uniqueness
+    dplyr::group_by(dplyr::across(dplyr::all_of(paste0("item.", inputspec$item_col)))) |>
     dplyr::arrange(timepoint) |>
     dplyr::mutate(
       value_for_history = dplyr::case_when(
@@ -140,6 +115,7 @@ prepare_table <-
       )
     ) |>
     dplyr::summarise(
+      item_order_final = min(item_order_final),
       # summary columns
       # TODO: only generate these if requested
       last_timepoint = max_else_na(timepoint[!is.na(value)]),
@@ -162,7 +138,7 @@ prepare_table <-
       table_df |>
       dplyr::left_join(
         alert_results |>
-          dplyr::group_by(dplyr::across(dplyr::all_of(inputspec$item_col))) |>
+          dplyr::group_by(dplyr::across(dplyr::all_of(item_col_renamed))) |>
           dplyr::summarise(
             alert_overall = ifelse(
               any(alert_result == "FAIL"),
@@ -174,7 +150,7 @@ prepare_table <-
             )),
             .groups = "drop"
           ),
-        by = dplyr::all_of(inputspec$item_col),
+        by = dplyr::all_of(item_col_renamed),
       )
 
   } else{
@@ -182,25 +158,25 @@ prepare_table <-
     table_df$alert_details <- list(NULL)
   }
 
-  # TODO: arrange by multiple item columns
-  # # sort table
-  # if (is.null(sort_by)){
-  #   table_df <-
-  #     table_df |>
-  #     dplyr::arrange(factor(item, levels = item_order_final))
-  # } else if (substring(sort_by, 1, 1) == "-"){
-  #   table_df <-
-  #     table_df |>
-  #     dplyr::arrange(dplyr::across(dplyr::any_of(substring(sort_by, 2)), dplyr::desc),
-  #                    factor(item, levels = item_order_final))
-  # } else{
-  #   table_df <-
-  #     table_df |>
-  #     dplyr::arrange(dplyr::pick(dplyr::any_of(sort_by)),
-  #                    factor(item, levels = item_order_final))
-  # }
+  # sort table
+  if (is.null(sort_by)){
+    table_df <-
+      table_df |>
+      dplyr::arrange(item_order_final)
+  } else if (substring(sort_by, 1, 1) == "-"){
+    table_df <-
+      table_df |>
+      dplyr::arrange(dplyr::across(dplyr::any_of(substring(sort_by, 2)), dplyr::desc),
+                     item_order_final)
+  } else{
+    table_df <-
+      table_df |>
+      dplyr::arrange(dplyr::pick(dplyr::any_of(sort_by)),
+                     item_order_final)
+  }
 
-  table_df
+  table_df |>
+    dplyr::select(-item_order_final)
 }
 
 
@@ -435,8 +411,7 @@ history_to_list <-
 align_data_timepoints <-
   function(df,
            inputspec = inputspec,
-           timepoint_limits = c(NA, NA),
-           period = "day") {
+           timepoint_limits = c(NA, NA)) {
 
   # initialise column names to avoid R CMD check Notes
   timepoint <- value <- NULL
@@ -456,22 +431,24 @@ align_data_timepoints <-
 
   # TODO: Need to work out correct granularity to use based on df
   #  as don't want to insert unnecessary rows
-  all_timepoints <- seq(min_timepoint, max_timepoint, by = period)
+  all_timepoints <- seq(min_timepoint, max_timepoint, by = inputspec$period)
 
   # NOTE: uses an unusual separator :~: to separate multiple item_cols,
   # assuming the string won't appear in the column names
+  item_cols <- paste0("item.", inputspec$item_col)
+
   df_out <-
     df |>
-    tidyr::pivot_wider(names_from = dplyr::all_of(inputspec$item_col),
+    tidyr::pivot_wider(names_from = dplyr::all_of(item_cols),
                        values_from = value,
-                       names_glue = paste0("piv_{", paste(inputspec$item_col, collapse = "}:~:{"), "}")) |>
+                       names_glue = paste0("piv_{", paste(item_cols, collapse = "}:~:{"), "}")) |>
     # insert any missing timepoint values
     dplyr::full_join(data.frame("timepoint" = all_timepoints), by = "timepoint") |>
     # restrict to specified limits
     dplyr::filter(timepoint >= min_timepoint & timepoint <= max_timepoint) |>
     tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
-                        names_to = inputspec$item_col,
-                        names_pattern = paste0("piv_?(.*)", rep(":~:(.*)", length(inputspec$item_col) - 1)))
+                        names_to = item_cols,
+                        names_pattern = paste0("piv_?(.*)", rep(":~:(.*)", length(item_cols) - 1)))
 
 
   df_out
@@ -735,4 +712,47 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
   }
 
   err_validation
+}
+
+arrange_items <- function(df, item_order = NULL){
+  if (is.null(item_order)) {
+    return(df)
+  }
+
+  # keep only the items which match a column in the df
+  items <- item_order[which(names(item_order) %in% names(df))]
+
+  df <-
+    df |>
+    # sort ascending on all named columns (if present) first
+    dplyr::arrange(dplyr::across(dplyr::any_of(names(items))))
+
+  # then sort by any named values
+  item_factors <- items[vapply(items, function(x){all(is.character(x))}, FUN.VALUE = TRUE)]
+  # this is super ugly but temporarily just limit it to 3 factors until find better way
+  if (length(item_factors) == 1){
+    df <-
+      df |>
+      dplyr::arrange(
+        factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]])
+      )
+  } else if (length(item_factors) == 2){
+    df <-
+      df |>
+      dplyr::arrange(
+        factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]]),
+        factor(.data[[names(item_factors)[2]]], levels = item_factors[2][[1]])
+      )
+  } else if (length(item_factors) == 3){
+    df <-
+      df |>
+      dplyr::arrange(
+        factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]]),
+        factor(.data[[names(item_factors)[2]]], levels = item_factors[2][[1]]),
+        factor(.data[[names(item_factors)[3]]], levels = item_factors[3][[1]])
+      )
+  }
+
+  df
+
 }
