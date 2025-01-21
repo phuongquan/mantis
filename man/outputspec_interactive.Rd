@@ -31,12 +31,12 @@ outputspec_interactive(
 \item{sync_axis_range}{Set the y-axis to be the same range for all time series in a table.
 X-axes are always synced.}
 
-\item{item_order}{vector of values contained in item_col, for explicitly ordering the items in
-the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-will be used.}
+\item{item_order}{named list corresponding to \code{item_col} columns for ordering the
+items in the output. List values are either \code{TRUE} for ascending order, or a character vector
+of values contained in the named column for explicit ordering. If \code{item_order = NULL}, the
+original order will be kept. See Details.}
 
-\item{sort_by}{column in output table to sort by. Can be one of \code{item}, \code{alert_overall}, or one
+\item{sort_by}{column in output table to sort by. Can be one of \code{alert_overall}, or one
 of the summary columns. Append a minus sign to sort in descending order e.g. \code{-max_value}.
 Secondary ordering will be based on \code{item_order}.}
 }
@@ -46,3 +46,12 @@ An \code{outputspec()} object
 \description{
 Specify output options for the report
 }
+\section{Details}{
+ For \code{item_order}, the names of the list members should correspond to the
+\code{item_col} columns previously specified in the \code{inputspec}. Any names that don't match will be
+ignored. When multiple columns are specified, they are sorted together, in the same order of
+priority as the list. If a list member is \code{TRUE} then that column is sorted in ascending order.
+If a list member is a character vector then that column is sorted in the order of the vector
+first, with any remaining values included alphabetically at the end.
+}
+

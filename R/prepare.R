@@ -6,10 +6,9 @@
 #' @param inputspec Specification of data in df
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-#'   will be used.
+#' @param item_order named list with names corresponding to columns in the supplied `df`. List members are
+#'  either `TRUE` for ascending order, or a character vector of values contained in the named
+#'  column for explicit ordering. If `item_order = NULL`, the original order will be kept.
 #'
 #' @return data frame
 #' @noRd
@@ -239,13 +238,20 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #'   `c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
 #'   X-axes are always synced.
-#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-#'   will be used.
-#' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
+#' @param item_order named list corresponding to `item_col` columns for ordering the
+#'   items in the output. List values are either `TRUE` for ascending order, or a character vector
+#'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
+#'   original order will be kept. See Details.
+#' @param sort_by column in output table to sort by. Can be one of `alert_overall`, or one
 #'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
 #'   Secondary ordering will be based on `item_order`.
+#'
+#' @section Details: For `item_order`, the names of the list members should correspond to the
+#'   `item_col` columns previously specified in the `inputspec`. Any names that don't match will be
+#'   ignored. When multiple columns are specified, they are sorted together, in the same order of
+#'   priority as the list. If a list member is `TRUE` then that column is sorted in ascending order.
+#'   If a list member is a character vector then that column is sorted in the order of the vector
+#'   first, with any remaining values included alphabetically at the end.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -287,10 +293,17 @@ outputspec_interactive <- function(plot_value_type = "value",
 #'
 #' @param fill_colour colour to use for the tiles
 #' @param y_label string for y-axis label. Optional
-#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-#'   will be used.
+#' @param item_order named list corresponding to `item_col` columns for ordering the
+#'   items in the output. List values are either `TRUE` for ascending order, or a character vector
+#'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
+#'   original order will be kept. See Details.
+#'
+#' @section Details: For `item_order`, the names of the list members should correspond to the
+#'   `item_col` columns previously specified in the `inputspec`. Any names that don't match will be
+#'   ignored. When multiple columns are specified, they are sorted together, in the same order of
+#'   priority as the list. If a list member is `TRUE` then that column is sorted in ascending order.
+#'   If a list member is a character vector then that column is sorted in the order of the vector
+#'   first, with any remaining values included alphabetically at the end.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -313,10 +326,17 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 #' @param sync_axis_range Set the y-axis to be the same range for all the plots.
 #'   X-axes are always synced.
 #' @param y_label string for y-axis label. Optional
-#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-#'   will be used.
+#' @param item_order named list corresponding to `item_col` columns for ordering the
+#'   items in the output. List values are either `TRUE` for ascending order, or a character vector
+#'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
+#'   original order will be kept. See Details.
+#'
+#' @section Details: For `item_order`, the names of the list members should correspond to the
+#'   `item_col` columns previously specified in the `inputspec`. Any names that don't match will be
+#'   ignored. When multiple columns are specified, they are sorted together, in the same order of
+#'   priority as the list. If a list member is `TRUE` then that column is sorted in ascending order.
+#'   If a list member is a character vector then that column is sorted in the order of the vector
+#'   first, with any remaining values included alphabetically at the end.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -714,6 +734,21 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
   err_validation
 }
 
+#'Arrange/sort a df based on a list of items
+#'
+#'@param df df to arrange
+#'@param item_order named list with names corresponding to columns in the supplied `df`. List members are
+#'  either `TRUE` for ascending order, or a character vector of values contained in the named
+#'  column for explicit ordering. If `item_order = NULL`, the original order will be kept. See Details.
+#'
+#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
+#'  specified, they are sorted together, in the same order as the list. If a list item is `TRUE` then
+#'  that column is sorted in ascending order. If a list item is a character vector then that column
+#'  is sorted in the order of the vector first, with any remaining values included alphabetically at
+#'  the end
+#'
+#'@return data frame
 arrange_items <- function(df, item_order = NULL){
   if (is.null(item_order)) {
     return(df)
