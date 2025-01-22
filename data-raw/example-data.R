@@ -38,34 +38,60 @@ example_data <-
 usethis::use_data(example_data, overwrite = TRUE)
 
 example_prescription_numbers <-
-  data.frame(timepoint = seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "days"),
-             group = "SITE1",
-             item_Coamoxiclav = c(rpois(n = 300, lambda = 50), rpois(n = 65, lambda = 50) + cumsum(floor(rnorm(n = 65, mean = 2, sd = 2)))),
-             item_Gentamicin = rpois(n = 365, lambda = 35),
-             item_Ceftriaxone = c(rpois(n = 100, lambda = 30), rpois(n = 265, lambda = 10)),
-             item_Metronidazole = rpois(n = 365, lambda = 20),
-             item_Meropenem = c(rpois(n = 365, lambda = 9)),
-             item_Vancomycin = c(rpois(n = 165, lambda = 0.5), rep(NA, 100), rpois(n = 100, lambda = 0.5)),
-             item_Clarithromycin = rpois(n = 365, lambda = 7),
-             item_Linezolid = rpois(n = 365, lambda = 0.1),
-             item_Amikacin = rpois(n = 365, lambda = 1),
-             stringsAsFactors = FALSE) |>
-  dplyr::bind_rows(data.frame(timepoint = seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "days"),
-             group = "SITE2",
-             item_Coamoxiclav = rep(NA, 365),
-             item_Gentamicin = rep(NA, 365),
-             item_Ceftriaxone = rep(NA, 365),
-             item_Metronidazole = rep(NA, 365),
-             item_Meropenem = rpois(n = 365, lambda = 5),
-             item_Vancomycin = rep(NA, 365),
-             item_Clarithromycin = rpois(n = 365, lambda = 7),
-             item_Linezolid = rpois(n = 365, lambda = 0.1),
-             item_Amikacin = rep(NA, 365),
-             stringsAsFactors = FALSE)) |>
+  data.frame(
+    timepoint = seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "days"),
+    group = "SITE1",
+    item_Coamoxiclav = c(rpois(n = 300, lambda = 50), rpois(n = 65, lambda = 50) + cumsum(floor(rnorm(n = 65, mean = 2, sd = 2)))),
+    item_Gentamicin = rpois(n = 365, lambda = 35),
+    item_Ceftriaxone = c(rpois(n = 100, lambda = 30), rpois(n = 265, lambda = 10)),
+    item_Metronidazole = rpois(n = 365, lambda = 20),
+    item_Meropenem = c(rpois(n = 365, lambda = 9)),
+    item_Vancomycin = c(rpois(n = 165, lambda = 0.5), rep(NA, 100), rpois(n = 100, lambda = 0.5)),
+    item_Clarithromycin = rpois(n = 365, lambda = 7),
+    item_Linezolid = rpois(n = 365, lambda = 0.1),
+    item_Amikacin = rpois(n = 365, lambda = 1),
+    stringsAsFactors = FALSE) |>
+  dplyr::bind_rows(data.frame(
+    timepoint = seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "days"),
+    group = "SITE2",
+    item_Coamoxiclav = rep(NA, 365),
+    item_Gentamicin = rep(NA, 365),
+    item_Ceftriaxone = rep(NA, 365),
+    item_Metronidazole = rep(NA, 365),
+    item_Meropenem = rpois(n = 365, lambda = 5),
+    item_Vancomycin = rep(NA, 365),
+    item_Clarithromycin = rpois(n = 365, lambda = 7),
+    item_Linezolid = rpois(n = 365, lambda = 0.1),
+    item_Amikacin = rep(NA, 365),
+    stringsAsFactors = FALSE)) |>
+  dplyr::bind_rows(data.frame(
+    timepoint = seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "days"),
+    group = "SITE3",
+    item_Coamoxiclav = rpois(n = 365, lambda = 40),
+    item_Gentamicin = rpois(n = 365, lambda = 30),
+    item_Ceftriaxone = rpois(n = 365, lambda = 30),
+    item_Metronidazole = rpois(n = 365, lambda = 20),
+    item_Meropenem = rpois(n = 365, lambda = 5),
+    item_Vancomycin = rpois(n = 365, lambda = 0.5),
+    item_Clarithromycin = rpois(n = 365, lambda = 7),
+    item_Linezolid = rpois(n = 365, lambda = 0.1),
+    item_Amikacin = rpois(n = 365, lambda = 1),
+    stringsAsFactors = FALSE)) |>
   tidyr::pivot_longer(cols = dplyr::starts_with("item_"),
                       names_prefix = "item_",
                       names_to = "item",
                       values_to = "value") |>
-  dplyr::select(PrescriptionDate = timepoint, Antibiotic = item, NumberOfPrescriptions = value, Location = group)
+  dplyr::mutate(item2 = dplyr::case_when(item %in% c("Coamoxiclav",
+                                                     "Gentamicin",
+                                                     "Ceftriaxone",
+                                                     "Meropenem",
+                                                     "Clarithromycin",
+                                                     "Amikacin") ~ "Broad",
+                                     TRUE ~ "Limited")) |>
+  dplyr::select(PrescriptionDate = timepoint,
+                Antibiotic = item,
+                Spectrum = item2,
+                NumberOfPrescriptions = value,
+                Location = group)
 
 usethis::use_data(example_prescription_numbers, overwrite = TRUE)

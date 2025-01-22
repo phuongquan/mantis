@@ -112,13 +112,14 @@ item_order = list("Antibiotic" = TRUE)
 item_order = list("Other")
 item_order = list("Location" = c("SITE2"), "Antibiotic" = c("Vancomycin", "Linezolid"))
 item_order = list("Antibiotic" = c("Vancomycin", "Linezolid"), "Location" = c("SITE2"))
+item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
 
 prepared_df<-
 prepare_df(
   df,
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
-    item_col = c("Antibiotic", "Location"),
+    item_col = c("Antibiotic", "Spectrum", "Location"),
     value_col = "NumberOfPrescriptions"
   ),
   item_order = item_order
@@ -183,4 +184,17 @@ mantis_alerts(
       function_call = quote(rev(value)[1] > 2*value[1])
     )
   )
+)
+
+# new item
+mantis_report(df = example_prescription_numbers,
+              inputspec = inputspec(
+                timepoint_col = "PrescriptionDate",
+                item_col = c("Antibiotic", "Spectrum", "Location"),
+                value_col = "NumberOfPrescriptions"
+              ),
+              outputspec = outputspec_static_multipanel(
+              ),
+              report_title = "mantis report",
+              dataset_description = "Antibiotic prescriptions by site"
 )

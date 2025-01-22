@@ -468,7 +468,10 @@ align_data_timepoints <-
     dplyr::filter(timepoint >= min_timepoint & timepoint <= max_timepoint) |>
     tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
                         names_to = item_cols,
-                        names_pattern = paste0("piv_?(.*)", rep(":~:(.*)", length(item_cols) - 1)))
+                        names_pattern = paste0("piv_?(.*)",
+                                               paste0(rep(":~:(.*)", length(item_cols) - 1),
+                                                      collapse = "")
+                                               ))
 
 
   df_out
@@ -763,6 +766,7 @@ arrange_items <- function(df, item_order = NULL){
     dplyr::arrange(dplyr::across(dplyr::any_of(names(items))))
 
   # then sort by any named values
+  # TODO: DOESN'T WORK CORRECTLY WHEN FIRST ITEM IS TRUE AND SECOND ITEM IS A VECTOR
   item_factors <- items[vapply(items, function(x){all(is.character(x))}, FUN.VALUE = TRUE)]
   # this is super ugly but temporarily just limit it to 3 factors until find better way
   if (length(item_factors) == 1){
