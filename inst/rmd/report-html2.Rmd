@@ -1,0 +1,77 @@
+---
+title: "`r params$report_title`"
+output: html_document
+params:
+  df: df
+  inputspec: inputspec
+  outputspec: outputspec
+  alert_rules: alert_rules
+  report_title: report_title
+  dataset_description: dataset_description
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(comment = NA)
+knitr::opts_chunk$set(rownames.print = FALSE)
+```
+
+```{css, echo=FALSE}
+h1.title {
+	font-size: 28px;
+	}
+p.compact {
+	margin-bottom: 0px;
+	margin-top: 0px;
+	}
+```
+
+<p class="compact">
+`r if (nchar(params$dataset_description) > 0) {paste0("Dataset: <strong>", encodeString(params$dataset_description), "</strong>")}`
+</p>
+
+<p class="compact">
+Report created on: `r Sys.time()` ; mantis version `r utils::packageVersion(utils::packageName())` ; `r R.Version()$version.string`
+</p>
+
+```{r initialise}
+has_tabs <- !is.null(params$inputspec$tab_col)
+is_interactive <- is_outputspec_interactive(params$outputspec)
+requires_refresh <- has_tabs && is_interactive
+
+# NOTE: can't modify chunk options within a chunk to get different fig heights
+# (https://github.com/yihui/knitr/issues/841) so have to make static plots consistent for all tabs
+fig_height <- rmd_fig_height(params$df,
+                             params$inputspec,
+                             params$outputspec)
+if (is.null(fig_height)){
+  fig_height <- knitr::opts_chunk$get("fig.height")
+}
+
+```
+
+#  {.tabset .tabset-pills}
+
+
+```{js, eval=requires_refresh}
+// when browser window is resized, all dygraphs on inactive tabs disappear. Reload page to redraw them all.
+// unfortunately this also means you lose your active tab
+window.onresize = function(){ location.reload(); }
+```
+
+```{r, results='asis', fig.height=fig_height}
+construct_rmd_tab(
+  df = params$df,
+  tab_group_level = 0,
+  inputspec = params$inputspec,
+  outputspec = params$outputspec,
+  alert_rules = params$alert_rules
+)
+
+```
+
+```{r, eval=is_interactive}
+# initialise htmlwidgets otherwise they won't render
+# this chunk can be placed anywhere
+initialise_widgets(plot_type = params$outputspec$plot_type)
+```

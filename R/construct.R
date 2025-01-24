@@ -349,6 +349,155 @@ construct_rmd_tab_group <- function(df,
   invisible(df)
 }
 
+
+
+#' Dynamically generate tabs for an rmd chunk (internal)
+#'
+#' A single function to create both single tab items and groups
+#' Prepare the df and alerts only once at the start, rather than for each tab item individually
+#' Allows you to flag alerts at the parent tab level.
+#'
+#' @param df
+#' @param inputspec
+#' @param outputspec
+#' @param alert_rules
+#' @param timepoint_limits
+#' @param fill_with_zero
+#' @param tab_group_name
+#' @param tab_group_level
+#'
+#' @return (invisibly) the supplied `df`
+#' @noRd
+construct_rmd_tab <- function(df,
+                              inputspec,
+                              outputspec = NULL,
+                              alert_rules = NULL,
+                              timepoint_limits = c(NA, NA),
+                              fill_with_zero = FALSE,
+                              tab_group_name = NULL,
+                              tab_group_level = 1) {
+  prepared_df <-
+    prepare_df(
+      df,
+      inputspec = inputspec,
+      timepoint_limits = timepoint_limits,
+      fill_with_zero = fill_with_zero,
+      item_order = outputspec$item_order
+    )
+
+  if (!is.null(alert_rules)) {
+    alert_results <- run_alerts(
+      prepared_df = prepared_df,
+      inputspec = inputspec,
+      alert_rules = alert_rules
+    )
+  } else {
+    alert_results <- NULL
+  }
+
+  # if no tab_col specified, print entire df contents
+  if (is.null(inputspec$tab_col)) {
+    create_tab_content(
+      prepared_df_subset = prepared_df,
+      inputspec = inputspec,
+      outputspec = outputspec,
+      alert_results_subset = alert_results
+    )
+
+    return(invisible(df))
+  }
+
+  # create parent tab if specified
+  construct_tab_label(
+    tab_name = tab_group_name,
+    tab_level = tab_group_level,
+    has_child_tabs = TRUE,
+    alert = any(alert_results$alert_result %in% c("FAIL"))
+  )
+
+  # create tab group
+  tab_names <- unique(prepared_df[prepared_df_item_cols(inputspec$tab_col)] |>
+                          dplyr::pull())
+
+    for (i in seq_along(tab_names)) {
+      prepared_df_subset <-
+        prepared_df |>
+        dplyr::filter(.data[[prepared_df_item_cols(inputspec$tab_col)]] == tab_names[i])
+
+      if (is.null(alert_results)){
+        alert_results_subset <- NULL
+      } else{
+        alert_results_subset <-
+          alert_results |>
+          dplyr::filter(.data[[prepared_df_item_cols(inputspec$tab_col)]] == tab_names[i])
+      }
+
+      construct_tab_label(tab_name = tab_names[i],
+                          tab_level = tab_group_level + 1,
+                          alert = any(alert_results_subset$alert_result %in% c("FAIL")))
+
+      create_tab_content(
+        prepared_df_subset = prepared_df_subset,
+        inputspec = inputspec,
+        outputspec = outputspec,
+        alert_results_subset = alert_results_subset
+      )
+    }
+
+  invisible(df)
+}
+
+
+#' Create just the contents of a tab using side-effects
+#'
+#' Works with construct_rmd_tab()
+#'
+#' @param prepared_df_subset
+#' @param inputspec
+#' @param outputspec
+#' @param alert_results_subset
+#'
+#' @return
+create_tab_content <- function(prepared_df_subset,
+                       inputspec,
+                       outputspec,
+                       alert_results_subset = NULL) {
+
+  if (is_outputspec_static_heatmap(outputspec)) {
+    plot_heatmap_static(prepared_df = prepared_df_subset,
+                        inputspec = inputspec,
+                        fill_colour = outputspec$fill_colour,
+                        y_label = outputspec$y_label) |>
+      print()
+  } else if (is_outputspec_static_multipanel(outputspec)) {
+    plot_multipanel_static(prepared_df = prepared_df_subset,
+                           inputspec = inputspec,
+                           sync_axis_range = outputspec$sync_axis_range,
+                           y_label = outputspec$y_label) |>
+      print()
+  } else if (is_outputspec_interactive(outputspec)) {
+    p <-
+      output_table_interactive(
+        prepared_df = prepared_df_subset,
+        inputspec = inputspec,
+        plot_value_type = outputspec$plot_value_type,
+        item_label = outputspec$item_label,
+        plot_label = outputspec$plot_label,
+        summary_cols = outputspec$summary_cols,
+        plot_type = outputspec$plot_type,
+        sync_axis_range = outputspec$sync_axis_range,
+        alert_results = alert_results_subset,
+        sort_by = outputspec$sort_by
+      )
+    # NOTE: a regular print() doesn't render the widget
+    cat(knitr::knit_print(p))
+  }
+
+  cat("\n")
+
+}
+
+
 #' Create markdown for tab label
 #'
 #' @param tab_name string label for the tab
