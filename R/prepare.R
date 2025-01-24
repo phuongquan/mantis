@@ -20,6 +20,7 @@ prepare_df <-
            fill_with_zero = FALSE,
            item_order = NULL) {
   # TODO: Can this function be rewritten to include the tab_col?
+    # TODO: allow df to be passed in wide with vector of value_cols?
 
   # initialise column names to avoid R CMD check Notes
   item <- NULL
@@ -40,7 +41,7 @@ prepare_df <-
     ) |>
     dplyr::rename_with(
       .cols = dplyr::all_of(inputspec$item_col),
-      .fn = function(x){paste0("item.", x)}
+      .fn = prepared_df_item_cols
       )
 
   # if there is no data, return the formatted (empty) df
@@ -49,7 +50,7 @@ prepare_df <-
   }
 
   prepared_df <-
-    align_data_timepoints(df = prepared_df,
+    align_data_timepoints(prepared_df,
                           inputspec = inputspec,
                           timepoint_limits = timepoint_limits)
 
@@ -60,9 +61,9 @@ prepare_df <-
   }
 
   if (!is.null(item_order)){
-    # df has item columns renamed so pass in renamed item_order
+    # prepared_df has item columns renamed so pass in renamed item_order
     item_order_renamed <- item_order
-    names(item_order_renamed) <- paste0("item.", names(item_order))
+    names(item_order_renamed) <- prepared_df_item_cols(names(item_order))
 
     prepared_df <-
       arrange_items(df = prepared_df,
@@ -93,10 +94,10 @@ prepare_table <-
            alert_results = NULL,
            sort_by = NULL) {
 
-  # TODO: allow df to be passed in wide with vector of value_cols?
+  # TODO: Consider passing in just item_cols rather than entire inputspec?
 
   # initialise column names to avoid R CMD check Notes
-  timepoint <- value <- value_for_history <- alert_description <- alert_result <- NULL
+  timepoint <- value <- value_for_history <- alert_description <- alert_result <- item_order_final <- NULL
 
   # TODO: validate inputs
 
@@ -105,7 +106,7 @@ prepare_table <-
     # store original sort order as later group_by will alphabetise
     dplyr::mutate(item_order_final = dplyr::row_number()) |>
     # remember prepared_df has had its item_cols renamed to ensure uniqueness
-    dplyr::group_by(dplyr::across(dplyr::all_of(paste0("item.", inputspec$item_col)))) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(prepared_df_item_cols(inputspec$item_col)))) |>
     dplyr::arrange(timepoint) |>
     dplyr::mutate(
       value_for_history = dplyr::case_when(
@@ -137,7 +138,7 @@ prepare_table <-
       table_df |>
       dplyr::left_join(
         alert_results |>
-          dplyr::group_by(dplyr::across(dplyr::all_of(item_col_renamed))) |>
+          dplyr::group_by(dplyr::across(dplyr::all_of(prepared_df_item_cols(inputspec$item_col)))) |>
           dplyr::summarise(
             alert_overall = ifelse(
               any(alert_result == "FAIL"),
@@ -149,7 +150,7 @@ prepare_table <-
             )),
             .groups = "drop"
           ),
-        by = dplyr::all_of(item_col_renamed),
+        by = dplyr::all_of(prepared_df_item_cols(inputspec$item_col)),
       )
 
   } else{
@@ -419,7 +420,7 @@ history_to_list <-
 
 #' Align the timepoint values across all items
 #'
-#' @param df Data frame with 2 columns named timepoint and value, plus the item_cols
+#' @param prepared_df Data frame with 2 columns named timepoint and value, plus the item_cols
 #' @param inputspec Specification of data in df
 #' @param timepoint_limits Vector containing min and max dates for the x-axes. Use Date type.
 #'
@@ -429,7 +430,7 @@ history_to_list <-
 #' @return Data frame with consistent timepoints
 #' @noRd
 align_data_timepoints <-
-  function(df,
+  function(prepared_df,
            inputspec = inputspec,
            timepoint_limits = c(NA, NA)) {
 
@@ -439,12 +440,12 @@ align_data_timepoints <-
   # TODO: Need to work out correct limits to use based on df
   #  in case supplied limits don't match df granularity
   if (is.na(timepoint_limits[1])) {
-    min_timepoint <- min(df$timepoint)
+    min_timepoint <- min(prepared_df$timepoint)
   } else{
     min_timepoint <- timepoint_limits[1]
   }
   if (is.na(timepoint_limits[2])) {
-    max_timepoint <- max(df$timepoint)
+    max_timepoint <- max(prepared_df$timepoint)
   } else{
     max_timepoint <- timepoint_limits[2]
   }
@@ -455,21 +456,22 @@ align_data_timepoints <-
 
   # NOTE: uses an unusual separator :~: to separate multiple item_cols,
   # assuming the string won't appear in the column names
-  item_cols <- paste0("item.", inputspec$item_col)
+
+  item_cols_prepared <- prepared_df_item_cols(inputspec$item_col)
 
   df_out <-
-    df |>
-    tidyr::pivot_wider(names_from = dplyr::all_of(item_cols),
+    prepared_df |>
+    tidyr::pivot_wider(names_from = dplyr::all_of(item_cols_prepared),
                        values_from = value,
-                       names_glue = paste0("piv_{", paste(item_cols, collapse = "}:~:{"), "}")) |>
+                       names_glue = paste0("piv_{", paste(item_cols_prepared, collapse = "}:~:{"), "}")) |>
     # insert any missing timepoint values
     dplyr::full_join(data.frame("timepoint" = all_timepoints), by = "timepoint") |>
     # restrict to specified limits
     dplyr::filter(timepoint >= min_timepoint & timepoint <= max_timepoint) |>
     tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
-                        names_to = item_cols,
+                        names_to = item_cols_prepared,
                         names_pattern = paste0("piv_?(.*)",
-                                               paste0(rep(":~:(.*)", length(item_cols) - 1),
+                                               paste0(rep(":~:(.*)", length(item_cols_prepared) - 1),
                                                       collapse = "")
                                                ))
 
@@ -575,18 +577,6 @@ validate_df_to_inputspec_col_names <- function(df,
         )
       )
   }
-  # check for duplicate names in inputspec
-  if (anyDuplicated(colspec_vector) > 0) {
-    err_validation <-
-      append(
-        err_validation,
-        paste(
-          "Duplicate column names in inputspec: [",
-          paste(colspec_vector[duplicated(colspec_vector)], collapse = ", "),
-          "]. Each inputspec parameter must refer to a different column in the df "
-        )
-      )
-  }
   # check supplied colnames are present in df
   for (i in seq_along(colspec_vector)){
     if (!colspec_vector[i] %in% dfnames) {
@@ -601,6 +591,33 @@ validate_df_to_inputspec_col_names <- function(df,
           )
         )
     }
+  }
+  # check for duplicate names in inputspec (except for tab_col)
+  colspec_vector_nontab <- colspec_vector[!names(colspec_vector) %in% "tab_col"]
+  if (anyDuplicated(colspec_vector_nontab) > 0) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "Duplicate column names in inputspec: [",
+          paste(colspec_vector[duplicated(colspec_vector_nontab)], collapse = ", "),
+          "]. Each of the timepoint_col/item_col/value_col inputspec parameters must refer to a different column in the df"
+        )
+      )
+  }
+  # check tab_col is one of the item_cols
+  if (!is.null(inputspec$tab_col) && !inputspec$tab_col %in% inputspec$item_col){
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "tab_col [",
+          inputspec$tab_col,
+          "] not in item_cols [",
+          paste(inputspec$item_col, collapse = ", "),
+          "]. tab_col must match one of the values in item_col"
+        )
+      )
   }
 
   err_validation
@@ -794,4 +811,9 @@ arrange_items <- function(df, item_order = NULL){
 
   df
 
+}
+
+
+prepared_df_item_cols <- function(x){
+  paste0("item.", x)
 }

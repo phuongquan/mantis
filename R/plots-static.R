@@ -19,9 +19,18 @@ plot_heatmap_static <- function(prepared_df,
     return(empty_plot_static())
   }
 
+  # if the item_col is used for a tabset, move it to the y_label
+  item_cols_plot <- base::setdiff(inputspec$item_col, inputspec$tab_col)
+  if (is.null(y_label)){
+    y_label <- paste0(item_cols_plot, collapse = " - ")
+    if (!is.null(inputspec$tab_col)){
+      current_tab <- prepared_df[prepared_df_item_cols(inputspec$tab_col)][[1]][1]
+      y_label <- paste(y_label, current_tab, sep = " - ")
+    }
+  }
   data <- prepared_df |>
     # combine item_col into single variable
-    tidyr::unite(col = "item", dplyr::all_of(paste0("item.", inputspec$item_col)), sep = " - ") |>
+    tidyr::unite(col = "item", dplyr::all_of(prepared_df_item_cols(item_cols_plot)), sep = " - ") |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
 
   # when the only values are zero, make sure the fill colour is white (as
@@ -107,10 +116,23 @@ plot_multipanel_static <- function(prepared_df,
     return(empty_plot_static())
   }
 
+  # if the item_col is used for a tabset, move it to the y_label
+  item_cols_plot <- base::setdiff(inputspec$item_col, inputspec$tab_col)
+  if (is.null(y_label)){
+    y_label <- paste0(item_cols_plot, collapse = " - ")
+    if (!is.null(inputspec$tab_col)){
+      current_tab <- prepared_df[prepared_df_item_cols(inputspec$tab_col)][[1]][1]
+      y_label <- paste(y_label, current_tab, sep = " - ")
+    }
+  }
   data <- prepared_df |>
-    # combine item_col into single variable
-    tidyr::unite(col = "item", dplyr::all_of(paste0("item.", inputspec$item_col)), sep = " - ") |>
+#    dplyr::filter(item.Location == "SITE1") |>
+  # combine item_col into single variable
+    tidyr::unite(col = "item", dplyr::all_of(prepared_df_item_cols(item_cols_plot)), sep = " - ") |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
+
+
+
 
   g <-
     ggplot2::ggplot(
@@ -123,8 +145,10 @@ plot_multipanel_static <- function(prepared_df,
       labels = scales::label_date_short(sep = " "),
       expand = c(0, 0)
     ) +
+    # TODO: try to place scale on right but axis label on left
+    # secondary axis errors when some panels are all NAs
     ggplot2::scale_y_continuous(
-      position = "right",
+      position = "right"
     ) +
     ggplot2::labs(
       y = y_label,
@@ -140,7 +164,7 @@ plot_multipanel_static <- function(prepared_df,
       panel.grid.minor = ggplot2::element_blank(),
       # format facet labels
       strip.background = ggplot2::element_blank(),
-      strip.text.y.left = ggplot2::element_text(angle = 0),
+      strip.text.y.left = ggplot2::element_text(angle = 0, hjust = 1),
       # add borders to the bars
       panel.border = ggplot2::element_rect(
         colour = "darkgrey",
@@ -157,7 +181,6 @@ plot_multipanel_static <- function(prepared_df,
         size = 7
       ),
       axis.text.y = ggplot2::element_text(size = 7),
-      plot.title = ggplot2::element_text(size = 8, face = "bold", hjust = 0.5),
       legend.position = "none",
     )
 
