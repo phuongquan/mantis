@@ -295,7 +295,6 @@ construct_rmd_tab_item <- function(df,
 #' Function writes directly to the chunk using side-effects
 #'
 #' @param df Data frame containing time series in long format
-#' @param timepoint_col Name of column to be used for x-axes
 #' @param inputspec Specification of data in `df`
 #' @param outputspec Specification for display of tab contents
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
@@ -357,14 +356,14 @@ construct_rmd_tab_group <- function(df,
 #' Prepare the df and alerts only once at the start, rather than for each tab item individually
 #' Allows you to flag alerts at the parent tab level.
 #'
-#' @param df
-#' @param inputspec
-#' @param outputspec
-#' @param alert_rules
-#' @param timepoint_limits
-#' @param fill_with_zero
-#' @param tab_group_name
-#' @param tab_group_level
+#' @param df Data frame containing time series in long format
+#' @param inputspec Specification of data in `df`
+#' @param outputspec Specification for display of tab contents
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`
+#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when `value_col` is a record count
+#' @param tab_group_name Character string to appear on parent tab label. If omitted or `NULL`, only the child tabs (and not the parent tab) will be created.
+#' @param tab_group_level integer specifying the nesting level of the parent tab. Value of 1 equates to rmd level "##". This is unaffected by the presence or not of `tab_group_name`.
 #'
 #' @return (invisibly) the supplied `df`
 #' @noRd
@@ -452,13 +451,12 @@ construct_rmd_tab <- function(df,
 #'
 #' Works with construct_rmd_tab()
 #'
-#' @param prepared_df_subset
-#' @param inputspec
-#' @param outputspec
-#' @param alert_results_subset
+#' @param prepared_df_subset prepared_df filtered for the tab
+#' @param inputspec Specification of data in `df`
+#' @param outputspec Specification for display of tab contents
+#' @param alert_results_subset alert_results filtered for the tab
 #'
 #' @noRd
-#' @return
 create_tab_content <- function(prepared_df_subset,
                        inputspec,
                        outputspec,
