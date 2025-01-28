@@ -31,7 +31,7 @@ test_that("mantis_report() creates multi-tab interactive report and returns path
     mantis_report(
       df,
       inputspec = inputspec(timepoint_col = "timepoint",
-                        item_col = "item",
+                        item_col = c("item", "tab"),
                         value_col = "value",
                         tab_col = "tab"),
       outputspec = outputspec_interactive(),
@@ -69,7 +69,7 @@ test_that("mantis_report() creates heatmap report and returns path successfully"
     mantis_report(
       df,
       inputspec = inputspec(timepoint_col = "timepoint",
-                            item_col = "item",
+                            item_col = c("item", "tab"),
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_static_heatmap(),
@@ -104,7 +104,7 @@ test_that("mantis_report() creates multipanel report and returns path successful
     mantis_report(
       df,
       inputspec = inputspec(timepoint_col = "timepoint",
-                            item_col = "item",
+                            item_col = c("item", "tab"),
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_static_multipanel(),
@@ -125,20 +125,20 @@ test_that("mantis_report() creates interactive report with alerts successfully",
     mantis_report(
       df,
       inputspec = inputspec(timepoint_col = "timepoint",
-                        item_col = "item",
-                        value_col = "value",
-                        tab_col = "tab"),
+                            item_col = c("item", "tab"),
+                            value_col = "value",
+                            tab_col = "tab"),
       outputspec = outputspec_interactive(),
       alert_rules = alert_rules(
         alert_missing(
           extent_type = "all",
-          items = c("b", "c")
+          items = list("item" = c("b", "c"))
         ),
         alert_above(
           extent_type = "any",
           extent_value = 1,
           rule_value = 5,
-          items = c("b", "c")
+          items = list("item" = c("b", "c"))
         )
       ),
       show_progress = FALSE
@@ -174,7 +174,7 @@ test_that("mantis_report() creates interactive report even if supplied an empty 
     mantis_report(
       df,
       inputspec = inputspec(timepoint_col = "timepoint",
-                            item_col = "item",
+                            item_col = c("item", "tab"),
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_interactive(),
@@ -193,20 +193,20 @@ test_that("mantis_report() creates interactive report with alerts even if suppli
     mantis_report(
       df,
       inputspec = inputspec(timepoint_col = "timepoint",
-                            item_col = "item",
+                            item_col = c("item", "tab"),
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_interactive(),
       alert_rules = alert_rules(
         alert_missing(
           extent_type = "all",
-          items = c("b", "c")
+          items = list("item" = c("b", "c"))
         ),
         alert_above(
           extent_type = "any",
           extent_value = 1,
           rule_value = 5,
-          items = c("b", "c")
+          items = list("item" = c("b", "c"))
         )
       ),
       show_progress = FALSE
@@ -239,7 +239,7 @@ test_that("mantis_report() creates heatmap report even if supplied an empty df",
     mantis_report(
       df,
       inputspec = inputspec(timepoint_col = "timepoint",
-                            item_col = "item",
+                            item_col = c("item", "tab"),
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_static_heatmap(),
@@ -271,7 +271,7 @@ test_that("mantis_report() creates multipanel report even if supplied an empty d
     mantis_report(
       df,
       inputspec = inputspec(timepoint_col = "timepoint",
-                            item_col = "item",
+                            item_col = c("item", "tab"),
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_static_multipanel(),

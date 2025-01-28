@@ -271,15 +271,24 @@ test_that("validate_params_type() checks period params are of correct type", {
                class = "invalid_param_type")
 })
 
-test_that("validate_params_type() checks item_order params are either TRUE or all strings", {
-  expect_silent(testfn_params_type(item_order = "a"))
-  expect_silent(testfn_params_type(item_order = c("a", "b")))
-  expect_silent(testfn_params_type(item_order = TRUE))
+test_that("validate_params_type() checks item_order params are a named list containing either TRUE or a vector of strings", {
   expect_silent(testfn_params_type(item_order = NULL))
+  expect_silent(testfn_params_type(item_order = list("a" = "a")))
+  expect_silent(testfn_params_type(item_order = list("b" = c("a", "b"))))
+  expect_silent(testfn_params_type(item_order = list("a" = TRUE)))
+  expect_silent(testfn_params_type(item_order = list("a" = TRUE, "b" = c("a", "b"))))
 
-  expect_error(testfn_params_type(item_order = FALSE),
+  # not a list
+  expect_error(testfn_params_type(item_order = TRUE),
                class = "invalid_param_type")
-  expect_error(testfn_params_type(item_order = 1:3),
+  # not a list
+  expect_error(testfn_params_type(item_order = c("a", "b")),
+               class = "invalid_param_type")
+  # non-char vector
+  expect_error(testfn_params_type(item_order = list("a" = 1:3)),
+               class = "invalid_param_type")
+  # unnamed list
+  expect_error(testfn_params_type(item_order = list(c("a", "b"))),
                class = "invalid_param_type")
 })
 

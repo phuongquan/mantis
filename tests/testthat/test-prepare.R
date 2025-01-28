@@ -96,9 +96,9 @@ test_that("validate_df_to_inputspec() checks that supplied colnames are present 
   )
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
-                     value_col = "value",
-                     tab_col = "group1")
+                         item_col = c("item", "group1"),
+                         value_col = "value",
+                         tab_col = "group1")
 
   expect_error(
     validate_df_to_inputspec(
@@ -312,9 +312,9 @@ test_that("validate_df_to_inputspec() checks that duplicate timepoint-item-group
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
-                     value_col = "value",
-                     tab_col = "group")
+                         item_col = c("item", "group"),
+                         value_col = "value",
+                         tab_col = "group")
 
   expect_error(
     validate_df_to_inputspec(
@@ -334,9 +334,9 @@ test_that("validate_df_to_inputspec() allows duplicate timepoint-item combinatio
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
-                     value_col = "value",
-                     tab_col = "group")
+                         item_col = c("item", "group"),
+                         value_col = "value",
+                         tab_col = "group")
 
   expect_silent(
     validate_df_to_inputspec(
@@ -376,7 +376,9 @@ test_that("prepare_table() keeps original item order if sort_by not provided", {
                                   inputspec = inputspec,
                                   sort_by = NULL)
 
-  expect_equal(prepared_table$item, c("c", "b", "a"))
+  expect_equal(prepared_table |>
+                 dplyr::pull(.data[[prepared_df_item_cols(inputspec$item_col)]]),
+               c("c", "b", "a"))
 
 })
 
@@ -397,7 +399,9 @@ test_that("prepare_table() sorts by sort_by then original item_order", {
                                   inputspec = inputspec,
                                   sort_by = c("max_value"))
 
-  expect_equal(prepared_table$item, c("a", "c", "b"))
+  expect_equal(prepared_table |>
+                 dplyr::pull(.data[[prepared_df_item_cols(inputspec$item_col)]]),
+               c("a", "c", "b"))
 
 })
 
@@ -418,6 +422,8 @@ test_that("prepare_table() sorts by descending sort_by", {
                                   inputspec = inputspec,
                                   sort_by = c("-max_value"))
 
-  expect_equal(prepared_table$item, c("b", "c", "a"))
+  expect_equal(prepared_table |>
+                 dplyr::pull(.data[[prepared_df_item_cols(inputspec$item_col)]]),
+               c("b", "c", "a"))
 
 })

@@ -20,7 +20,7 @@ test_that("rmd_fig_height() returns suitable height for heatmap plots", {
                          value_col = "value")
 
   inputspec_tab <- inputspec(timepoint_col = "timepoint",
-                         item_col = "item",
+                         item_col = c("item", "tab"),
                          value_col = "value",
                          tab_col = "tab")
   # 0 rows
@@ -91,9 +91,9 @@ test_that("rmd_fig_height() returns suitable height for multipanel plots", {
                          value_col = "value")
 
   inputspec_tab <- inputspec(timepoint_col = "timepoint",
-                         item_col = "item",
-                         value_col = "value",
-                         tab_col = "tab")
+                             item_col = c("item", "tab"),
+                             value_col = "value",
+                             tab_col = "tab")
   # 0 rows
   expect_null(
     rmd_fig_height(df = data.frame(timepoint = as.Date(numeric()), item = character(), value = character()),
