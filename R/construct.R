@@ -457,6 +457,7 @@ construct_rmd_tab <- function(df,
 #' @param outputspec
 #' @param alert_results_subset
 #'
+#' @noRd
 #' @return
 create_tab_content <- function(prepared_df_subset,
                        inputspec,
