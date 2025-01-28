@@ -8,17 +8,21 @@ alert_difference_below_perc(
   current_period,
   previous_period,
   rule_value,
-  items = "[ALL]"
+  items = NULL
 )
 }
 \arguments{
 \item{current_period}{vector containing positions from end of time series to use for comparison}
 
-\item{previous_period}{vector containing positions from end of time series to use for comparison. Can overlap with \code{current_period} if desired.}
+\item{previous_period}{vector containing positions from end of time series to use for
+comparison. Can overlap with \code{current_period} if desired.}
 
-\item{rule_value}{value to test against. e.g. \code{rule_value=5} means alert if percentage drop is greater than 5}
+\item{rule_value}{value to test against. e.g. \code{rule_value=5} means alert if percentage drop is
+greater than 5}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
+\item{items}{named list with names corresponding to members of \code{item_col}. List members are
+character vectors of values contained in the named column that the rule should be applied to.
+If \code{items = NULL} the rule will be applied to all items. See Details.}
 }
 \value{
 An \code{alert_rule} object
@@ -27,8 +31,20 @@ An \code{alert_rule} object
 Check if latest values are lower than in the previous period, over a particular percentage.
 }
 \details{
-Based on the mean of values in the two periods. Ranges should be contiguous, and denote positions from the end of the time series.
+Based on the mean of values in the two periods. Ranges should be contiguous, and denote
+positions from the end of the time series.
 }
+\section{Details}{
+ Use \code{items} to restrict the rule to be applied only to specified items.
+\code{items} can either be NULL or a named list of character vectors. If \code{NULL}, the rule will be
+applied to all items. If a named list, the names must match members of the \code{item_col}
+parameter in the \code{inputspec}, (as well as column names in the \code{df}), though can be a subset.
+If an \code{item_col} is not named in the list, the rule will apply to all its members. If an
+\code{item_col} is named in the list, the rule will only be applied when the \code{item_col} value is
+contained in the corresponding character vector. When multiple \code{item_col}s are
+specified, the rule will be applied only to items that satisfy all the conditions.
+}
+
 \examples{
 # alert if mean of last 3 values is over 20\% lower than mean of the previous 12 values
 ars <- alert_rules(

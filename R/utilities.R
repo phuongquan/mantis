@@ -304,10 +304,22 @@ validate_param_byname <- function(param_name, param_value){
       error_message = "Expected either TRUE or a vector of character strings",
       error_contents_max_length = 500
     ),
+    "items" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = TRUE,
+      expect_scalar = FALSE,
+      validation_function = function(x) {
+        all(is.list(x),
+            length(names(x)) == length(x),
+            unlist(lapply(x, is.character)))
+      },
+      error_message = "Expected a named list with each item a vector of character strings",
+      error_contents_max_length = 500
+    ),
     # NOTE: if they provide values that don't exist in the data, just ignore them, as you may want to
     # supply a standard superset for everything
     "item_label" = ,
-    "items" = ,
     "sort_by" = validate_param(
       param_name = param_name,
       param_value = param_value,
@@ -550,7 +562,7 @@ testfn_params_type <- function(df,
                                extent_type = "all",
                                extent_value = 1,
                                rule_value = 0,
-                               items = "[ALL]",
+                               items = NULL,
                                current_period = 1:3,
                                previous_period = 4:9,
                                short_name = "my_rule",

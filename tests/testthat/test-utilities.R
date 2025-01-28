@@ -488,13 +488,16 @@ test_that("validate_params_type() checks rule_value params are of correct type",
 test_that("validate_params_type() checks items params contain valid values", {
   # NOTE: if they provide values that don't exist in the data, just ignore them, as you may want to
   # supply a standard superset for everything
-  expect_silent(testfn_params_type(items = "[ALL]"))
-  expect_silent(testfn_params_type(items = c("this", "that")))
   expect_silent(testfn_params_type(items = NULL))
+  expect_silent(testfn_params_type(items = list("item1" = c("this", "that"))))
+  expect_silent(testfn_params_type(items = list("item1" = c("this", "that"),
+                                                "item2" = "theother")))
 
   expect_error(testfn_params_type(items = FALSE),
                class = "invalid_param_type")
   expect_error(testfn_params_type(items = 1:3),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(items = list(c("this", "that"))),
                class = "invalid_param_type")
 })
 

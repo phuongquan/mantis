@@ -4,28 +4,38 @@
 \alias{alert_equals}
 \title{Test for specific values}
 \usage{
-alert_equals(
-  extent_type = "all",
-  extent_value = 1,
-  rule_value,
-  items = "[ALL]"
-)
+alert_equals(extent_type = "all", extent_value = 1, rule_value, items = NULL)
 }
 \arguments{
 \item{extent_type}{"all", "any", "last", "consecutive"}
 
-\item{extent_value}{lower limit of extent. e.g. \code{extent_type="any"} and \code{extent_value=5} means alert if there are 5 or more values that satisfy the condition, in any position}
+\item{extent_value}{lower limit of extent. e.g. \code{extent_type="any"} and \code{extent_value=5} means
+alert if there are 5 or more values that satisfy the condition, in any position}
 
 \item{rule_value}{value to test against. e.g. \code{rule_value=0} means alert if value == 0}
 
-\item{items}{vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.}
+\item{items}{named list with names corresponding to members of \code{item_col}. List members are
+character vectors of values contained in the named column that the rule should be applied to.
+If \code{items = NULL} the rule will be applied to all items. See Details.}
 }
 \value{
 An \code{alert_rule} object
 }
 \description{
-Configure a rule to test the time series for the presence of specific values. Tolerance can be adjusted using the \code{extent_type} and \code{extent_value} parameters, see Examples for details.
+Configure a rule to test the time series for the presence of specific values. Tolerance can be
+adjusted using the \code{extent_type} and \code{extent_value} parameters, see Examples for details.
 }
+\section{Details}{
+ Use \code{items} to restrict the rule to be applied only to specified items.
+\code{items} can either be NULL or a named list of character vectors. If \code{NULL}, the rule will be
+applied to all items. If a named list, the names must match members of the \code{item_col}
+parameter in the \code{inputspec}, (as well as column names in the \code{df}), though can be a subset.
+If an \code{item_col} is not named in the list, the rule will apply to all its members. If an
+\code{item_col} is named in the list, the rule will only be applied when the \code{item_col} value is
+contained in the corresponding character vector. When multiple \code{item_col}s are specified, the
+rule will be applied only to items that satisfy all the conditions.
+}
+
 \examples{
 # alert if all values are zero
 ars <- alert_rules(alert_equals(extent_type = "all", rule_value = 0))

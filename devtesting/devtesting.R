@@ -45,7 +45,7 @@ mantis_report(df = monthly_data,
                                 period = "month"),
               outputspec = outputspec_interactive(),
               alert_rules <- alert_rules(alert_missing(extent_type = "all",
-                                                       items = "[ALL]"),
+                                                       items = NULL),
                                          alert_equals(extent_type = "last",
                                                        extent_value = 5,
                                                       rule_value = 0,
@@ -181,7 +181,8 @@ mantis_alerts(
     alert_custom(
       short_name = "my_rule_doubled",
       description = "Last value is over double the first value",
-      function_call = quote(rev(value)[1] > 2*value[1])
+      function_call = quote(rev(value)[1] > 2*value[1]),
+      items = list("Antibiotic" = "Amikacin")
     )
   )
 )
@@ -195,7 +196,7 @@ mantis_report(df = example_prescription_numbers,
                 tab_col = NULL
 #                tab_col = c("Location")
               ),
-              outputspec = outputspec_static_heatmap(
+              outputspec = outputspec_interactive(
                 item_order = item_order),
               report_title = "mantis report",
               dataset_description = "Antibiotic prescriptions by site",
@@ -203,7 +204,8 @@ mantis_report(df = example_prescription_numbers,
                 alert_custom(
                   short_name = "my_rule_doubled",
                   description = "Last value is over double the first value",
-                  function_call = quote(rev(value)[1] > 2*value[1])
+                  function_call = quote(rev(value)[1] > 2*value[1]),
+                  items = list("Antibiotic" = "Amikacin", "Location" = c("SITE1", "SITE2"))
                 )
               ),
               save_filename = "tabgroup"
