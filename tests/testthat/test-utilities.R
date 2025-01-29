@@ -55,15 +55,15 @@ test_that("validate_params_type() checks timepoint_col params are of correct typ
                class = "invalid_param_type")
 })
 
-test_that("validate_params_type() checks item_col params are of correct type", {
-  expect_silent(testfn_params_type(item_col = "col1"))
-  expect_silent(testfn_params_type(item_col = c("col1", "col2")))
+test_that("validate_params_type() checks item_cols params are of correct type", {
+  expect_silent(testfn_params_type(item_cols = "col1"))
+  expect_silent(testfn_params_type(item_cols = c("col1", "col2")))
 
-  expect_error(testfn_params_type(item_col = ""),
+  expect_error(testfn_params_type(item_cols = ""),
                class = "invalid_param_type")
-  expect_error(testfn_params_type(item_col = NULL),
+  expect_error(testfn_params_type(item_cols = NULL),
                class = "invalid_param_type")
-  expect_error(testfn_params_type(item_col = 123),
+  expect_error(testfn_params_type(item_cols = 123),
                class = "invalid_param_type")
 })
 
@@ -396,18 +396,6 @@ test_that("validate_params_type() checks tab_group_name params are of correct ty
                class = "invalid_param_type")
 })
 
-test_that("validate_params_type() checks tab_order params are either TRUE or all strings", {
-  expect_silent(testfn_params_type(tab_order = "a"))
-  expect_silent(testfn_params_type(tab_order = c("a", "b")))
-  expect_silent(testfn_params_type(tab_order = TRUE))
-  expect_silent(testfn_params_type(tab_order = NULL))
-
-  expect_error(testfn_params_type(tab_order = FALSE),
-               class = "invalid_param_type")
-  expect_error(testfn_params_type(tab_order = 1:3),
-               class = "invalid_param_type")
-})
-
 test_that("validate_params_type() checks tab_level params are of correct type", {
   expect_silent(testfn_params_type(tab_level = 1))
   expect_silent(testfn_params_type(tab_level = 5))
@@ -569,7 +557,7 @@ test_that("validate_params_required() works with package prefix", {
 
 # See https://github.com/ropensci/daiquiri/issues/10
 test_that("validate_params_type() works with package prefix", {
-  expect_error(mantis::inputspec(timepoint_col = 1, item_col = "a", value_col = "b"),
+  expect_error(mantis::inputspec(timepoint_col = 1, item_cols = "a", value_col = "b"),
                class = "invalid_param_type")
 })
 

@@ -202,7 +202,7 @@ validate_param_byname <- function(param_name, param_value){
       error_message = "Expected a non-empty character string",
       error_contents_max_length = 100
     ),
-    "item_col" = validate_param(
+    "item_cols" = validate_param(
       param_name = param_name,
       param_value = param_value,
       allow_null = FALSE,
@@ -291,17 +291,6 @@ validate_param_byname <- function(param_name, param_value){
                           })))
       },
       error_message = "Expected a named list with each item either TRUE or a vector of character strings",
-      error_contents_max_length = 500
-    ),
-    "tab_order" = validate_param(
-      param_name = param_name,
-      param_value = param_value,
-      allow_null = TRUE,
-      expect_scalar = FALSE,
-      validation_function = function(x) {
-        (length(x) == 1 && x == TRUE) || is.character(x)
-      },
-      error_message = "Expected either TRUE or a vector of character strings",
       error_contents_max_length = 500
     ),
     "items" = validate_param(
@@ -537,7 +526,7 @@ testfn_params_type <- function(df,
                                save_filename = "filename",
                                show_progress = TRUE,
                                timepoint_col = "timepoint_col",
-                               item_col = "item_col",
+                               item_cols = "item_cols",
                                value_col = "value_col",
                                tab_col = NULL,
                                period = "day",
@@ -598,7 +587,7 @@ testfn_params_type <- function(df,
     save_filename = save_filename,
     show_progress = show_progress,
     timepoint_col = timepoint_col,
-    item_col = item_col,
+    item_cols = item_cols,
     value_col = value_col,
     tab_col = tab_col,
     period = period,

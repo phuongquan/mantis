@@ -19,18 +19,18 @@ plot_heatmap_static <- function(prepared_df,
     return(empty_plot_static())
   }
 
-  # if the item_col is used for a tabset, move it to the y_label
-  item_cols_plot <- base::setdiff(inputspec$item_col, inputspec$tab_col)
+  # if an item_col is used for a tabset, move it to the y_label
+  item_cols_plot <- base::setdiff(inputspec$item_cols, inputspec$tab_col)
   if (is.null(y_label)){
     y_label <- paste0(item_cols_plot, collapse = " - ")
     if (!is.null(inputspec$tab_col)){
-      current_tab <- prepared_df[prepared_df_item_cols(inputspec$tab_col)][[1]][1]
+      current_tab <- prepared_df[item_cols_prefix(inputspec$tab_col)][[1]][1]
       y_label <- paste(y_label, current_tab, sep = " - ")
     }
   }
   data <- prepared_df |>
-    # combine item_col into single variable
-    tidyr::unite(col = "item", dplyr::all_of(prepared_df_item_cols(item_cols_plot)), sep = " - ") |>
+    # combine item_cols into single variable
+    tidyr::unite(col = "item", dplyr::all_of(item_cols_prefix(item_cols_plot)), sep = " - ") |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
 
   # when the only values are zero, make sure the fill colour is white (as
@@ -117,18 +117,18 @@ plot_multipanel_static <- function(prepared_df,
   }
 
   # if the item_col is used for a tabset, move it to the y_label
-  item_cols_plot <- base::setdiff(inputspec$item_col, inputspec$tab_col)
+  item_cols_plot <- base::setdiff(inputspec$item_cols, inputspec$tab_col)
   if (is.null(y_label)){
     y_label <- paste0(item_cols_plot, collapse = " - ")
     if (!is.null(inputspec$tab_col)){
-      current_tab <- prepared_df[prepared_df_item_cols(inputspec$tab_col)][[1]][1]
+      current_tab <- prepared_df[item_cols_prefix(inputspec$tab_col)][[1]][1]
       y_label <- paste(y_label, current_tab, sep = " - ")
     }
   }
   data <- prepared_df |>
 #    dplyr::filter(item.Location == "SITE1") |>
-  # combine item_col into single variable
-    tidyr::unite(col = "item", dplyr::all_of(prepared_df_item_cols(item_cols_plot)), sep = " - ") |>
+  # combine item_cols into single variable
+    tidyr::unite(col = "item", dplyr::all_of(item_cols_prefix(item_cols_plot)), sep = " - ") |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
 
 

@@ -5,7 +5,7 @@ test_that("output_table_interactive() avoids min/max warnings when all values ar
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                        item_col = "item",
+                        item_cols = "item",
                         value_col = "value")
 
   prepared_df <- prepare_df(df,
@@ -26,7 +26,7 @@ test_that("output_table_interactive() avoids min/max warnings when all deltas ar
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                         item_col = "item",
+                         item_cols = "item",
                          value_col = "value")
 
   prepared_df <- prepare_df(df,

@@ -40,16 +40,16 @@ output_table_interactive <- function(prepared_df,
                          sort_by = sort_by)
 
   # generate the item column(s)
-  item_cols <- inputspec$item_col
+  item_cols <- inputspec$item_cols
   item_colDefs <- list()
   for (i in seq_along(item_cols)) {
     # if the item_col is used for a tabset, hide the column from the table
     if (item_cols[i] %in% inputspec$tab_col) {
-      item_colDefs[[prepared_df_item_cols(item_cols[i])]] <-
+      item_colDefs[[item_cols_prefix(item_cols[i])]] <-
         reactable::colDef(show = FALSE)
     } else{
-      # if item_label isn't same length as item_col, just use as many as you have
-      item_colDefs[[prepared_df_item_cols(item_cols[i])]] <-
+      # if item_label isn't same length as item_cols, just use as many as you have
+      item_colDefs[[item_cols_prefix(item_cols[i])]] <-
         reactable::colDef(name = ifelse(i <= length(item_label), item_label[i], item_cols[i]),
                                                                           filterable = TRUE)
     }

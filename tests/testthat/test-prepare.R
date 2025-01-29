@@ -9,7 +9,7 @@ test_that("prepare_table() avoids min/max warnings when all values in a group ar
                       values_to = "value")
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                         item_col = "item",
+                         item_cols = "item",
                          value_col = "value")
 
   prepared_df <- prepare_df(df,
@@ -32,7 +32,7 @@ test_that("validate_df_to_inputspec() checks that duplicate column names in data
               )
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
+                     item_cols = "item",
                      value_col = "value")
 
   expect_error(
@@ -51,7 +51,7 @@ test_that("validate_df_to_inputspec() checks that duplicate column names in inpu
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
+                     item_cols = "item",
                      value_col = "item")
 
   expect_error(
@@ -63,7 +63,7 @@ test_that("validate_df_to_inputspec() checks that duplicate column names in inpu
   )
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                         item_col = c("item", "value"),
+                         item_cols = c("item", "value"),
                          value_col = "value")
 
   expect_error(
@@ -84,7 +84,7 @@ test_that("validate_df_to_inputspec() checks that supplied colnames are present 
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint1",
-                     item_col = "item1",
+                     item_cols = "item1",
                      value_col = "value1")
 
   expect_error(
@@ -96,7 +96,7 @@ test_that("validate_df_to_inputspec() checks that supplied colnames are present 
   )
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                         item_col = c("item", "group1"),
+                         item_cols = c("item", "group1"),
                          value_col = "value",
                          tab_col = "group1")
 
@@ -109,7 +109,7 @@ test_that("validate_df_to_inputspec() checks that supplied colnames are present 
   )
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                         item_col = c("item", "group1"),
+                         item_cols = c("item", "group1"),
                          value_col = "value")
 
   expect_error(
@@ -131,7 +131,7 @@ test_that("validate_df_to_inputspec() checks that timepoint_col is a datetime ty
   df <- df_orig
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
+                     item_cols = "item",
                      value_col = "value")
 
   # good types
@@ -187,7 +187,7 @@ test_that("validate_df_to_inputspec() checks that value_col is a numeric type", 
   df <- df_orig
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
+                     item_cols = "item",
                      value_col = "value")
 
   # good types
@@ -234,7 +234,7 @@ test_that("validate_df_to_inputspec() checks that timepoint column doesn't conta
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
+                     item_cols = "item",
                      value_col = "value")
 
   expect_error(
@@ -253,9 +253,9 @@ test_that("validate_df_to_inputspec() checks that item column can contain NA val
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
+                     item_cols = "item",
                      value_col = "value")
-mantis_report(df,inputspec)
+
   expect_silent(
     validate_df_to_inputspec(
       df = df,
@@ -271,7 +271,7 @@ test_that("validate_df_to_inputspec() checks that item column doesn't contain bo
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
+                     item_cols = "item",
                      value_col = "value")
 
   expect_error(
@@ -285,13 +285,14 @@ test_that("validate_df_to_inputspec() checks that item column doesn't contain bo
 
 
 test_that("validate_df_to_inputspec() checks that duplicate timepoint-item combinations not allowed", {
+  # single item_col
   df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 5),
                    item = c(rep("a", 20), rep("b", 10), rep("c", 20)),
                    value = rep(3, 50),
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                     item_col = "item",
+                     item_cols = "item",
                      value_col = "value")
 
   expect_error(
@@ -302,9 +303,8 @@ test_that("validate_df_to_inputspec() checks that duplicate timepoint-item combi
     class = "invalid_data"
   )
 
-})
 
-test_that("validate_df_to_inputspec() checks that duplicate timepoint-item-group combinations not allowed", {
+  # multi-item_cols
   df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 5),
                    item = c(rep("a", 20), rep("b", 10), rep("c", 20)),
                    value = rep(3, 50),
@@ -312,9 +312,8 @@ test_that("validate_df_to_inputspec() checks that duplicate timepoint-item-group
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                         item_col = c("item", "group"),
-                         value_col = "value",
-                         tab_col = "group")
+                         item_cols = c("item", "group"),
+                         value_col = "value")
 
   expect_error(
     validate_df_to_inputspec(
@@ -334,7 +333,7 @@ test_that("validate_df_to_inputspec() allows duplicate timepoint-item combinatio
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                         item_col = c("item", "group"),
+                         item_cols = c("item", "group"),
                          value_col = "value",
                          tab_col = "group")
 
@@ -366,7 +365,7 @@ test_that("prepare_table() keeps original item order if sort_by not provided", {
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                         item_col = "item",
+                         item_cols = "item",
                          value_col = "value")
 
   prepared_df <- prepare_df(df,
@@ -377,7 +376,7 @@ test_that("prepare_table() keeps original item order if sort_by not provided", {
                                   sort_by = NULL)
 
   expect_equal(prepared_table |>
-                 dplyr::pull(.data[[prepared_df_item_cols(inputspec$item_col)]]),
+                 dplyr::pull(.data[[item_cols_prefix(inputspec$item_cols)]]),
                c("c", "b", "a"))
 
 })
@@ -389,7 +388,7 @@ test_that("prepare_table() sorts by sort_by then original item_order", {
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                         item_col = "item",
+                         item_cols = "item",
                          value_col = "value")
 
   prepared_df <- prepare_df(df,
@@ -400,7 +399,7 @@ test_that("prepare_table() sorts by sort_by then original item_order", {
                                   sort_by = c("max_value"))
 
   expect_equal(prepared_table |>
-                 dplyr::pull(.data[[prepared_df_item_cols(inputspec$item_col)]]),
+                 dplyr::pull(.data[[item_cols_prefix(inputspec$item_cols)]]),
                c("a", "c", "b"))
 
 })
@@ -412,7 +411,7 @@ test_that("prepare_table() sorts by descending sort_by", {
                    stringsAsFactors = FALSE)
 
   inputspec <- inputspec(timepoint_col = "timepoint",
-                         item_col = "item",
+                         item_cols = "item",
                          value_col = "value")
 
   prepared_df <- prepare_df(df,
@@ -423,7 +422,7 @@ test_that("prepare_table() sorts by descending sort_by", {
                                   sort_by = c("-max_value"))
 
   expect_equal(prepared_table |>
-                 dplyr::pull(.data[[prepared_df_item_cols(inputspec$item_col)]]),
+                 dplyr::pull(.data[[item_cols_prefix(inputspec$item_cols)]]),
                c("b", "c", "a"))
 
 })

@@ -30,7 +30,7 @@ prepare_df <-
     df |>
     dplyr::select(dplyr::all_of(
       c(
-        inputspec$item_col,
+        inputspec$item_cols,
         inputspec$timepoint_col,
         inputspec$value_col
       )
@@ -40,8 +40,8 @@ prepare_df <-
       value = dplyr::all_of(inputspec$value_col)
     ) |>
     dplyr::rename_with(
-      .cols = dplyr::all_of(inputspec$item_col),
-      .fn = prepared_df_item_cols
+      .cols = dplyr::all_of(inputspec$item_cols),
+      .fn = item_cols_prefix
       )
 
   # if there is no data, return the formatted (empty) df
@@ -63,7 +63,7 @@ prepare_df <-
   if (!is.null(item_order)){
     # prepared_df has item columns renamed so pass in renamed item_order
     item_order_renamed <- item_order
-    names(item_order_renamed) <- prepared_df_item_cols(names(item_order))
+    names(item_order_renamed) <- item_cols_prefix(names(item_order))
 
     prepared_df <-
       arrange_items(df = prepared_df,
@@ -106,7 +106,7 @@ prepare_table <-
     # store original sort order as later group_by will alphabetise
     dplyr::mutate(item_order_final = dplyr::row_number()) |>
     # remember prepared_df has had its item_cols renamed to ensure uniqueness
-    dplyr::group_by(dplyr::across(dplyr::all_of(prepared_df_item_cols(inputspec$item_col)))) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
     dplyr::arrange(timepoint) |>
     dplyr::mutate(
       value_for_history = dplyr::case_when(
@@ -138,7 +138,7 @@ prepare_table <-
       table_df |>
       dplyr::left_join(
         alert_results |>
-          dplyr::group_by(dplyr::across(dplyr::all_of(prepared_df_item_cols(inputspec$item_col)))) |>
+          dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
           dplyr::summarise(
             alert_overall = ifelse(
               any(alert_result == "FAIL"),
@@ -150,7 +150,7 @@ prepare_table <-
             )),
             .groups = "drop"
           ),
-        by = dplyr::all_of(prepared_df_item_cols(inputspec$item_col)),
+        by = dplyr::all_of(item_cols_prefix(inputspec$item_cols)),
       )
 
   } else{
@@ -184,7 +184,7 @@ prepare_table <-
 #' Specify relevant columns in the source data frame
 #'
 #' @param timepoint_col String denoting the (date) column which will be used for the x-axes.
-#' @param item_col String denoting the (character) column containing categorical values identifying
+#' @param item_cols String denoting the (character) column containing categorical values identifying
 #'   distinct time series. Multiple columns that together identify a time series can be provided as a vector
 #' @param value_col String denoting the (numeric) column containing the time series values which
 #'   will be used for the y-axes.
@@ -195,7 +195,7 @@ prepare_table <-
 #' @return A `inputspec()` object
 #' @export
 inputspec <- function(timepoint_col,
-                    item_col,
+                    item_cols,
                     value_col,
                     tab_col = NULL,
                     period = "day"){
@@ -203,7 +203,7 @@ inputspec <- function(timepoint_col,
   validate_params_required(match.call())
   validate_params_type(match.call(),
                        timepoint_col = timepoint_col,
-                       item_col = item_col,
+                       item_cols = item_cols,
                        value_col = value_col,
                        tab_col = tab_col,
                        period = period
@@ -211,7 +211,7 @@ inputspec <- function(timepoint_col,
 
   structure(
     list(timepoint_col = timepoint_col,
-       item_col = item_col,
+       item_cols = item_cols,
        value_col = value_col,
        tab_col = tab_col,
        period = period),
@@ -239,7 +239,7 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #'   `c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
 #'   X-axes are always synced.
-#' @param item_order named list corresponding to `item_col` columns for ordering the
+#' @param item_order named list corresponding to `item_cols` columns for ordering the
 #'   items in the output. List values are either `TRUE` for ascending order, or a character vector
 #'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
 #'   original order will be kept. See Details.
@@ -248,7 +248,7 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #'   Secondary ordering will be based on `item_order`.
 #'
 #' @section Details: For `item_order`, the names of the list members should correspond to the
-#'   `item_col` columns previously specified in the `inputspec`. Any names that don't match will be
+#'   `item_cols` columns previously specified in the `inputspec`. Any names that don't match will be
 #'   ignored. When multiple columns are specified, they are sorted together, in the same order of
 #'   priority as the list. If a list member is `TRUE` then that column is sorted in ascending order.
 #'   If a list member is a character vector then that column is sorted in the order of the vector
@@ -294,13 +294,13 @@ outputspec_interactive <- function(plot_value_type = "value",
 #'
 #' @param fill_colour colour to use for the tiles
 #' @param y_label string for y-axis label. Optional
-#' @param item_order named list corresponding to `item_col` columns for ordering the
+#' @param item_order named list corresponding to `item_cols` columns for ordering the
 #'   items in the output. List values are either `TRUE` for ascending order, or a character vector
 #'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
 #'   original order will be kept. See Details.
 #'
 #' @section Details: For `item_order`, the names of the list members should correspond to the
-#'   `item_col` columns previously specified in the `inputspec`. Any names that don't match will be
+#'   `item_cols` columns previously specified in the `inputspec`. Any names that don't match will be
 #'   ignored. When multiple columns are specified, they are sorted together, in the same order of
 #'   priority as the list. If a list member is `TRUE` then that column is sorted in ascending order.
 #'   If a list member is a character vector then that column is sorted in the order of the vector
@@ -327,13 +327,13 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 #' @param sync_axis_range Set the y-axis to be the same range for all the plots.
 #'   X-axes are always synced.
 #' @param y_label string for y-axis label. Optional
-#' @param item_order named list corresponding to `item_col` columns for ordering the
+#' @param item_order named list corresponding to `item_cols` columns for ordering the
 #'   items in the output. List values are either `TRUE` for ascending order, or a character vector
 #'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
 #'   original order will be kept. See Details.
 #'
 #' @section Details: For `item_order`, the names of the list members should correspond to the
-#'   `item_col` columns previously specified in the `inputspec`. Any names that don't match will be
+#'   `item_cols` columns previously specified in the `inputspec`. Any names that don't match will be
 #'   ignored. When multiple columns are specified, they are sorted together, in the same order of
 #'   priority as the list. If a list member is `TRUE` then that column is sorted in ascending order.
 #'   If a list member is a character vector then that column is sorted in the order of the vector
@@ -457,7 +457,7 @@ align_data_timepoints <-
   # NOTE: uses an unusual separator :~: to separate multiple item_cols,
   # assuming the string won't appear in the column names
 
-  item_cols_prepared <- prepared_df_item_cols(inputspec$item_col)
+  item_cols_prepared <- item_cols_prefix(inputspec$item_cols)
 
   df_out <-
     prepared_df |>
@@ -560,7 +560,8 @@ validate_df_to_inputspec_col_names <- function(df,
 
   # only keep the cols params
   # and drop any items that are NULL using the unlist()
-  colspec_vector <- unlist(inputspec[endsWith(names(inputspec), "_col")])
+  # TODO: find the appropriate regex
+  colspec_vector <- unlist(inputspec[endsWith(names(inputspec), "_col") | endsWith(names(inputspec), "_cols")])
 
   # ignore any columns in df that are not in specification
   dfnames <- names(df)[names(df) %in% colspec_vector]
@@ -601,12 +602,12 @@ validate_df_to_inputspec_col_names <- function(df,
         paste(
           "Duplicate column names in inputspec: [",
           paste(colspec_vector[duplicated(colspec_vector_nontab)], collapse = ", "),
-          "]. Each of the timepoint_col/item_col/value_col inputspec parameters must refer to a different column in the df"
+          "]. Each of the timepoint_col/item_cols/value_col inputspec parameters must refer to a different column in the df"
         )
       )
   }
   # check tab_col is one of the item_cols
-  if (!is.null(inputspec$tab_col) && !inputspec$tab_col %in% inputspec$item_col){
+  if (!is.null(inputspec$tab_col) && !inputspec$tab_col %in% inputspec$item_cols){
     err_validation <-
       append(
         err_validation,
@@ -614,8 +615,8 @@ validate_df_to_inputspec_col_names <- function(df,
           "tab_col [",
           inputspec$tab_col,
           "] not in item_cols [",
-          paste(inputspec$item_col, collapse = ", "),
-          "]. tab_col must match one of the values in item_col"
+          paste(inputspec$item_cols, collapse = ", "),
+          "]. tab_col must match one of the values in item_cols"
         )
       )
   }
@@ -670,14 +671,14 @@ validate_df_to_inputspec_col_types <- function(df,
   # item col will be coerced to character type
   # Check it doesn't contain both NA values and string "NA" values
   # TODO: Confirm this is valid for multi-item_cols
-  for (col in inputspec$item_col) {
+  for (col in inputspec$item_cols) {
     item_vals <- df |> dplyr::pull(dplyr::all_of(col))
     if (any(is.na(item_vals)) && any(item_vals == "NA", na.rm = TRUE)) {
       err_validation <-
         append(
           err_validation,
           paste(
-            "The item_col column [",
+            "The item_cols column [",
             col,
             '] cannot contain both NA values and "NA" strings. Found [',
             sum(is.na(item_vals)),
@@ -709,7 +710,7 @@ validate_df_to_inputspec_col_types <- function(df,
   err_validation
 }
 
-#' Check supplied df has only one timepoint per item or item-tab
+#' Check supplied df has only one timepoint per item
 #'
 #' This assumes that the names in inputspec and the df have already been check and are valid
 #'
@@ -728,18 +729,14 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
 
   duplicate_timepoints <-
     df |>
-    dplyr::group_by(dplyr::pick(dplyr::any_of(c(
-      inputspec$item_col,
-      inputspec$tab_col
-    )))) |>
+    dplyr::group_by(dplyr::pick(dplyr::all_of(inputspec$item_cols))) |>
     dplyr::summarise(
       duplicate_timepoints = anyDuplicated(dplyr::pick(dplyr::all_of(
         inputspec$timepoint_col))),
       .groups = "drop") |>
     dplyr::filter(duplicate_timepoints > 0) |>
     tidyr::unite(baditem,
-                 dplyr::any_of(c(inputspec$item_col,
-                                 inputspec$tab_col)),
+                 dplyr::all_of(inputspec$item_cols),
                  sep = ":")
 
   if (nrow(duplicate_timepoints) > 0) {
@@ -747,7 +744,7 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
         paste(
           "Duplicate timepoints for items: [",
           paste(duplicate_timepoints$baditem, collapse = ", "),
-          "]. Each timepoint-item-tab combination must only appear once in the df"
+          "]. Each timepoint-item combination must only appear once in the df"
         )
   }
 
@@ -814,6 +811,22 @@ arrange_items <- function(df, item_order = NULL){
 }
 
 
-prepared_df_item_cols <- function(x){
+#' Prefix to be used for item_cols in prepared_df
+#'
+#' So that the original column names can be kept while avoiding potential clashes with calculated columns
+#'
+#' @param x column names to prefix
+#' @noRd
+item_cols_prefix <- function(x){
   paste0("item.", x)
+}
+
+#' Prefix to be removed from item_cols in prepared_df
+#'
+#' So that the original column names can be kept while avoiding potential clashes with calculated columns
+#'
+#' @param x column names to remove prefix from
+#' @noRd
+item_cols_unprefix <- function(x){
+  sub("^item.", "", x)
 }

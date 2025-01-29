@@ -51,28 +51,29 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' The `inputspec` parameter maps the data frame columns to the above.
 #' @export
 bespoke_rmd_tab <- function(df,
-                                 inputspec,
-                                 outputspec,
-                                 alert_rules = NULL,
-                                 timepoint_limits = c(NA, NA),
-                                 fill_with_zero = FALSE,
-                                 tab_name = NULL,
-                                 tab_level = 1) {
-
+                            inputspec,
+                            outputspec,
+                            alert_rules = NULL,
+                            timepoint_limits = c(NA, NA),
+                            fill_with_zero = FALSE,
+                            tab_name = NULL,
+                            tab_level = 1) {
   validate_params_required(match.call())
   # TODO: alert_rules are optional here, but required in mantis_alerts()
-  validate_params_type(match.call(),
-                       df = df,
-                       inputspec = inputspec,
-                       outputspec = outputspec,
-                       alert_rules = alert_rules,
-                       timepoint_limits = timepoint_limits,
-                       fill_with_zero = fill_with_zero,
-                       tab_name = tab_name,
-                       tab_level = tab_level
+  validate_params_type(
+    match.call(),
+    df = df,
+    inputspec = inputspec,
+    outputspec = outputspec,
+    alert_rules = alert_rules,
+    timepoint_limits = timepoint_limits,
+    fill_with_zero = fill_with_zero,
+    tab_name = tab_name,
+    tab_level = tab_level
   )
 
   validate_df_to_inputspec(df, inputspec)
+  validate_alert_rules_to_inputspec(alert_rules, inputspec)
 
   construct_rmd_tab(
     df = df,
@@ -107,7 +108,7 @@ initialise_widgets <- function(plot_type){
 
   inputspec <- inputspec(
     timepoint_col = "a",
-    item_col = "b",
+    item_cols = "b",
     value_col = "c"
   )
 
@@ -190,20 +191,20 @@ construct_rmd_tab <- function(df,
   )
 
   # create tab group
-  tab_names <- unique(prepared_df[prepared_df_item_cols(inputspec$tab_col)] |>
+  tab_names <- unique(prepared_df[item_cols_prefix(inputspec$tab_col)] |>
                           dplyr::pull())
 
     for (i in seq_along(tab_names)) {
       prepared_df_subset <-
         prepared_df |>
-        dplyr::filter(.data[[prepared_df_item_cols(inputspec$tab_col)]] == tab_names[i])
+        dplyr::filter(.data[[item_cols_prefix(inputspec$tab_col)]] == tab_names[i])
 
       if (is.null(alert_results)){
         alert_results_subset <- NULL
       } else{
         alert_results_subset <-
           alert_results |>
-          dplyr::filter(.data[[prepared_df_item_cols(inputspec$tab_col)]] == tab_names[i])
+          dplyr::filter(.data[[item_cols_prefix(inputspec$tab_col)]] == tab_names[i])
       }
 
       construct_tab_label(tab_name = tab_names[i],
@@ -314,7 +315,7 @@ rmd_fig_height <- function(df, inputspec, outputspec){
     maxrows <-
       df |>
       dplyr::select(
-        dplyr::all_of(inputspec$item_col),
+        dplyr::all_of(inputspec$item_cols),
         dplyr::any_of(inputspec$tab_col)
       ) |>
       dplyr::group_by(dplyr::pick(dplyr::any_of(

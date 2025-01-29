@@ -323,7 +323,7 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df", {
 
   results <- mantis_alerts(df,
                            inputspec = inputspec(timepoint_col = "timepoint",
-                                                 item_col = "item",
+                                                 item_cols = "item",
                                                  value_col = "value"),
                            alert_rules = alert_rules(alert_missing()),
                            timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
@@ -340,7 +340,7 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df with tab_
 
   results <- mantis_alerts(df,
                            inputspec = inputspec(timepoint_col = "timepoint",
-                                                 item_col = c("item", "tab"),
+                                                 item_cols = c("item", "tab"),
                                                  value_col = "value",
                                                  tab_col = "tab"),
                            alert_rules = alert_rules(alert_missing()),
@@ -361,7 +361,7 @@ test_that("restrict_items() doesn't filter prepared_df when no items specified",
 
   inputspec <- inputspec(
     timepoint_col = "timepoint",
-    item_col = c("item1", "item2", "item3"),
+    item_cols = c("item1", "item2", "item3"),
     value_col = "value"
   )
 
@@ -390,7 +390,7 @@ test_that("restrict_items() filters prepared_df items correctly when items are s
 
   inputspec <- inputspec(
     timepoint_col = "timepoint",
-    item_col = c("item1", "item2", "item3"),
+    item_cols = c("item1", "item2", "item3"),
     value_col = "value"
   )
 
@@ -404,7 +404,7 @@ test_that("restrict_items() filters prepared_df items correctly when items are s
   expect_equal(
     prepared_df |>
       restrict_items(items = list("item1" = c("b", "c"))) |>
-      dplyr::pull(.data[[prepared_df_item_cols("item1")]]) |>
+      dplyr::pull(.data[[item_cols_prefix("item1")]]) |>
       unique(),
     c("b", "c")
   )
@@ -413,14 +413,14 @@ test_that("restrict_items() filters prepared_df items correctly when items are s
   expect_equal(
     prepared_df |>
       restrict_items(items = list("item1" = c("b", "c"), "item2" = "x")) |>
-      dplyr::pull(.data[[prepared_df_item_cols("item1")]]) |>
+      dplyr::pull(.data[[item_cols_prefix("item1")]]) |>
       unique(),
     c("b", "c")
   )
   expect_equal(
     prepared_df |>
       restrict_items(items = list("item1" = c("b", "c"), "item2" = "x")) |>
-      dplyr::pull(.data[[prepared_df_item_cols("item2")]]) |>
+      dplyr::pull(.data[[item_cols_prefix("item2")]]) |>
       unique(),
     c("x")
   )
@@ -431,7 +431,7 @@ test_that("alert_rules items can be left unspecified", {
 
   inputspec <- inputspec(
     timepoint_col = "timepoint",
-    item_col = c("item1", "item2"),
+    item_cols = c("item1", "item2"),
     value_col = "value"
   )
 
@@ -453,7 +453,7 @@ test_that("alert_rules items must match item_cols when specified", {
 
   inputspec <- inputspec(
     timepoint_col = "timepoint",
-    item_col = c("item1", "item2"),
+    item_cols = c("item1", "item2"),
     value_col = "value"
   )
 
@@ -503,5 +503,16 @@ test_that("alert_rules items must match item_cols when specified", {
     class = "invalid_data"
   )
 
+  # two items with same name in separate rules
+  expect_silent(
+    validate_alert_rules_to_inputspec(
+      alert_rules = alert_rules(
+        alert_missing(items = list("item1" = "a")),
+        alert_below(rule_value = 0,
+                    items = list("item1" = "z"))
+      ),
+      inputspec = inputspec
+    )
+  )
 
   })

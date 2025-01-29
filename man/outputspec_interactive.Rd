@@ -31,7 +31,7 @@ outputspec_interactive(
 \item{sync_axis_range}{Set the y-axis to be the same range for all time series in a table.
 X-axes are always synced.}
 
-\item{item_order}{named list corresponding to \code{item_col} columns for ordering the
+\item{item_order}{named list corresponding to \code{item_cols} columns for ordering the
 items in the output. List values are either \code{TRUE} for ascending order, or a character vector
 of values contained in the named column for explicit ordering. If \code{item_order = NULL}, the
 original order will be kept. See Details.}
@@ -48,7 +48,7 @@ Specify output options for the report
 }
 \section{Details}{
  For \code{item_order}, the names of the list members should correspond to the
-\code{item_col} columns previously specified in the \code{inputspec}. Any names that don't match will be
+\code{item_cols} columns previously specified in the \code{inputspec}. Any names that don't match will be
 ignored. When multiple columns are specified, they are sorted together, in the same order of
 priority as the list. If a list member is \code{TRUE} then that column is sorted in ascending order.
 If a list member is a character vector then that column is sorted in the order of the vector

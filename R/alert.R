@@ -66,16 +66,16 @@ is_alert_rules <- function(x) inherits(x, "mantis_alert_rules")
 #'   Return value of `TRUE` means alert result is FAIL
 #' @param short_name a short computer-friendly name to uniquely identify the rule
 #' @param description brief but user-friendly explanation of why the rule result is FAIL
-#' @param items named list with names corresponding to members of `item_col`. List members are
+#' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_col`
+#'   applied to all items. If a named list, the names must match members of the `item_cols`
 #'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
 #'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col` value is
+#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
 #'
@@ -116,16 +116,16 @@ is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
 #' @param extent_type "all", "any", "last", "consecutive"
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means
 #'   alert if there are 5 or more missing values in any position
-#' @param items named list with names corresponding to members of `item_col`. List members are
+#' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_col`
+#'   applied to all items. If a named list, the names must match members of the `item_cols`
 #'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
 #'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col` value is
+#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
 #'
@@ -192,18 +192,18 @@ alert_missing <- function(extent_type = "all",
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means
 #'   alert if there are 5 or more values that satisfy the condition, in any position
 #' @param rule_value value to test against. e.g. `rule_value=0` means alert if value == 0
-#' @param items named list with names corresponding to members of `item_col`. List members are
+#' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_col`
+#'   applied to all items. If a named list, the names must match members of the `item_cols`
 #'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
 #'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col` value is
-#'   contained in the corresponding character vector. When multiple `item_col`s are specified, the
-#'   rule will be applied only to items that satisfy all the conditions.
+#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
+#'   contained in the corresponding character vector. When multiple `item_col`s are
+#'   specified, the rule will be applied only to items that satisfy all the conditions.
 #'
 #' @return An `alert_rule` object
 #' @examples
@@ -274,18 +274,18 @@ alert_equals <- function(extent_type = "all",
 #' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means
 #'   alert if there are 5 or more values that satisfy the condition, in any position
 #' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is less than 1
-#' @param items named list with names corresponding to members of `item_col`. List members are
+#' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_col`
+#'   applied to all items. If a named list, the names must match members of the `item_cols`
 #'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
 #'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col` value is
-#'   contained in the corresponding character vector. When multiple `item_col`s are specified, the
-#'   rule will be applied only to items that satisfy all the conditions.
+#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
+#'   contained in the corresponding character vector. When multiple `item_col`s are
+#'   specified, the rule will be applied only to items that satisfy all the conditions.
 #'
 #' @return An `alert_rule` object
 #' @examples
@@ -355,16 +355,16 @@ alert_below <- function(extent_type = "all",
 #'   alert if there are 5 or more values that satisfy the condition, in any position
 #' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is greater
 #'   than 1
-#' @param items named list with names corresponding to members of `item_col`. List members are
+#' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_col`
+#'   applied to all items. If a named list, the names must match members of the `item_cols`
 #'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
 #'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col` value is
+#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
 #'
@@ -436,16 +436,16 @@ alert_above <- function(extent_type = "all",
 #'   comparison. Can overlap with `current_period` if desired.
 #' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage increase
 #'   is greater than 5
-#' @param items named list with names corresponding to members of `item_col`. List members are
+#' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_col`
+#'   applied to all items. If a named list, the names must match members of the `item_cols`
 #'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
 #'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col` value is
+#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
 #'
@@ -509,16 +509,16 @@ alert_difference_above_perc <- function(current_period,
 #'   comparison. Can overlap with `current_period` if desired.
 #' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage drop is
 #'   greater than 5
-#' @param items named list with names corresponding to members of `item_col`. List members are
+#' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_col`
+#'   applied to all items. If a named list, the names must match members of the `item_cols`
 #'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
 #'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col` value is
+#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
 #'
@@ -573,9 +573,9 @@ alert_difference_below_perc <- function(current_period,
 #' Create a custom alert rule
 #'
 #'   The supplied `function_call` is passed to `eval()` within a `dplyr::summarise()` after grouping
-#'   by the `item_col` and ordering by the `timepoint_col`. Column names that can be used explicitly
+#'   by the `item_cols` and ordering by the `timepoint_col`. Column names that can be used explicitly
 #'   in the expression are: `value`, `item`, `timepoint`; and which refer to the values in the
-#'   `value_col`, `item_col`, `timepoint_col` columns of the data respectively
+#'   `value_col`, `item_cols`, `timepoint_col` columns of the data respectively
 #'
 #'
 #' @param short_name short name to uniquely identify the rule. Only include alphanumeric, '-', and
@@ -583,16 +583,16 @@ alert_difference_below_perc <- function(current_period,
 #' @param description short description of what the rule checks for
 #' @param function_call call to be evaluated per item, that returns either `TRUE` or `FALSE`.
 #'   Return value of `TRUE` means alert result is "FAIL". See Details.
-#' @param items named list with names corresponding to members of `item_col`. List members are
+#' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_col`
+#'   applied to all items. If a named list, the names must match members of the `item_cols`
 #'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
 #'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col` value is
+#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
 #'
@@ -657,12 +657,15 @@ run_alerts <- function(prepared_df,
 
   # if there is no data, return a formatted (empty) df
   if(nrow(prepared_df) == 0){
-    return(dplyr::tibble(
-      item = character(),
-      alert_name = character(),
-      alert_description = character(),
-      alert_result = character()
-    ))
+    return(
+      prepared_df |>
+        dplyr::select(dplyr::all_of(item_cols_prefix(inputspec$item_cols))) |>
+        dplyr::mutate(
+          alert_name = character(),
+          alert_description = character(),
+          alert_result = character()
+        )
+    )
   }
 
   results <-
@@ -689,8 +692,7 @@ run_alert <- function(prepared_df, inputspec, alert_rule){
 
   prepared_df |>
     restrict_items(items = alert_rule$items) |>
-#    dplyr::filter(eval(parse(text = items_list_to_condition_str(alert_rule$items)))) |>
-    dplyr::group_by(across(dplyr::all_of(prepared_df_item_cols(inputspec$item_col)))) |>
+    dplyr::group_by(across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
     dplyr::arrange(timepoint) |>
     dplyr::summarise(alert_name = alert_rule$short_name,
                      alert_description = alert_rule$description,
@@ -734,65 +736,25 @@ mantis_alerts <- function(df,
   validate_df_to_inputspec(df, inputspec)
   validate_alert_rules_to_inputspec(alert_rules, inputspec)
 
-  # if there is no data, return a formatted (empty) df, only needed when tab_col is specified
-  if(nrow(df) == 0){
-    return(dplyr::tibble(
-      item = character(),
-      alert_name = character(),
-      alert_description = character(),
-      alert_result = character()
-    ))
-  }
+  prepared_df <-
+    prepare_df(
+      df,
+      inputspec = inputspec,
+      timepoint_limits = timepoint_limits,
+      fill_with_zero = fill_with_zero
+    )
 
-  if (is.null(inputspec$tab_col)) {
-    prepared_df <-
-      prepare_df(
-        df,
-        inputspec = inputspec,
-        timepoint_limits = timepoint_limits,
-        fill_with_zero = fill_with_zero
-      )
-    results <-
-      run_alerts(
-        prepared_df = prepared_df,
-        inputspec = inputspec,
-        alert_rules = alert_rules,
-        filter_results = filter_results
-      )
-  } else{
-    resultslist <- list()
+  results <-
+    run_alerts(
+      prepared_df = prepared_df,
+      inputspec = inputspec,
+      alert_rules = alert_rules,
+      filter_results = filter_results
+    )
 
-    tab_names <- unique(df[inputspec$tab_col] |>
-                          dplyr::pull())
-
-    for (i in seq_along(tab_names)) {
-      dftab <-
-        df |> dplyr::filter(.data[[inputspec$tab_col]] == tab_names[i])
-
-      # TODO: Would be nice if prepare_df could include tab_col
-      prepared_df <-
-        prepare_df(
-          dftab,
-          inputspec = inputspec,
-          timepoint_limits = timepoint_limits,
-          fill_with_zero = fill_with_zero
-        )
-
-      resultslist[[i]] <-
-        run_alerts(
-          prepared_df = prepared_df,
-          inputspec = inputspec,
-          alert_rules = alert_rules,
-          filter_results = filter_results
-        ) |>
-        dplyr::mutate("{inputspec$tab_col}" := tab_names[i])
-    }
-
-    results <- purrr::reduce(resultslist, dplyr::bind_rows) |>
-      dplyr::select(dplyr::all_of(c(inputspec$tab_col, inputspec$item_col)), dplyr::everything())
-
-  }
-  results
+  results |>
+    dplyr::rename_with(.fn = item_cols_unprefix,
+                       .cols = dplyr::all_of(item_cols_prefix(inputspec$item_cols)))
 }
 
 
@@ -828,7 +790,7 @@ items_list_to_condition_str <- function(items = NULL){
   condition_str <-
     paste(mapply(
       FUN = function(x, y) {
-        paste0(prepared_df_item_cols(x),
+        paste0(item_cols_prefix(x),
                " %in% c('",
                paste(y, collapse = "', '"),
                "') ")
@@ -865,17 +827,17 @@ validate_alert_rules_to_inputspec <- function(alert_rules,
 
   # check all alert_rules items match item_cols
   all_items <-
-    names(unlist(lapply(alert_rules, FUN = function(x){x$items})))
-  if (!is.null(all_items) && !all(all_items %in% inputspec$item_col)){
+    unlist(lapply(alert_rules, FUN = function(x){names(x$items)}))
+  if (!is.null(all_items) && !all(all_items %in% inputspec$item_cols)){
     err_validation <-
       append(
         err_validation,
         paste(
           "alert_rule item(s) [",
-          paste(all_items[!all_items %in% inputspec$item_col], collapse = ", "),
+          paste(all_items[!all_items %in% inputspec$item_cols], collapse = ", "),
           "] not in item_cols [",
-          paste(inputspec$item_col, collapse = ", "),
-          "]. Named items must match one of the values in item_col"
+          paste(inputspec$item_cols, collapse = ", "),
+          "]. Named items must match one of the values in item_cols"
         )
       )
   }

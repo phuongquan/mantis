@@ -26,7 +26,7 @@ data("example_data")
 
 df <- example_data
 timepoint_col <- "timepoint"
-item_col <- "item"
+item_cols <- "item"
 value_col <- "value"
 item_label <- "Item"
 
@@ -40,7 +40,7 @@ monthly_data <- example_data |>
 
 mantis_report(df = monthly_data,
               inputspec = inputspec(timepoint_col = "timepoint",
-                                item_col = "item",
+                                item_cols = "item",
                                 value_col = "value",
                                 period = "month"),
               outputspec = outputspec_interactive(),
@@ -60,7 +60,7 @@ data("example_data")
 
 df <- example_data
 timepoint_col <- "timepoint"
-item_col <- "item"
+item_cols <- "item"
 value_col <- "value"
 
 alert_results <-
@@ -87,7 +87,7 @@ alert_results <-
 
 mantis_report(df = example_data,
               inputspec = inputspec(timepoint_col = "timepoint",
-                                    item_col = "item",
+                                    item_cols = "item",
                                     value_col = "value"),
               alert_rules = alert_rules(
                 alert_custom(
@@ -119,7 +119,7 @@ prepare_df(
   df,
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
-    item_col = c("Antibiotic", "Spectrum", "Location"),
+    item_cols = c("Antibiotic", "Spectrum", "Location"),
     value_col = "NumberOfPrescriptions"
   ),
   item_order = item_order
@@ -128,7 +128,7 @@ prepare_df(
 mantis_report(df = example_prescription_numbers,
               inputspec = inputspec(
                 timepoint_col = "PrescriptionDate",
-                item_col = "Antibiotic",
+                item_cols = "Antibiotic",
                 value_col = "NumberOfPrescriptions",
                 tab_col = "Location"
               ),
@@ -142,7 +142,7 @@ mantis_report(df = example_prescription_numbers,
 mantis_report(df = example_prescription_numbers,
               inputspec = inputspec(
                 timepoint_col = "PrescriptionDate",
-                item_col = c("Antibiotic", "Location"),
+                item_cols = c("Antibiotic", "Location"),
                 value_col = "NumberOfPrescriptions"
               ),
               outputspec = outputspec_interactive(
@@ -161,7 +161,7 @@ mantis_report(df = example_prescription_numbers,
 mantis_report(df = example_prescription_numbers,
               inputspec = inputspec(
                 timepoint_col = "PrescriptionDate",
-                item_col = c("Antibiotic", "Location"),
+                item_cols = c("Antibiotic", "Location"),
                 value_col = "NumberOfPrescriptions"
               ),
               outputspec = outputspec_static_multipanel(
@@ -174,7 +174,7 @@ mantis_alerts(
   example_prescription_numbers,
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
-    item_col = c("Antibiotic", "Location"),
+    item_cols = c("Antibiotic", "Location"),
     value_col = "NumberOfPrescriptions"
   ),
   alert_rules = alert_rules(
@@ -191,7 +191,7 @@ mantis_alerts(
 mantis_report(df = example_prescription_numbers,
               inputspec = inputspec(
                 timepoint_col = "PrescriptionDate",
-                item_col = c("Antibiotic", "Spectrum", "Location"),
+                item_cols = c("Antibiotic", "Spectrum", "Location"),
                 value_col = "NumberOfPrescriptions",
                 tab_col = NULL
 #                tab_col = c("Location")
