@@ -10,148 +10,93 @@ library(mantis)
 ```
 
 ```{r}
-data("example_data")
+data("example_prescription_numbers")
 
-df <- example_data
-timepoint_col <- "timepoint"
-item_col <- "item"
-value_col <- "value"
+df <- example_prescription_numbers
 
+```
+
+
+
+```{js}
+// when browser window is resized, all dygraphs on inactive tabs disappear. Reload page to redraw them all.
+// unfortunately this also means you lose your active tab
+window.onresize = function(){ location.reload(); }
 ```
 
 # {.tabset .tabset-pills}
 
-## Line chart, value
+
+## tab group with parent {.tabset}
+
+
+```{r, results = 'asis'}
+mantis::bespoke_rmd_tab(
+  df,
+  inputspec = mantis::inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Location", "Antibiotic", "Spectrum"),
+    value_col = "NumberOfPrescriptions"
+  ),
+  outputspec = mantis::outputspec_interactive(),
+  tab_name = "single parent",
+  tab_level = 2
+)
+
+```
+
+```{r, results = 'asis'}
+mantis::bespoke_rmd_tab(
+  df,
+  inputspec = mantis::inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Location", "Antibiotic", "Spectrum"),
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = mantis::outputspec_interactive(),
+  tab_name = "tab parent",
+  tab_level = 2
+)
+
+```
+
+```{r, results = 'asis'}
+mantis::bespoke_rmd_tab(
+  df,
+  inputspec = mantis::inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Location", "Antibiotic", "Spectrum"),
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = mantis::outputspec_interactive(),
+  tab_name = "top level parent",
+  tab_level = 1
+)
+
+```
+
+## tab group child tabs only {.tabset}
+
+```{r, results = 'asis'}
+mantis::bespoke_rmd_tab(
+  df,
+  inputspec = mantis::inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Location", "Antibiotic", "Spectrum"),
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = mantis::outputspec_interactive(),
+  tab_level = 1
+)
+
+```
+
 
 ```{r}
-prepare_table(
-  df,
-  timepoint_col,
-  item_col,
-  value_col
-  ) %>%
-  output_table_interactive(
-    item_label = "item",
-    plot_type = "line"
-  )
-  
-```
-
-## Bar chart, delta
-
-```{r}
-prepare_table(
-  df,
-  timepoint_col,
-  item_col,
-  value_col,
-  plot_value_type = "delta"
-  ) %>%
-  output_table_interactive(
-    item_label = "item",
-    plot_type = "bar"
-  )
-  
-```
-
-## tabs rmd loop {.tabset}
-
-```{r}
-dfgroups <- df %>%
-  dplyr::mutate(group = dplyr::case_when(grepl("norm", item) ~ "norm",
-                                         grepl("sparse", item) ~ "sparse",
-                                         TRUE ~ "other"))
-```
-
-```{r, results = 'asis'}
-tab_names <- unique(dfgroups$group)
-
-for (i in seq_along(tab_names)) {
-
-    cat("\n###", tab_names[i], "\n")
-    p <-
-      prepare_table(
-        dfgroups %>% dplyr::filter(group == tab_names[i]),
-        timepoint_col,
-        item_col,
-        value_col,
-        plot_value_type = "value"
-        ) %>%
-        output_table_interactive(
-          item_label = "item",
-          plot_type = "bar"
-        )
-      cat(knitr::knit_print(p))
-      cat("\n")
-}
-```
-
-
-```{r, results = 'asis'}
-construct_rmd_tab_group(
-  dfgroups,
-  timepoint_col,
-  item_col,
-  value_col,
-  tab_col = "group",
-  tab_order = c("norm", "sparse"),
-  tab_group_name = "tabs func loop",
-  tab_group_level = 1,
-  plot_value_type = "value",
-  item_label = "item",
-  plot_type = "bar"
-)
-
-```
-
-## tabs func loop child tabs only {.tabset}
-
-```{r, results = 'asis'}
-construct_rmd_tab_group(
-  dfgroups,
-  timepoint_col,
-  item_col,
-  value_col,
-  tab_col = "group",
-  tab_order = c("norm", "sparse"),
-  tab_group_level = 1,
-  plot_value_type = "value",
-  item_label = "item",
-  plot_type = "line"
-)
-
-```
-
-## tabs func one child tab only {.tabset}
-
-```{r, results = 'asis'}
-construct_rmd_tab_item(
-  df,
-  timepoint_col,
-  item_col,
-  value_col,
-  tab_name = "tab func level 2",
-  tab_level = 2,
-  plot_value_type = "delta",
-  item_label = "item",
-  summary_cols = "max_value",
-  plot_type = "bar"
-)
-
-```
-
-```{r, results = 'asis'}
-construct_rmd_tab_item(
-  df,
-  timepoint_col,
-  item_col,
-  value_col,
-  tab_name = "tab func level 1",
-  tab_level = 1,
-  plot_value_type = "delta",
-  item_label = "item",
-  summary_cols = "max_value",
-  plot_type = "bar"
-)
-
+# initialise htmlwidgets otherwise they won't render
+# this chunk can be placed anywhere
+mantis::bespoke_rmd_initialise_widgets(plot_type = "bar")
 ```

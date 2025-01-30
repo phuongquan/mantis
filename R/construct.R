@@ -43,12 +43,11 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #'
 #' \itemize{
 #'   \item one "timepoint" (date) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
-#'   \item one "item" (character) column containing categorical values identifying distinct time series.
+#'   \item one or more "item" (character) columns containing categorical values identifying distinct time series.
 #'   \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
-#'   \item Optionally, a "tab" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
 #' }
 #'
-#' The `inputspec` parameter maps the data frame columns to the above.
+#' The `inputspec` parameter maps the data frame columns to the above. Optionally, if there are multiple columns specified in `item_cols`, one of them can be used to group the time series into different tabs on the report, by using the `tab_col` parameter.
 #' @export
 bespoke_rmd_tab <- function(df,
                             inputspec,
@@ -170,6 +169,14 @@ construct_rmd_tab <- function(df,
     alert_results <- NULL
   }
 
+  # create parent tab if specified
+  construct_tab_label(
+    tab_name = tab_name,
+    tab_level = tab_level,
+    has_child_tabs = TRUE,
+    alert = any(alert_results$alert_result %in% c("FAIL"))
+  )
+
   # if no tab_col specified, print entire df contents
   if (is.null(inputspec$tab_col)) {
     construct_tab_content(
@@ -181,14 +188,6 @@ construct_rmd_tab <- function(df,
 
     return(invisible(df))
   }
-
-  # create parent tab if specified
-  construct_tab_label(
-    tab_name = tab_name,
-    tab_level = tab_level,
-    has_child_tabs = TRUE,
-    alert = any(alert_results$alert_result %in% c("FAIL"))
-  )
 
   # create tab group
   tab_names <- unique(prepared_df[item_cols_prefix(inputspec$tab_col)] |>
