@@ -47,10 +47,9 @@ The supplied data frame should contain multiple time series in long format, i.e.
 
 \itemize{
 \item one "timepoint" (date) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
-\item one "item" (character) column containing categorical values identifying distinct time series.
+\item one or more "item" (character) columns containing categorical values identifying distinct time series.
 \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
-\item Optionally, a "tab" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
 }
 
-The \code{inputspec} parameter maps the data frame columns to the above.
+The \code{inputspec} parameter maps the data frame columns to the above. Optionally, if there are multiple columns specified in \code{item_cols}, one of them can be used to group the time series into different tabs on the report, by using the \code{tab_col} parameter.
 }

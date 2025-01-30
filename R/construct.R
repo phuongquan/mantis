@@ -138,7 +138,8 @@ initialise_widgets <- function(plot_type){
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`
 #' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when `value_col` is a record count
 #' @param tab_name Character string to appear on the tab label. If omitted or `NULL`, only the content/child tabs (and not the parent tab) will be created.
-#' @param tab_level integer specifying the nesting level of the tab. Value of 1 equates to rmd level "##". This is unaffected by the presence or not of `tab_name`.
+#' @param tab_level integer specifying the nesting level of the tab. If `tab_name` is specified, a value of 1 generates a tab at rmd level "##", and any child tabs at a level down.
+#'  If `tab_name` is not specified, any child tabs will still be created at a level down from `tab_level`.
 #'
 #' @return (invisibly) the supplied `df`
 #' @noRd
