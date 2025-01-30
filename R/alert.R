@@ -692,7 +692,7 @@ run_alert <- function(prepared_df, inputspec, alert_rule){
 
   prepared_df |>
     restrict_items(items = alert_rule$items) |>
-    dplyr::group_by(across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
     dplyr::arrange(timepoint) |>
     dplyr::summarise(alert_name = alert_rule$short_name,
                      alert_description = alert_rule$description,
