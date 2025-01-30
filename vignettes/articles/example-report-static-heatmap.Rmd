@@ -18,13 +18,11 @@ filename <-
   df = example_prescription_numbers,
   inputspec = mantis::inputspec(
     timepoint_col = "PrescriptionDate",
-    item_col = "Antibiotic",
+    item_cols = c("Antibiotic", "Location"),
     value_col = "NumberOfPrescriptions",
     tab_col = "Location"
   ),
-  outputspec = mantis::outputspec_static_heatmap(
-    y_label = "Antibiotic"
-  ),
+  outputspec = mantis::outputspec_static_heatmap(),
   report_title = "Example mantis report - heatmap",
   dataset_description = "Antibiotic prescriptions by site",
   save_directory = "../../docs/articles",

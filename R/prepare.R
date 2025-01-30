@@ -766,6 +766,8 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
 #'  the end
 #'
 #'@return data frame
+#'@noRd
+#' @importFrom dplyr .data
 arrange_items <- function(df, item_order = NULL){
   if (is.null(item_order)) {
     return(df)

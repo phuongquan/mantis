@@ -56,33 +56,53 @@ Members of `item_cols` should be specified in the order that you want them to ap
 
 For the `example_prescription_numbers` dataset above, the combination of "Antibiotic" and "Location" columns uniquely identify a time series in the data frame, and so both columns must be included in `item_cols`.
 
-The "Spectrum" column can also be added to `item_col` as well if desired, in which case it will appear in the output as an additional column/label. Otherwise it will be ignored.
+The "Spectrum" column can also be added to `item_cols` as well if desired, in which case it will appear in the output as an additional column/label. Otherwise it will be ignored.
 
+Here are some options for specifying the data columns, depending on how you want the report to look:
 
 ```{r}
-# Here are 3 options for specifying the data columns, depending on how you want the report to look
 
 # create a flat report, and include the "Location" and "Antibiotic" fields in the content
 inspec_flat <- inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_cols = c("Location", "Antibiotic"),
-    value_col = "NumberOfPrescriptions"
-  )
+  timepoint_col = "PrescriptionDate",
+  item_cols = c("Location", "Antibiotic"),
+  value_col = "NumberOfPrescriptions"
+)
 
-# create a flat report, and include the "Location", "Spectrum", and "Antibiotic" fields in the content
+# create a flat report, and include the "Location", "Spectrum", and "Antibiotic" fields in the
+# content
 inspec_flat2 <- inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_cols = c("Location", "Spectrum", "Antibiotic"),
-    value_col = "NumberOfPrescriptions"
-  )
+  timepoint_col = "PrescriptionDate",
+  item_cols = c("Location", "Spectrum", "Antibiotic"),
+  value_col = "NumberOfPrescriptions"
+)
 
-# create a tabbed report, with a separate tab for each unique value of "Location", and include the "Antibiotic" and "Spectrum" fields in the content of each tab
+# create a tabbed report, with a separate tab for each unique value of "Location", and include just
+# the "Antibiotic" field in the content of each tab
 inspec_tabbed <- inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_cols = c("Antibiotic", "Spectrum", "Location"),
-    value_col = "NumberOfPrescriptions",
-    tab_col = "Location"
-  )
+  timepoint_col = "PrescriptionDate",
+  item_cols = c("Antibiotic", "Location"),
+  value_col = "NumberOfPrescriptions",
+  tab_col = "Location"
+)
+
+# create a tabbed report, with a separate tab for each unique value of "Location", and include the
+# "Antibiotic" and "Spectrum" fields in the content of each tab
+inspec_tabbed2 <- inputspec(
+  timepoint_col = "PrescriptionDate",
+  item_cols = c("Antibiotic", "Spectrum", "Location"),
+  value_col = "NumberOfPrescriptions",
+  tab_col = "Location"
+)
+
+# create a tabbed report, with a separate tab for each unique value of "Antibiotic", and include
+# just the "Location" field in the content of each tab
+inspec_tabbed3 <- inputspec(
+  timepoint_col = "PrescriptionDate",
+  item_cols = c("Antibiotic", "Location"),
+  value_col = "NumberOfPrescriptions",
+  tab_col = "Antibiotic"
+)
 
 ```
 
@@ -97,7 +117,7 @@ There are 3 different options for visualising the time series. This is set using
 
 ### Interactive plots
 
-This is the default visualisation, and produces a table with one time series in each row, with orderable and filterable columns showing the previously-specified `item_cols` for identifying the time series. Also in the table are the maximum value of each time series, and a bar plot with adjustable axes and tooltips showing the individual dates and values.
+This is the default visualisation, and produces a table with one time series in each row, with orderable and filterable columns showing the previously-specified `item_cols` for identifying the time series. Also in the table are the maximum value of each time series, and bar plots with adjustable axes and tooltips showing the individual dates and values.
 
 There are some options for adjusting the output, such as changing column labels, plot type, and whether or not to use the same y-axis scale across the table. This can be done using the `outputspec_interactive()` function when supplying the `outputspec` parameter.
 
@@ -110,15 +130,8 @@ For the `example_prescription_numbers` dataset above, we will save a report in t
 filename <- 
   mantis_report(
   df = example_prescription_numbers,
-  inputspec = inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_col = c("Antibiotic", "Spectrum", "Location"),
-    value_col = "NumberOfPrescriptions",
-    tab_col = "Location"
-  ),
-  outputspec = outputspec_interactive(
-    sync_axis_range = FALSE
-  ),
+  inputspec = inspec_tabbed2,
+  outputspec = outputspec_interactive(),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
   save_filename = "example_prescription_numbers_interactive",
@@ -132,15 +145,8 @@ file.remove(filename)
 ```{r interactive-display, eval=FALSE}
 mantis_report(
   df = example_prescription_numbers,
-  inputspec = inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_col = c("Antibiotic", "Spectrum", "Location"),
-    value_col = "NumberOfPrescriptions",
-    tab_col = "Location"
-  ),
-  outputspec = outputspec_interactive(
-    sync_axis_range = FALSE
-  ),
+  inputspec = inspec_tabbed2,
+  outputspec = outputspec_interactive(),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
   save_filename = "example_prescription_numbers_interactive",
@@ -161,14 +167,8 @@ Alternatively, the report can output static plots. This can be useful if interac
 filename <- 
   mantis_report(
   df = example_prescription_numbers,
-  inputspec = inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_col = c("Antibiotic", "Location"),
-    value_col = "NumberOfPrescriptions",
-    tab_col = "Location"
-  ),
-  outputspec = outputspec_static_heatmap(
-  ),
+  inputspec = inspec_tabbed,
+  outputspec = outputspec_static_heatmap(),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
   save_filename = "example_prescription_numbers_heatmap",
@@ -182,14 +182,8 @@ file.remove(filename)
 ```{r heatmap-display, eval=FALSE}
 mantis_report(
   df = example_prescription_numbers,
-  inputspec = inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_col = c("Antibiotic", "Location"),
-    value_col = "NumberOfPrescriptions",
-    tab_col = "Location"
-  ),
-  outputspec = outputspec_static_heatmap(
-  ),
+  inputspec = inspec_tabbed,
+  outputspec = outputspec_static_heatmap(),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
   save_filename = "example_prescription_numbers_heatmap",
@@ -206,14 +200,8 @@ mantis_report(
 filename <- 
   mantis_report(
   df = example_prescription_numbers,
-  inputspec = inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_col = c("Antibiotic", "Location"),
-    value_col = "NumberOfPrescriptions",
-    tab_col = "Location"
-  ),
-  outputspec = outputspec_static_multipanel(
-  ),
+  inputspec = inspec_tabbed,
+  outputspec = outputspec_static_multipanel(),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
   save_filename = "example_prescription_numbers_multipanel",
@@ -227,14 +215,8 @@ file.remove(filename)
 ```{r multipanel-display, eval=FALSE}
 mantis_report(
   df = example_prescription_numbers,
-  inputspec = inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_col = c("Antibiotic", "Location"),
-    value_col = "NumberOfPrescriptions",
-    tab_col = "Location"
-  ),
-  outputspec = outputspec_static_multipanel(
-  ),
+  inputspec = inspec_tabbed,
+  outputspec = outputspec_static_multipanel(),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
   save_filename = "example_prescription_numbers_multipanel",

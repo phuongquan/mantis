@@ -18,13 +18,11 @@ filename <-
   df = example_prescription_numbers,
   inputspec = mantis::inputspec(
     timepoint_col = "PrescriptionDate",
-    item_col = "Antibiotic",
+    item_cols = c("Antibiotic", "Spectrum", "Location"),
     value_col = "NumberOfPrescriptions",
     tab_col = "Location"
   ),
-  outputspec = mantis::outputspec_interactive(
-    item_label = "Antibiotic"
-  ),
+  outputspec = mantis::outputspec_interactive(),
   report_title = "Example mantis report - interactive",
   dataset_description = "Antibiotic prescriptions by site",
   save_directory = "../../docs/articles",

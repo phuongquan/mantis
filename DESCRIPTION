@@ -31,7 +31,6 @@ Imports:
     ggplot2,
     scales,
     purrr,
-    rlang,
     htmltools
 Suggests: 
     testthat (>= 3.0.0),

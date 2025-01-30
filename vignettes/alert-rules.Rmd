@@ -76,11 +76,11 @@ ars <- alert_rules(
 
 The function_call is evaluated per time series, and the expression inside `quote()` must return either `TRUE` or `FALSE`. A return value of `TRUE` means the alert result is "FAIL"
 
-Column names that can be used explicitly in the expression are: `value`, `item`, `timepoint`; and which refer to the values in the `value_col`, `item_col`, `timepoint_col` columns of the data respectively. Before evaluating the `function_call`, the dataframe is grouped by the `item_col` and ordered by the `timepoint_col`.
+Column names that can be used explicitly in the expression are `value` and `timepoint`, and which refer to the values in the `value_col` and `timepoint_col` columns of the data respectively. Before evaluating the `function_call`, the dataframe is grouped by the `item_col` and ordered by the `timepoint_col`.
 
 ## Applying different rules to different time series
 
-By default, the specified rules will be run on all time series in the supplied dataframe. You can specify different sets of rules for different time series by providing a vector of the `item_col` values that the particular rule should be applied to in the `items` parameter.
+By default, the specified rules will be run on all time series in the supplied dataframe. You can specify different sets of rules for different time series by using the `items` parameter, and providing it a named list of character vectors corresponding to the `item_cols` columns and values that the particular rule should be applied to.
 
 ## Walkthrough 
 
@@ -98,12 +98,11 @@ mantis_report(
   df = example_prescription_numbers,
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
-    item_col = "Antibiotic",
+    item_cols = c("Antibiotic", "Spectrum", "Location"),
     value_col = "NumberOfPrescriptions",
     tab_col = "Location"
   ),
   outputspec = outputspec_interactive(
-    item_label = "Antibiotic",
     sync_axis_range = FALSE
   ),
   report_title = "mantis report",
@@ -134,12 +133,11 @@ mantis_report(
   df = example_prescription_numbers,
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
-    item_col = "Antibiotic",
+    item_cols = c("Antibiotic", "Spectrum", "Location"),
     value_col = "NumberOfPrescriptions",
     tab_col = "Location"
   ),
   outputspec = outputspec_interactive(
-    item_label = "Antibiotic",
     sync_axis_range = FALSE
   ),
   alert_rules = ars,
@@ -155,4 +153,40 @@ The report now includes a column for the alert results, and details can be seen 
 
 <img src="../man/figures/alert_results.png" width="100%" />
 
+If for some reason we only wanted to apply the custom rule to broad spectrum antibiotics, we can indicate this using the `items` parameter of the rule.
 
+```{r, eval=FALSE}
+ars_restricted <- alert_rules(
+  alert_missing(extent_type = "any", extent_value = 1),
+  alert_custom(
+    short_name = "my_rule_doubled",
+    description = "Last 7 values are over double the first 7 values",
+    function_call = quote(mean(rev(value)[1:7], na.rm = TRUE) > 2*(mean(value[1:7], na.rm = TRUE))),
+    items = list("Spectrum" = c("Broad"))
+  )
+)
+
+# create a new report
+mantis_report(
+  df = example_prescription_numbers,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Antibiotic", "Spectrum", "Location"),
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = outputspec_interactive(
+    sync_axis_range = FALSE
+  ),
+  alert_rules = ars_restricted,
+  report_title = "mantis report with alerts",
+  dataset_description = "Antibiotic prescriptions by site",
+  save_filename = "example_prescription_numbers_interactive_alerts_restricted",
+  show_progress = TRUE
+)
+
+```
+
+The report now shows two rules for Coamoxiclav and one rule for Metronidazole.
+
+<img src="../man/figures/alert_results_restricted.png" width="100%" />

@@ -574,8 +574,8 @@ alert_difference_below_perc <- function(current_period,
 #'
 #'   The supplied `function_call` is passed to `eval()` within a `dplyr::summarise()` after grouping
 #'   by the `item_cols` and ordering by the `timepoint_col`. Column names that can be used explicitly
-#'   in the expression are: `value`, `item`, `timepoint`; and which refer to the values in the
-#'   `value_col`, `item_cols`, `timepoint_col` columns of the data respectively
+#'   in the expression are `value` and `timepoint`, and which refer to the values in the
+#'   `value_col` and `timepoint_col` columns of the data respectively.
 #'
 #'
 #' @param short_name short name to uniquely identify the rule. Only include alphanumeric, '-', and
@@ -713,7 +713,6 @@ run_alert <- function(prepared_df, inputspec, alert_rule){
 #'
 #' @return tibble
 #' @export
-#' @importFrom rlang :=
 mantis_alerts <- function(df,
                           inputspec,
                           alert_rules,

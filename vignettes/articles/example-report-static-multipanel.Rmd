@@ -18,13 +18,11 @@ filename <-
   df = example_prescription_numbers,
   inputspec = mantis::inputspec(
     timepoint_col = "PrescriptionDate",
-    item_col = "Antibiotic",
+    item_cols = c("Antibiotic", "Location"),
     value_col = "NumberOfPrescriptions",
     tab_col = "Location"
   ),
-  outputspec = mantis::outputspec_static_multipanel(
-    y_label = "Antibiotic"
-  ),
+  outputspec = mantis::outputspec_static_multipanel(),
   report_title = "Example mantis report - multipanel",
   dataset_description = "Antibiotic prescriptions by site",
   save_directory = "../../docs/articles",

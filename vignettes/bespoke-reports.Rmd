@@ -23,13 +23,15 @@ Note: Currently, `mantis` uses `rmarkdown` to generate its reports. In future it
 
 You can use existing `rmarkdown` functionality to create your own bespoke html report, and insert `mantis` content and/or tabs as desired. At a minimum, you need to know how to generate html documents from a Rmd file, including creating tabsets. If you don't, take a look at the official documentation and/or the many other online resources available.
 
-`mantis` includes two main functions for creating content for bespoke reports. These functions use side-effects to generate the desired markdown, and must be placed inside a `{r, results='asis'}` chunk.
+`mantis` includes one main function `bespoke_rmd_tab()` for creating content for bespoke reports. This function use side-effects to generate the desired markdown, and must be placed inside a `{r, results='asis'}` chunk.
 
-* `bespoke_rmd_tab_item()` will add a single visualisation, with or without creating the container tab.
+The function can:
 
-* `bespoke_rmd_tab_group()` will add a set of tabs, each based on the same output specification, with or without creating the parent tab.
+* add a single visualisation, with or without creating the container tab, or
 
-These functions also include a few additional parameters not available in the standard `mantis_report()` to allow some extra control over the display.
+* add a set of tabs, each based on the same output specification, with or without creating the parent tab.
+
+The function also includes a few additional parameters not available in the standard `mantis_report()` to allow some extra control over the display.
 
 ## Extra requirements for interactive reports
 
@@ -51,7 +53,8 @@ Secondly, when the browser window is resized, all `dygraphs` plots on inactive t
 ````{verbatim}
 ```{js}
 // this chunk is necessary when using mantis::outputspec_interactive(). 
-// when the browser window is resized, all dygraphs on inactive tabs disappear. Reload page to redraw them all.
+// when the browser window is resized, all dygraphs on inactive tabs disappear. Reload page to 
+// redraw them all.
 window.onresize = function(){ location.reload(); }
 ```
 ````

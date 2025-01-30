@@ -25,8 +25,8 @@ An \code{alert_rule} object
 \description{
 The supplied \code{function_call} is passed to \code{eval()} within a \code{dplyr::summarise()} after grouping
 by the \code{item_cols} and ordering by the \code{timepoint_col}. Column names that can be used explicitly
-in the expression are: \code{value}, \code{item}, \code{timepoint}; and which refer to the values in the
-\code{value_col}, \code{item_cols}, \code{timepoint_col} columns of the data respectively
+in the expression are \code{value} and \code{timepoint}, and which refer to the values in the
+\code{value_col} and \code{timepoint_col} columns of the data respectively.
 }
 \section{Details}{
  Use \code{items} to restrict the rule to be applied only to specified items.
