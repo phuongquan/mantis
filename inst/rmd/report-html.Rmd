@@ -62,7 +62,7 @@ window.onresize = function(){ location.reload(); }
 ```{r, results='asis', fig.height=fig_height}
 construct_rmd_tab(
   df = params$df,
-  tab_level = 0,
+  tab_level = 1,
   inputspec = params$inputspec,
   outputspec = params$outputspec,
   alert_rules = params$alert_rules

@@ -72,7 +72,7 @@ mantis::bespoke_rmd_tab(
   ),
   outputspec = mantis::outputspec_interactive(),
   tab_name = "top level parent",
-  tab_level = 1
+  tab_level = 2
 )
 
 ```
@@ -89,7 +89,7 @@ mantis::bespoke_rmd_tab(
     tab_col = "Location"
   ),
   outputspec = mantis::outputspec_interactive(),
-  tab_level = 1
+  tab_level = 2
 )
 
 ```

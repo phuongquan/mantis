@@ -27,16 +27,21 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' Function writes directly to the chunk using side-effects
 #'
 #' @param df A data frame containing multiple time series in long format. See Details.
-#' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
-#'   "timepoint", "item", and "value" for the time series. A separate tab
-#'   will be created for each distinct value in the "tab" column.
-#' @param outputspec `outputspec` object specifying the desired format of the html table(s)/plot(s). If
-#'   not supplied, default values will be used.
+#' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent
+#'   the "timepoint", "item", and "value" for the time series. A separate tab will be created for
+#'   each distinct value in the "tab" column.
+#' @param outputspec `outputspec` object specifying the desired format of the html
+#'   table(s)/plot(s). If not supplied, default values will be used.
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`
-#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when `value_col` is a record count
-#' @param tab_name Character string to appear on the tab label. If omitted or `NULL`, only the content/child tabs (and not the parent tab) will be created.
-#' @param tab_level integer specifying the nesting level of the tab. Value of 1 equates to rmd level "##". This is unaffected by the presence or not of `tab_name`.
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max
+#'   of `timepoint_col`
+#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when
+#'   `value_col` is a record count
+#' @param tab_name Character string to appear on the tab label. If omitted or `NULL`, only the
+#'   content/child tabs (and not the parent tab) will be created.
+#' @param tab_level integer specifying the nesting level of the tab. If `tab_name` is specified, a
+#'   value of 1 generates a tab at rmd level "##", and any `tab_col` tabs at a level down. If
+#'   `tab_name` is not specified, any `tab_col` tabs will be created at rmd level "##".
 #'
 #' @return (invisibly) the supplied `df`
 #' @details The supplied data frame should contain multiple time series in long format, i.e.:
@@ -47,7 +52,9 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #'   \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
 #' }
 #'
-#' The `inputspec` parameter maps the data frame columns to the above. Optionally, if there are multiple columns specified in `item_cols`, one of them can be used to group the time series into different tabs on the report, by using the `tab_col` parameter.
+#'   The `inputspec` parameter maps the data frame columns to the above. Optionally, if there are
+#'   multiple columns specified in `item_cols`, one of them can be used to group the time series
+#'   into different tabs on the report, by using the `tab_col` parameter.
 #' @export
 bespoke_rmd_tab <- function(df,
                             inputspec,
@@ -135,11 +142,15 @@ initialise_widgets <- function(plot_type){
 #' @param inputspec Specification of data in `df`
 #' @param outputspec Specification for display of tab contents
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`
-#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when `value_col` is a record count
-#' @param tab_name Character string to appear on the tab label. If omitted or `NULL`, only the content/child tabs (and not the parent tab) will be created.
-#' @param tab_level integer specifying the nesting level of the tab. If `tab_name` is specified, a value of 1 generates a tab at rmd level "##", and any child tabs at a level down.
-#'  If `tab_name` is not specified, any child tabs will still be created at a level down from `tab_level`.
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max
+#'   of `timepoint_col`
+#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when
+#'   `value_col` is a record count
+#' @param tab_name Character string to appear on the tab label. If omitted or `NULL`, only the
+#'   content/child tabs (and not the parent tab) will be created.
+#' @param tab_level integer specifying the nesting level of the tab. If `tab_name` is specified, a
+#'   value of 1 generates a tab at rmd level "##", and any `tab_col` tabs at a level down. If
+#'   `tab_name` is not specified, any `tab_col` tabs will be created at rmd level "##".
 #'
 #' @return (invisibly) the supplied `df`
 #' @noRd
@@ -171,12 +182,18 @@ construct_rmd_tab <- function(df,
   }
 
   # create parent tab if specified
-  construct_tab_label(
-    tab_name = tab_name,
-    tab_level = tab_level,
-    has_child_tabs = TRUE,
-    alert = any(alert_results$alert_result %in% c("FAIL"))
-  )
+  if (!is.null(tab_name)){
+    construct_tab_label(
+      tab_name = tab_name,
+      tab_level = tab_level,
+      has_child_tabs = TRUE,
+      alert = any(alert_results$alert_result %in% c("FAIL"))
+    )
+
+    tab_col_level <- tab_level + 1
+  } else{
+    tab_col_level <- tab_level
+  }
 
   # if no tab_col specified, print entire df contents
   if (is.null(inputspec$tab_col)) {
@@ -191,24 +208,24 @@ construct_rmd_tab <- function(df,
   }
 
   # create tab group
-  tab_names <- unique(prepared_df[item_cols_prefix(inputspec$tab_col)] |>
+  tab_col_names <- unique(prepared_df[item_cols_prefix(inputspec$tab_col)] |>
                           dplyr::pull())
 
-    for (i in seq_along(tab_names)) {
+    for (i in seq_along(tab_col_names)) {
       prepared_df_subset <-
         prepared_df |>
-        dplyr::filter(.data[[item_cols_prefix(inputspec$tab_col)]] == tab_names[i])
+        dplyr::filter(.data[[item_cols_prefix(inputspec$tab_col)]] == tab_col_names[i])
 
       if (is.null(alert_results)){
         alert_results_subset <- NULL
       } else{
         alert_results_subset <-
           alert_results |>
-          dplyr::filter(.data[[item_cols_prefix(inputspec$tab_col)]] == tab_names[i])
+          dplyr::filter(.data[[item_cols_prefix(inputspec$tab_col)]] == tab_col_names[i])
       }
 
-      construct_tab_label(tab_name = tab_names[i],
-                          tab_level = tab_level + 1,
+      construct_tab_label(tab_name = tab_col_names[i],
+                          tab_level = tab_col_level,
                           alert = any(alert_results_subset$alert_result %in% c("FAIL")))
 
       construct_tab_content(

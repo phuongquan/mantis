@@ -18,22 +18,27 @@ bespoke_rmd_tab(
 \arguments{
 \item{df}{A data frame containing multiple time series in long format. See Details.}
 
-\item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the supplied \code{df} represent the
-"timepoint", "item", and "value" for the time series. A separate tab
-will be created for each distinct value in the "tab" column.}
+\item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the supplied \code{df} represent
+the "timepoint", "item", and "value" for the time series. A separate tab will be created for
+each distinct value in the "tab" column.}
 
-\item{outputspec}{\code{outputspec} object specifying the desired format of the html table(s)/plot(s). If
-not supplied, default values will be used.}
+\item{outputspec}{\code{outputspec} object specifying the desired format of the html
+table(s)/plot(s). If not supplied, default values will be used.}
 
 \item{alert_rules}{\code{\link[=alert_rules]{alert_rules()}} object specifying conditions to test}
 
-\item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of \code{timepoint_col}}
+\item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max
+of \code{timepoint_col}}
 
-\item{fill_with_zero}{Logical. Replace any missing or \code{NA} values with 0? Useful when \code{value_col} is a record count}
+\item{fill_with_zero}{Logical. Replace any missing or \code{NA} values with 0? Useful when
+\code{value_col} is a record count}
 
-\item{tab_name}{Character string to appear on the tab label. If omitted or \code{NULL}, only the content/child tabs (and not the parent tab) will be created.}
+\item{tab_name}{Character string to appear on the tab label. If omitted or \code{NULL}, only the
+content/child tabs (and not the parent tab) will be created.}
 
-\item{tab_level}{integer specifying the nesting level of the tab. Value of 1 equates to rmd level "##". This is unaffected by the presence or not of \code{tab_name}.}
+\item{tab_level}{integer specifying the nesting level of the tab. If \code{tab_name} is specified, a
+value of 1 generates a tab at rmd level "##", and any \code{tab_col} tabs at a level down. If
+\code{tab_name} is not specified, any \code{tab_col} tabs will be created at rmd level "##".}
 }
 \value{
 (invisibly) the supplied \code{df}
@@ -51,5 +56,7 @@ The supplied data frame should contain multiple time series in long format, i.e.
 \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
 }
 
-The \code{inputspec} parameter maps the data frame columns to the above. Optionally, if there are multiple columns specified in \code{item_cols}, one of them can be used to group the time series into different tabs on the report, by using the \code{tab_col} parameter.
+The \code{inputspec} parameter maps the data frame columns to the above. Optionally, if there are
+multiple columns specified in \code{item_cols}, one of them can be used to group the time series
+into different tabs on the report, by using the \code{tab_col} parameter.
 }
