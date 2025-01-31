@@ -6,10 +6,9 @@
 #' @param inputspec Specification of data in df
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-#'   will be used.
+#' @param item_order named list with names corresponding to columns in the supplied `df`. List members are
+#'  either `TRUE` for ascending order, or a character vector of values contained in the named
+#'  column for explicit ordering. If `item_order = NULL`, the original order will be kept.
 #'
 #' @return data frame
 #' @noRd
@@ -21,16 +20,29 @@ prepare_df <-
            fill_with_zero = FALSE,
            item_order = NULL) {
   # TODO: Can this function be rewritten to include the tab_col?
+    # TODO: allow df to be passed in wide with vector of value_cols?
 
   # initialise column names to avoid R CMD check Notes
   item <- NULL
 
-  # keep only relevant cols and rename for ease. may want to figure out how to keep original colnames
+  # keep only relevant cols and rename for ease. prefix item_cols with "item." to ensure uniqueness
   prepared_df <-
     df |>
-    dplyr::select(timepoint = dplyr::all_of(inputspec$timepoint_col),
-                  item = dplyr::all_of(inputspec$item_col),
-                  value = dplyr::all_of(inputspec$value_col))
+    dplyr::select(dplyr::all_of(
+      c(
+        inputspec$item_cols,
+        inputspec$timepoint_col,
+        inputspec$value_col
+      )
+    )) |>
+    dplyr::rename(
+      timepoint = dplyr::all_of(inputspec$timepoint_col),
+      value = dplyr::all_of(inputspec$value_col)
+    ) |>
+    dplyr::rename_with(
+      .cols = dplyr::all_of(inputspec$item_cols),
+      .fn = item_cols_prefix
+      )
 
   # if there is no data, return the formatted (empty) df
   if(nrow(prepared_df) == 0){
@@ -38,9 +50,9 @@ prepare_df <-
   }
 
   prepared_df <-
-    align_data_timepoints(df = prepared_df,
-                          timepoint_limits = timepoint_limits,
-                          period = inputspec$period)
+    align_data_timepoints(prepared_df,
+                          inputspec = inputspec,
+                          timepoint_limits = timepoint_limits)
 
   if (fill_with_zero) {
     prepared_df <-
@@ -48,11 +60,14 @@ prepare_df <-
       tidyr::replace_na(list(value = 0))
   }
 
-  if (!is.null(item_order)) {
+  if (!is.null(item_order)){
+    # prepared_df has item columns renamed so pass in renamed item_order
+    item_order_renamed <- item_order
+    names(item_order_renamed) <- item_cols_prefix(names(item_order))
+
     prepared_df <-
-      prepared_df |>
-      dplyr::arrange(item) |>
-      dplyr::arrange(factor(item, levels = item_order))
+      arrange_items(df = prepared_df,
+                    item_order = item_order_renamed)
   }
 
   prepared_df
@@ -63,9 +78,10 @@ prepare_df <-
 #' Supplied df needs to be long (at least for now)
 #'
 #' @param prepared_df data frame returned from prepare_df()
+#' @param inputspec Specification of data in df
 #' @param plot_value_type "value" or "delta"
 #' @param alert_results `alert_results` object returned from `run_alerts()`
-#' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
+#' @param sort_by column in output table to sort by. Can be one of `alert_overall`, or one
 #'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
 #'   Secondary ordering will be based on `item_order`.
 #'
@@ -73,23 +89,24 @@ prepare_df <-
 #' @noRd
 prepare_table <-
   function(prepared_df,
+           inputspec,
            plot_value_type = "value",
            alert_results = NULL,
            sort_by = NULL) {
 
-  # TODO: allow df to be passed in wide with vector of value_cols?
+  # TODO: Consider passing in just item_cols rather than entire inputspec?
 
   # initialise column names to avoid R CMD check Notes
-  timepoint <- item <- value <- value_for_history <- alert_description <- alert_result <- NULL
+  timepoint <- value <- value_for_history <- alert_description <- alert_result <- item_order_final <- NULL
 
   # TODO: validate inputs
 
-  # store order as later group_by will alphabetise
-  item_order_final <- unique(prepared_df$item)
-
   table_df <-
     prepared_df |>
-    dplyr::group_by(item) |>
+    # store original sort order as later group_by will alphabetise
+    dplyr::mutate(item_order_final = dplyr::row_number()) |>
+    # remember prepared_df has had its item_cols renamed to ensure uniqueness
+    dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
     dplyr::arrange(timepoint) |>
     dplyr::mutate(
       value_for_history = dplyr::case_when(
@@ -98,7 +115,9 @@ prepare_table <-
       )
     ) |>
     dplyr::summarise(
+      item_order_final = min(item_order_final),
       # summary columns
+      # TODO: only generate these if requested
       last_timepoint = max_else_na(timepoint[!is.na(value)]),
       last_value = rev(value)[1],
       last_value_nonmissing = rev(value[!is.na(value)])[1],
@@ -119,7 +138,7 @@ prepare_table <-
       table_df |>
       dplyr::left_join(
         alert_results |>
-          dplyr::group_by(item) |>
+          dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
           dplyr::summarise(
             alert_overall = ifelse(
               any(alert_result == "FAIL"),
@@ -131,7 +150,7 @@ prepare_table <-
             )),
             .groups = "drop"
           ),
-        by = "item",
+        by = dplyr::all_of(item_cols_prefix(inputspec$item_cols)),
       )
 
   } else{
@@ -143,20 +162,21 @@ prepare_table <-
   if (is.null(sort_by)){
     table_df <-
       table_df |>
-      dplyr::arrange(factor(item, levels = item_order_final))
+      dplyr::arrange(item_order_final)
   } else if (substring(sort_by, 1, 1) == "-"){
     table_df <-
       table_df |>
       dplyr::arrange(dplyr::across(dplyr::any_of(substring(sort_by, 2)), dplyr::desc),
-                     factor(item, levels = item_order_final))
+                     item_order_final)
   } else{
     table_df <-
       table_df |>
       dplyr::arrange(dplyr::pick(dplyr::any_of(sort_by)),
-                     factor(item, levels = item_order_final))
+                     item_order_final)
   }
 
-  table_df
+  table_df |>
+    dplyr::select(-item_order_final)
 }
 
 
@@ -164,8 +184,8 @@ prepare_table <-
 #' Specify relevant columns in the source data frame
 #'
 #' @param timepoint_col String denoting the (date) column which will be used for the x-axes.
-#' @param item_col String denoting the (character) column containing categorical values identifying
-#'   distinct time series.
+#' @param item_cols String denoting the (character) column containing categorical values identifying
+#'   distinct time series. Multiple columns that together identify a time series can be provided as a vector
 #' @param value_col String denoting the (numeric) column containing the time series values which
 #'   will be used for the y-axes.
 #' @param tab_col Optional. String denoting the (character) column containing categorical values
@@ -175,7 +195,7 @@ prepare_table <-
 #' @return A `inputspec()` object
 #' @export
 inputspec <- function(timepoint_col,
-                    item_col,
+                    item_cols,
                     value_col,
                     tab_col = NULL,
                     period = "day"){
@@ -183,7 +203,7 @@ inputspec <- function(timepoint_col,
   validate_params_required(match.call())
   validate_params_type(match.call(),
                        timepoint_col = timepoint_col,
-                       item_col = item_col,
+                       item_cols = item_cols,
                        value_col = value_col,
                        tab_col = tab_col,
                        period = period
@@ -191,7 +211,7 @@ inputspec <- function(timepoint_col,
 
   structure(
     list(timepoint_col = timepoint_col,
-       item_col = item_col,
+       item_cols = item_cols,
        value_col = value_col,
        tab_col = tab_col,
        period = period),
@@ -213,26 +233,34 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #' @param plot_value_type Display the raw "`value`" for the time series or display the calculated
 #'   "`delta`" between consecutive values.
 #' @param plot_type Display the time series as a "`bar`" or "`line`" chart.
-#' @param item_label String label to use for the "item" column in the report.
-#' @param plot_label String label to use for the time series column in the report.
+#' @param item_label String label(s) to use for the "item" column(s) in the report. If NULL, the original columns name(s) will be used.
+#' @param plot_label String label to use for the time series column in the report. If NULL, the original `value_col` name will be used.
 #' @param summary_cols Summary data to include as columns in the report. Options are
 #'   `c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
 #'   X-axes are always synced.
-#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-#'   will be used.
-#' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
+#' @param item_order named list corresponding to `item_cols` columns for ordering the
+#'   items in the output. List values are either `TRUE` for ascending order, or a character vector
+#'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
+#'   original order will be kept. See Details.
+#' @param sort_by column in output table to sort by. Can be one of `alert_overall`, or one
 #'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
 #'   Secondary ordering will be based on `item_order`.
+#'
+#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
+#'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
+#'  then that column is sorted in ascending order. If a list item is a character vector then that
+#'  column is sorted in the order of the vector first, with any remaining values included
+#'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
+#'  as the first item in the list.
 #'
 #' @return An `outputspec()` object
 #' @export
 outputspec_interactive <- function(plot_value_type = "value",
                        plot_type = "bar",
-                       item_label = "Item",
-                       plot_label = "History",
+                       item_label = NULL,
+                       plot_label = NULL,
                        summary_cols = c("max_value"),
                        sync_axis_range = FALSE,
                        item_order = NULL,
@@ -267,10 +295,18 @@ outputspec_interactive <- function(plot_value_type = "value",
 #'
 #' @param fill_colour colour to use for the tiles
 #' @param y_label string for y-axis label. Optional
-#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-#'   will be used.
+#' @param item_order named list corresponding to `item_cols` columns for ordering the
+#'   items in the output. List values are either `TRUE` for ascending order, or a character vector
+#'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
+#'   original order will be kept. See Details.
+#'
+#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
+#'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
+#'  then that column is sorted in ascending order. If a list item is a character vector then that
+#'  column is sorted in the order of the vector first, with any remaining values included
+#'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
+#'  as the first item in the list.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -293,10 +329,18 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 #' @param sync_axis_range Set the y-axis to be the same range for all the plots.
 #'   X-axes are always synced.
 #' @param y_label string for y-axis label. Optional
-#' @param item_order vector of values contained in item_col, for explicitly ordering the items in
-#'   the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-#'   will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-#'   will be used.
+#' @param item_order named list corresponding to `item_cols` columns for ordering the
+#'   items in the output. List values are either `TRUE` for ascending order, or a character vector
+#'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
+#'   original order will be kept. See Details.
+#'
+#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
+#'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
+#'  then that column is sorted in ascending order. If a list item is a character vector then that
+#'  column is sorted in the order of the vector first, with any remaining values included
+#'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
+#'  as the first item in the list.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -379,7 +423,8 @@ history_to_list <-
 
 #' Align the timepoint values across all items
 #'
-#' @param df Data frame with 3 columns: timepoint, item, and value
+#' @param prepared_df Data frame with 2 columns named timepoint and value, plus the item_cols
+#' @param inputspec Specification of data in df
 #' @param timepoint_limits Vector containing min and max dates for the x-axes. Use Date type.
 #'
 #' Ensure timepoint values are the same for all items, for consistency down the table.
@@ -388,42 +433,51 @@ history_to_list <-
 #' @return Data frame with consistent timepoints
 #' @noRd
 align_data_timepoints <-
-  function(df,
-           timepoint_limits = c(NA, NA),
-           period = "day") {
+  function(prepared_df,
+           inputspec = inputspec,
+           timepoint_limits = c(NA, NA)) {
 
   # initialise column names to avoid R CMD check Notes
-  timepoint <- item <- value <- NULL
+  timepoint <- value <- NULL
 
   # TODO: Need to work out correct limits to use based on df
   #  in case supplied limits don't match df granularity
   if (is.na(timepoint_limits[1])) {
-    min_timepoint <- min(df$timepoint)
+    min_timepoint <- min(prepared_df$timepoint)
   } else{
     min_timepoint <- timepoint_limits[1]
   }
   if (is.na(timepoint_limits[2])) {
-    max_timepoint <- max(df$timepoint)
+    max_timepoint <- max(prepared_df$timepoint)
   } else{
     max_timepoint <- timepoint_limits[2]
   }
 
   # TODO: Need to work out correct granularity to use based on df
   #  as don't want to insert unnecessary rows
-  all_timepoints <- seq(min_timepoint, max_timepoint, by = period)
+  all_timepoints <- seq(min_timepoint, max_timepoint, by = inputspec$period)
+
+  # NOTE: uses an unusual separator :~: to separate multiple item_cols,
+  # assuming the string won't appear in the column names
+
+  item_cols_prepared <- item_cols_prefix(inputspec$item_cols)
 
   df_out <-
-    df |>
-    tidyr::pivot_wider(names_from = item,
+    prepared_df |>
+    tidyr::pivot_wider(names_from = dplyr::all_of(item_cols_prepared),
                        values_from = value,
-                       names_prefix = "piv_") |>
+                       names_glue = paste0("piv_{", paste(item_cols_prepared, collapse = "}:~:{"), "}")) |>
     # insert any missing timepoint values
     dplyr::full_join(data.frame("timepoint" = all_timepoints), by = "timepoint") |>
     # restrict to specified limits
     dplyr::filter(timepoint >= min_timepoint & timepoint <= max_timepoint) |>
     tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
-                        names_to = "item",
-                        names_prefix = "piv_")
+                        names_to = item_cols_prepared,
+                        names_pattern = paste0("piv_?(.*)",
+                                               paste0(rep(":~:(.*)", length(item_cols_prepared) - 1),
+                                                      collapse = "")
+                                               ))
+
 
   df_out
 
@@ -509,7 +563,8 @@ validate_df_to_inputspec_col_names <- function(df,
 
   # only keep the cols params
   # and drop any items that are NULL using the unlist()
-  colspec_vector <- unlist(inputspec[endsWith(names(inputspec), "_col")])
+  # TODO: find the appropriate regex
+  colspec_vector <- unlist(inputspec[endsWith(names(inputspec), "_col") | endsWith(names(inputspec), "_cols")])
 
   # ignore any columns in df that are not in specification
   dfnames <- names(df)[names(df) %in% colspec_vector]
@@ -523,18 +578,6 @@ validate_df_to_inputspec_col_names <- function(df,
           "Duplicate column names in data: [",
           paste(dfnames[duplicated(dfnames)], collapse = ", "),
           "]"
-        )
-      )
-  }
-  # check for duplicate names in inputspec
-  if (anyDuplicated(colspec_vector) > 0) {
-    err_validation <-
-      append(
-        err_validation,
-        paste(
-          "Duplicate column names in inputspec: [",
-          paste(colspec_vector[duplicated(colspec_vector)], collapse = ", "),
-          "]. Each inputspec parameter must refer to a different column in the df "
         )
       )
   }
@@ -552,6 +595,33 @@ validate_df_to_inputspec_col_names <- function(df,
           )
         )
     }
+  }
+  # check for duplicate names in inputspec (except for tab_col)
+  colspec_vector_nontab <- colspec_vector[!names(colspec_vector) %in% "tab_col"]
+  if (anyDuplicated(colspec_vector_nontab) > 0) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "Duplicate column names in inputspec: [",
+          paste(colspec_vector[duplicated(colspec_vector_nontab)], collapse = ", "),
+          "]. Each of the timepoint_col/item_cols/value_col inputspec parameters must refer to a different column in the df"
+        )
+      )
+  }
+  # check tab_col is one of the item_cols
+  if (!is.null(inputspec$tab_col) && !inputspec$tab_col %in% inputspec$item_cols){
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "tab_col [",
+          inputspec$tab_col,
+          "] not in item_cols [",
+          paste(inputspec$item_cols, collapse = ", "),
+          "]. tab_col must match one of the values in item_cols"
+        )
+      )
   }
 
   err_validation
@@ -603,21 +673,24 @@ validate_df_to_inputspec_col_types <- function(df,
 
   # item col will be coerced to character type
   # Check it doesn't contain both NA values and string "NA" values
-  item_vals <- df |> dplyr::pull(dplyr::all_of(inputspec$item_col))
-  if (any(is.na(item_vals)) && any(item_vals == "NA", na.rm = TRUE)) {
-    err_validation <-
-      append(
-        err_validation,
-        paste(
-          "The item_col column [",
-          inputspec$item_col,
-          '] cannot contain both NA values and "NA" strings. Found [',
-          sum(is.na(item_vals)),
-          "] NA values and [",
-          sum(item_vals == "NA", na.rm = TRUE),
-          '] "NA" strings'
+  # TODO: Confirm this is valid for multi-item_cols
+  for (col in inputspec$item_cols) {
+    item_vals <- df |> dplyr::pull(dplyr::all_of(col))
+    if (any(is.na(item_vals)) && any(item_vals == "NA", na.rm = TRUE)) {
+      err_validation <-
+        append(
+          err_validation,
+          paste(
+            "The item_cols column [",
+            col,
+            '] cannot contain both NA values and "NA" strings. Found [',
+            sum(is.na(item_vals)),
+            "] NA values and [",
+            sum(item_vals == "NA", na.rm = TRUE),
+            '] "NA" strings'
+          )
         )
-      )
+    }
   }
 
   # check value col is numeric type
@@ -640,7 +713,7 @@ validate_df_to_inputspec_col_types <- function(df,
   err_validation
 }
 
-#' Check supplied df has only one timepoint per item or item-tab
+#' Check supplied df has only one timepoint per item
 #'
 #' This assumes that the names in inputspec and the df have already been check and are valid
 #'
@@ -659,18 +732,14 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
 
   duplicate_timepoints <-
     df |>
-    dplyr::group_by(dplyr::pick(dplyr::any_of(c(
-      inputspec$item_col,
-      inputspec$tab_col
-    )))) |>
+    dplyr::group_by(dplyr::pick(dplyr::all_of(inputspec$item_cols))) |>
     dplyr::summarise(
       duplicate_timepoints = anyDuplicated(dplyr::pick(dplyr::all_of(
         inputspec$timepoint_col))),
       .groups = "drop") |>
     dplyr::filter(duplicate_timepoints > 0) |>
     tidyr::unite(baditem,
-                 dplyr::any_of(c(inputspec$item_col,
-                                 inputspec$tab_col)),
+                 dplyr::all_of(inputspec$item_cols),
                  sep = ":")
 
   if (nrow(duplicate_timepoints) > 0) {
@@ -678,9 +747,90 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
         paste(
           "Duplicate timepoints for items: [",
           paste(duplicate_timepoints$baditem, collapse = ", "),
-          "]. Each timepoint-item-tab combination must only appear once in the df"
+          "]. Each timepoint-item combination must only appear once in the df"
         )
   }
 
   err_validation
+}
+
+#'Arrange/sort a df based on a list of items
+#'
+#'@param df df to arrange
+#'@param item_order named list with names corresponding to columns in the supplied `df`. List members are
+#'  either `TRUE` for ascending order, or a character vector of values contained in the named
+#'  column for explicit ordering. If `item_order = NULL`, the original order will be kept. See Details.
+#'
+#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
+#'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
+#'  then that column is sorted in ascending order. If a list item is a character vector then that
+#'  column is sorted in the order of the vector first, with any remaining values included
+#'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
+#'  as the first item in the list.
+#'
+#'@return data frame
+#'@noRd
+#' @importFrom dplyr .data
+arrange_items <- function(df, item_order = NULL){
+  if (is.null(item_order)) {
+    return(df)
+  }
+
+  # keep only the items which match a column in the df
+  items <- item_order[which(names(item_order) %in% names(df))]
+
+  # explicitly note the levels for each item
+  levels <- items
+  for(i in seq_along(items)){
+    ascending <- sort(unique(df[names(items[i])][[1]]))
+    if(all(is.character(items[i][[1]]))){
+      levels[i][[1]] <- unique(c(items[i][[1]], ascending))
+    } else{
+      levels[i][[1]] <- ascending
+    }
+  }
+
+  # sort using factors for all items, otherwise values not mentioned explicitly can get unsorted by subsequent items
+  # this is super ugly but temporarily just limit it to 3 items until find better way
+  if (length(items) == 1){
+    df_sorted <-
+      df |>
+      dplyr::arrange(factor(.data[[names(items[1])]], levels = levels[1][[1]]))
+  } else if (length(items) == 2){
+    df_sorted <-
+      df |>
+      dplyr::arrange(factor(.data[[names(items[1])]], levels = levels[1][[1]]),
+                     factor(.data[[names(items[2])]], levels = levels[2][[1]]))
+  } else if (length(items) == 3){
+    df_sorted <-
+      df |>
+      dplyr::arrange(factor(.data[[names(items[1])]], levels = levels[1][[1]]),
+                     factor(.data[[names(items[2])]], levels = levels[2][[1]]),
+                     factor(.data[[names(items[3])]], levels = levels[3][[1]]))
+  }
+
+  df_sorted
+
+}
+
+
+#' Prefix to be used for item_cols in prepared_df
+#'
+#' So that the original column names can be kept while avoiding potential clashes with calculated columns
+#'
+#' @param x column names to prefix
+#' @noRd
+item_cols_prefix <- function(x){
+  paste0("item.", x)
+}
+
+#' Prefix to be removed from item_cols in prepared_df
+#'
+#' So that the original column names can be kept while avoiding potential clashes with calculated columns
+#'
+#' @param x column names to remove prefix from
+#' @noRd
+item_cols_unprefix <- function(x){
+  sub("^item.", "", x)
 }

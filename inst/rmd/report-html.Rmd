@@ -35,9 +35,9 @@ Report created on: `r Sys.time()` ; mantis version `r utils::packageVersion(util
 </p>
 
 ```{r initialise}
-is_grouped <- !is.null(params$inputspec$tab_col)
+has_tabs <- !is.null(params$inputspec$tab_col)
 is_interactive <- is_outputspec_interactive(params$outputspec)
-requires_refresh <- is_grouped && is_interactive
+requires_refresh <- has_tabs && is_interactive
 
 # NOTE: can't modify chunk options within a chunk to get different fig heights
 # (https://github.com/yihui/knitr/issues/841) so have to make static plots consistent for all tabs
@@ -52,16 +52,6 @@ if (is.null(fig_height)){
 
 #  {.tabset .tabset-pills}
 
-```{r, results='asis', eval=!is_grouped, fig.height=fig_height}
-
-construct_rmd_tab_item(
-    params$df,
-    inputspec = params$inputspec,
-    outputspec = params$outputspec,
-    alert_rules = params$alert_rules
-  )
-
-```
 
 ```{js, eval=requires_refresh}
 // when browser window is resized, all dygraphs on inactive tabs disappear. Reload page to redraw them all.
@@ -69,10 +59,10 @@ construct_rmd_tab_item(
 window.onresize = function(){ location.reload(); }
 ```
 
-```{r, results='asis', eval=is_grouped, fig.height=fig_height}
-construct_rmd_tab_group(
+```{r, results='asis', fig.height=fig_height}
+construct_rmd_tab(
   df = params$df,
-  tab_group_level = 0,
+  tab_level = 1,
   inputspec = params$inputspec,
   outputspec = params$outputspec,
   alert_rules = params$alert_rules

@@ -55,16 +55,15 @@ test_that("validate_params_type() checks timepoint_col params are of correct typ
                class = "invalid_param_type")
 })
 
-test_that("validate_params_type() checks item_col params are of correct type", {
-  expect_silent(testfn_params_type(item_col = "col1"))
+test_that("validate_params_type() checks item_cols params are of correct type", {
+  expect_silent(testfn_params_type(item_cols = "col1"))
+  expect_silent(testfn_params_type(item_cols = c("col1", "col2")))
 
-  expect_error(testfn_params_type(item_col = ""),
+  expect_error(testfn_params_type(item_cols = ""),
                class = "invalid_param_type")
-  expect_error(testfn_params_type(item_col = NULL),
+  expect_error(testfn_params_type(item_cols = NULL),
                class = "invalid_param_type")
-  expect_error(testfn_params_type(item_col = 123),
-               class = "invalid_param_type")
-  expect_error(testfn_params_type(item_col = c("col1", "col2")),
+  expect_error(testfn_params_type(item_cols = 123),
                class = "invalid_param_type")
 })
 
@@ -113,10 +112,9 @@ test_that("validate_params_type() checks plot_label params are of correct type",
 test_that("validate_params_type() checks item_label params are of correct type", {
   expect_silent(testfn_params_type(item_label = ""))
   expect_silent(testfn_params_type(item_label = NULL))
+  expect_silent(testfn_params_type(item_label = c("col1", "col2")))
 
   expect_error(testfn_params_type(item_label = 123),
-               class = "invalid_param_type")
-  expect_error(testfn_params_type(item_label = c("col1", "col2")),
                class = "invalid_param_type")
 })
 
@@ -273,15 +271,27 @@ test_that("validate_params_type() checks period params are of correct type", {
                class = "invalid_param_type")
 })
 
-test_that("validate_params_type() checks item_order params are either TRUE or all strings", {
-  expect_silent(testfn_params_type(item_order = "a"))
-  expect_silent(testfn_params_type(item_order = c("a", "b")))
-  expect_silent(testfn_params_type(item_order = TRUE))
+test_that("validate_params_type() checks item_order params are a named list containing either TRUE or a vector of strings", {
   expect_silent(testfn_params_type(item_order = NULL))
+  expect_silent(testfn_params_type(item_order = list("a" = "a")))
+  expect_silent(testfn_params_type(item_order = list("b" = c("a", "b"))))
+  expect_silent(testfn_params_type(item_order = list("a" = TRUE)))
+  expect_silent(testfn_params_type(item_order = list("a" = TRUE, "b" = c("a", "b"))))
 
-  expect_error(testfn_params_type(item_order = FALSE),
+  # not a list
+  expect_error(testfn_params_type(item_order = TRUE),
                class = "invalid_param_type")
-  expect_error(testfn_params_type(item_order = 1:3),
+  # not a list
+  expect_error(testfn_params_type(item_order = c("a", "b")),
+               class = "invalid_param_type")
+  # non-char vector
+  expect_error(testfn_params_type(item_order = list("a" = 1:3)),
+               class = "invalid_param_type")
+  # unnamed list
+  expect_error(testfn_params_type(item_order = list("a")),
+               class = "invalid_param_type")
+  # unnamed list
+  expect_error(testfn_params_type(item_order = list(c("a", "b"))),
                class = "invalid_param_type")
 })
 
@@ -389,18 +399,6 @@ test_that("validate_params_type() checks tab_group_name params are of correct ty
                class = "invalid_param_type")
 })
 
-test_that("validate_params_type() checks tab_order params are either TRUE or all strings", {
-  expect_silent(testfn_params_type(tab_order = "a"))
-  expect_silent(testfn_params_type(tab_order = c("a", "b")))
-  expect_silent(testfn_params_type(tab_order = TRUE))
-  expect_silent(testfn_params_type(tab_order = NULL))
-
-  expect_error(testfn_params_type(tab_order = FALSE),
-               class = "invalid_param_type")
-  expect_error(testfn_params_type(tab_order = 1:3),
-               class = "invalid_param_type")
-})
-
 test_that("validate_params_type() checks tab_level params are of correct type", {
   expect_silent(testfn_params_type(tab_level = 1))
   expect_silent(testfn_params_type(tab_level = 5))
@@ -490,13 +488,16 @@ test_that("validate_params_type() checks rule_value params are of correct type",
 test_that("validate_params_type() checks items params contain valid values", {
   # NOTE: if they provide values that don't exist in the data, just ignore them, as you may want to
   # supply a standard superset for everything
-  expect_silent(testfn_params_type(items = "[ALL]"))
-  expect_silent(testfn_params_type(items = c("this", "that")))
   expect_silent(testfn_params_type(items = NULL))
+  expect_silent(testfn_params_type(items = list("item1" = c("this", "that"))))
+  expect_silent(testfn_params_type(items = list("item1" = c("this", "that"),
+                                                "item2" = "theother")))
 
   expect_error(testfn_params_type(items = FALSE),
                class = "invalid_param_type")
   expect_error(testfn_params_type(items = 1:3),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(items = list(c("this", "that"))),
                class = "invalid_param_type")
 })
 
@@ -559,7 +560,7 @@ test_that("validate_params_required() works with package prefix", {
 
 # See https://github.com/ropensci/daiquiri/issues/10
 test_that("validate_params_type() works with package prefix", {
-  expect_error(mantis::inputspec(timepoint_col = 1, item_col = "a", value_col = "b"),
+  expect_error(mantis::inputspec(timepoint_col = 1, item_cols = "a", value_col = "b"),
                class = "invalid_param_type")
 })
 

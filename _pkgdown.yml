@@ -1,6 +1,8 @@
 url: ~
 template:
   bootstrap: 5
+development:
+  mode: auto
 
 navbar:
   structure:
@@ -52,8 +54,7 @@ reference:
 - title: Creating a bespoke report
   contents:
   - bespoke_rmd_initialise_widgets
-  - bespoke_rmd_tab_group
-  - bespoke_rmd_tab_item
+  - bespoke_rmd_tab
 
 - title: internal
   contents:

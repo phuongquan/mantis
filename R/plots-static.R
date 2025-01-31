@@ -2,11 +2,13 @@
 #' Create a heatmap showing the value across all items
 #'
 #' @param prepared_df data frame returned from prepare_df()
+#' @param inputspec Specification of data in df
 #' @param fill_colour colour to use for the tiles
 #' @param y_label string for y-axis label. Optional
 #' @return ggplot
 #' @noRd
 plot_heatmap_static <- function(prepared_df,
+                                inputspec,
                                 fill_colour = "blue",
                                 y_label = NULL) {
 
@@ -17,8 +19,19 @@ plot_heatmap_static <- function(prepared_df,
     return(empty_plot_static())
   }
 
+  # if an item_col is used for a tabset, move it to the y_label
+  item_cols_plot <- base::setdiff(inputspec$item_cols, inputspec$tab_col)
+  if (is.null(y_label)){
+    y_label <- paste0(item_cols_plot, collapse = " - ")
+    if (!is.null(inputspec$tab_col)){
+      current_tab <- prepared_df[item_cols_prefix(inputspec$tab_col)][[1]][1]
+      y_label <- paste(y_label, current_tab, sep = " - ")
+    }
+  }
   data <- prepared_df |>
-    dplyr::mutate(item = factor(item, levels = unique(prepared_df$item)))
+    # combine item_cols into single variable
+    tidyr::unite(col = "item", dplyr::all_of(item_cols_prefix(item_cols_plot)), sep = " - ") |>
+    dplyr::mutate(item = factor(item, levels = unique(item)))
 
   # when the only values are zero, make sure the fill colour is white (as
   # geom_tile uses the 'high' colour)
@@ -85,12 +98,14 @@ plot_heatmap_static <- function(prepared_df,
 #' Currently only creates scatter plots
 #'
 #' @param prepared_df data frame returned from prepare_df()
+#' @param inputspec Specification of data in df
 #' @param sync_axis_range Set the y-axis to be the same range for all the plots.
 #'   X-axes are always synced.
 #' @param y_label string for y-axis label. Optional
 #' @return ggplot
 #' @noRd
 plot_multipanel_static <- function(prepared_df,
+                                   inputspec,
                                    sync_axis_range = FALSE,
                                    y_label = NULL) {
 
@@ -101,8 +116,23 @@ plot_multipanel_static <- function(prepared_df,
     return(empty_plot_static())
   }
 
+  # if the item_col is used for a tabset, move it to the y_label
+  item_cols_plot <- base::setdiff(inputspec$item_cols, inputspec$tab_col)
+  if (is.null(y_label)){
+    y_label <- paste0(item_cols_plot, collapse = " - ")
+    if (!is.null(inputspec$tab_col)){
+      current_tab <- prepared_df[item_cols_prefix(inputspec$tab_col)][[1]][1]
+      y_label <- paste(y_label, current_tab, sep = " - ")
+    }
+  }
   data <- prepared_df |>
-    dplyr::mutate(item = factor(item, levels = unique(prepared_df$item)))
+#    dplyr::filter(item.Location == "SITE1") |>
+  # combine item_cols into single variable
+    tidyr::unite(col = "item", dplyr::all_of(item_cols_prefix(item_cols_plot)), sep = " - ") |>
+    dplyr::mutate(item = factor(item, levels = unique(item)))
+
+
+
 
   g <-
     ggplot2::ggplot(
@@ -115,8 +145,10 @@ plot_multipanel_static <- function(prepared_df,
       labels = scales::label_date_short(sep = " "),
       expand = c(0, 0)
     ) +
+    # TODO: try to place scale on right but axis label on left
+    # secondary axis errors when some panels are all NAs
     ggplot2::scale_y_continuous(
-      position = "right",
+      position = "right"
     ) +
     ggplot2::labs(
       y = y_label,
@@ -132,7 +164,7 @@ plot_multipanel_static <- function(prepared_df,
       panel.grid.minor = ggplot2::element_blank(),
       # format facet labels
       strip.background = ggplot2::element_blank(),
-      strip.text.y.left = ggplot2::element_text(angle = 0),
+      strip.text.y.left = ggplot2::element_text(angle = 0, hjust = 1),
       # add borders to the bars
       panel.border = ggplot2::element_rect(
         colour = "darkgrey",
@@ -149,7 +181,6 @@ plot_multipanel_static <- function(prepared_df,
         size = 7
       ),
       axis.text.y = ggplot2::element_text(size = 7),
-      plot.title = ggplot2::element_text(size = 8, face = "bold", hjust = 0.5),
       legend.position = "none",
     )
 

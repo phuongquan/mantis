@@ -323,7 +323,7 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df", {
 
   results <- mantis_alerts(df,
                            inputspec = inputspec(timepoint_col = "timepoint",
-                                                 item_col = "item",
+                                                 item_cols = "item",
                                                  value_col = "value"),
                            alert_rules = alert_rules(alert_missing()),
                            timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
@@ -340,7 +340,7 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df with tab_
 
   results <- mantis_alerts(df,
                            inputspec = inputspec(timepoint_col = "timepoint",
-                                                 item_col = "item",
+                                                 item_cols = c("item", "tab"),
                                                  value_col = "value",
                                                  tab_col = "tab"),
                            alert_rules = alert_rules(alert_missing()),
@@ -349,3 +349,170 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df with tab_
 
   expect_equal(nrow(results), 0)
 })
+
+
+test_that("restrict_items() doesn't filter prepared_df when no items specified", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 6),
+                   item1 = c(rep("a", 20), rep("b", 20), rep("c", 20)),
+                   item2 = rep(c(rep("x", 10), rep("y", 10)), 3),
+                   item3 = c(rep("one", 40), rep("two", 20)),
+                   value = rep(3, 60),
+                   stringsAsFactors = FALSE)
+
+  inputspec <- inputspec(
+    timepoint_col = "timepoint",
+    item_cols = c("item1", "item2", "item3"),
+    value_col = "value"
+  )
+
+  prepared_df <-
+    prepare_df(
+      df,
+      inputspec
+    )
+
+  expect_equal(
+    prepared_df |>
+      restrict_items(items = NULL) |>
+      nrow(),
+    nrow(prepared_df)
+  )
+
+})
+
+test_that("restrict_items() filters prepared_df items correctly when items are specified", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 6),
+                   item1 = c(rep("a", 20), rep("b", 20), rep("c", 20)),
+                   item2 = rep(c(rep("x", 10), rep("y", 10)), 3),
+                   item3 = c(rep("one", 40), rep("two", 20)),
+                   value = rep(3, 60),
+                   stringsAsFactors = FALSE)
+
+  inputspec <- inputspec(
+    timepoint_col = "timepoint",
+    item_cols = c("item1", "item2", "item3"),
+    value_col = "value"
+  )
+
+  prepared_df <-
+    prepare_df(
+      df,
+      inputspec
+    )
+
+  # filter on item1 only
+  expect_equal(
+    prepared_df |>
+      restrict_items(items = list("item1" = c("b", "c"))) |>
+      dplyr::pull(.data[[item_cols_prefix("item1")]]) |>
+      unique(),
+    c("b", "c")
+  )
+
+  # filter on item1 AND item2 (two expectations)
+  expect_equal(
+    prepared_df |>
+      restrict_items(items = list("item1" = c("b", "c"), "item2" = "x")) |>
+      dplyr::pull(.data[[item_cols_prefix("item1")]]) |>
+      unique(),
+    c("b", "c")
+  )
+  expect_equal(
+    prepared_df |>
+      restrict_items(items = list("item1" = c("b", "c"), "item2" = "x")) |>
+      dplyr::pull(.data[[item_cols_prefix("item2")]]) |>
+      unique(),
+    c("x")
+  )
+
+})
+
+test_that("alert_rules items can be left unspecified", {
+
+  inputspec <- inputspec(
+    timepoint_col = "timepoint",
+    item_cols = c("item1", "item2"),
+    value_col = "value"
+  )
+
+  expect_silent(
+    validate_alert_rules_to_inputspec(alert_rules = NULL,
+                                      inputspec = inputspec)
+  )
+
+  expect_silent(
+    validate_alert_rules_to_inputspec(
+      alert_rules = alert_rules(alert_missing()),
+      inputspec = inputspec
+    )
+  )
+
+})
+
+test_that("alert_rules items must match item_cols when specified", {
+
+  inputspec <- inputspec(
+    timepoint_col = "timepoint",
+    item_cols = c("item1", "item2"),
+    value_col = "value"
+  )
+
+  # one good item
+  expect_silent(
+    validate_alert_rules_to_inputspec(
+      alert_rules = alert_rules(
+        alert_missing(items = list("item1" = "a"))
+      ),
+      inputspec = inputspec
+    )
+  )
+
+  # one bad item
+  expect_error(
+    validate_alert_rules_to_inputspec(
+      alert_rules = alert_rules(
+        alert_missing(items = list("otheritem" = "a"))
+      ),
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+  # one good one bad item in separate rules
+  expect_error(
+    validate_alert_rules_to_inputspec(
+      alert_rules = alert_rules(
+        alert_missing(items = list("item1" = "a")),
+        alert_below(rule_value = 0,
+                    items = list("otheritem" = "z"))
+      ),
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+  # one good one bad item in same rule
+  expect_error(
+    validate_alert_rules_to_inputspec(
+      alert_rules = alert_rules(
+        alert_missing(items = list("item1" = "a",
+                                   "otheritem" = "z"))
+      ),
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+  # two items with same name in separate rules
+  expect_silent(
+    validate_alert_rules_to_inputspec(
+      alert_rules = alert_rules(
+        alert_missing(items = list("item1" = "a")),
+        alert_below(rule_value = 0,
+                    items = list("item1" = "z"))
+      ),
+      inputspec = inputspec
+    )
+  )
+
+  })

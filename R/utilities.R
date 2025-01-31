@@ -178,7 +178,6 @@ validate_param_byname <- function(param_name, param_value){
     "tab_name" = ,
     "dataset_description" = ,
     "report_title" = ,
-    "item_label" = ,
     "y_label" = ,
     "plot_label" = validate_param(
       param_name = param_name,
@@ -192,7 +191,6 @@ validate_param_byname <- function(param_name, param_value){
     "description" = ,
     "fill_colour" = ,
     "timepoint_col" = ,
-    "item_col" = ,
     "value_col" = validate_param(
       param_name = param_name,
       param_value = param_value,
@@ -202,6 +200,17 @@ validate_param_byname <- function(param_name, param_value){
         is.character(x) && nchar(x) > 0
       },
       error_message = "Expected a non-empty character string",
+      error_contents_max_length = 100
+    ),
+    "item_cols" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = FALSE,
+      expect_scalar = FALSE,
+      validation_function = function(x) {
+        all(is.character(x)) && all(nchar(x) > 0)
+      },
+      error_message = "Expected a vector of non-empty character strings",
       error_contents_max_length = 100
     ),
     "tab_col" = validate_param(
@@ -268,21 +277,38 @@ validate_param_byname <- function(param_name, param_value){
       error_message = 'Expected a subset of c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")',
       error_contents_max_length = 500
     ),
-    "tab_order" = ,
     "item_order" = validate_param(
       param_name = param_name,
       param_value = param_value,
       allow_null = TRUE,
       expect_scalar = FALSE,
       validation_function = function(x) {
-        (length(x) == 1 && x == TRUE) || is.character(x)
+        all(is.list(x),
+            length(names(x)) == length(x),
+            unlist(lapply(x,
+                          function(x) {
+                            (length(x) == 1 && x == TRUE) || is.character(x)
+                          })))
       },
-      error_message = "Expected either TRUE or a vector of character strings",
+      error_message = "Expected a named list with each item either TRUE or a vector of character strings",
+      error_contents_max_length = 500
+    ),
+    "items" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = TRUE,
+      expect_scalar = FALSE,
+      validation_function = function(x) {
+        all(is.list(x),
+            length(names(x)) == length(x),
+            unlist(lapply(x, is.character)))
+      },
+      error_message = "Expected a named list with each item a vector of character strings",
       error_contents_max_length = 500
     ),
     # NOTE: if they provide values that don't exist in the data, just ignore them, as you may want to
     # supply a standard superset for everything
-    "items" = ,
+    "item_label" = ,
     "sort_by" = validate_param(
       param_name = param_name,
       param_value = param_value,
@@ -500,14 +526,14 @@ testfn_params_type <- function(df,
                                save_filename = "filename",
                                show_progress = TRUE,
                                timepoint_col = "timepoint_col",
-                               item_col = "item_col",
+                               item_cols = "item_cols",
                                value_col = "value_col",
                                tab_col = NULL,
                                period = "day",
                                plot_value_type = "value",
                                plot_type = "bar",
-                               item_label = "Item",
-                               plot_label = "History",
+                               item_label = NULL,
+                               plot_label = NULL,
                                summary_cols = c("max_value"),
                                sync_axis_range = FALSE,
                                item_order = NULL,
@@ -525,7 +551,7 @@ testfn_params_type <- function(df,
                                extent_type = "all",
                                extent_value = 1,
                                rule_value = 0,
-                               items = "[ALL]",
+                               items = NULL,
                                current_period = 1:3,
                                previous_period = 4:9,
                                short_name = "my_rule",
@@ -561,7 +587,7 @@ testfn_params_type <- function(df,
     save_filename = save_filename,
     show_progress = show_progress,
     timepoint_col = timepoint_col,
-    item_col = item_col,
+    item_cols = item_cols,
     value_col = value_col,
     tab_col = tab_col,
     period = period,

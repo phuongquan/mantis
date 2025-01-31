@@ -7,8 +7,8 @@
 outputspec_interactive(
   plot_value_type = "value",
   plot_type = "bar",
-  item_label = "Item",
-  plot_label = "History",
+  item_label = NULL,
+  plot_label = NULL,
   summary_cols = c("max_value"),
   sync_axis_range = FALSE,
   item_order = NULL,
@@ -21,9 +21,9 @@ outputspec_interactive(
 
 \item{plot_type}{Display the time series as a "\code{bar}" or "\code{line}" chart.}
 
-\item{item_label}{String label to use for the "item" column in the report.}
+\item{item_label}{String label(s) to use for the "item" column(s) in the report. If NULL, the original columns name(s) will be used.}
 
-\item{plot_label}{String label to use for the time series column in the report.}
+\item{plot_label}{String label to use for the time series column in the report. If NULL, the original \code{value_col} name will be used.}
 
 \item{summary_cols}{Summary data to include as columns in the report. Options are
 \code{c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")}.}
@@ -31,12 +31,12 @@ outputspec_interactive(
 \item{sync_axis_range}{Set the y-axis to be the same range for all time series in a table.
 X-axes are always synced.}
 
-\item{item_order}{vector of values contained in item_col, for explicitly ordering the items in
-the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-will be used.}
+\item{item_order}{named list corresponding to \code{item_cols} columns for ordering the
+items in the output. List values are either \code{TRUE} for ascending order, or a character vector
+of values contained in the named column for explicit ordering. If \code{item_order = NULL}, the
+original order will be kept. See Details.}
 
-\item{sort_by}{column in output table to sort by. Can be one of \code{item}, \code{alert_overall}, or one
+\item{sort_by}{column in output table to sort by. Can be one of \code{alert_overall}, or one
 of the summary columns. Append a minus sign to sort in descending order e.g. \code{-max_value}.
 Secondary ordering will be based on \code{item_order}.}
 }
@@ -46,3 +46,13 @@ An \code{outputspec()} object
 \description{
 Specify output options for the report
 }
+\section{Details}{
+ For \code{item_order}, the names of the list members should correspond to the column
+names in the \code{df}. Any names that don't match will be ignored. When multiple columns are
+specified, they are sorted together, in the same priority order as the list. If a list item is \code{TRUE}
+then that column is sorted in ascending order. If a list item is a character vector then that
+column is sorted in the order of the vector first, with any remaining values included
+alphabetically at the end. If you want to order the tabs, it is recommended to put the \code{tab_col}
+as the first item in the list.
+}
+

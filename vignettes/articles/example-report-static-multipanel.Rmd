@@ -11,26 +11,27 @@ knitr::opts_chunk$set(
 ```
 
 ```{r generate-report}
-example_prescription_numbers <- mantis::example_prescription_numbers
-
-filename <- 
-  mantis::mantis_report(
-  df = example_prescription_numbers,
-  inputspec = mantis::inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_col = "Antibiotic",
-    value_col = "NumberOfPrescriptions",
-    tab_col = "Location"
-  ),
-  outputspec = mantis::outputspec_static_multipanel(
-    y_label = "Antibiotic"
-  ),
-  report_title = "Example mantis report - multipanel",
-  dataset_description = "Antibiotic prescriptions by site",
-  save_directory = "../../docs/articles",
-  save_filename = "example-prescriptions-static-multipanel",
-  show_progress = FALSE
-)
+# only generate it if this is a release version
+if(length(unlist(strsplit(as.character(utils::packageVersion("mantis")), "[.]"))) < 4){
+  example_prescription_numbers <- mantis::example_prescription_numbers
+  
+  filename <- 
+    mantis::mantis_report(
+    df = example_prescription_numbers,
+    inputspec = mantis::inputspec(
+      timepoint_col = "PrescriptionDate",
+      item_cols = c("Antibiotic", "Location"),
+      value_col = "NumberOfPrescriptions",
+      tab_col = "Location"
+    ),
+    outputspec = mantis::outputspec_static_multipanel(),
+    report_title = "Example mantis report - multipanel",
+    dataset_description = "Antibiotic prescriptions by site",
+    save_directory = "../../docs/articles",
+    save_filename = "example-prescriptions-static-multipanel",
+    show_progress = FALSE
+  )
+}
 
 ```
 

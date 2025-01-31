@@ -16,10 +16,10 @@ X-axes are always synced.}
 
 \item{y_label}{string for y-axis label. Optional}
 
-\item{item_order}{vector of values contained in item_col, for explicitly ordering the items in
-the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-will be used.}
+\item{item_order}{named list corresponding to \code{item_cols} columns for ordering the
+items in the output. List values are either \code{TRUE} for ascending order, or a character vector
+of values contained in the named column for explicit ordering. If \code{item_order = NULL}, the
+original order will be kept. See Details.}
 }
 \value{
 An \code{outputspec()} object
@@ -27,3 +27,13 @@ An \code{outputspec()} object
 \description{
 Currently only creates scatter plots
 }
+\section{Details}{
+ For \code{item_order}, the names of the list members should correspond to the column
+names in the \code{df}. Any names that don't match will be ignored. When multiple columns are
+specified, they are sorted together, in the same priority order as the list. If a list item is \code{TRUE}
+then that column is sorted in ascending order. If a list item is a character vector then that
+column is sorted in the order of the vector first, with any remaining values included
+alphabetically at the end. If you want to order the tabs, it is recommended to put the \code{tab_col}
+as the first item in the list.
+}
+

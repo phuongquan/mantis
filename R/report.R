@@ -60,6 +60,7 @@ mantis_report <- function(df,
   )
 
   validate_df_to_inputspec(df, inputspec)
+  validate_alert_rules_to_inputspec(alert_rules, inputspec)
 
   timestamp_string <- format(Sys.time(), "%Y%m%d%_%H%M%S")
 
