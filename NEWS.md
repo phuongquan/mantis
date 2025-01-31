@@ -1,3 +1,16 @@
+# mantis (development version)
+
+Breaking changes
+
+* `inputspec()` now takes a `item_cols` parameter, allowing more than one column in the df to define individual time series, and must include the column being used for tabs (if any).
+* `items` parameter of alert rules now takes a list of items
+* `item_order` parameter of `outputspec()` now takes a list of items, and allows ordering of tabs
+* `bespoke_rmd_tab()` replaces `bespoke_rmd_tab_group()` and `bespoke_rmd_tab_item()`
+
+Other changes
+
+* example_prescription_numbers dataset now has additional data
+
 # mantis 0.1.2 (2025-01-15)
 
 Pre-release. Expect breaking changes to functions in the future.

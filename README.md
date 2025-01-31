@@ -12,9 +12,9 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 
 The mantis package generates interactive html reports that enable quick
 visual review of multiple related time series. This can help with
-identification of temporal artefacts and unexpected trends. Each group
-of time series is displayed together, with adjustable axes and tooltips
-showing the individual dates and values.
+identification of temporal artefacts and unexpected trends. The time
+series visualisations include adjustable axes and tooltips showing the
+individual dates and values.
 
 The data frame containing the time series should be in long format,
 i.e.:
@@ -22,15 +22,13 @@ i.e.:
 - one “timepoint” (date) column which will be used for the x-axes. This
   currently must be at a daily granularity, but values do not have to be
   consecutive.
-- one “item” (character) column containing categorical values
+- one or more “item” (character) columns containing categorical values
   identifying distinct time series.
 - one “value” (numeric) column containing the time series values which
   will be used for the y-axes.
-- Optionally, a “tab” (character) column containing categorical values
-  which will be used to group the time series into different tabs on the
-  report.
 
-The `inputspec` parameter maps the data frame columns to the above.
+The `inputspec` parameter maps the data frame columns to the above, and
+can optionally include a column for grouping the time series into tabs.
 
 The reports are shareable and can contribute to forming a transparent
 record of the entire analysis process. It is designed with electronic
@@ -56,15 +54,15 @@ data("example_prescription_numbers")
 head(example_prescription_numbers)
 ```
 
-    ## # A tibble: 6 × 4
-    ##   PrescriptionDate Antibiotic    NumberOfPrescriptions Location
-    ##   <date>           <chr>                         <dbl> <chr>   
-    ## 1 2022-01-01       Coamoxiclav                      45 SITE1   
-    ## 2 2022-01-01       Gentamicin                       44 SITE1   
-    ## 3 2022-01-01       Ceftriaxone                      26 SITE1   
-    ## 4 2022-01-01       Metronidazole                    22 SITE1   
-    ## 5 2022-01-01       Meropenem                         5 SITE1   
-    ## 6 2022-01-01       Vancomycin                        0 SITE1
+    ## # A tibble: 6 × 5
+    ##   PrescriptionDate Antibiotic    Spectrum NumberOfPrescriptions Location
+    ##   <date>           <chr>         <chr>                    <dbl> <chr>   
+    ## 1 2022-01-01       Coamoxiclav   Broad                       45 SITE1   
+    ## 2 2022-01-01       Gentamicin    Broad                       34 SITE1   
+    ## 3 2022-01-01       Ceftriaxone   Broad                       36 SITE1   
+    ## 4 2022-01-01       Metronidazole Limited                     17 SITE1   
+    ## 5 2022-01-01       Meropenem     Broad                       10 SITE1   
+    ## 6 2022-01-01       Vancomycin    Limited                      0 SITE1
 
 ``` r
 # create a report in the current directory
@@ -72,7 +70,7 @@ mantis_report(
   df = example_prescription_numbers,
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
-    item_col = "Antibiotic",
+    item_cols = c("Location", "Antibiotic", "Spectrum"),
     value_col = "NumberOfPrescriptions",
     tab_col = "Location"
   )
