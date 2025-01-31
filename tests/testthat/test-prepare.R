@@ -426,3 +426,65 @@ test_that("prepare_table() sorts by descending sort_by", {
                c("b", "c", "a"))
 
 })
+
+test_that("arrange_items() sorts by single item_order", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-09"), by = "days"), 3),
+                   item = c(rep("c", 9), rep("b", 9), rep("a", 9)),
+                   item2 = rep(c("z", "x", "y"), 9),
+                   value = rep(3, 27),
+                   stringsAsFactors = FALSE)
+
+  expect_equal(arrange_items(df, item_order = list("item" = TRUE)) |>
+                 dplyr::pull(item) |>
+                 unique(),
+               c("a", "b", "c"))
+
+  expect_equal(arrange_items(df, item_order = list("item" = "b")) |>
+                 dplyr::pull(item) |>
+                 unique(),
+               c("b", "a", "c"))
+
+})
+
+test_that("arrange_items() sorts by two item_orders", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-09"), by = "days"), 3),
+                   item = c(rep("c", 9), rep("b", 9), rep("a", 9)),
+                   item2 = rep(c("z", "x", "y"), 9),
+                   value = rep(3, 27),
+                   stringsAsFactors = FALSE)
+
+  expect_equal(
+    arrange_items(df, item_order = list("item" = TRUE, "item2" = TRUE)) |>
+      dplyr::select(item, item2),
+    data.frame(item = c(rep("a", 9), rep("b", 9), rep("c", 9)),
+               item2 = rep(c(rep("x", 3), rep("y", 3), rep("z", 3)), 3))
+  )
+
+  expect_equal(
+    arrange_items(df, item_order = list("item2" = TRUE, "item" = TRUE)) |>
+      dplyr::select(item, item2),
+    data.frame(item = rep(c(rep("a", 3), rep("b", 3), rep("c", 3)), 3),
+               item2 = c(rep("x", 9), rep("y", 9), rep("z", 9)))
+  )
+
+  expect_equal(
+    arrange_items(df, item_order = list("item2" = TRUE, "item" = "b")) |>
+      dplyr::select(item, item2),
+    data.frame(item = rep(c(rep("b", 3), rep("a", 3), rep("c", 3)), 3),
+               item2 = c(rep("x", 9), rep("y", 9), rep("z", 9)))
+  )
+
+  expect_equal(
+    arrange_items(df, item_order = list("item2" = TRUE, "item" = c("b", "c"))) |>
+      dplyr::select(item, item2),
+    data.frame(item = rep(c(rep("b", 3), rep("c", 3), rep("a", 3)), 3),
+               item2 = c(rep("x", 9), rep("y", 9), rep("z", 9)))
+  )
+
+  expect_equal(
+    arrange_items(df, item_order = list("item2" = c("x", "z"), "item" = c("b", "c"))) |>
+      dplyr::select(item, item2),
+    data.frame(item = rep(c(rep("b", 3), rep("c", 3), rep("a", 3)), 3),
+               item2 = c(rep("x", 9), rep("z", 9), rep("y", 9)))
+  )
+})

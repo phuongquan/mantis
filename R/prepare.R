@@ -776,39 +776,37 @@ arrange_items <- function(df, item_order = NULL){
   # keep only the items which match a column in the df
   items <- item_order[which(names(item_order) %in% names(df))]
 
-  df <-
-    df |>
-    # sort ascending on all named columns (if present) first
-    dplyr::arrange(dplyr::across(dplyr::any_of(names(items))))
-
-  # then sort by any named values
-  # TODO: DOESN'T WORK CORRECTLY WHEN FIRST ITEM IS TRUE AND SECOND ITEM IS A VECTOR
-  item_factors <- items[vapply(items, function(x){all(is.character(x))}, FUN.VALUE = TRUE)]
-  # this is super ugly but temporarily just limit it to 3 factors until find better way
-  if (length(item_factors) == 1){
-    df <-
-      df |>
-      dplyr::arrange(
-        factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]])
-      )
-  } else if (length(item_factors) == 2){
-    df <-
-      df |>
-      dplyr::arrange(
-        factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]]),
-        factor(.data[[names(item_factors)[2]]], levels = item_factors[2][[1]])
-      )
-  } else if (length(item_factors) == 3){
-    df <-
-      df |>
-      dplyr::arrange(
-        factor(.data[[names(item_factors)[1]]], levels = item_factors[1][[1]]),
-        factor(.data[[names(item_factors)[2]]], levels = item_factors[2][[1]]),
-        factor(.data[[names(item_factors)[3]]], levels = item_factors[3][[1]])
-      )
+  # explicitly note the levels for each item
+  levels <- items
+  for(i in seq_along(items)){
+    ascending <- sort(unique(df[names(items[i])][[1]]))
+    if(all(is.character(items[i][[1]]))){
+      levels[i][[1]] <- unique(c(items[i][[1]], ascending))
+    } else{
+      levels[i][[1]] <- ascending
+    }
   }
 
-  df
+  # sort using factors for all items, otherwise values not mentioned explicitly can get unsorted by subsequent items
+  # this is super ugly but temporarily just limit it to 3 items until find better way
+  if (length(items) == 1){
+    df_sorted <-
+      df |>
+      dplyr::arrange(factor(.data[[names(items[1])]], levels = levels[1][[1]]))
+  } else if (length(items) == 2){
+    df_sorted <-
+      df |>
+      dplyr::arrange(factor(.data[[names(items[1])]], levels = levels[1][[1]]),
+                     factor(.data[[names(items[2])]], levels = levels[2][[1]]))
+  } else if (length(items) == 3){
+    df_sorted <-
+      df |>
+      dplyr::arrange(factor(.data[[names(items[1])]], levels = levels[1][[1]]),
+                     factor(.data[[names(items[2])]], levels = levels[2][[1]]),
+                     factor(.data[[names(items[3])]], levels = levels[3][[1]]))
+  }
+
+  df_sorted
 
 }
 

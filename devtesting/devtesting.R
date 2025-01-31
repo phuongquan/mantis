@@ -112,7 +112,7 @@ item_order = list("Antibiotic" = TRUE)
 item_order = list("Other")
 item_order = list("Location" = c("SITE2"), "Antibiotic" = c("Vancomycin", "Linezolid"))
 item_order = list("Antibiotic" = c("Vancomycin", "Linezolid"), "Location" = c("SITE2"))
-item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
+item_order = list("Spectrum" = TRUE, "Antibiotic" = c("Vancomycin", "Coamoxiclav"))
 
 prepared_df<-
 prepare_df(

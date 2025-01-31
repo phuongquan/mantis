@@ -288,6 +288,9 @@ test_that("validate_params_type() checks item_order params are a named list cont
   expect_error(testfn_params_type(item_order = list("a" = 1:3)),
                class = "invalid_param_type")
   # unnamed list
+  expect_error(testfn_params_type(item_order = list("a")),
+               class = "invalid_param_type")
+  # unnamed list
   expect_error(testfn_params_type(item_order = list(c("a", "b"))),
                class = "invalid_param_type")
 })
