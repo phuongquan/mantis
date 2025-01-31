@@ -28,11 +28,12 @@ An \code{outputspec()} object
 Currently only creates scatter plots
 }
 \section{Details}{
- For \code{item_order}, the names of the list members should correspond to the
-\code{item_cols} columns previously specified in the \code{inputspec}. Any names that don't match will be
-ignored. When multiple columns are specified, they are sorted together, in the same order of
-priority as the list. If a list member is \code{TRUE} then that column is sorted in ascending order.
-If a list member is a character vector then that column is sorted in the order of the vector
-first, with any remaining values included alphabetically at the end.
+ For \code{item_order}, the names of the list members should correspond to the column
+names in the \code{df}. Any names that don't match will be ignored. When multiple columns are
+specified, they are sorted together, in the same priority order as the list. If a list item is \code{TRUE}
+then that column is sorted in ascending order. If a list item is a character vector then that
+column is sorted in the order of the vector first, with any remaining values included
+alphabetically at the end. If you want to order the tabs, it is recommended to put the \code{tab_col}
+as the first item in the list.
 }
 

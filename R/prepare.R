@@ -247,12 +247,13 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
 #'   Secondary ordering will be based on `item_order`.
 #'
-#' @section Details: For `item_order`, the names of the list members should correspond to the
-#'   `item_cols` columns previously specified in the `inputspec`. Any names that don't match will be
-#'   ignored. When multiple columns are specified, they are sorted together, in the same order of
-#'   priority as the list. If a list member is `TRUE` then that column is sorted in ascending order.
-#'   If a list member is a character vector then that column is sorted in the order of the vector
-#'   first, with any remaining values included alphabetically at the end.
+#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
+#'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
+#'  then that column is sorted in ascending order. If a list item is a character vector then that
+#'  column is sorted in the order of the vector first, with any remaining values included
+#'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
+#'  as the first item in the list.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -299,12 +300,13 @@ outputspec_interactive <- function(plot_value_type = "value",
 #'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
 #'   original order will be kept. See Details.
 #'
-#' @section Details: For `item_order`, the names of the list members should correspond to the
-#'   `item_cols` columns previously specified in the `inputspec`. Any names that don't match will be
-#'   ignored. When multiple columns are specified, they are sorted together, in the same order of
-#'   priority as the list. If a list member is `TRUE` then that column is sorted in ascending order.
-#'   If a list member is a character vector then that column is sorted in the order of the vector
-#'   first, with any remaining values included alphabetically at the end.
+#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
+#'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
+#'  then that column is sorted in ascending order. If a list item is a character vector then that
+#'  column is sorted in the order of the vector first, with any remaining values included
+#'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
+#'  as the first item in the list.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -332,12 +334,13 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 #'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
 #'   original order will be kept. See Details.
 #'
-#' @section Details: For `item_order`, the names of the list members should correspond to the
-#'   `item_cols` columns previously specified in the `inputspec`. Any names that don't match will be
-#'   ignored. When multiple columns are specified, they are sorted together, in the same order of
-#'   priority as the list. If a list member is `TRUE` then that column is sorted in ascending order.
-#'   If a list member is a character vector then that column is sorted in the order of the vector
-#'   first, with any remaining values included alphabetically at the end.
+#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
+#'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
+#'  then that column is sorted in ascending order. If a list item is a character vector then that
+#'  column is sorted in the order of the vector first, with any remaining values included
+#'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
+#'  as the first item in the list.
 #'
 #' @return An `outputspec()` object
 #' @export
@@ -760,10 +763,11 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
 #'
 #'@section Details: For `item_order`, the names of the list members should correspond to the column
 #'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
-#'  specified, they are sorted together, in the same order as the list. If a list item is `TRUE` then
-#'  that column is sorted in ascending order. If a list item is a character vector then that column
-#'  is sorted in the order of the vector first, with any remaining values included alphabetically at
-#'  the end
+#'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
+#'  then that column is sorted in ascending order. If a list item is a character vector then that
+#'  column is sorted in the order of the vector first, with any remaining values included
+#'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
+#'  as the first item in the list.
 #'
 #'@return data frame
 #'@noRd
