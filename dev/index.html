@@ -68,15 +68,14 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The mantis package generates interactive html reports that enable quick visual review of multiple related time series. This can help with identification of temporal artefacts and unexpected trends. Each group of time series is displayed together, with adjustable axes and tooltips showing the individual dates and values.</p>
+<p>The mantis package generates interactive html reports that enable quick visual review of multiple related time series. This can help with identification of temporal artefacts and unexpected trends. The time series visualisations include adjustable axes and tooltips showing the individual dates and values.</p>
 <p>The data frame containing the time series should be in long format, i.e.:</p>
 <ul>
 <li>one “timepoint” (date) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.</li>
-<li>one “item” (character) column containing categorical values identifying distinct time series.</li>
+<li>one or more “item” (character) columns containing categorical values identifying distinct time series.</li>
 <li>one “value” (numeric) column containing the time series values which will be used for the y-axes.</li>
-<li>Optionally, a “tab” (character) column containing categorical values which will be used to group the time series into different tabs on the report.</li>
 </ul>
-<p>The <code>inputspec</code> parameter maps the data frame columns to the above.</p>
+<p>The <code>inputspec</code> parameter maps the data frame columns to the above, and can optionally include a column for grouping the time series into tabs.</p>
 <p>The reports are shareable and can contribute to forming a transparent record of the entire analysis process. It is designed with electronic health records in mind, but can be used for any types of time series.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -97,22 +96,22 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_prescription_numbers"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">example_prescription_numbers</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="do">## # A tibble: 6 × 4</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="do">##   PrescriptionDate Antibiotic    NumberOfPrescriptions Location</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="do">##   &lt;date&gt;           &lt;chr&gt;                         &lt;dbl&gt; &lt;chr&gt;   </span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="do">## 1 2022-01-01       Coamoxiclav                      45 SITE1   </span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="do">## 2 2022-01-01       Gentamicin                       44 SITE1   </span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="do">## 3 2022-01-01       Ceftriaxone                      26 SITE1   </span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="do">## 4 2022-01-01       Metronidazole                    22 SITE1   </span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="do">## 5 2022-01-01       Meropenem                         5 SITE1   </span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="do">## 6 2022-01-01       Vancomycin                        0 SITE1</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="do">## # A tibble: 6 × 5</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="do">##   PrescriptionDate Antibiotic    Spectrum NumberOfPrescriptions Location</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="do">##   &lt;date&gt;           &lt;chr&gt;         &lt;chr&gt;                    &lt;dbl&gt; &lt;chr&gt;   </span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="do">## 1 2022-01-01       Coamoxiclav   Broad                       45 SITE1   </span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="do">## 2 2022-01-01       Gentamicin    Broad                       34 SITE1   </span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="do">## 3 2022-01-01       Ceftriaxone   Broad                       36 SITE1   </span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="do">## 4 2022-01-01       Metronidazole Limited                     17 SITE1   </span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="do">## 5 2022-01-01       Meropenem     Broad                       10 SITE1   </span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="do">## 6 2022-01-01       Vancomycin    Limited                      0 SITE1</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create a report in the current directory</span></span>
 <span><span class="fu"><a href="reference/mantis_report.html">mantis_report</a></span><span class="op">(</span></span>
 <span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
 <span>  inputspec <span class="op">=</span> <span class="fu"><a href="reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
 <span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
-<span>    item_col <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
+<span>    item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span><span class="op">)</span>,</span>
 <span>    value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
 <span>    tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
 <span>  <span class="op">)</span></span>
