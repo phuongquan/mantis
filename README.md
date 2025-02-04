@@ -37,9 +37,13 @@ health records in mind, but can be used for any types of time series.
 ## Installation
 
 ``` r
-# install direct from source
 # install.packages("remotes")
+
+# install the current development version
 remotes::install_github("phuongquan/mantis")
+
+# or install the latest release version
+#remotes::install_github("phuongquan/mantis@v0.1.2")
 ```
 
 ## Usage
