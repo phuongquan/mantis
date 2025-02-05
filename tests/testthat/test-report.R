@@ -303,3 +303,41 @@ test_that("mantis_report() creates multi-item_cols interactive report and return
   expect_true(file.remove(reportpath))
 })
 
+
+test_that("mantis_report() creates interactive report with spaces in item_cols names", {
+  df <- data.frame("m timepoint" = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+                   "m item" = c(rep("a", 10), rep("b", 10), rep("c", 10)),
+                   "m value" = rep(3, 30),
+                   "m tab" = c(rep("one", 20), rep("two", 10)),
+                   check.names = FALSE,
+                   stringsAsFactors = FALSE)
+
+  reportpath <-
+    mantis_report(
+      df,
+      inputspec = inputspec(timepoint_col = "m timepoint",
+                            item_cols = c("m item", "m tab"),
+                            value_col = "m value",
+                            tab_col = "m tab"),
+      outputspec = outputspec_interactive(),
+      alert_rules = alert_rules(
+        alert_missing(
+          extent_type = "all",
+          items = list("m item" = c("b", "c"))
+        ),
+        alert_above(
+          extent_type = "any",
+          extent_value = 1,
+          rule_value = 5,
+          items = list("m item" = c("b", "c"))
+        )
+      ),
+      show_progress = FALSE
+    )
+
+  expect_type(reportpath, "character")
+
+  # clean up
+  expect_true(file.remove(reportpath))
+})
+

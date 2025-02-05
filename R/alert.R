@@ -789,7 +789,7 @@ items_list_to_condition_str <- function(items = NULL){
   condition_str <-
     paste(mapply(
       FUN = function(x, y) {
-        paste0(item_cols_prefix(x),
+        paste0("`", item_cols_prefix(x), "`",
                " %in% c('",
                paste(y, collapse = "', '"),
                "') ")

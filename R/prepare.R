@@ -466,7 +466,7 @@ align_data_timepoints <-
     prepared_df |>
     tidyr::pivot_wider(names_from = dplyr::all_of(item_cols_prepared),
                        values_from = value,
-                       names_glue = paste0("piv_{", paste(item_cols_prepared, collapse = "}:~:{"), "}")) |>
+                       names_glue = paste0("piv_{`", paste(item_cols_prepared, collapse = "`}:~:{`"), "`}")) |>
     # insert any missing timepoint values
     dplyr::full_join(data.frame("timepoint" = all_timepoints), by = "timepoint") |>
     # restrict to specified limits
