@@ -246,6 +246,482 @@ test_that("validate_df_to_inputspec() checks that timepoint column doesn't conta
   )
 })
 
+
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'day'", {
+  inputspec <- inputspec(timepoint_col = "timepoint",
+                        item_cols = "item",
+                        value_col = "value",
+                        period = "day")
+
+  # good types
+  df <- data.frame(timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+                        item = rep(1, 10),
+                        value = rep(3, 10),
+                        stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+      )
+  )
+
+
+  # with time portion (POSIXct)
+  df <- data.frame(timepoint = seq(as.POSIXct("2022-01-01 12:00:00"), as.POSIXct("2022-01-10 12:00:00"), by = "days"),
+                         item = rep(1, 10),
+                         value = rep(3, 10),
+                         stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+  # with time portion (POSIXlt)
+  df <- data.frame(timepoint = seq(as.POSIXlt("2022-01-01 12:00:00"), as.POSIXlt("2022-01-10 12:00:00"), by = "days"),
+                         item = rep(1, 10),
+                         value = rep(3, 10),
+                         stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+
+  # bad types
+  # different time each day
+  df <- data.frame(timepoint = c(as.POSIXlt("2022-01-01 12:00:00"),
+                                        as.POSIXlt("2022-01-02 13:00:00"),
+                                        as.POSIXlt("2022-01-10 16:00:00")),
+                          item = rep(1, 3),
+                          value = rep(3, 3),
+                          stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+})
+
+
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'week'", {
+  inputspec <- inputspec(timepoint_col = "timepoint",
+                         item_cols = "item",
+                         value_col = "value",
+                         period = "week")
+
+  # good types
+  df <- data.frame(timepoint = seq(as.Date("2022-01-01"), as.Date("2022-03-05"), by = "week"),
+                   item = rep(1, 10),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+  # with gaps
+  df <- data.frame(timepoint = c(as.Date("2022-01-01"),
+                                 as.Date("2022-01-15"),
+                                 as.Date("2022-01-22")),
+                   item = rep(1, 3),
+                   value = rep(3, 3),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+  # with time portion
+  df <- data.frame(timepoint = seq(as.POSIXct("2022-01-01 12:00:00"), as.POSIXct("2022-03-05 12:00:00"), by = "week"),
+                   item = rep(1, 10),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+
+  # bad types
+  # different time each day
+  df <- data.frame(timepoint = c(as.POSIXlt("2022-01-01 12:00:00"),
+                                        as.POSIXlt("2022-01-08 13:00:00"),
+                                        as.POSIXlt("2022-01-15 16:00:00")),
+                          item = rep(1, 3),
+                          value = rep(3, 3),
+                          stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+  # nonweekly
+  df <- data.frame(timepoint = c(as.Date("2022-01-01"),
+                                 as.Date("2022-01-09"),
+                                 as.Date("2022-01-15")),
+                   item = rep(1, 3),
+                   value = rep(3, 3),
+                   stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+})
+
+
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'month'", {
+  inputspec <- inputspec(timepoint_col = "timepoint",
+                         item_cols = "item",
+                         value_col = "value",
+                         period = "month")
+
+  # good types
+  df <- data.frame(timepoint = seq(as.Date("2022-01-02"), as.Date("2022-10-02"), by = "month"),
+                   item = rep(1, 10),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+  # with time portion
+  df <- data.frame(timepoint = seq(as.POSIXct("2022-01-02 12:00:00"), as.POSIXct("2022-10-02 12:00:00"), by = "month"),
+                   item = rep(1, 10),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+
+  # bad types
+  # different time each day
+  df <- data.frame(timepoint = c(as.POSIXlt("2022-01-01 12:00:00"),
+                                 as.POSIXlt("2022-02-01 13:00:00"),
+                                 as.POSIXlt("2022-03-01 16:00:00")),
+                   item = rep(1, 3),
+                   value = rep(3, 3),
+                   stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+  # nonmonthly
+  df <- data.frame(timepoint = c(as.Date("2022-01-01"),
+                                 as.Date("2022-01-09"),
+                                 as.Date("2022-01-15")),
+                   item = rep(1, 3),
+                   value = rep(3, 3),
+                   stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+})
+
+
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'quarter'", {
+  inputspec <- inputspec(timepoint_col = "timepoint",
+                         item_cols = "item",
+                         value_col = "value",
+                         period = "quarter")
+
+  # good types
+  df <- data.frame(timepoint = seq(as.Date("2022-01-02"), as.Date("2024-04-02"), by = "quarter"),
+                   item = rep(1, 10),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+  # with time portion
+  df <- data.frame(timepoint = seq(as.POSIXct("2022-01-02 12:00:00"), as.POSIXct("2024-04-02 12:00:00"), by = "quarter"),
+                   item = rep(1, 10),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+
+  # bad types
+  # different time each day
+  df <- data.frame(timepoint = c(as.POSIXlt("2022-01-01 12:00:00"),
+                                 as.POSIXlt("2022-04-01 13:00:00"),
+                                 as.POSIXlt("2022-07-01 16:00:00")),
+                   item = rep(1, 3),
+                   value = rep(3, 3),
+                   stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+  # nonquarterly
+  df <- data.frame(timepoint = c(as.Date("2022-01-01"),
+                                 as.Date("2022-05-02"),
+                                 as.Date("2022-06-01")),
+                   item = rep(1, 3),
+                   value = rep(3, 3),
+                   stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+})
+
+
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'year'", {
+  inputspec <- inputspec(timepoint_col = "timepoint",
+                         item_cols = "item",
+                         value_col = "value",
+                         period = "year")
+
+  # good types
+  df <- data.frame(timepoint = seq(as.Date("2013-01-02"), as.Date("2022-01-02"), by = "year"),
+                   item = rep(1, 10),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+  # with time portion
+  df <- data.frame(timepoint = seq(as.POSIXct("2013-01-02 12:00:00"), as.POSIXct("2022-01-02 12:00:00"), by = "year"),
+                   item = rep(1, 10),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+
+  # bad types
+  # different time each day
+  df <- data.frame(timepoint = c(as.POSIXlt("2022-01-01 12:00:00"),
+                                 as.POSIXlt("2023-01-01 13:00:00"),
+                                 as.POSIXlt("2024-01-01 16:00:00")),
+                   item = rep(1, 3),
+                   value = rep(3, 3),
+                   stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+  # nonyearly
+  df <- data.frame(timepoint = c(as.Date("2022-01-01"),
+                                 as.Date("2022-01-09"),
+                                 as.Date("2022-01-15")),
+                   item = rep(1, 3),
+                   value = rep(3, 3),
+                   stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+})
+
+
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'hour'", {
+  inputspec <- inputspec(timepoint_col = "timepoint",
+                         item_cols = "item",
+                         value_col = "value",
+                         period = "hour")
+
+  # good types
+  df <- data.frame(timepoint = seq(as.POSIXct("2022-01-02 12:00:00"), as.POSIXct("2022-01-12 12:00:00"), by = "hour"),
+                   item = rep(1, 241),
+                   value = rep(3, 241),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+
+  # bad types
+  # different time each hour
+  df <- data.frame(timepoint = c(as.POSIXlt("2022-01-01 12:00:00"),
+                                 as.POSIXlt("2022-01-01 13:01:00"),
+                                 as.POSIXlt("2022-01-01 16:00:30")),
+                   item = rep(1, 3),
+                   value = rep(3, 3),
+                   stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+})
+
+
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'min'", {
+  inputspec <- inputspec(timepoint_col = "timepoint",
+                         item_cols = "item",
+                         value_col = "value",
+                         period = "min")
+
+  # good types
+  df <- data.frame(timepoint = seq(as.POSIXct("2022-01-02 12:00:00"), as.POSIXct("2022-01-03 12:00:00"), by = "min"),
+                   item = rep(1, 1441),
+                   value = rep(3, 1441),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+
+  # bad types
+  # different second each minute
+  df <- data.frame(timepoint = c(as.POSIXlt("2022-01-01 12:00:00"),
+                                 as.POSIXlt("2022-01-01 13:01:00"),
+                                 as.POSIXlt("2022-01-01 16:00:30")),
+                   item = rep(1, 3),
+                   value = rep(3, 3),
+                   stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+})
+
+
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'sec'", {
+  inputspec <- inputspec(timepoint_col = "timepoint",
+                         item_cols = "item",
+                         value_col = "value",
+                         period = "sec")
+
+  # good types
+  df <- data.frame(timepoint = seq(as.POSIXct("2022-01-02 12:00:00"), as.POSIXct("2022-01-02 13:00:00"), by = "sec"),
+                   item = rep(1, 3601),
+                   value = rep(3, 3601),
+                   stringsAsFactors = FALSE)
+
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+
+  # bad types
+  df <- data.frame(timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+                   item = rep(1, 10),
+                   value = rep(3, 10),
+                   stringsAsFactors = FALSE)
+
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+})
+
+
 test_that("validate_df_to_inputspec() checks that item column can contain NA values", {
   df <- data.frame(timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
                    item = c(NA, NA, NA, rep(1, 7)),

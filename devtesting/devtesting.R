@@ -210,3 +210,29 @@ mantis_report(df = example_prescription_numbers,
               ),
               save_filename = "tabgroup"
 )
+
+mantis_report(df = data.frame(timepoint = c(seq(as.POSIXlt("2022-01-01 12:00:00"), as.POSIXlt("2022-01-03 12:00:00"), by = "hours"),
+                                                         seq(as.POSIXlt("2022-01-04 12:00:00"), as.POSIXlt("2022-01-05 12:00:00"), by = "hours")),
+                                           item = rep(1, 74),
+                                           value = rep(3, 74),
+                                           stringsAsFactors = FALSE)
+              ,
+              inputspec = inputspec(
+                timepoint_col = "timepoint",
+                item_cols = c("item"),
+                value_col = "value",
+                tab_col = NULL,
+                period = "hour"
+              ),
+              outputspec = outputspec_interactive(),
+              report_title = "mantis report",
+              dataset_description = "Antibiotic prescriptions by site",
+              alert_rules = alert_rules(
+                alert_custom(
+                  short_name = "my_rule_doubled",
+                  description = "Last value is over double the first value",
+                  function_call = quote(rev(value)[1] > 2*value[1]),
+                )
+              ),
+              save_filename = "hourly"
+)

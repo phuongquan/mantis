@@ -1,7 +1,7 @@
 test_that("mantis_report() creates single-tab interactive report and returns path successfully", {
   df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 2),
                    item = c(rep("a", 10), rep("b", 10)),
-                   value = rep(3, 20),
+                   value = rep(c(3, -3), 10),
                    stringsAsFactors = FALSE)
 
   reportpath <-

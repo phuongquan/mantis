@@ -19,8 +19,6 @@ prepare_df <-
            timepoint_limits = c(NA, NA),
            fill_with_zero = FALSE,
            item_order = NULL) {
-  # TODO: Can this function be rewritten to include the tab_col?
-    # TODO: allow df to be passed in wide with vector of value_cols?
 
   # initialise column names to avoid R CMD check Notes
   item <- NULL
@@ -98,8 +96,6 @@ prepare_table <-
 
   # initialise column names to avoid R CMD check Notes
   timepoint <- value <- value_for_history <- alert_description <- alert_result <- item_order_final <- NULL
-
-  # TODO: validate inputs
 
   table_df <-
     prepared_df |>
@@ -457,13 +453,12 @@ align_data_timepoints <-
   #  as don't want to insert unnecessary rows
   all_timepoints <- seq(min_timepoint, max_timepoint, by = inputspec$period)
 
-  # NOTE: uses an unusual separator :~: to separate multiple item_cols,
-  # assuming the string won't appear in the column names
-
   item_cols_prepared <- item_cols_prefix(inputspec$item_cols)
 
   df_out <-
     prepared_df |>
+    # NOTE: uses an unusual separator :~: to separate multiple item_cols,
+    # assuming the string won't appear in the column names
     tidyr::pivot_wider(names_from = dplyr::all_of(item_cols_prepared),
                        values_from = value,
                        names_glue = paste0("piv_{`", paste(item_cols_prepared, collapse = "`}:~:{`"), "`}")) |>
@@ -477,7 +472,6 @@ align_data_timepoints <-
                                                paste0(rep(":~:(.*)", length(item_cols_prepared) - 1),
                                                       collapse = "")
                                                ))
-
 
   df_out
 
@@ -532,9 +526,10 @@ validate_df_to_inputspec <- function(df,
     err_validation <-
       append(err_validation,
              validate_df_to_inputspec_duplicate_timepoints(df, inputspec))
+    err_validation <-
+      append(err_validation,
+             validate_df_to_inputspec_periodicity(df, inputspec))
   }
-
-  # TODO: check periodicity
 
   # call stop() if there are any validation errors
   if (length(err_validation) > 0) {
@@ -643,7 +638,7 @@ validate_df_to_inputspec_col_types <- function(df,
 
   # check timepoint col is datetime type
   timepoint_vals <- df |> dplyr::pull(dplyr::all_of(inputspec$timepoint_col))
-  if (!is_datetime(timepoint_vals)) {
+  if (!is_date_or_time(timepoint_vals)) {
     err_validation <-
       append(
         err_validation,
@@ -651,6 +646,22 @@ validate_df_to_inputspec_col_types <- function(df,
           "The timepoint_col column [",
           inputspec$timepoint_col,
           "] must be a Date or POSIXt type. Instead found [",
+          paste(class(timepoint_vals), collapse = ", "),
+          "]"
+        )
+      )
+  }
+  # check timepoint col is POSIXt type if period is less than 'day'
+  if (inputspec$period %in% c("sec", "min", "hour") && !inherits(timepoint_vals, what = "POSIXt")) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "The inputspec period denotes a time [",
+          inputspec$period,
+          "] so the timepoint_col column [",
+          inputspec$timepoint_col,
+          "] must be a POSIXt type. Instead found [",
           paste(class(timepoint_vals), collapse = ", "),
           "]"
         )
@@ -753,6 +764,230 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
 
   err_validation
 }
+
+
+#' Check supplied df has same periodicity as inputspec period
+#'
+#' This assumes that the names in inputspec and the df have already been check and are valid
+#'
+#' @param df user supplied df
+#' @param inputspec user supplied inputspec
+#'
+#' @return character string containing any error message
+#' @noRd
+validate_df_to_inputspec_periodicity <- function(df,
+                                                 inputspec){
+
+  # if there is no data, skip the checks
+  if (nrow(df) == 0) {
+    return(character())
+  }
+
+  # different checks for above or below daily granularity
+  if (inputspec$period %in% c("day", "week", "month", "quarter", "year")) {
+    validate_df_to_inputspec_periodicity_dates(df,
+                                             inputspec)
+  } else if (inputspec$period %in% c("sec", "min", "hour")) {
+    validate_df_to_inputspec_periodicity_times(df,
+                                               inputspec)
+  }
+}
+
+#' Check supplied df has same periodicity as inputspec period for daily or longer periods
+#'
+#' This assumes that the names in inputspec and the df have already been check and are valid
+#'
+#' @param df user supplied df
+#' @param inputspec user supplied inputspec
+#'
+#' @return character string containing any error message
+#' @noRd
+validate_df_to_inputspec_periodicity_dates <- function(df,
+                                                 inputspec){
+
+  err_validation <- character()
+
+  # check same time of day for every record
+  unique_times <-
+    df |>
+    dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
+    strftime(format = "%H:%M:%S") |>
+    unique()
+
+  if (length(unique_times) > 1) {
+    err_validation <-
+      append(
+        err_validation,
+        paste(
+          "When inputspec period is 'day' or longer, any time portion in the timepoint_col field must be the same for all records. Instead found [",
+          paste(unique_times, collapse = ", "),
+          "]."
+        )
+      )
+  }
+
+  # no further checks needed for daily timepoints
+  if (inputspec$period == "week") {
+    # must be the same day each week
+    unique_dofw <-
+      df |>
+      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
+      strftime(format = "%a") |>
+      unique()
+
+    if (length(unique_dofw) > 1) {
+      err_validation <-
+        append(
+          err_validation,
+          paste(
+            "When inputspec period is 'week', the day of the week in the timepoint_col field must be the same for all records. Instead found [",
+            paste(unique_dofw, collapse = ", "),
+            "]."
+          )
+        )
+    }
+  } else if (inputspec$period == "month") {
+    # must be the same day each month
+    unique_dofm <-
+      df |>
+      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
+      strftime(format = "%d") |>
+      unique()
+
+    if (length(unique_dofm) > 1 || any(unique_dofm > 28)) {
+      err_validation <-
+        append(
+          err_validation,
+          paste(
+            "When inputspec period is 'month', the day of the month in the timepoint_col field must be the same for all records (and <= 28). Instead found [",
+            paste(unique_dofm, collapse = ", "),
+            "]."
+          )
+        )
+    }
+  } else if (inputspec$period == "quarter") {
+    # must be the same day each month
+    unique_dofm <-
+      df |>
+      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
+      strftime(format = "%d") |>
+      unique()
+
+    if (length(unique_dofm) > 1 || any(unique_dofm > 28)) {
+      err_validation <-
+        append(
+          err_validation,
+          paste(
+            "When inputspec period is 'quarter', the day of the month in the timepoint_col field must be the same for all records (and <= 28). Instead found [",
+            paste(unique_dofm, collapse = ", "),
+            "]."
+          )
+        )
+    }
+
+    # and unique months must be 3 apart
+    unique_mofy <-
+      df |>
+      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
+      strftime(format = "%m") |>
+      unique()
+
+    if (length(unique(as.numeric(unique_mofy) %% 3)) > 1) {
+      err_validation <-
+        append(
+          err_validation,
+          paste(
+            "When inputspec period is 'quarter', the months in the timepoint_col field must all be 3 months apart. Instead found months [",
+            paste(unique_mofy, collapse = ", "),
+            "]."
+          )
+        )
+    }
+  } else if (inputspec$period == "year") {
+    # must be the same day each year
+    unique_dofy <-
+      df |>
+      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
+      strftime(format = "YYYY-%m-%d") |>
+      unique()
+
+    if (length(unique_dofy) > 1 || any(unique_dofy == "YYYY-02-29")) {
+      err_validation <-
+        append(
+          err_validation,
+          paste(
+            "When inputspec period is 'year', the day of the year in the timepoint_col field must be the same for all records (and not a leap year day). Instead found [",
+            paste(unique_dofy, collapse = ", "),
+            "]."
+          )
+        )
+    }
+  }
+
+  err_validation
+}
+
+
+#' Check supplied df has same periodicity as inputspec period for shorter than daily periods
+#'
+#' This assumes that the names in inputspec and the df have already been check and are valid
+#'
+#' @param df user supplied df
+#' @param inputspec user supplied inputspec
+#'
+#' @return character string containing any error message
+#' @noRd
+validate_df_to_inputspec_periodicity_times <- function(df,
+                                                       inputspec){
+
+
+  err_validation <- character()
+
+  # no checks needed for seconds timepoints
+
+  if (inputspec$period %in% c("min", "hour")) {
+    unique_seconds <-
+      df |>
+      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
+      strftime(format = "HH:MM:%S") |>
+      unique()
+
+    if (length(unique_seconds) > 1) {
+      err_validation <-
+        append(
+          err_validation,
+          paste(
+            "When inputspec period is 'min' or 'hour', any seconds in the timepoint_col field must be the same for all records. Instead found [",
+            paste(unique_seconds, collapse = ", "),
+            "]."
+          )
+        )
+    }
+  }
+
+  if (inputspec$period == "hour") {
+    # must be the same minute each hour
+    unique_mofh <-
+      df |>
+      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
+      strftime(format = "HH:%M:SS") |>
+      unique()
+
+    if (length(unique_mofh) > 1) {
+      err_validation <-
+        append(
+          err_validation,
+          paste(
+            "When inputspec period is 'hour', any minutes in the timepoint_col field must be the same for all records. Instead found [",
+            paste(unique_mofh, collapse = ", "),
+            "]."
+          )
+        )
+    }
+  }
+  err_validation
+}
+
 
 #'Arrange/sort a df based on a list of items
 #'
