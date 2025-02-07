@@ -1,4 +1,39 @@
 # -----------------------------------------------------------------------------
+#' Specify alerting rules to be run on the data and displayed in the report
+#'
+#' The alert results are displayed in different ways depending on the chosen outputspec. Tabs
+#' containing time series which failed at least one alert are highlighted, and a separate tab
+#' containing the alert results is created by default.
+#'
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
+#' @param show_tab_results only show rows where the alert result is in this vector of values. Alert
+#'   results can be "PASS", "FAIL", or "NA". If NULL, no separate tab will be created.
+#'
+#' @return An `alertspec()` object
+#' @export
+alertspec <- function(alert_rules,
+                      show_tab_results = c("PASS", "FAIL", "NA")) {
+
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       alert_rules = alert_rules,
+                       show_tab_results = show_tab_results)
+
+  structure(list(alert_rules = alert_rules,
+                 show_tab_results = show_tab_results),
+            class = "mantis_alertspec")
+}
+
+# -----------------------------------------------------------------------------
+#' Test if object is an alertspec object
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_alertspec <- function(x) inherits(x, "mantis_alertspec")
+
+
+# -----------------------------------------------------------------------------
 #' Create set of alert rules
 #'
 #' Note: this functionality is currently only implemented for interactive outputs and will be ignored for static outputs.
@@ -670,7 +705,8 @@ run_alerts <- function(prepared_df,
 
   results <-
     lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df, inputspec = inputspec) |>
-    purrr::reduce(dplyr::bind_rows)
+    purrr::reduce(dplyr::bind_rows) |>
+    dplyr::ungroup()
 
   results |>
     dplyr::mutate(alert_result = tidyr::replace_na(alert_result, "NA")) |>
@@ -707,8 +743,8 @@ run_alert <- function(prepared_df, inputspec, alert_rule){
 #' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
 #'   "timepoint", "item", "value"  and (optionally) "tab" for the time series. Each "item-tab" represents an individual time series
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
-#' @param filter_results only return rows where the alert result is in this vector of values
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of timepoint_col. Can be either Date values or NAs.
+#' @param filter_results only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`. Can be either Date values or NAs.
 #' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
 #'
 #' @return tibble
@@ -722,7 +758,6 @@ mantis_alerts <- function(df,
   item <- NULL
 
   validate_params_required(match.call())
-  # TODO: alert_rules are required here, but optional in mantis_report()
   validate_params_type(match.call(),
                        df = df,
                        inputspec = inputspec,

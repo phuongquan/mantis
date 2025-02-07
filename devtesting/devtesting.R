@@ -188,27 +188,27 @@ mantis_alerts(
 )
 
 # new item
-mantis_report(df = example_prescription_numbers,
-              inputspec = inputspec(
-                timepoint_col = "PrescriptionDate",
-                item_cols = c("Antibiotic", "Spectrum", "Location"),
-                value_col = "NumberOfPrescriptions",
-                tab_col = NULL
-#                tab_col = c("Location")
-              ),
-              outputspec = outputspec_interactive(
-                item_order = item_order),
-              report_title = "mantis report",
-              dataset_description = "Antibiotic prescriptions by site",
-              alert_rules = alert_rules(
-                alert_custom(
-                  short_name = "my_rule_doubled",
-                  description = "Last value is over double the first value",
-                  function_call = quote(rev(value)[1] > 2*value[1]),
-                  items = list("Antibiotic" = "Amikacin", "Location" = c("SITE1", "SITE2"))
-                )
-              ),
-              save_filename = "tabgroup"
+mantis_report(
+  df = example_prescription_numbers,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Antibiotic", "Spectrum", "Location"),
+    value_col = "NumberOfPrescriptions",
+    tab_col = NULL
+    #                tab_col = c("Location")
+  ),
+  outputspec = outputspec_interactive(),
+  report_title = "mantis report",
+  dataset_description = "Antibiotic prescriptions by site",
+  # alertspec = alertspec(alert_rules = alert_rules(
+  #   alert_custom(
+  #     short_name = "my_rule_doubled",
+  #     description = "Last value is over double the first value",
+  #     function_call = quote(rev(value)[1] > 2 * value[1])
+  #   )
+  # ),
+  # show_tab_results = "FAIL"),
+  save_filename = "tabgroup"
 )
 
 mantis_report(df = data.frame(timepoint = c(seq(as.POSIXlt("2022-01-01 12:00:00"), as.POSIXlt("2022-01-03 12:00:00"), by = "hours"),

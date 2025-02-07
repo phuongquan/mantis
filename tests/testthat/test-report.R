@@ -129,16 +129,18 @@ test_that("mantis_report() creates interactive report with alerts successfully",
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_interactive(),
-      alert_rules = alert_rules(
-        alert_missing(
-          extent_type = "all",
-          items = list("item" = c("b", "c"))
-        ),
-        alert_above(
-          extent_type = "any",
-          extent_value = 1,
-          rule_value = 5,
-          items = list("item" = c("b", "c"))
+      alertspec = alertspec(
+        alert_rules = alert_rules(
+          alert_missing(
+            extent_type = "all",
+            items = list("item" = c("b", "c"))
+          ),
+          alert_above(
+            extent_type = "any",
+            extent_value = 1,
+            rule_value = 5,
+            items = list("item" = c("b", "c"))
+          )
         )
       ),
       show_progress = FALSE
@@ -197,16 +199,18 @@ test_that("mantis_report() creates interactive report with alerts even if suppli
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_interactive(),
-      alert_rules = alert_rules(
-        alert_missing(
-          extent_type = "all",
-          items = list("item" = c("b", "c"))
-        ),
-        alert_above(
-          extent_type = "any",
-          extent_value = 1,
-          rule_value = 5,
-          items = list("item" = c("b", "c"))
+      alertspec = alertspec(
+        alert_rules = alert_rules(
+          alert_missing(
+            extent_type = "all",
+            items = list("item" = c("b", "c"))
+          ),
+          alert_above(
+            extent_type = "any",
+            extent_value = 1,
+            rule_value = 5,
+            items = list("item" = c("b", "c"))
+          )
         )
       ),
       show_progress = FALSE
@@ -320,16 +324,18 @@ test_that("mantis_report() creates interactive report with spaces in item_cols n
                             value_col = "m value",
                             tab_col = "m tab"),
       outputspec = outputspec_interactive(),
-      alert_rules = alert_rules(
-        alert_missing(
-          extent_type = "all",
-          items = list("m item" = c("b", "c"))
-        ),
-        alert_above(
-          extent_type = "any",
-          extent_value = 1,
-          rule_value = 5,
-          items = list("m item" = c("b", "c"))
+      alertspec = alertspec(
+        alert_rules = alert_rules(
+          alert_missing(
+            extent_type = "all",
+            items = list("m item" = c("b", "c"))
+          ),
+          alert_above(
+            extent_type = "any",
+            extent_value = 1,
+            rule_value = 5,
+            items = list("m item" = c("b", "c"))
+          )
         )
       ),
       show_progress = FALSE

@@ -7,7 +7,8 @@
 bespoke_rmd_initialise_widgets(plot_type)
 }
 \arguments{
-\item{plot_type}{"\code{bar}" or "\code{line}", depending on what will be used in real tables.}
+\item{plot_type}{"\code{bar}" or "\code{line}", depending on what will be used in real tables. Or "none" if
+just want a reactable widget without dygraphs e.g. for alerts}
 }
 \value{
 A (mostly) invisible html widget

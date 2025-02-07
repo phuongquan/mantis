@@ -9,7 +9,7 @@
 #'   will be created for each distinct value in the column.
 #' @param outputspec `outputspec` object specifying the desired format of the html table(s). If
 #'   not supplied, default values will be used.
-#' @param alert_rules [`alert_rules()`] object specifying conditions to test
+#' @param alertspec [`alertspec()`] object specifying conditions to test and display
 #' @param report_title Title to appear on the report.
 #' @param dataset_description Short description of the dataset being shown.
 #'   This will appear on the report.
@@ -37,7 +37,7 @@
 mantis_report <- function(df,
                         inputspec,
                         outputspec = NULL,
-                        alert_rules = NULL,
+                        alertspec = NULL,
                         report_title = "mantis report",
                         dataset_description = "",
                         save_directory = ".",
@@ -51,7 +51,7 @@ mantis_report <- function(df,
                        df = df,
                        inputspec = inputspec,
                        outputspec = outputspec,
-                       alert_rules = alert_rules,
+                       alertspec = alertspec,
                        report_title = report_title,
                        dataset_description = dataset_description,
                        save_directory = save_directory,
@@ -60,7 +60,7 @@ mantis_report <- function(df,
   )
 
   validate_df_to_inputspec(df, inputspec)
-  validate_alert_rules_to_inputspec(alert_rules, inputspec)
+  validate_alert_rules_to_inputspec(alertspec$alert_rules, inputspec)
 
   timestamp_string <- format(Sys.time(), "%Y%m%d%_%H%M%S")
 
@@ -103,7 +103,7 @@ mantis_report <- function(df,
       df = df,
       inputspec = inputspec,
       outputspec = outputspec,
-      alert_rules = alert_rules,
+      alertspec = alertspec,
       report_title = report_title,
       dataset_description = dataset_description
     ),

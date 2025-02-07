@@ -5,7 +5,7 @@ params:
   df: df
   inputspec: inputspec
   outputspec: outputspec
-  alert_rules: alert_rules
+  alertspec: alertspec
   report_title: report_title
   dataset_description: dataset_description
 ---
@@ -35,8 +35,9 @@ Report created on: `r Sys.time()` ; mantis version `r utils::packageVersion(util
 </p>
 
 ```{r initialise}
-has_tabs <- !is.null(params$inputspec$tab_col)
+has_tabs <- !is.null(params$inputspec$tab_col) || (!is.null(params$alertspec) && !is.null(params$alertspec$show_tab_results))
 is_interactive <- is_outputspec_interactive(params$outputspec)
+requires_initialisation <- is_interactive || (!is.null(params$alertspec) && !is.null(params$alertspec$show_tab_results))
 requires_refresh <- has_tabs && is_interactive
 
 # NOTE: can't modify chunk options within a chunk to get different fig heights
@@ -65,13 +66,17 @@ construct_rmd_tab(
   tab_level = 1,
   inputspec = params$inputspec,
   outputspec = params$outputspec,
-  alert_rules = params$alert_rules
+  alertspec = params$alertspec
 )
 
 ```
 
-```{r, eval=is_interactive}
+```{r, eval=requires_initialisation}
 # initialise htmlwidgets otherwise they won't render
 # this chunk can be placed anywhere
-initialise_widgets(plot_type = params$outputspec$plot_type)
+if(is_interactive) {
+  initialise_widgets(plot_type = params$outputspec$plot_type)
+} else{
+  initialise_widgets(plot_type = "none")
+}
 ```

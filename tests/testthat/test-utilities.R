@@ -142,8 +142,15 @@ test_that("validate_params_type() checks y_label params are of correct type", {
 })
 
 
+test_that("validate_params_type() checks alertspec params are of correct type", {
+  expect_silent(testfn_params_type(alertspec = NULL))
+  expect_error(testfn_params_type(alertspec = 1),
+               class = "invalid_param_type")
+})
+
 test_that("validate_params_type() checks alert_rules params are of correct type", {
-  expect_silent(testfn_params_type(alert_rules = NULL))
+  expect_error(testfn_params_type(alert_rules = NULL),
+               class = "invalid_param_type")
   expect_error(testfn_params_type(alert_rules = 1),
                class = "invalid_param_type")
 })
@@ -349,6 +356,23 @@ test_that("validate_params_type() checks filter_results params contain valid val
   expect_error(testfn_params_type(filter_results = c("PASS", "hello")),
                class = "invalid_param_type")
   expect_error(testfn_params_type(filter_results = 1:3),
+               class = "invalid_param_type")
+})
+
+test_that("validate_params_type() checks show_tab_results params contain valid values", {
+  expect_silent(testfn_params_type(show_tab_results = "PASS"))
+  expect_silent(testfn_params_type(show_tab_results = c("PASS",
+                                                      "FAIL",
+                                                      "NA")))
+  expect_silent(testfn_params_type(show_tab_results = NULL))
+
+  expect_error(testfn_params_type(show_tab_results = NA),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(show_tab_results = "hello"),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(show_tab_results = c("PASS", "hello")),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(show_tab_results = 1:3),
                class = "invalid_param_type")
 })
 

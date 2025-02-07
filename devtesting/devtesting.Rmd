@@ -70,8 +70,33 @@ mantis::bespoke_rmd_tab(
     value_col = "NumberOfPrescriptions",
     tab_col = "Location"
   ),
+  alertspec = alertspec(
+      alert_rules = alert_rules(alert_missing(extent_type = "all",
+                                           items = NULL))
+  ),
   outputspec = mantis::outputspec_interactive(),
-  tab_name = "top level parent",
+  tab_name = "tab parent plus alerts",
+  tab_level = 2
+)
+
+```
+
+```{r, results = 'asis'}
+mantis::bespoke_rmd_tab(
+  df,
+  inputspec = mantis::inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Location", "Antibiotic", "Spectrum"),
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  alertspec = alertspec(
+      alert_rules = alert_rules(alert_missing(extent_type = "all",
+                                           items = NULL)),
+      show_tab_results = NULL
+  ),
+  outputspec = mantis::outputspec_interactive(),
+  tab_name = "tab parent alerts but no alert tab",
   tab_level = 2
 )
 
@@ -89,11 +114,33 @@ mantis::bespoke_rmd_tab(
     tab_col = "Location"
   ),
   outputspec = mantis::outputspec_interactive(),
+  alertspec = alertspec(
+      alert_rules = alert_rules(alert_missing(extent_type = "all",
+                                           items = NULL))
+  ),
   tab_level = 2
 )
 
 ```
 
+
+```{r, results = 'asis'}
+mantis::bespoke_rmd_alert_results(
+  df,
+  inputspec = mantis::inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Location", "Antibiotic", "Spectrum"),
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  alert_rules = alert_rules(alert_missing(extent_type = "all",
+                                           items = NULL)),
+  filter_results = "FAIL",
+  tab_name = "Fails only",
+  tab_level = 1
+)
+
+```
 
 ```{r}
 # initialise htmlwidgets otherwise they won't render

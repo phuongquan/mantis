@@ -12,6 +12,7 @@
 #' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
 #'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
 #'   Secondary ordering will be based on `item_order`.
+#' @param bordered this param is needed so that we can initialise an "invisible" widget
 #'
 #' @return html table
 #' @noRd

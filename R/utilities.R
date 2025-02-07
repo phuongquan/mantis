@@ -132,10 +132,19 @@ validate_param_byname <- function(param_name, param_value){
       error_message = "Expected an outputspec object",
       error_contents_max_length = 100
     ),
-    "alert_rules" = validate_param(
+    "alertspec" = validate_param(
       param_name = param_name,
       param_value = param_value,
       allow_null = TRUE,
+      expect_scalar = FALSE,
+      validation_function = is_alertspec,
+      error_message = "Expected an alertspec object",
+      error_contents_max_length = 100
+    ),
+    "alert_rules" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = FALSE,
       expect_scalar = FALSE,
       validation_function = is_alert_rules,
       error_message = "Expected an alert_rules object",
@@ -322,6 +331,17 @@ validate_param_byname <- function(param_name, param_value){
       param_name = param_name,
       param_value = param_value,
       allow_null = FALSE,
+      expect_scalar = FALSE,
+      validation_function = function(x) {
+        all(x %in% c("PASS", "FAIL", "NA"))
+      },
+      error_message = 'Expected a subset of c("PASS", "FAIL", "NA")',
+      error_contents_max_length = 100
+    ),
+    "show_tab_results" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = TRUE,
       expect_scalar = FALSE,
       validation_function = function(x) {
         all(x %in% c("PASS", "FAIL", "NA"))
@@ -519,6 +539,7 @@ testfn_params_required <- function(p1, p2, p3 = NULL, ...) {
 testfn_params_type <- function(df,
                                inputspec,
                                outputspec,
+                               alertspec,
                                alert_rules,
                                dataset_description = "",
                                report_title = "mantis report",
@@ -541,6 +562,7 @@ testfn_params_type <- function(df,
                                fill_colour = "blue",
                                y_label = NULL,
                                filter_results = c("PASS", "FAIL", "NA"),
+                               show_tab_results = c("PASS", "FAIL", "NA"),
                                timepoint_limits = c(NA, NA),
                                fill_with_zero = FALSE,
                                tab_name = NULL,
@@ -570,6 +592,10 @@ testfn_params_type <- function(df,
     outputspec <-
       structure(list(rule = NA), class = "mantis_outputspec")
   }
+  if (missing(alertspec)) {
+    alertspec <-
+      structure(list(rule = NA), class = "mantis_alertspec")
+  }
   if (missing(alert_rules)) {
     alert_rules <-
       structure(list(rule = NA), class = "mantis_alert_rules")
@@ -580,6 +606,7 @@ testfn_params_type <- function(df,
     df = df,
     inputspec = inputspec,
     outputspec = outputspec,
+    alertspec = alertspec,
     alert_rules = alert_rules,
     dataset_description = dataset_description,
     report_title = report_title,
@@ -602,6 +629,7 @@ testfn_params_type <- function(df,
     fill_colour = fill_colour,
     y_label = y_label,
     filter_results = filter_results,
+    show_tab_results = show_tab_results,
     timepoint_limits = timepoint_limits,
     fill_with_zero = fill_with_zero,
     tab_name = tab_name,
