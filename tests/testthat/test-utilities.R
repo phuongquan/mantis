@@ -260,6 +260,9 @@ test_that("validate_params_type() checks period params are of correct type", {
   expect_silent(testfn_params_type(period = "month"))
   expect_silent(testfn_params_type(period = "quarter"))
   expect_silent(testfn_params_type(period = "year"))
+  expect_silent(testfn_params_type(period = "sec"))
+  expect_silent(testfn_params_type(period = "min"))
+  expect_silent(testfn_params_type(period = "hour"))
 
   expect_error(testfn_params_type(period = NULL),
                class = "invalid_param_type")

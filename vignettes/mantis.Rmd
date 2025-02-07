@@ -20,7 +20,7 @@ This vignette demonstrates how to use this package to generate different types o
 
 The data frame containing the time series should be in long format, with the following columns (though the actual column names can be different):
 
-* one "timepoint" (date) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
+* one "timepoint" (date) column which will be used for the x-axes. Values should have a regular periodicity, e.g. daily, but do not have to be consecutive.
 * one or more "item" (character) columns containing categorical values identifying distinct time series.
 * one "value" (numeric) column containing the time series values which will be used for the y-axes.
 

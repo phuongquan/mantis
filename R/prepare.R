@@ -186,7 +186,8 @@ prepare_table <-
 #'   will be used for the y-axes.
 #' @param tab_col Optional. String denoting the (character) column containing categorical values
 #'   which will be used to group the time series into different tabs on the report.
-#' @param period periodicity of the timepoint_col values. "day"/"month"/"year"
+#' @param period periodicity of the timepoint_col values. "sec"/"min"/"hour"/"day"/"month"/"quarter"/year".
+#'   This will be used to fill in any gaps in the time series.
 #'
 #' @return A `inputspec()` object
 #' @export

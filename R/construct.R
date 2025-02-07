@@ -47,7 +47,7 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' @details The supplied data frame should contain multiple time series in long format, i.e.:
 #'
 #' \itemize{
-#'   \item one "timepoint" (date) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.
+#'   \item one "timepoint" (date) column which will be used for the x-axes. Values should have a regular periodicity, e.g. daily, but do not have to be consecutive.
 #'   \item one or more "item" (character) columns containing categorical values identifying distinct time series.
 #'   \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
 #' }
