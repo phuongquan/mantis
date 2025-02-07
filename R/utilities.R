@@ -315,9 +315,22 @@ validate_param_byname <- function(param_name, param_value){
       error_message = "Expected a named list with each item a vector of character strings",
       error_contents_max_length = 500
     ),
+    # NOTE: if they provide names that don't match the data, just ignore them
+    "item_labels" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = TRUE,
+      expect_scalar = FALSE,
+      validation_function = function(x) {
+        all(!is.list(x),
+            length(names(x)) == length(x),
+            is.character(x))
+      },
+      error_message = "Expected a named vector of character strings",
+      error_contents_max_length = 500
+    ),
     # NOTE: if they provide values that don't exist in the data, just ignore them, as you may want to
     # supply a standard superset for everything
-    "item_label" = ,
     "sort_by" = validate_param(
       param_name = param_name,
       param_value = param_value,
@@ -553,7 +566,7 @@ testfn_params_type <- function(df,
                                period = "day",
                                plot_value_type = "value",
                                plot_type = "bar",
-                               item_label = NULL,
+                               item_labels = NULL,
                                plot_label = NULL,
                                summary_cols = c("max_value"),
                                sync_axis_range = FALSE,
@@ -620,7 +633,7 @@ testfn_params_type <- function(df,
     period = period,
     plot_value_type = plot_value_type,
     plot_type = plot_type,
-    item_label = item_label,
+    item_labels = item_labels,
     plot_label = plot_label,
     summary_cols = summary_cols,
     sync_axis_range = sync_axis_range,

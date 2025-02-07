@@ -297,7 +297,7 @@ test_that("mantis_report() creates multi-item_cols interactive report and return
       inputspec = inputspec(timepoint_col = "timepoint",
                             item_cols = c("item", "tab"),
                             value_col = "value"),
-      outputspec = outputspec_interactive(item_label = c("Item")),
+      outputspec = outputspec_interactive(item_labels = c("item" = "My item")),
       show_progress = FALSE
     )
 

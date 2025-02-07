@@ -230,8 +230,11 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #' @param plot_value_type Display the raw "`value`" for the time series or display the calculated
 #'   "`delta`" between consecutive values.
 #' @param plot_type Display the time series as a "`bar`" or "`line`" chart.
-#' @param item_label String label(s) to use for the "item" column(s) in the report. If NULL, the original columns name(s) will be used.
-#' @param plot_label String label to use for the time series column in the report. If NULL, the original `value_col` name will be used.
+#' @param item_labels Named vector containing string label(s) to use for the "item" column(s) in the
+#'   report. The names should correspond to the `item_cols`, and the values should contain the
+#'   desired labels. If NULL, the original columns name(s) will be used.
+#' @param plot_label String label to use for the time series column in the report. If NULL, the
+#'   original `value_col` name will be used.
 #' @param summary_cols Summary data to include as columns in the report. Options are
 #'   `c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
@@ -256,7 +259,7 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #' @export
 outputspec_interactive <- function(plot_value_type = "value",
                        plot_type = "bar",
-                       item_label = NULL,
+                       item_labels = NULL,
                        plot_label = NULL,
                        summary_cols = c("max_value"),
                        sync_axis_range = FALSE,
@@ -267,7 +270,7 @@ outputspec_interactive <- function(plot_value_type = "value",
   validate_params_type(match.call(),
                        plot_value_type = plot_value_type,
                        plot_type = plot_type,
-                       item_label = item_label,
+                       item_labels = item_labels,
                        plot_label = plot_label,
                        summary_cols = summary_cols,
                        sync_axis_range = sync_axis_range,
@@ -278,7 +281,7 @@ outputspec_interactive <- function(plot_value_type = "value",
   structure(
     list(plot_value_type = plot_value_type,
          plot_type = plot_type,
-         item_label = item_label,
+         item_labels = item_labels,
          plot_label = plot_label,
          summary_cols = summary_cols,
          sync_axis_range = sync_axis_range,

@@ -14,8 +14,7 @@ test_that("output_table_interactive() avoids min/max warnings when all values ar
 
   expect_no_warning(output_table_interactive(prepared_df = prepared_df,
                                              inputspec = inputspec,
-                                             plot_value_type = "value",
-                                             item_label = "Item"))
+                                             plot_value_type = "value"))
 
 })
 
@@ -35,8 +34,7 @@ test_that("output_table_interactive() avoids min/max warnings when all deltas ar
 
   expect_no_warning(output_table_interactive(prepared_df = prepared_df,
                                              inputspec = inputspec,
-                                             plot_value_type = "delta",
-                                             item_label = "Item"))
+                                             plot_value_type = "delta"))
 
 
 })

@@ -3,7 +3,9 @@
 #' @param prepared_df data frame returned from prepare_df()
 #' @param inputspec Specification of data in df
 #' @param plot_value_type "value" or "delta"
-#' @param item_label Label(s) for item column(s), in same order as in `inputspec`. TODO: make this a named vector instead.
+#' @param item_labels Named vector containing string label(s) to use for the "item" column(s) in the
+#'   report. The names should correspond to the `item_cols`, and the values should contain the
+#'   desired labels. If NULL, the original columns name(s) will be used.
 #' @param plot_label Label for History column
 #' @param summary_cols vector of which summary columns to include
 #' @param plot_type "bar" or "line"
@@ -19,7 +21,7 @@
 output_table_interactive <- function(prepared_df,
                                      inputspec,
                                      plot_value_type = "value",
-                                     item_label = NULL,
+                                     item_labels = NULL,
                                      plot_label = NULL,
                                      summary_cols = c("max_value"),
                                      plot_type = "bar",
@@ -31,8 +33,6 @@ output_table_interactive <- function(prepared_df,
 
   # initialise column names to avoid R CMD check Notes
   timepoint <- item <- value <- value_for_history <- NULL
-
-  # TODO: validate inputs
 
   table <- prepare_table(prepared_df = prepared_df,
                          inputspec = inputspec,
@@ -49,10 +49,12 @@ output_table_interactive <- function(prepared_df,
       item_colDefs[[item_cols_prefix(item_cols[i])]] <-
         reactable::colDef(show = FALSE)
     } else{
-      # if item_label isn't same length as item_cols, just use as many as you have
+      # NOTE: if item_labels contains names that don't match the data, just ignore them
       item_colDefs[[item_cols_prefix(item_cols[i])]] <-
-        reactable::colDef(name = ifelse(i <= length(item_label), item_label[i], item_cols[i]),
-                                                                          filterable = TRUE)
+        reactable::colDef(name = ifelse(item_cols[i] %in% names(item_labels),
+                                        item_labels[item_cols[i]],
+                                        item_cols[i]),
+                          filterable = TRUE)
     }
   }
 

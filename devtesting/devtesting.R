@@ -28,7 +28,7 @@ df <- example_data
 timepoint_col <- "timepoint"
 item_cols <- "item"
 value_col <- "value"
-item_label <- "Item"
+item_labels <- "Item"
 
 
 monthly_data <- example_data |>
@@ -133,7 +133,7 @@ mantis_report(df = example_prescription_numbers,
                 tab_col = "Location"
               ),
               outputspec = outputspec_interactive(
-                item_label = "Antibiotic"
+                item_labels = "Antibiotic"
               ),
               report_title = "mantis report",
               dataset_description = "Antibiotic prescriptions by site"
@@ -194,10 +194,12 @@ mantis_report(
     timepoint_col = "PrescriptionDate",
     item_cols = c("Antibiotic", "Spectrum", "Location"),
     value_col = "NumberOfPrescriptions",
-    tab_col = NULL
-    #                tab_col = c("Location")
+    #tab_col = NULL
+                    tab_col = c("Location")
   ),
-  outputspec = outputspec_interactive(),
+  outputspec = outputspec_interactive(
+    item_labels = c("Antibiotic" = "ABX", "Location" = "Which site?", "X" = "X"),
+  ),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
   # alertspec = alertspec(alert_rules = alert_rules(
