@@ -52,9 +52,11 @@
 <li>New <code><a href="../reference/alertspec.html">alertspec()</a></code> object adds additional output options and wraps <code><a href="../reference/alert_rules.html">alert_rules()</a></code> where relevant</li>
 <li>Alert results now appear in an additional tab for all types of outputspec</li>
 <li>
-<code>items</code> parameter of alert rules now takes a list of items</li>
+<code>items</code> parameter of alert rules now takes a named list of items</li>
 <li>
-<code>item_order</code> parameter of <code>outputspec()</code> now takes a list of items, and allows ordering of tabs</li>
+<code>item_labels</code> parameter of <code><a href="../reference/outputspec_interactive.html">outputspec_interactive()</a></code> replaces <code>item_label</code> and now takes a named vector of labels</li>
+<li>
+<code>item_order</code> parameter of <code>outputspec()</code> now takes a named list of items, and allows ordering of tabs</li>
 <li>
 <code><a href="../reference/bespoke_rmd_output.html">bespoke_rmd_output()</a></code> replaces <code>bespoke_rmd_tab_group()</code> and <code>bespoke_rmd_tab_item()</code>
 </li>
