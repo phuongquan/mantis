@@ -52,7 +52,7 @@ alert_rules <- function(...) {
 
   ars <- list(...)
 
-  # TODO: check only one rule of each type
+  # TODO: check only one rule of each type? Don't know if this is necessary
 
   err_validation <- character()
   is_alert_rule <- vapply(ars, is_alert_rule, logical(1))
@@ -607,29 +607,32 @@ alert_difference_below_perc <- function(current_period,
 
 #' Create a custom alert rule
 #'
-#'   The supplied `function_call` is passed to `eval()` within a `dplyr::summarise()` after grouping
-#'   by the `item_cols` and ordering by the `timepoint_col`. Column names that can be used explicitly
-#'   in the expression are `value` and `timepoint`, and which refer to the values in the
-#'   `value_col` and `timepoint_col` columns of the data respectively.
-#'
+#' Specify a custom rule to run on the time series.
 #'
 #' @param short_name short name to uniquely identify the rule. Only include alphanumeric, '-', and
 #'   '_' characters.
 #' @param description short description of what the rule checks for
-#' @param function_call call to be evaluated per item, that returns either `TRUE` or `FALSE`.
+#' @param function_call quoted expression containing the call to be evaluated per item, that returns either `TRUE` or `FALSE`.
 #'   Return value of `TRUE` means alert result is "FAIL". See Details.
 #' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
-#' @section Details: Use `items` to restrict the rule to be applied only to specified items.
-#'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_cols`
-#'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
-#'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
-#'   contained in the corresponding character vector. When multiple `item_col`s are
-#'   specified, the rule will be applied only to items that satisfy all the conditions.
+#' @section Details:
+#'
+#'   The supplied `function_call` is passed to `eval()` within a `dplyr::summarise()` after grouping
+#'   by the `item_cols` and ordering by the `timepoint_col`. Column names that can be used
+#'   explicitly in the expression are `value` and `timepoint`, and which refer to the values in the
+#'   `value_col` and `timepoint_col` columns of the data respectively. See Examples.
+#'
+#'   Use `items` to restrict the rule to be applied only to specified items. `items` can either be
+#'   NULL or a named list of character vectors. If `NULL`, the rule will be applied to all items. If
+#'   a named list, the names must match members of the `item_cols` parameter in the `inputspec`, (as
+#'   well as column names in the `df`), though can be a subset. If an `item_col` is not named in the
+#'   list, the rule will apply to all its members. If an `item_col` is named in the list, the rule
+#'   will only be applied when the `item_col`'s value is contained in the corresponding character
+#'   vector. When multiple `item_col`s are specified, the rule will be applied only to items that
+#'   satisfy all the conditions.
 #'
 #' @return An `alert_rule` object
 #' @export

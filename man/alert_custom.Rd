@@ -12,7 +12,7 @@ alert_custom(short_name, description, function_call, items = NULL)
 
 \item{description}{short description of what the rule checks for}
 
-\item{function_call}{call to be evaluated per item, that returns either \code{TRUE} or \code{FALSE}.
+\item{function_call}{quoted expression containing the call to be evaluated per item, that returns either \code{TRUE} or \code{FALSE}.
 Return value of \code{TRUE} means alert result is "FAIL". See Details.}
 
 \item{items}{named list with names corresponding to members of \code{item_cols}. List members are
@@ -23,20 +23,24 @@ If \code{items = NULL} the rule will be applied to all items. See Details.}
 An \code{alert_rule} object
 }
 \description{
-The supplied \code{function_call} is passed to \code{eval()} within a \code{dplyr::summarise()} after grouping
-by the \code{item_cols} and ordering by the \code{timepoint_col}. Column names that can be used explicitly
-in the expression are \code{value} and \code{timepoint}, and which refer to the values in the
-\code{value_col} and \code{timepoint_col} columns of the data respectively.
+Specify a custom rule to run on the time series.
 }
 \section{Details}{
- Use \code{items} to restrict the rule to be applied only to specified items.
-\code{items} can either be NULL or a named list of character vectors. If \code{NULL}, the rule will be
-applied to all items. If a named list, the names must match members of the \code{item_cols}
-parameter in the \code{inputspec}, (as well as column names in the \code{df}), though can be a subset.
-If an \code{item_col} is not named in the list, the rule will apply to all its members. If an
-\code{item_col} is named in the list, the rule will only be applied when the \code{item_col}'s value is
-contained in the corresponding character vector. When multiple \code{item_col}s are
-specified, the rule will be applied only to items that satisfy all the conditions.
+
+
+The supplied \code{function_call} is passed to \code{eval()} within a \code{dplyr::summarise()} after grouping
+by the \code{item_cols} and ordering by the \code{timepoint_col}. Column names that can be used
+explicitly in the expression are \code{value} and \code{timepoint}, and which refer to the values in the
+\code{value_col} and \code{timepoint_col} columns of the data respectively. See Examples.
+
+Use \code{items} to restrict the rule to be applied only to specified items. \code{items} can either be
+NULL or a named list of character vectors. If \code{NULL}, the rule will be applied to all items. If
+a named list, the names must match members of the \code{item_cols} parameter in the \code{inputspec}, (as
+well as column names in the \code{df}), though can be a subset. If an \code{item_col} is not named in the
+list, the rule will apply to all its members. If an \code{item_col} is named in the list, the rule
+will only be applied when the \code{item_col}'s value is contained in the corresponding character
+vector. When multiple \code{item_col}s are specified, the rule will be applied only to items that
+satisfy all the conditions.
 }
 
 \examples{
