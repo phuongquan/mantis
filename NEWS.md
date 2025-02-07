@@ -5,8 +5,9 @@ Breaking changes
 * `inputspec()` object now takes a `item_cols` parameter, allowing more than one column in the df to define individual time series, and must include the column being used for tabs (if any).
 * New `alertspec()` object adds additional output options and wraps `alert_rules()` where relevant
 * Alert results now appear in an additional tab for all types of outputspec
-* `items` parameter of alert rules now takes a list of items
-* `item_order` parameter of `outputspec()` now takes a list of items, and allows ordering of tabs
+* `items` parameter of alert rules now takes a named list of items
+* `item_labels` parameter of `outputspec_interactive()` replaces `item_label` and now takes a named vector of labels
+* `item_order` parameter of `outputspec()` now takes a named list of items, and allows ordering of tabs
 * `bespoke_rmd_output()` replaces `bespoke_rmd_tab_group()` and `bespoke_rmd_tab_item()`
 * New `bespoke_rmd_alert_results()` function creates a table containing the alert results for bespoke reports 
 
