@@ -71,7 +71,7 @@
 <p>The mantis package generates interactive html reports that enable quick visual review of multiple related time series. This can help with identification of temporal artefacts and unexpected trends. The time series visualisations include adjustable axes and tooltips showing the individual dates and values.</p>
 <p>The data frame containing the time series should be in long format, i.e.:</p>
 <ul>
-<li>one “timepoint” (date) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.</li>
+<li>one “timepoint” (date) column which will be used for the x-axes. Values should have a regular periodicity, e.g. daily, but do not have to be consecutive.</li>
 <li>one or more “item” (character) columns containing categorical values identifying distinct time series.</li>
 <li>one “value” (numeric) column containing the time series values which will be used for the y-axes.</li>
 </ul>
