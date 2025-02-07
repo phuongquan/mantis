@@ -31,7 +31,7 @@ window.onresize = function(){ location.reload(); }
 
 
 ```{r, results = 'asis'}
-mantis::bespoke_rmd_tab(
+mantis::bespoke_rmd_output(
   df,
   inputspec = mantis::inputspec(
     timepoint_col = "PrescriptionDate",
@@ -46,7 +46,7 @@ mantis::bespoke_rmd_tab(
 ```
 
 ```{r, results = 'asis'}
-mantis::bespoke_rmd_tab(
+mantis::bespoke_rmd_output(
   df,
   inputspec = mantis::inputspec(
     timepoint_col = "PrescriptionDate",
@@ -62,7 +62,7 @@ mantis::bespoke_rmd_tab(
 ```
 
 ```{r, results = 'asis'}
-mantis::bespoke_rmd_tab(
+mantis::bespoke_rmd_output(
   df,
   inputspec = mantis::inputspec(
     timepoint_col = "PrescriptionDate",
@@ -82,7 +82,7 @@ mantis::bespoke_rmd_tab(
 ```
 
 ```{r, results = 'asis'}
-mantis::bespoke_rmd_tab(
+mantis::bespoke_rmd_output(
   df,
   inputspec = mantis::inputspec(
     timepoint_col = "PrescriptionDate",
@@ -105,7 +105,7 @@ mantis::bespoke_rmd_tab(
 ## tab group child tabs only {.tabset}
 
 ```{r, results = 'asis'}
-mantis::bespoke_rmd_tab(
+mantis::bespoke_rmd_output(
   df,
   inputspec = mantis::inputspec(
     timepoint_col = "PrescriptionDate",

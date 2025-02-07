@@ -16,14 +16,14 @@ knitr::opts_chunk$set(
 
 This vignette introduces the basics of how to generate a bespoke html report containing tabs and visualisations from the `mantis` package. The easiest way to get started is to clone the [mantis-templates](https://github.com/phuongquan/mantis-templates) project to see it in action, then choose a template Rmd file that you can adapt.
 
-Note: Currently, `mantis` uses `rmarkdown` to generate its reports. In future it will add functionality to create Quarto reports.
+Note: Currently, `mantis` uses `rmarkdown` to generate its reports. In future there will be functionality to create Quarto reports.
 
 
 ## Overview 
 
 You can use existing `rmarkdown` functionality to create your own bespoke html report, and insert `mantis` content and/or tabs as desired. At a minimum, you need to know how to generate html documents from a Rmd file, including creating tabsets. If you don't, take a look at the official documentation and/or the many other online resources available.
 
-`mantis` includes one main function `bespoke_rmd_tab()` for creating content for bespoke reports. This function use side-effects to generate the desired markdown, and must be placed inside a `{r, results='asis'}` chunk.
+`mantis` includes one main function `bespoke_rmd_output()` for creating content for bespoke reports. This function use side-effects to generate the desired markdown, and must be placed inside a `{r, results='asis'}` chunk.
 
 The function can:
 

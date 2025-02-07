@@ -57,7 +57,7 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #'   multiple columns specified in `item_cols`, one of them can be used to group the time series
 #'   into different tabs on the report, by using the `tab_col` parameter.
 #' @export
-bespoke_rmd_tab <- function(df,
+bespoke_rmd_output <- function(df,
                             inputspec,
                             outputspec,
                             alertspec = NULL,

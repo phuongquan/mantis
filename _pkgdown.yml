@@ -54,7 +54,7 @@ reference:
 - title: Creating a bespoke report
   contents:
   - bespoke_rmd_initialise_widgets
-  - bespoke_rmd_tab
+  - bespoke_rmd_output
 
 - title: internal
   contents:
