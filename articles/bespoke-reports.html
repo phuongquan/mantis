@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@
       <h1>Creating bespoke reports</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/v0.1.2/vignettes/bespoke-reports.Rmd" class="external-link"><code>vignettes/bespoke-reports.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/main/vignettes/bespoke-reports.Rmd" class="external-link"><code>vignettes/bespoke-reports.Rmd</code></a></small>
       <div class="d-none name"><code>bespoke-reports.Rmd</code></div>
     </div>
 
@@ -81,7 +81,7 @@ package. The easiest way to get started is to clone the <a href="https://github.
 project to see it in action, then choose a template Rmd file that you
 can adapt.</p>
 <p>Note: Currently, <code>mantis</code> uses <code>rmarkdown</code> to
-generate its reports. In future it will add functionality to create
+generate its reports. In future there will be functionality to create
 Quarto reports.</p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -92,20 +92,21 @@ and/or tabs as desired. At a minimum, you need to know how to generate
 html documents from a Rmd file, including creating tabsets. If you
 don’t, take a look at the official documentation and/or the many other
 online resources available.</p>
-<p><code>mantis</code> includes two main functions for creating content
-for bespoke reports. These functions use side-effects to generate the
-desired markdown, and must be placed inside a
-<code>{r, results='asis'}</code> chunk.</p>
+<p><code>mantis</code> includes one main function
+<code><a href="../reference/bespoke_rmd_output.html">bespoke_rmd_output()</a></code> for creating content for bespoke
+reports. This function use side-effects to generate the desired
+markdown, and must be placed inside a <code>{r, results='asis'}</code>
+chunk.</p>
+<p>The function can:</p>
 <ul>
-<li><p><code><a href="../reference/bespoke_rmd_tab_item.html">bespoke_rmd_tab_item()</a></code> will add a single
-visualisation, with or without creating the container tab.</p></li>
-<li><p><code><a href="../reference/bespoke_rmd_tab_group.html">bespoke_rmd_tab_group()</a></code> will add a set of tabs, each
-based on the same output specification, with or without creating the
-parent tab.</p></li>
+<li><p>add a single visualisation, with or without creating the
+container tab, or</p></li>
+<li><p>add a set of tabs, each based on the same output specification,
+with or without creating the parent tab.</p></li>
 </ul>
-<p>These functions also include a few additional parameters not
-available in the standard <code><a href="../reference/mantis_report.html">mantis_report()</a></code> to allow some
-extra control over the display.</p>
+<p>The function also includes a few additional parameters not available
+in the standard <code><a href="../reference/mantis_report.html">mantis_report()</a></code> to allow some extra control
+over the display.</p>
 </div>
 <div class="section level2">
 <h2 id="extra-requirements-for-interactive-reports">Extra requirements for interactive reports<a class="anchor" aria-label="anchor" href="#extra-requirements-for-interactive-reports"></a>
@@ -130,9 +131,10 @@ this is to redraw them all by reloading the page. To do this, add the
 following chunk at the top of the Rmd file.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>```{js}</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>// this chunk is necessary when using mantis::outputspec_interactive(). </span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>// when the browser window is resized, all dygraphs on inactive tabs disappear. Reload page to redraw them all.</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>window.onresize = function(){ location.reload(); }</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>```</span></code></pre></div>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>// when the browser window is resized, all dygraphs on inactive tabs disappear. Reload page to </span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>// redraw them all.</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>window.onresize = function(){ location.reload(); }</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>```</span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

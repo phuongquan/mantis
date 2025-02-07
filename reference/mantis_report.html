@@ -9,7 +9,7 @@ interactive time series plots for visual inspection, and saves the report to dis
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,7 @@ interactive time series plots for visual inspection, and saves the report to dis
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Create an interactive time series report from a data frame</h1>
-      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/v0.1.2/R/report.R" class="external-link"><code>R/report.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/main/R/report.R" class="external-link"><code>R/report.R</code></a></small>
       <div class="d-none name"><code>mantis_report.Rd</code></div>
     </div>
 
@@ -58,7 +58,7 @@ interactive time series plots for visual inspection, and saves the report to dis
 <span>  <span class="va">df</span>,</span>
 <span>  <span class="va">inputspec</span>,</span>
 <span>  outputspec <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  alert_rules <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  alertspec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  report_title <span class="op">=</span> <span class="st">"mantis report"</span>,</span>
 <span>  dataset_description <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  save_directory <span class="op">=</span> <span class="st">"."</span>,</span>
@@ -87,8 +87,8 @@ will be created for each distinct value in the column.</p></dd>
 not supplied, default values will be used.</p></dd>
 
 
-<dt id="arg-alert-rules">alert_rules<a class="anchor" aria-label="anchor" href="#arg-alert-rules"></a></dt>
-<dd><p><code><a href="alert_rules.html">alert_rules()</a></code> object specifying conditions to test</p></dd>
+<dt id="arg-alertspec">alertspec<a class="anchor" aria-label="anchor" href="#arg-alertspec"></a></dt>
+<dd><p><code><a href="alertspec.html">alertspec()</a></code> object specifying conditions to test and display</p></dd>
 
 
 <dt id="arg-report-title">report_title<a class="anchor" aria-label="anchor" href="#arg-report-title"></a></dt>
@@ -127,7 +127,7 @@ no filename is supplied, one will be automatically generated with the format
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The supplied data frame should contain multiple time series in long format, i.e.:</p>
-<ul><li><p>one "timepoint" (date) column which will be used for the x-axes. This currently must be at a daily granularity, but values do not have to be consecutive.</p></li>
+<ul><li><p>one "timepoint" (date) column which will be used for the x-axes. Values should have a regular periodicity, e.g. daily, but do not have to be consecutive.</p></li>
 <li><p>one "item" (character) column containing categorical values identifying distinct time series.</p></li>
 <li><p>one "value" (numeric) column containing the time series values which will be used for the y-axes.</p></li>
 <li><p>Optionally, a "tab" (character) column containing categorical values which will be used to group the time series into different tabs on the report.</p></li>

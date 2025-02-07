@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Specify output options for a static report containing heatmaps</h1>
-      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/v0.1.2/R/prepare.R" class="external-link"><code>R/prepare.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/main/R/prepare.R" class="external-link"><code>R/prepare.R</code></a></small>
       <div class="d-none name"><code>outputspec_static_heatmap.Rd</code></div>
     </div>
 
@@ -71,15 +71,25 @@
 
 
 <dt id="arg-item-order">item_order<a class="anchor" aria-label="anchor" href="#arg-item-order"></a></dt>
-<dd><p>vector of values contained in item_col, for explicitly ordering the items in
-the table. Any values not mentioned are included alphabetically at the end. If TRUE, items
-will be sorted in ascending order. If NULL, the original order as given by unique(item_col)
-will be used.</p></dd>
+<dd><p>named list corresponding to <code>item_cols</code> columns for ordering the
+items in the output. List values are either <code>TRUE</code> for ascending order, or a character vector
+of values contained in the named column for explicit ordering. If <code>item_order = NULL</code>, the
+original order will be kept. See Details.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An <code>outputspec()</code> object</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>For <code>item_order</code>, the names of the list members should correspond to the column
+names in the <code>df</code>. Any names that don't match will be ignored. When multiple columns are
+specified, they are sorted together, in the same priority order as the list. If a list item is <code>TRUE</code>
+then that column is sorted in ascending order. If a list item is a character vector then that
+column is sorted in the order of the vector first, with any remaining values included
+alphabetically at the end. If you want to order the tabs, it is recommended to put the <code>tab_col</code>
+as the first item in the list.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

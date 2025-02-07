@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@
       <h1>Get started with mantis</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/v0.1.2/vignettes/mantis.Rmd" class="external-link"><code>vignettes/mantis.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/main/vignettes/mantis.Rmd" class="external-link"><code>vignettes/mantis.Rmd</code></a></small>
       <div class="d-none name"><code>mantis.Rmd</code></div>
     </div>
 
@@ -86,24 +86,23 @@ with the following columns (though the actual column names can be
 different):</p>
 <ul>
 <li>one “timepoint” (date) column which will be used for the x-axes.
-This currently must be at a daily granularity, but values do not have to
+Values should have a regular periodicity, e.g. daily, but do not have to
 be consecutive.</li>
-<li>one “item” (character) column containing categorical values
+<li>one or more “item” (character) columns containing categorical values
 identifying distinct time series.</li>
 <li>one “value” (numeric) column containing the time series values which
 will be used for the y-axes.</li>
-<li>Optionally, a “tab” (character) column containing categorical values
-which will be used to group the time series into different tabs on the
-report.</li>
 </ul>
 <p><strong>Example:</strong></p>
 <p>The <code>example_prescription_numbers</code> dataset is provided
 with this package, and contains (synthetic) examples of aggregate
 numbers of antibiotic prescriptions given in a hospital over a period of
-a year. It contains 4 columns:</p>
+a year. It contains 5 columns:</p>
 <ul>
 <li>PrescriptionDate - The date the prescriptions were written</li>
 <li>Antibiotic - The name of the antibiotic prescribed</li>
+<li>Spectrum - The spectrum of activity of the antibiotic. This value is
+always the same for a particular antibiotic</li>
 <li>NumberOfPrescriptions - The number of prescriptions written for this
 antibiotic on this day</li>
 <li>Location - The hospital site where the prescription was written</li>
@@ -112,20 +111,89 @@ antibiotic on this day</li>
 <code class="sourceCode R"><span><span class="co"># first, attach the package if you haven't already</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/phuongquan/mantis" class="external-link">mantis</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># this example data frame contains numbers of antibiotic prescriptions in long format, </span></span>
-<span><span class="co">#   plus a column for grouping the output:</span></span>
+<span><span class="co"># this example data frame contains numbers of antibiotic prescriptions in long format</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_prescription_numbers"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">example_prescription_numbers</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
-<span><span class="co">#&gt;   PrescriptionDate Antibiotic    NumberOfPrescriptions Location</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2022-01-01       Coamoxiclav                      45 SITE1   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2022-01-01       Gentamicin                       44 SITE1   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2022-01-01       Ceftriaxone                      26 SITE1   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2022-01-01       Metronidazole                    22 SITE1   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2022-01-01       Meropenem                         5 SITE1   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2022-01-01       Vancomycin                        0 SITE1</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
+<span><span class="co">#&gt;   PrescriptionDate Antibiotic    Spectrum NumberOfPrescriptions Location</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2022-01-01       Coamoxiclav   Broad                       45 SITE1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2022-01-01       Gentamicin    Broad                       34 SITE1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2022-01-01       Ceftriaxone   Broad                       36 SITE1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2022-01-01       Metronidazole Limited                     17 SITE1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2022-01-01       Meropenem     Broad                       10 SITE1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2022-01-01       Vancomycin    Limited                      0 SITE1</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="specifying-the-data-columns">Specifying the data columns<a class="anchor" aria-label="anchor" href="#specifying-the-data-columns"></a>
+</h3>
+<p>You must specify which column(s) in the supplied data frame should be
+used to identify the individual time series (items), and which columns
+contain the timepoint (x-axis) and value (y-axis) for the time series.
+These are set using the <code>item_cols</code>,
+<code>timepoint_col</code> and <code>value_col</code> parameters of
+<code><a href="../reference/inputspec.html">inputspec()</a></code> respectively. Any other columns in the data
+frame are ignored.</p>
+<p>Optionally, if there are multiple columns specified in
+<code>item_cols</code>, one of them can be used to group the time series
+into different tabs on the report, by using the <code>tab_col</code>
+parameter.</p>
+<p>Members of <code>item_cols</code> should be specified in the order
+that you want them to appear in the output.</p>
+<p><strong>Example:</strong></p>
+<p>For the <code>example_prescription_numbers</code> dataset above, the
+combination of “Antibiotic” and “Location” columns uniquely identify a
+time series in the data frame, and so both columns must be included in
+<code>item_cols</code>.</p>
+<p>The “Spectrum” column can also be added to <code>item_cols</code> as
+well if desired, in which case it will appear in the output as an
+additional column/label. Otherwise it will be ignored.</p>
+<p>Here are some options for specifying the data columns, depending on
+how you want the report to look:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># create a flat report, and include the "Location" and "Antibiotic" fields in the content</span></span>
+<span><span class="va">inspec_flat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
+<span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
+<span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Antibiotic"</span><span class="op">)</span>,</span>
+<span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create a flat report, and include the "Location", "Spectrum", and "Antibiotic" fields in the</span></span>
+<span><span class="co"># content</span></span>
+<span><span class="va">inspec_flat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
+<span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
+<span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Spectrum"</span>, <span class="st">"Antibiotic"</span><span class="op">)</span>,</span>
+<span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create a tabbed report, with a separate tab for each unique value of "Location", and include just</span></span>
+<span><span class="co"># the "Antibiotic" field in the content of each tab</span></span>
+<span><span class="va">inspec_tabbed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
+<span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
+<span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span>
+<span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
+<span>  tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create a tabbed report, with a separate tab for each unique value of "Location", and include the</span></span>
+<span><span class="co"># "Antibiotic" and "Spectrum" fields in the content of each tab</span></span>
+<span><span class="va">inspec_tabbed2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
+<span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
+<span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span>
+<span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
+<span>  tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create a tabbed report, with a separate tab for each unique value of "Antibiotic", and include</span></span>
+<span><span class="co"># just the "Location" field in the content of each tab</span></span>
+<span><span class="va">inspec_tabbed3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
+<span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
+<span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span>
+<span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
+<span>  tab_col <span class="op">=</span> <span class="st">"Antibiotic"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="generating-a-report">Generating a report<a class="anchor" aria-label="anchor" href="#generating-a-report"></a>
@@ -138,11 +206,6 @@ alphanumeric, <code>-</code> and <code>_</code> characters. If a
 filename is not supplied, one will be automatically generated. We can
 also optionally specify a short description for the dataset, which will
 appear on the report.</p>
-<p>The <code>inputspec</code> parameter specifies which columns in the
-supplied data frame contain the timepoint (x-axis), item (time series
-identifer), and value (y-axis) for the time series. If a tab column is
-specified, items sharing the same tab value will be grouped together on
-separate tabs in the report.</p>
 <p>There are 3 different options for visualising the time series. This
 is set using the <code>outputspec</code> parameter.</p>
 <div class="section level3">
@@ -150,9 +213,10 @@ is set using the <code>outputspec</code> parameter.</p>
 </h3>
 <p>This is the default visualisation, and produces a table with one time
 series in each row, with orderable and filterable columns showing the
-name of the time series, its maximum value, and a bar plot with
-adjustable axes and tooltips showing the individual dates and
-values.</p>
+previously-specified <code>item_cols</code> for identifying the time
+series. Also in the table are the maximum value of each time series, and
+bar plots with adjustable axes and tooltips showing the individual dates
+and values.</p>
 <p>There are some options for adjusting the output, such as changing
 column labels, plot type, and whether or not to use the same y-axis
 scale across the table. This can be done using the
@@ -161,21 +225,12 @@ scale across the table. This can be done using the
 <p><strong>Example:</strong></p>
 <p>For the <code>example_prescription_numbers</code> dataset above, we
 will save a report in the current directory, with separate tabs for each
-hospital site, and changing the first column header to be
-“Antibiotic”.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+hospital site.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mantis_report.html">mantis_report</a></span><span class="op">(</span></span>
 <span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
-<span>  inputspec <span class="op">=</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
-<span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
-<span>    item_col <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
-<span>    value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
-<span>    tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_interactive.html">outputspec_interactive</a></span><span class="op">(</span></span>
-<span>    item_label <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
-<span>    sync_axis_range <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>  <span class="op">)</span>,</span>
+<span>  inputspec <span class="op">=</span> <span class="va">inspec_tabbed2</span>,</span>
+<span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_interactive.html">outputspec_interactive</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  report_title <span class="op">=</span> <span class="st">"mantis report"</span>,</span>
 <span>  dataset_description <span class="op">=</span> <span class="st">"Antibiotic prescriptions by site"</span>,</span>
 <span>  save_filename <span class="op">=</span> <span class="st">"example_prescription_numbers_interactive"</span>,</span>
@@ -196,18 +251,11 @@ multipanel, and are selected by using the
 <div class="section level4">
 <h4 id="heatmap">Heatmap<a class="anchor" aria-label="anchor" href="#heatmap"></a>
 </h4>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mantis_report.html">mantis_report</a></span><span class="op">(</span></span>
 <span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
-<span>  inputspec <span class="op">=</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
-<span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
-<span>    item_col <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
-<span>    value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
-<span>    tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_static_heatmap.html">outputspec_static_heatmap</a></span><span class="op">(</span></span>
-<span>    y_label <span class="op">=</span> <span class="st">"Antibiotic"</span></span>
-<span>  <span class="op">)</span>,</span>
+<span>  inputspec <span class="op">=</span> <span class="va">inspec_tabbed</span>,</span>
+<span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_static_heatmap.html">outputspec_static_heatmap</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  report_title <span class="op">=</span> <span class="st">"mantis report"</span>,</span>
 <span>  dataset_description <span class="op">=</span> <span class="st">"Antibiotic prescriptions by site"</span>,</span>
 <span>  save_filename <span class="op">=</span> <span class="st">"example_prescription_numbers_heatmap"</span>,</span>
@@ -218,18 +266,11 @@ multipanel, and are selected by using the
 <div class="section level4">
 <h4 id="multipanel">Multipanel<a class="anchor" aria-label="anchor" href="#multipanel"></a>
 </h4>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mantis_report.html">mantis_report</a></span><span class="op">(</span></span>
 <span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
-<span>  inputspec <span class="op">=</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
-<span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
-<span>    item_col <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
-<span>    value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
-<span>    tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_static_multipanel.html">outputspec_static_multipanel</a></span><span class="op">(</span></span>
-<span>    y_label <span class="op">=</span> <span class="st">"Antibiotic"</span></span>
-<span>  <span class="op">)</span>,</span>
+<span>  inputspec <span class="op">=</span> <span class="va">inspec_tabbed</span>,</span>
+<span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_static_multipanel.html">outputspec_static_multipanel</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  report_title <span class="op">=</span> <span class="st">"mantis report"</span>,</span>
 <span>  dataset_description <span class="op">=</span> <span class="st">"Antibiotic prescriptions by site"</span>,</span>
 <span>  save_filename <span class="op">=</span> <span class="st">"example_prescription_numbers_multipanel"</span>,</span>

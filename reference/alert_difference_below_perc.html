@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Test for when there is a percentage drop in latest values</h1>
-      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/v0.1.2/R/alert.R" class="external-link"><code>R/alert.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/main/R/alert.R" class="external-link"><code>R/alert.R</code></a></small>
       <div class="d-none name"><code>alert_difference_below_perc.Rd</code></div>
     </div>
 
@@ -55,7 +55,7 @@
 <span>  <span class="va">current_period</span>,</span>
 <span>  <span class="va">previous_period</span>,</span>
 <span>  <span class="va">rule_value</span>,</span>
-<span>  items <span class="op">=</span> <span class="st">"[ALL]"</span></span>
+<span>  items <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -68,15 +68,19 @@
 
 
 <dt id="arg-previous-period">previous_period<a class="anchor" aria-label="anchor" href="#arg-previous-period"></a></dt>
-<dd><p>vector containing positions from end of time series to use for comparison. Can overlap with <code>current_period</code> if desired.</p></dd>
+<dd><p>vector containing positions from end of time series to use for
+comparison. Can overlap with <code>current_period</code> if desired.</p></dd>
 
 
 <dt id="arg-rule-value">rule_value<a class="anchor" aria-label="anchor" href="#arg-rule-value"></a></dt>
-<dd><p>value to test against. e.g. <code>rule_value=5</code> means alert if percentage drop is greater than 5</p></dd>
+<dd><p>value to test against. e.g. <code>rule_value=5</code> means alert if percentage drop is
+greater than 5</p></dd>
 
 
 <dt id="arg-items">items<a class="anchor" aria-label="anchor" href="#arg-items"></a></dt>
-<dd><p>vector of values in item_col that the rule should be applied to. Or "[ALL]" to apply it to all items.</p></dd>
+<dd><p>named list with names corresponding to members of <code>item_cols</code>. List members are
+character vectors of values contained in the named column that the rule should be applied to.
+If <code>items = NULL</code> the rule will be applied to all items. See Details.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -85,7 +89,19 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Based on the mean of values in the two periods. Ranges should be contiguous, and denote positions from the end of the time series.</p>
+    <p>Based on the mean of values in the two periods. Ranges should be contiguous, and denote
+positions from the end of the time series.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details-1">Details<a class="anchor" aria-label="anchor" href="#details-1"></a></h2>
+    <p>Use <code>items</code> to restrict the rule to be applied only to specified items.
+<code>items</code> can either be NULL or a named list of character vectors. If <code>NULL</code>, the rule will be
+applied to all items. If a named list, the names must match members of the <code>item_cols</code>
+parameter in the <code>inputspec</code>, (as well as column names in the <code>df</code>), though can be a subset.
+If an <code>item_col</code> is not named in the list, the rule will apply to all its members. If an
+<code>item_col</code> is named in the list, the rule will only be applied when the <code>item_col</code>'s value is
+contained in the corresponding character vector. When multiple <code>item_col</code>s are
+specified, the rule will be applied only to items that satisfy all the conditions.</p>
     </div>
 
     <div class="section level2">

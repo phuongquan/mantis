@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@
       <h1>Specifying alerting rules</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/v0.1.2/vignettes/alert-rules.Rmd" class="external-link"><code>vignettes/alert-rules.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/main/vignettes/alert-rules.Rmd" class="external-link"><code>vignettes/alert-rules.Rmd</code></a></small>
       <div class="d-none name"><code>alert-rules.Rmd</code></div>
     </div>
 
@@ -81,9 +81,12 @@ are large numbers of time series to inspect. In this case, it can be
 useful to additionally test the individual time series for certain
 conditions, such as the presence of missing values or for values
 breaching pre-set limits, and to alert the user to them.</p>
-<p>The alerting rules functionality is currently only available for
-interactive outputs. They will be ignored when choosing static
-visualisations.</p>
+<p>The alert results are displayed in different ways depending on the
+chosen type of output. Tabs containing time series which failed at least
+one alert are highlighted. A separate tab containing all the alert
+results is added at the end.</p>
+<p>It is also possible to just generate the alert results as a data
+frame.</p>
 <p>Note: This functionality is still in the early stages of development,
 and can increase the document size and rendering time of the report
 considerably.</p>
@@ -92,7 +95,9 @@ considerably.</p>
 </h2>
 <p>One or more alerting rules can be specified within an
 <code><a href="../reference/alert_rules.html">alert_rules()</a></code> object, which is then passed into the
-<code>alert_rules</code> parameter.</p>
+<code>alert_rules</code> parameter. When creating a standard mantis
+report, the <code>alertspec</code> parameter also controls how the
+results are displayed in the final tab.</p>
 </div>
 <div class="section level2">
 <h2 id="built-in-rules">Built-in rules<a class="anchor" aria-label="anchor" href="#built-in-rules"></a>
@@ -152,22 +157,22 @@ using <code><a href="../reference/alert_custom.html">alert_custom()</a></code>. 
 inside <code><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote()</a></code> must return either <code>TRUE</code> or
 <code>FALSE</code>. A return value of <code>TRUE</code> means the alert
 result is “FAIL”</p>
-<p>Column names that can be used explicitly in the expression are:
-<code>value</code>, <code>item</code>, <code>timepoint</code>; and which
-refer to the values in the <code>value_col</code>,
-<code>item_col</code>, <code>timepoint_col</code> columns of the data
-respectively. Before evaluating the <code>function_call</code>, the
-dataframe is grouped by the <code>item_col</code> and ordered by the
-<code>timepoint_col</code>.</p>
+<p>Column names that can be used explicitly in the expression are
+<code>value</code> and <code>timepoint</code>, and which refer to the
+values in the <code>value_col</code> and <code>timepoint_col</code>
+columns of the data respectively. Before evaluating the
+<code>function_call</code>, the dataframe is grouped by the
+<code>item_col</code> and ordered by the <code>timepoint_col</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="applying-different-rules-to-different-time-series">Applying different rules to different time series<a class="anchor" aria-label="anchor" href="#applying-different-rules-to-different-time-series"></a>
 </h2>
 <p>By default, the specified rules will be run on all time series in the
 supplied dataframe. You can specify different sets of rules for
-different time series by providing a vector of the <code>item_col</code>
-values that the particular rule should be applied to in the
-<code>items</code> parameter.</p>
+different time series by using the <code>items</code> parameter, and
+providing it a named list of character vectors corresponding to the
+<code>item_cols</code> columns and values that the particular rule
+should be applied to.</p>
 </div>
 <div class="section level2">
 <h2 id="walkthrough">Walkthrough<a class="anchor" aria-label="anchor" href="#walkthrough"></a>
@@ -184,12 +189,11 @@ values that the particular rule should be applied to in the
 <span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
 <span>  inputspec <span class="op">=</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
 <span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
-<span>    item_col <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
+<span>    item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span>
 <span>    value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
 <span>    tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_interactive.html">outputspec_interactive</a></span><span class="op">(</span></span>
-<span>    item_label <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
 <span>    sync_axis_range <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  report_title <span class="op">=</span> <span class="st">"mantis report"</span>,</span>
@@ -222,25 +226,66 @@ start.</p>
 <span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
 <span>  inputspec <span class="op">=</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
 <span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
-<span>    item_col <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
+<span>    item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span>
 <span>    value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
 <span>    tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_interactive.html">outputspec_interactive</a></span><span class="op">(</span></span>
-<span>    item_label <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
 <span>    sync_axis_range <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  alert_rules <span class="op">=</span> <span class="va">ars</span>,</span>
+<span>  alertspec <span class="op">=</span> <span class="fu"><a href="../reference/alertspec.html">alertspec</a></span><span class="op">(</span></span>
+<span>    alert_rules <span class="op">=</span> <span class="va">ars</span>,</span>
+<span>    show_tab_results <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FAIL"</span>, <span class="st">"NA"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
 <span>  report_title <span class="op">=</span> <span class="st">"mantis report with alerts"</span>,</span>
 <span>  dataset_description <span class="op">=</span> <span class="st">"Antibiotic prescriptions by site"</span>,</span>
 <span>  save_filename <span class="op">=</span> <span class="st">"example_prescription_numbers_interactive_alerts"</span>,</span>
 <span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The report now includes a column for the alert results, and details
-can be seen by clicking on the triangles. Also, the tab labels will
-include an exclamation mark if any items in that tab have failed an
-alert rule.</p>
+can be seen by clicking on the triangles. The tab labels will include an
+exclamation mark if any items in that tab have failed an alert rule.</p>
 <p><img src="../reference/figures/alert_results.png" width="100%"></p>
+<p>An additional tab is also created, which lists the alert results. In
+this example we have decided to exclude any alerts that have passed.</p>
+<p><img src="../reference/figures/alert_results_tab.png" width="100%"></p>
+<p>If for some reason we only wanted to apply the custom rule to broad
+spectrum antibiotics, we can indicate this using the <code>items</code>
+parameter of the rule.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ars_restricted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/alert_custom.html">alert_custom</a></span><span class="op">(</span></span>
+<span>    short_name <span class="op">=</span> <span class="st">"my_rule_doubled"</span>,</span>
+<span>    description <span class="op">=</span> <span class="st">"Last 7 values are over double the first 7 values"</span>,</span>
+<span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">value</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Spectrum"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Broad"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create a new report</span></span>
+<span><span class="fu"><a href="../reference/mantis_report.html">mantis_report</a></span><span class="op">(</span></span>
+<span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
+<span>  inputspec <span class="op">=</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
+<span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
+<span>    item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span>
+<span>    value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
+<span>    tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_interactive.html">outputspec_interactive</a></span><span class="op">(</span></span>
+<span>    sync_axis_range <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  alertspec <span class="op">=</span> <span class="fu"><a href="../reference/alertspec.html">alertspec</a></span><span class="op">(</span></span>
+<span>    alert_rules <span class="op">=</span> <span class="va">ars_restricted</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  report_title <span class="op">=</span> <span class="st">"mantis report with alerts"</span>,</span>
+<span>  dataset_description <span class="op">=</span> <span class="st">"Antibiotic prescriptions by site"</span>,</span>
+<span>  save_filename <span class="op">=</span> <span class="st">"example_prescription_numbers_interactive_alerts_restricted"</span>,</span>
+<span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The report now shows two rules for Coamoxiclav and one rule for
+Metronidazole.</p>
+<p><img src="../reference/figures/alert_results_restricted.png" width="100%"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

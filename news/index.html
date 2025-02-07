@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,9 +41,29 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/phuongquan/mantis/blob/v0.1.2/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/phuongquan/mantis/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="mantis-020-2025-02-07">mantis 0.2.0 (2025-02-07)<a class="anchor" aria-label="anchor" href="#mantis-020-2025-02-07"></a></h2>
+<p>Breaking changes</p>
+<ul><li>
+<code><a href="../reference/inputspec.html">inputspec()</a></code> object now takes a <code>item_cols</code> parameter, allowing more than one column in the df to define individual time series, and must include the column being used for tabs (if any).</li>
+<li>New <code><a href="../reference/alertspec.html">alertspec()</a></code> object adds additional output options and wraps <code><a href="../reference/alert_rules.html">alert_rules()</a></code> where relevant</li>
+<li>Alert results now appear in an additional tab for all types of outputspec</li>
+<li>
+<code>items</code> parameter of alert rules now takes a named list of items</li>
+<li>
+<code>item_labels</code> parameter of <code><a href="../reference/outputspec_interactive.html">outputspec_interactive()</a></code> replaces <code>item_label</code> and now takes a named vector of labels</li>
+<li>
+<code>item_order</code> parameter of <code>outputspec()</code> now takes a named list of items, and allows ordering of tabs</li>
+<li>
+<code><a href="../reference/bespoke_rmd_output.html">bespoke_rmd_output()</a></code> replaces <code>bespoke_rmd_tab_group()</code> and <code>bespoke_rmd_tab_item()</code>
+</li>
+<li>New <code><a href="../reference/bespoke_rmd_alert_results.html">bespoke_rmd_alert_results()</a></code> function creates a table containing the alert results for bespoke reports</li>
+</ul><p>Other changes</p>
+<ul><li>example_prescription_numbers dataset now has additional data</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.2" id="mantis-012-2025-01-15">mantis 0.1.2 (2025-01-15)<a class="anchor" aria-label="anchor" href="#mantis-012-2025-01-15"></a></h2>
 <p>Pre-release. Expect breaking changes to functions in the future.</p>
@@ -57,8 +77,8 @@
 <li><code><a href="../reference/alert_missing.html">alert_missing()</a></code></li>
 <li><code><a href="../reference/alert_rules.html">alert_rules()</a></code></li>
 <li><code><a href="../reference/bespoke_rmd_initialise_widgets.html">bespoke_rmd_initialise_widgets()</a></code></li>
-<li><code><a href="../reference/bespoke_rmd_tab_group.html">bespoke_rmd_tab_group()</a></code></li>
-<li><code><a href="../reference/bespoke_rmd_tab_item.html">bespoke_rmd_tab_item()</a></code></li>
+<li><code>bespoke_rmd_tab_group()</code></li>
+<li><code>bespoke_rmd_tab_item()</code></li>
 <li><code><a href="../reference/inputspec.html">inputspec()</a></code></li>
 <li><code><a href="../reference/mantis_alerts.html">mantis_alerts()</a></code></li>
 <li><code><a href="../reference/mantis_report.html">mantis_report()</a></code></li>
@@ -66,7 +86,8 @@
 <li><code><a href="../reference/outputspec_static_heatmap.html">outputspec_static_heatmap()</a></code></li>
 <li><code><a href="../reference/outputspec_static_multipanel.html">outputspec_static_multipanel()</a></code></li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
