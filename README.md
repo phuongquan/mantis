@@ -43,7 +43,7 @@ health records in mind, but can be used for any types of time series.
 remotes::install_github("phuongquan/mantis")
 
 # or install the latest release version
-#remotes::install_github("phuongquan/mantis@v0.1.2")
+#remotes::install_github("phuongquan/mantis@v0.2.0")
 ```
 
 ## Usage

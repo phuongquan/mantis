@@ -1,4 +1,4 @@
-# mantis (development version)
+# mantis 0.2.0 (2025-02-07)
 
 Breaking changes
 
