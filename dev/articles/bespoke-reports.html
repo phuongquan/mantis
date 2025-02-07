@@ -82,7 +82,7 @@ package. The easiest way to get started is to clone the <a href="https://github.
 project to see it in action, then choose a template Rmd file that you
 can adapt.</p>
 <p>Note: Currently, <code>mantis</code> uses <code>rmarkdown</code> to
-generate its reports. In future it will add functionality to create
+generate its reports. In future there will be functionality to create
 Quarto reports.</p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -94,9 +94,10 @@ html documents from a Rmd file, including creating tabsets. If you
 don’t, take a look at the official documentation and/or the many other
 online resources available.</p>
 <p><code>mantis</code> includes one main function
-<code><a href="../reference/bespoke_rmd_tab.html">bespoke_rmd_tab()</a></code> for creating content for bespoke reports.
-This function use side-effects to generate the desired markdown, and
-must be placed inside a <code>{r, results='asis'}</code> chunk.</p>
+<code><a href="../reference/bespoke_rmd_output.html">bespoke_rmd_output()</a></code> for creating content for bespoke
+reports. This function use side-effects to generate the desired
+markdown, and must be placed inside a <code>{r, results='asis'}</code>
+chunk.</p>
 <p>The function can:</p>
 <ul>
 <li><p>add a single visualisation, with or without creating the

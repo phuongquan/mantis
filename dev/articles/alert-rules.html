@@ -82,9 +82,12 @@ are large numbers of time series to inspect. In this case, it can be
 useful to additionally test the individual time series for certain
 conditions, such as the presence of missing values or for values
 breaching pre-set limits, and to alert the user to them.</p>
-<p>The alerting rules functionality is currently only available for
-interactive outputs. They will be ignored when choosing static
-visualisations.</p>
+<p>The alert results are displayed in different ways depending on the
+chosen type of output. Tabs containing time series which failed at least
+one alert are highlighted. A separate tab containing all the alert
+results is added at the end.</p>
+<p>It is also possible to just generate the alert results as a data
+frame.</p>
 <p>Note: This functionality is still in the early stages of development,
 and can increase the document size and rendering time of the report
 considerably.</p>
@@ -93,7 +96,9 @@ considerably.</p>
 </h2>
 <p>One or more alerting rules can be specified within an
 <code><a href="../reference/alert_rules.html">alert_rules()</a></code> object, which is then passed into the
-<code>alert_rules</code> parameter.</p>
+<code>alert_rules</code> parameter. When creating a standard mantis
+report, the <code>alertspec</code> parameter also controls how the
+results are displayed in the final tab.</p>
 </div>
 <div class="section level2">
 <h2 id="built-in-rules">Built-in rules<a class="anchor" aria-label="anchor" href="#built-in-rules"></a>
@@ -229,17 +234,22 @@ start.</p>
 <span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_interactive.html">outputspec_interactive</a></span><span class="op">(</span></span>
 <span>    sync_axis_range <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  alert_rules <span class="op">=</span> <span class="va">ars</span>,</span>
+<span>  alertspec <span class="op">=</span> <span class="fu"><a href="../reference/alertspec.html">alertspec</a></span><span class="op">(</span></span>
+<span>    alert_rules <span class="op">=</span> <span class="va">ars</span>,</span>
+<span>    show_tab_results <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FAIL"</span>, <span class="st">"NA"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
 <span>  report_title <span class="op">=</span> <span class="st">"mantis report with alerts"</span>,</span>
 <span>  dataset_description <span class="op">=</span> <span class="st">"Antibiotic prescriptions by site"</span>,</span>
 <span>  save_filename <span class="op">=</span> <span class="st">"example_prescription_numbers_interactive_alerts"</span>,</span>
 <span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The report now includes a column for the alert results, and details
-can be seen by clicking on the triangles. Also, the tab labels will
-include an exclamation mark if any items in that tab have failed an
-alert rule.</p>
+can be seen by clicking on the triangles. The tab labels will include an
+exclamation mark if any items in that tab have failed an alert rule.</p>
 <p><img src="../reference/figures/alert_results.png" width="100%"></p>
+<p>An additional tab is also created, which lists the alert results. In
+this example we have decided to exclude any alerts that have passed.</p>
+<p><img src="../reference/figures/alert_results_tab.png" width="100%"></p>
 <p>If for some reason we only wanted to apply the custom rule to broad
 spectrum antibiotics, we can indicate this using the <code>items</code>
 parameter of the rule.</p>
@@ -266,7 +276,9 @@ parameter of the rule.</p>
 <span>  outputspec <span class="op">=</span> <span class="fu"><a href="../reference/outputspec_interactive.html">outputspec_interactive</a></span><span class="op">(</span></span>
 <span>    sync_axis_range <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  alert_rules <span class="op">=</span> <span class="va">ars_restricted</span>,</span>
+<span>  alertspec <span class="op">=</span> <span class="fu"><a href="../reference/alertspec.html">alertspec</a></span><span class="op">(</span></span>
+<span>    alert_rules <span class="op">=</span> <span class="va">ars_restricted</span></span>
+<span>  <span class="op">)</span>,</span>
 <span>  report_title <span class="op">=</span> <span class="st">"mantis report with alerts"</span>,</span>
 <span>  dataset_description <span class="op">=</span> <span class="st">"Antibiotic prescriptions by site"</span>,</span>
 <span>  save_filename <span class="op">=</span> <span class="st">"example_prescription_numbers_interactive_alerts_restricted"</span>,</span>
