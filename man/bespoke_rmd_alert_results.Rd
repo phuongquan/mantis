@@ -2,7 +2,7 @@
 % Please edit documentation in R/construct.R
 \name{bespoke_rmd_alert_results}
 \alias{bespoke_rmd_alert_results}
-\title{Dynamically generate a tab containing alert results for an rmd chunk}
+\title{Dynamically generate a table containing alert results for an rmd chunk}
 \usage{
 bespoke_rmd_alert_results(
   df,

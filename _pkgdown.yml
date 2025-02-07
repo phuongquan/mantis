@@ -41,6 +41,7 @@ reference:
 
 - title: Specifying alerting rules
   contents:
+  - alertspec
   - alert_rules
   - alert_missing
   - alert_equals
@@ -55,6 +56,7 @@ reference:
   contents:
   - bespoke_rmd_initialise_widgets
   - bespoke_rmd_output
+  - bespoke_rmd_alert_results
 
 - title: internal
   contents:

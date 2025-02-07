@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 While visual inspection is probably the most reliable way of identifying anomalies in time series, things can be missed when there are large numbers of time series to inspect. In this case, it can be useful to additionally test the individual time series for certain conditions, such as the presence of missing values or for values breaching pre-set limits, and to alert the user to them.
 
-The alert results are displayed in different ways depending on the chosen type of output. Tabs containing time series which failed at least one alert are highlighted. A separate tab containing the alert results is created by default.
+The alert results are displayed in different ways depending on the chosen type of output. Tabs containing time series which failed at least one alert are highlighted. A separate tab containing all the alert results is added at the end.
 
 It is also possible to just generate the alert results as a data frame.
 
@@ -24,7 +24,7 @@ Note: This functionality is still in the early stages of development, and can in
 
 ## Overview
 
-One or more alerting rules can be specified within an `alert_rules()` object, which is then passed into the `alert_rules` parameter. When creating a standard mantis report, the `alertspec` parameter also controls how the results are displayed in a separate tab.
+One or more alerting rules can be specified within an `alert_rules()` object, which is then passed into the `alert_rules` parameter. When creating a standard mantis report, the `alertspec` parameter also controls how the results are displayed in the final tab.
 
 ## Built-in rules
 

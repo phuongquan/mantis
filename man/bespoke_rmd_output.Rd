@@ -2,7 +2,7 @@
 % Please edit documentation in R/construct.R
 \name{bespoke_rmd_output}
 \alias{bespoke_rmd_output}
-\title{Dynamically generate a tab or group of tabs for an rmd chunk}
+\title{Dynamically generate mantis output for an rmd chunk}
 \usage{
 bespoke_rmd_output(
   df,

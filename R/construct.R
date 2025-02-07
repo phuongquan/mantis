@@ -22,7 +22,7 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
   initialise_widgets(plot_type = plot_type)
 }
 
-#' Dynamically generate a tab or group of tabs for an rmd chunk
+#' Dynamically generate mantis output for an rmd chunk
 #'
 #' Chunk options must contain `results = 'asis'`.
 #' Function writes directly to the chunk using side-effects
@@ -94,7 +94,7 @@ bespoke_rmd_output <- function(df,
 }
 
 
-#' Dynamically generate a tab containing alert results for an rmd chunk
+#' Dynamically generate a table containing alert results for an rmd chunk
 #'
 #' Chunk options must contain `results = 'asis'`.
 #' Function writes directly to the chunk using side-effects
