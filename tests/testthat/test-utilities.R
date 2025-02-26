@@ -411,6 +411,19 @@ test_that("validate_params_type() checks fill_with_zero params are of correct ty
                class = "invalid_param_type")
 })
 
+test_that("validate_params_type() checks sync_axis_range params are of correct type", {
+  expect_silent(testfn_params_type(sync_axis_range = TRUE))
+  expect_silent(testfn_params_type(sync_axis_range = FALSE))
+
+  expect_error(testfn_params_type(sync_axis_range = NULL),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(sync_axis_range = 1),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(sync_axis_range = c(TRUE, FALSE)),
+               class = "invalid_param_type")
+})
+
+
 test_that("validate_params_type() checks tab_name params are of correct type", {
   expect_silent(testfn_params_type(tab_name = ""))
   expect_silent(testfn_params_type(tab_name = NULL))

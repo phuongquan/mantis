@@ -314,6 +314,13 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
                                       y_label = NULL,
                                       item_order = NULL) {
 
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       fill_colour = fill_colour,
+                       y_label = y_label,
+                       item_order = item_order
+                       )
+
   structure(
     list(fill_colour = fill_colour,
          y_label = y_label,
@@ -347,6 +354,13 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 outputspec_static_multipanel <- function(sync_axis_range = FALSE,
                                         y_label = NULL,
                                         item_order = NULL) {
+
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       sync_axis_range = sync_axis_range,
+                       y_label = y_label,
+                       item_order = item_order
+                       )
 
   structure(
     list(sync_axis_range = sync_axis_range,
