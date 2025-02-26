@@ -26,7 +26,7 @@ if(length(unlist(strsplit(as.character(utils::packageVersion("mantis")), "[.]"))
     ),
     outputspec = mantis::outputspec_interactive(),
     report_title = "Example mantis report - interactive",
-    dataset_description = "Antibiotic prescriptions by site",
+    dataset_description = "Hover mouse over the graphs to see dates and values. Filter the table by typing into the boxes under the column headings.",
     save_directory = "../../docs/articles",
     save_filename = "example-prescriptions-interactive",
     show_progress = FALSE
