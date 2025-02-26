@@ -406,15 +406,15 @@ alert_below <- function(extent_type = "all",
 #' @return An `alert_rule` object
 #' @examples
 #' # alert if all values are greater than 50
-#' ars <- alert_rules(alert_below(extent_type = "all", rule_value = 50))
+#' ars <- alert_rules(alert_above(extent_type = "all", rule_value = 50))
 #'
 #' # alert if there are 10 or more values that are greater than 50
 #' # or if the last 3 or more values are greater than 60
 #' # or if 5 or more values in a row are greater than 40
 #' ars <- alert_rules(
-#'   alert_below(extent_type = "any", extent_value = 10, rule_value = 50),
-#'   alert_below(extent_type = "last", extent_value = 3, rule_value = 60),
-#'   alert_below(extent_type = "consecutive", extent_value = 5, rule_value = 40)
+#'   alert_above(extent_type = "any", extent_value = 10, rule_value = 50),
+#'   alert_above(extent_type = "last", extent_value = 3, rule_value = 60),
+#'   alert_above(extent_type = "consecutive", extent_value = 5, rule_value = 40)
 #' )
 #' @export
 alert_above <- function(extent_type = "all",
