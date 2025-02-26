@@ -1,15 +1,15 @@
 Package: mantis
 Type: Package
 Title: Multiple Time Series Scanner
-Version: 0.2.0
+Version: 0.2.0.9000
 Authors@R: c(
     person(c("T.", "Phuong"), "Quan", email = "phuong.quan@ndm.ox.ac.uk",
         role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8566-1817")),
     person(family = "University of Oxford", role = "cph"),
     person(family = "National Institute for Health Research (NIHR)", role = "fnd")
     )
-Description: Generate interactive html reports that enable quick visual review of 
-    multiple related time series. This can help with identification of any 
+  Description: Generate interactive html reports that enable quick visual review of 
+      multiple related time series. This can help with identification of any 
     temporal artefacts or unexpected trends. The resulting reports are shareable 
     and can contribute to forming a transparent record of the entire analysis process. 
 URL: https://github.com/phuongquan/mantis,
@@ -24,7 +24,7 @@ Imports:
     rmarkdown,
     knitr,
     reactable,
-    dplyr,
+    dplyr (>= 1.1.1),
     tidyr,
     dygraphs,
     xts,
