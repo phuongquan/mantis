@@ -8,7 +8,7 @@ Authors@R: c(
     person(family = "University of Oxford", role = "cph"),
     person(family = "National Institute for Health Research (NIHR)", role = "fnd")
     )
-  Description: Generate interactive html reports that enable quick visual review of 
+Description: Generate interactive html reports that enable quick visual review of 
       multiple related time series. This can help with identification of any 
     temporal artefacts or unexpected trends. The resulting reports are shareable 
     and can contribute to forming a transparent record of the entire analysis process. 
