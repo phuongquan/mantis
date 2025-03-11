@@ -315,6 +315,28 @@ test_that("alert_custom() returns condition correctly", {
 })
 
 
+test_that("mantis_alerts() returns expected df", {
+  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+                   item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
+                   category = c(rep("one", 20), rep("two", 10)),
+                   value = c(rep(5, 2), rep(3, 27), NA),
+                   stringsAsFactors = FALSE)
+
+  results <- mantis_alerts(df,
+                           inputspec = inputspec(timepoint_col = "timepoint",
+                                                 item_cols = c("item", "category"),
+                                                 value_col = "value"),
+                           alert_rules = alert_rules(alert_missing(extent_type = "all"),
+                                                     alert_above(extent_type = "any",
+                                                                 extent_value = 1,
+                                                                 rule_value = 4)),
+                           fill_with_zero = FALSE)
+
+  expect_equal(results$alert_result[which(results$alert_name == "missing_all")], rep("PASS", 3))
+  expect_equal(results$alert_result[which(results$alert_name == "above_4_any_1")], c("FAIL", "PASS", "PASS"))
+
+})
+
 test_that("mantis_alerts() returns an empty df if supplied an empty df", {
   df <- data.frame(timepoint = as.Date(numeric()),
                    item = character(),
