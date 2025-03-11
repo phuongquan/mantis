@@ -11,17 +11,17 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 <!-- badges: end -->
 
 The mantis package generates interactive html reports that enable quick
-visual review of multiple related time series. This can help with
-identification of temporal artefacts and unexpected trends. The time
-series visualisations include adjustable axes and tooltips showing the
-individual dates and values.
+visual review of multiple related time series stored in a data frame.
+This can help with identification of temporal artefacts and unexpected
+trends. The time series visualisations include adjustable axes and
+tooltips showing the individual dates and values.
 
 The data frame containing the time series should be in long format,
 i.e.:
 
-- one “timepoint” (date) column which will be used for the x-axes.
-  Values should have a regular periodicity, e.g. daily, but do not have
-  to be consecutive.
+- one “timepoint” (date/posixt) column which will be used for the
+  x-axes. Values should follow a regular pattern, e.g. daily or monthly,
+  but do not have to be consecutive.
 - one or more “item” (character) columns containing categorical values
   identifying distinct time series.
 - one “value” (numeric) column containing the time series values which
@@ -37,13 +37,14 @@ health records in mind, but can be used for any types of time series.
 ## Installation
 
 ``` r
-# install.packages("remotes")
+# install dependencies first
+install.packages(c("remotes","rmarkdown","knitr","reactable","dplyr","tidyr","dygraphs","xts","ggplot2","scales","purrr","htmltools"))
 
-# install the current development version
-remotes::install_github("phuongquan/mantis")
+# install the latest release version
+remotes::install_github("phuongquan/mantis@v0.2.0", dependencies = FALSE)
 
-# or install the latest release version
-#remotes::install_github("phuongquan/mantis@v0.2.0")
+# or install the current development version
+#remotes::install_github("phuongquan/mantis", dependencies = FALSE)
 ```
 
 ## Usage
@@ -52,7 +53,6 @@ remotes::install_github("phuongquan/mantis")
 library(mantis)
 
 # this example data frame contains numbers of antibiotic prescriptions in long format, 
-#   plus a column for grouping the output:
 data("example_prescription_numbers")
 
 head(example_prescription_numbers)
@@ -76,7 +76,8 @@ mantis_report(
     timepoint_col = "PrescriptionDate",
     item_cols = c("Location", "Antibiotic", "Spectrum"),
     value_col = "NumberOfPrescriptions",
-    tab_col = "Location"
+    tab_col = "Location",
+    timepoint_unit = "day"
   )
 )
 ```

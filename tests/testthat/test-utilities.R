@@ -266,23 +266,23 @@ test_that("validate_params_type() checks plot_type params are of correct type", 
                class = "invalid_param_type")
 })
 
-test_that("validate_params_type() checks period params are of correct type", {
-  expect_silent(testfn_params_type(period = "day"))
-  expect_silent(testfn_params_type(period = "week"))
-  expect_silent(testfn_params_type(period = "month"))
-  expect_silent(testfn_params_type(period = "quarter"))
-  expect_silent(testfn_params_type(period = "year"))
-  expect_silent(testfn_params_type(period = "sec"))
-  expect_silent(testfn_params_type(period = "min"))
-  expect_silent(testfn_params_type(period = "hour"))
+test_that("validate_params_type() checks timepoint_unit params are of correct type", {
+  expect_silent(testfn_params_type(timepoint_unit = "day"))
+  expect_silent(testfn_params_type(timepoint_unit = "week"))
+  expect_silent(testfn_params_type(timepoint_unit = "month"))
+  expect_silent(testfn_params_type(timepoint_unit = "quarter"))
+  expect_silent(testfn_params_type(timepoint_unit = "year"))
+  expect_silent(testfn_params_type(timepoint_unit = "sec"))
+  expect_silent(testfn_params_type(timepoint_unit = "min"))
+  expect_silent(testfn_params_type(timepoint_unit = "hour"))
 
-  expect_error(testfn_params_type(period = NULL),
+  expect_error(testfn_params_type(timepoint_unit = NULL),
                class = "invalid_param_type")
-  expect_error(testfn_params_type(period = 123),
+  expect_error(testfn_params_type(timepoint_unit = 123),
                class = "invalid_param_type")
   expect_error(testfn_params_type(extent_type = "hello"),
                class = "invalid_param_type")
-  expect_error(testfn_params_type(period = c("day", "week")),
+  expect_error(testfn_params_type(timepoint_unit = c("day", "week")),
                class = "invalid_param_type")
 })
 

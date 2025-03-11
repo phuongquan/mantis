@@ -20,7 +20,7 @@ This vignette demonstrates how to use this package to generate different types o
 
 The data frame containing the time series should be in long format, with the following columns (though the actual column names can be different):
 
-* one "timepoint" (date) column which will be used for the x-axes. Values should have a regular periodicity, e.g. daily, but do not have to be consecutive.
+* one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
 * one or more "item" (character) columns containing categorical values identifying distinct time series.
 * one "value" (numeric) column containing the time series values which will be used for the y-axes.
 
@@ -66,7 +66,8 @@ Here are some options for specifying the data columns, depending on how you want
 inspec_flat <- inputspec(
   timepoint_col = "PrescriptionDate",
   item_cols = c("Location", "Antibiotic"),
-  value_col = "NumberOfPrescriptions"
+  value_col = "NumberOfPrescriptions",
+  timepoint_unit = "day"
 )
 
 # create a flat report, and include the "Location", "Spectrum", and "Antibiotic" fields in the
@@ -74,7 +75,8 @@ inspec_flat <- inputspec(
 inspec_flat2 <- inputspec(
   timepoint_col = "PrescriptionDate",
   item_cols = c("Location", "Spectrum", "Antibiotic"),
-  value_col = "NumberOfPrescriptions"
+  value_col = "NumberOfPrescriptions",
+  timepoint_unit = "day"
 )
 
 # create a tabbed report, with a separate tab for each unique value of "Location", and include just
@@ -83,7 +85,8 @@ inspec_tabbed <- inputspec(
   timepoint_col = "PrescriptionDate",
   item_cols = c("Antibiotic", "Location"),
   value_col = "NumberOfPrescriptions",
-  tab_col = "Location"
+  tab_col = "Location",
+  timepoint_unit = "day"
 )
 
 # create a tabbed report, with a separate tab for each unique value of "Location", and include the
@@ -92,7 +95,8 @@ inspec_tabbed2 <- inputspec(
   timepoint_col = "PrescriptionDate",
   item_cols = c("Antibiotic", "Spectrum", "Location"),
   value_col = "NumberOfPrescriptions",
-  tab_col = "Location"
+  tab_col = "Location",
+  timepoint_unit = "day"
 )
 
 # create a tabbed report, with a separate tab for each unique value of "Antibiotic", and include
@@ -101,11 +105,15 @@ inspec_tabbed3 <- inputspec(
   timepoint_col = "PrescriptionDate",
   item_cols = c("Antibiotic", "Location"),
   value_col = "NumberOfPrescriptions",
-  tab_col = "Antibiotic"
+  tab_col = "Antibiotic",
+  timepoint_unit = "day"
 )
 
 ```
 
+### Specifying the timepoint unit
+
+In this example dataset, the time series contain daily values, which is the default pattern of timepoints expected by the package. If the time series were to contain e.g. monthly or hourly values, this should be specified using the `timepoint_unit` parameter of `inputspec()`.
 
 ## Generating a report
 

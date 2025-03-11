@@ -247,11 +247,11 @@ test_that("validate_df_to_inputspec() checks that timepoint column doesn't conta
 })
 
 
-test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'day'", {
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec timepoint_unit of 'day'", {
   inputspec <- inputspec(timepoint_col = "timepoint",
                         item_cols = "item",
                         value_col = "value",
-                        period = "day")
+                        timepoint_unit = "day")
 
   # good types
   df <- data.frame(timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
@@ -314,11 +314,11 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
 })
 
 
-test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'week'", {
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec timepoint_unit of 'week'", {
   inputspec <- inputspec(timepoint_col = "timepoint",
                          item_cols = "item",
                          value_col = "value",
-                         period = "week")
+                         timepoint_unit = "week")
 
   # good types
   df <- data.frame(timepoint = seq(as.Date("2022-01-01"), as.Date("2022-03-05"), by = "week"),
@@ -398,11 +398,11 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
 })
 
 
-test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'month'", {
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec timepoint_unit of 'month'", {
   inputspec <- inputspec(timepoint_col = "timepoint",
                          item_cols = "item",
                          value_col = "value",
-                         period = "month")
+                         timepoint_unit = "month")
 
   # good types
   df <- data.frame(timepoint = seq(as.Date("2022-01-02"), as.Date("2022-10-02"), by = "month"),
@@ -467,11 +467,11 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
 })
 
 
-test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'quarter'", {
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec timepoint_unit of 'quarter'", {
   inputspec <- inputspec(timepoint_col = "timepoint",
                          item_cols = "item",
                          value_col = "value",
-                         period = "quarter")
+                         timepoint_unit = "quarter")
 
   # good types
   df <- data.frame(timepoint = seq(as.Date("2022-01-02"), as.Date("2024-04-02"), by = "quarter"),
@@ -536,11 +536,11 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
 })
 
 
-test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'year'", {
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec timepoint_unit of 'year'", {
   inputspec <- inputspec(timepoint_col = "timepoint",
                          item_cols = "item",
                          value_col = "value",
-                         period = "year")
+                         timepoint_unit = "year")
 
   # good types
   df <- data.frame(timepoint = seq(as.Date("2013-01-02"), as.Date("2022-01-02"), by = "year"),
@@ -605,11 +605,11 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
 })
 
 
-test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'hour'", {
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec timepoint_unit of 'hour'", {
   inputspec <- inputspec(timepoint_col = "timepoint",
                          item_cols = "item",
                          value_col = "value",
-                         period = "hour")
+                         timepoint_unit = "hour")
 
   # good types
   df <- data.frame(timepoint = seq(as.POSIXct("2022-01-02 12:00:00"), as.POSIXct("2022-01-12 12:00:00"), by = "hour"),
@@ -645,11 +645,11 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
 })
 
 
-test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'min'", {
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec timepoint_unit of 'min'", {
   inputspec <- inputspec(timepoint_col = "timepoint",
                          item_cols = "item",
                          value_col = "value",
-                         period = "min")
+                         timepoint_unit = "min")
 
   # good types
   df <- data.frame(timepoint = seq(as.POSIXct("2022-01-02 12:00:00"), as.POSIXct("2022-01-03 12:00:00"), by = "min"),
@@ -685,11 +685,11 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
 })
 
 
-test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec period of 'sec'", {
+test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspec timepoint_unit of 'sec'", {
   inputspec <- inputspec(timepoint_col = "timepoint",
                          item_cols = "item",
                          value_col = "value",
-                         period = "sec")
+                         timepoint_unit = "sec")
 
   # good types
   df <- data.frame(timepoint = seq(as.POSIXct("2022-01-02 12:00:00"), as.POSIXct("2022-01-02 13:00:00"), by = "sec"),

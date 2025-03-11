@@ -4,10 +4,16 @@
 \alias{inputspec}
 \title{Specify relevant columns in the source data frame}
 \usage{
-inputspec(timepoint_col, item_cols, value_col, tab_col = NULL, period = "day")
+inputspec(
+  timepoint_col,
+  item_cols,
+  value_col,
+  tab_col = NULL,
+  timepoint_unit = "day"
+)
 }
 \arguments{
-\item{timepoint_col}{String denoting the (date) column which will be used for the x-axes.}
+\item{timepoint_col}{String denoting the (date/posixt) column which will be used for the x-axes.}
 
 \item{item_cols}{String denoting the (character) column containing categorical values identifying
 distinct time series. Multiple columns that together identify a time series can be provided as a vector}
@@ -18,7 +24,7 @@ will be used for the y-axes.}
 \item{tab_col}{Optional. String denoting the (character) column containing categorical values
 which will be used to group the time series into different tabs on the report.}
 
-\item{period}{periodicity of the timepoint_col values. "sec"/"min"/"hour"/"day"/"month"/"quarter"/year".
+\item{timepoint_unit}{expected pattern of the timepoint_col values. "sec"/"min"/"hour"/"day"/"month"/"quarter"/year".
 This will be used to fill in any gaps in the time series.}
 }
 \value{

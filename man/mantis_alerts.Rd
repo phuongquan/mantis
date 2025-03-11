@@ -17,7 +17,7 @@ mantis_alerts(
 \item{df}{A data frame containing multiple time series in long format. See Details.}
 
 \item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the supplied \code{df} represent the
-"timepoint", "item", "value"  and (optionally) "tab" for the time series. Each "item-tab" represents an individual time series}
+"timepoint", "item", "value"  and (optionally) "tab" for the time series.}
 
 \item{alert_rules}{\code{\link[=alert_rules]{alert_rules()}} object specifying conditions to test}
 
