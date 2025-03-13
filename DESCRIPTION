@@ -8,11 +8,12 @@ Authors@R: c(
     person(family = "University of Oxford", role = "cph"),
     person(family = "National Institute for Health Research (NIHR)", role = "fnd")
     )
-Description: Generate interactive html reports that enable quick visual review of 
-    multiple related time series. For static datasets, this can help with identification of 
-    temporal artefacts or unexpected trends that may affect the validity of subsequent analyses. For
-    live data feeds, regularly scheduled reports can help to pro-actively identify data feed issues 
-    that may require action. The reports are self-contained and shareable without a web server. 
+Description: Generate interactive html reports that enable quick visual review of multiple 
+    related time series. For static datasets, this can help to identify any temporal 
+    artefacts that may affect the validity of subsequent analyses. For live data feeds, 
+    regularly scheduled reports can help to pro-actively identify data feed problems
+    or unexpected trends that may require action. The reports are self-contained and shareable 
+    without a web server. 
 URL: https://github.com/phuongquan/mantis,
     https://phuongquan.github.io/mantis/
 BugReports: https://github.com/phuongquan/mantis/issues
