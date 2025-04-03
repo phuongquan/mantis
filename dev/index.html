@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Multiple Time Series Scanner">
-<meta name="description" content="Generate interactive html reports that enable quick visual review of multiple related time series. For static datasets, this can help to identify any temporal artefacts that may affect the validity of subsequent analyses. For live data feeds, regularly scheduled reports can help to pro-actively identify data feed problems or unexpected trends that may require action. The reports are self-contained and shareable without a web server.">
-<meta property="og:description" content="Generate interactive html reports that enable quick visual review of multiple related time series. For static datasets, this can help to identify any temporal artefacts that may affect the validity of subsequent analyses. For live data feeds, regularly scheduled reports can help to pro-actively identify data feed problems or unexpected trends that may require action. The reports are self-contained and shareable without a web server.">
+<meta name="description" content="Generate interactive html reports that enable quick visual review of multiple related time series stored in a data frame. For static datasets, this can help to identify any temporal artefacts that may affect the validity of subsequent analyses. For live data feeds, regularly scheduled reports can help to pro-actively identify data feed problems or unexpected trends that may require action. The reports are self-contained and shareable without a web server.">
+<meta property="og:description" content="Generate interactive html reports that enable quick visual review of multiple related time series stored in a data frame. For static datasets, this can help to identify any temporal artefacts that may affect the validity of subsequent analyses. For live data feeds, regularly scheduled reports can help to pro-actively identify data feed problems or unexpected trends that may require action. The reports are self-contained and shareable without a web server.">
 <meta name="robots" content="noindex">
 </head>
 <body>
@@ -68,15 +68,19 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The mantis package generates interactive html reports that enable quick visual review of multiple related time series stored in a data frame. This can help with identification of temporal artefacts and unexpected trends. The time series visualisations include adjustable axes and tooltips showing the individual dates and values.</p>
-<p>The data frame containing the time series should be in long format, i.e.:</p>
-<ul>
-<li>one “timepoint” (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.</li>
-<li>one or more “item” (character) columns containing categorical values identifying distinct time series.</li>
-<li>one “value” (numeric) column containing the time series values which will be used for the y-axes.</li>
-</ul>
-<p>The <code>inputspec</code> parameter maps the data frame columns to the above, and can optionally include a column for grouping the time series into tabs.</p>
-<p>The reports are shareable and can contribute to forming a transparent record of the entire analysis process. It is designed with electronic health records in mind, but can be used for any types of time series.</p>
+<p>The ‘mantis’ package generates interactive reports that enable quick visual review of multiple related time series. This can help with identification of temporal artefacts and unexpected trends. The choice of visualisations include interactive plots with adjustable axes and tooltips showing the individual dates and values, as well as static heatmap and scatter plots for more lightweight applications. E.g.</p>
+<p><img src="reference/figures/example_prescription_numbers_interactive.png" width="350"><img src="reference/figures/example_prescription_numbers_heatmap.png" width="350"></p>
+<p>The resulting html reports are self-contained and shareable without a web server.</p>
+<p>‘mantis’ is designed for use on data that is essentially a collection of time series in a data frame, where you have already decided which values you are interested in reviewing. If you want to check more generally for temporal changes in record-level, non-numeric data, then check out our sister package <a href="https://ropensci.github.io/daiquiri/index.html" class="external-link">‘daiquiri’</a>.</p>
+<div class="section level2">
+<h2 id="why-should-i-use-it">Why should I use it?<a class="anchor" aria-label="anchor" href="#why-should-i-use-it"></a>
+</h2>
+<p>We anticipate two main target users:</p>
+<ol style="list-style-type: decimal">
+<li><p>Researchers who analyse data from large, temporal datasets, particularly routinely-collected data such as electronic health records. Included as part of the initial analysis stage, it will help you to check for any temporal biases in your datasets before embarking on your main analyses, therefore improving the reliability of your study.</p></li>
+<li><p>Managers of live data feeds that are used as a data source for downstream analyses. Regular inspection of data that is frequently updated will help to identify any issues early and enable a timely response to rectify issues such as missing data. While a set of validation checks in a data pipeline could also work in this circumstance, the benefit of this package is the ability to check for temporal anomalies that are obvious to the human eye but that are difficult to capture programmatically.</p></li>
+</ol>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -110,7 +114,7 @@
 <span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="do">## 5 2022-01-01       Meropenem     Broad                       10 SITE1   </span></span>
 <span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="do">## 6 2022-01-01       Vancomycin    Limited                      0 SITE1</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># create a report in the current directory</span></span>
+<code class="sourceCode R"><span><span class="co"># create a report in the current directory, with one tab per Location</span></span>
 <span><span class="fu"><a href="reference/mantis_report.html">mantis_report</a></span><span class="op">(</span></span>
 <span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
 <span>  inputspec <span class="op">=</span> <span class="fu"><a href="reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
@@ -121,11 +125,12 @@
 <span>    timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>Example reports and more detailed guidance can be found in the <a href="https://phuongquan.github.io/mantis/index.html" class="external-link">package website</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
 </h2>
-<p>This work was supported by the National Institute for Health Research Health Protection Research Unit (NIHR HPRU) in Healthcare Associated Infections and Antimicrobial Resistance at the University of Oxford in partnership with Public Health England (PHE) (NIHR200915), and by the NIHR Oxford Biomedical Research Centre.</p>
+<p>This work was supported by the National Institute for Health Research Health Protection Research Unit (NIHR HPRU) in Healthcare Associated Infections and Antimicrobial Resistance at the University of Oxford in partnership with the UK Health Security Agency (UKHSA) (NIHR200915), and by the NIHR Oxford Biomedical Research Centre.</p>
 </div>
 <div class="section level2">
 <h2 id="contributing-to-this-package">Contributing to this package<a class="anchor" aria-label="anchor" href="#contributing-to-this-package"></a>
