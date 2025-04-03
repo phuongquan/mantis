@@ -10,29 +10,44 @@ has not yet been a stable, usable release suitable for the
 public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 <!-- badges: end -->
 
-The mantis package generates interactive html reports that enable quick
-visual review of multiple related time series stored in a data frame.
-This can help with identification of temporal artefacts and unexpected
-trends. The time series visualisations include adjustable axes and
-tooltips showing the individual dates and values.
+The ‘mantis’ package generates interactive reports that enable quick
+visual review of multiple related time series. This can help with
+identification of temporal artefacts and unexpected trends. The choice
+of visualisations include interactive plots with adjustable axes and
+tooltips showing the individual dates and values, as well as static
+heatmap and scatter plots for more lightweight applications. E.g.
 
-The data frame containing the time series should be in long format,
-i.e.:
+<img src="man/figures/example_prescription_numbers_interactive.png" width="350" /><img src="man/figures/example_prescription_numbers_heatmap.png" width="350" />
 
-- one “timepoint” (date/posixt) column which will be used for the
-  x-axes. Values should follow a regular pattern, e.g. daily or monthly,
-  but do not have to be consecutive.
-- one or more “item” (character) columns containing categorical values
-  identifying distinct time series.
-- one “value” (numeric) column containing the time series values which
-  will be used for the y-axes.
+The resulting html reports are self-contained and shareable without a
+web server.
 
-The `inputspec` parameter maps the data frame columns to the above, and
-can optionally include a column for grouping the time series into tabs.
+‘mantis’ is designed for use on data that is essentially a collection of
+time series in a data frame, where you have already decided which values
+you are interested in reviewing. If you want to check more generally for
+temporal changes in record-level, non-numeric data, then check out our
+sister package
+[‘daiquiri’](https://ropensci.github.io/daiquiri/index.html).
 
-The reports are shareable and can contribute to forming a transparent
-record of the entire analysis process. It is designed with electronic
-health records in mind, but can be used for any types of time series.
+## Why should I use it?
+
+We anticipate two main target users:
+
+1.  Researchers who analyse data from large, temporal datasets,
+    particularly routinely-collected data such as electronic health
+    records. Included as part of the initial analysis stage, it will
+    help you to check for any temporal biases in your datasets before
+    embarking on your main analyses, therefore improving the reliability
+    of your study.
+
+2.  Managers of live data feeds that are used as a data source for
+    downstream analyses. Regular inspection of data that is frequently
+    updated will help to identify any issues early and enable a timely
+    response to rectify issues such as missing data. While a set of
+    validation checks in a data pipeline could also work in this
+    circumstance, the benefit of this package is the ability to check
+    for temporal anomalies that are obvious to the human eye but that
+    are difficult to capture programmatically.
 
 ## Installation
 
@@ -69,7 +84,7 @@ head(example_prescription_numbers)
     ## 6 2022-01-01       Vancomycin    Limited                      0 SITE1
 
 ``` r
-# create a report in the current directory
+# create a report in the current directory, with one tab per Location
 mantis_report(
   df = example_prescription_numbers,
   inputspec = inputspec(
@@ -82,13 +97,16 @@ mantis_report(
 )
 ```
 
+Example reports and more detailed guidance can be found in the [package
+website](https://phuongquan.github.io/mantis/index.html).
+
 ## Acknowledgements
 
 This work was supported by the National Institute for Health Research
 Health Protection Research Unit (NIHR HPRU) in Healthcare Associated
 Infections and Antimicrobial Resistance at the University of Oxford in
-partnership with Public Health England (PHE) (NIHR200915), and by the
-NIHR Oxford Biomedical Research Centre.
+partnership with the UK Health Security Agency (UKHSA) (NIHR200915), and
+by the NIHR Oxford Biomedical Research Centre.
 
 ## Contributing to this package
 
