@@ -11,6 +11,8 @@ test_that("mantis_report() creates single-tab interactive report and returns pat
                         item_cols = "item",
                         value_col = "value"),
       outputspec = outputspec_interactive(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
       )
 
@@ -35,6 +37,8 @@ test_that("mantis_report() creates multi-tab interactive report and returns path
                         value_col = "value",
                         tab_col = "tab"),
       outputspec = outputspec_interactive(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
       )
 
@@ -59,6 +63,8 @@ test_that("mantis_report() creates heatmap report and returns path successfully"
                             item_cols = "item",
                             value_col = "value"),
       outputspec = outputspec_static_heatmap(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
   expect_type(reportpath, "character")
@@ -73,6 +79,8 @@ test_that("mantis_report() creates heatmap report and returns path successfully"
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_static_heatmap(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
   expect_type(reportpath, "character")
@@ -94,6 +102,8 @@ test_that("mantis_report() creates multipanel report and returns path successful
                             item_cols = "item",
                             value_col = "value"),
       outputspec = outputspec_static_multipanel(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
   expect_type(reportpath, "character")
@@ -108,6 +118,8 @@ test_that("mantis_report() creates multipanel report and returns path successful
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_static_multipanel(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
   expect_type(reportpath, "character")
@@ -143,6 +155,8 @@ test_that("mantis_report() creates interactive report with alerts successfully",
           )
         )
       ),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
 
@@ -167,6 +181,8 @@ test_that("mantis_report() creates interactive report even if supplied an empty 
                             item_cols = "item",
                             value_col = "value"),
       outputspec = outputspec_interactive(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
   expect_true(file.remove(reportpath))
@@ -180,6 +196,8 @@ test_that("mantis_report() creates interactive report even if supplied an empty 
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_interactive(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
   expect_true(file.remove(reportpath))
@@ -213,6 +231,8 @@ test_that("mantis_report() creates interactive report with alerts even if suppli
           )
         )
       ),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
 
@@ -234,6 +254,8 @@ test_that("mantis_report() creates heatmap report even if supplied an empty df",
                             item_cols = "item",
                             value_col = "value"),
       outputspec = outputspec_static_heatmap(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
   expect_true(file.remove(reportpath))
@@ -247,6 +269,8 @@ test_that("mantis_report() creates heatmap report even if supplied an empty df",
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_static_heatmap(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
   expect_true(file.remove(reportpath))
@@ -266,6 +290,8 @@ test_that("mantis_report() creates multipanel report even if supplied an empty d
                             item_cols = "item",
                             value_col = "value"),
       outputspec = outputspec_static_multipanel(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
   expect_true(file.remove(reportpath))
@@ -279,6 +305,8 @@ test_that("mantis_report() creates multipanel report even if supplied an empty d
                             value_col = "value",
                             tab_col = "tab"),
       outputspec = outputspec_static_multipanel(),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
   expect_true(file.remove(reportpath))
@@ -298,6 +326,8 @@ test_that("mantis_report() creates multi-item_cols interactive report and return
                             item_cols = c("item", "tab"),
                             value_col = "value"),
       outputspec = outputspec_interactive(item_labels = c("item" = "My item")),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
 
@@ -338,6 +368,8 @@ test_that("mantis_report() creates interactive report with spaces in item_cols n
           )
         )
       ),
+      save_directory = tempdir(),
+      save_filename = "mantis_testthatreport",
       show_progress = FALSE
     )
 
