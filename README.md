@@ -20,7 +20,7 @@ of visualisations include interactive plots with adjustable axes and
 tooltips showing the individual dates and values, as well as static
 heatmap and scatter plots for more lightweight applications. E.g.
 
-<img src="man/figures/example_prescription_numbers_interactive.png" height="350" /><img src="man/figures/example_prescription_numbers_heatmap.png" height="350" />
+<img src="man/figures/example_prescription_numbers_interactive.png" width="350" /><img src="man/figures/example_prescription_numbers_heatmap.png" width="350" />
 
 The resulting html reports are self-contained and shareable without a
 web server.
