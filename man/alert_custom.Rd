@@ -41,6 +41,7 @@ list, the rule will apply to all its members. If an \code{item_col} is named in 
 will only be applied when the \code{item_col}'s value is contained in the corresponding character
 vector. When multiple \code{item_col}s are specified, the rule will be applied only to items that
 satisfy all the conditions.
+See Examples in \code{\link[=alert_rules]{alert_rules()}}
 }
 
 \examples{
@@ -56,4 +57,8 @@ ars <- alert_rules(
     function_call = quote(rev(value)[1] > 2*value[1])
   )
 )
+
+}
+\seealso{
+\code{\link[=alert_rules]{alert_rules()}}, \code{\link[=alert_missing]{alert_missing()}}, \code{\link[=alert_equals]{alert_equals()}}, \code{\link[=alert_above]{alert_above()}}, \code{\link[=alert_below]{alert_below()}}, \code{\link[=alert_difference_above_perc]{alert_difference_above_perc()}}, \code{\link[=alert_difference_below_perc]{alert_difference_below_perc()}}
 }

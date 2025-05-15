@@ -10,8 +10,16 @@
 #'
 #' @param plot_type "`bar`" or "`line`", depending on what will be used in real tables. Or "none" if
 #'   just want a reactable widget without dygraphs e.g. for alerts
-#'
 #' @return A (mostly) invisible html widget
+#'
+#' @examples
+#' \donttest{
+#' # put this inside its own chunk in the rmd file
+#' # it ensures that the dygraphs render when built using `cat()`
+#' # set the plot_type to the same plot_type as the real output
+#' mantis::bespoke_rmd_initialise_widgets(plot_type = "bar")
+#' }
+#'
 #' @export
 bespoke_rmd_initialise_widgets <- function(plot_type){
   validate_params_required(match.call())
@@ -25,7 +33,9 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' Dynamically generate mantis output for an rmd chunk
 #'
 #' Chunk options must contain `results = 'asis'`.
-#' Function writes directly to the chunk using side-effects
+#' The function writes directly to the chunk using side-effects
+#' There is further important information in the vignette:
+#' \code{vignette("bespoke-reports", package = "mantis")}
 #'
 #' @param df A data frame containing multiple time series in long format. See Details.
 #' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent
@@ -43,9 +53,17 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' @param tab_level integer specifying the nesting level of the tab. If `tab_name` is specified, a
 #'   value of 1 generates a tab at rmd level "##", and any `tab_col` tabs at a level down. If
 #'   `tab_name` is not specified, any `tab_col` tabs will be created at rmd level "##".
-#'
 #' @return (invisibly) the supplied `df`
-#' @details The supplied data frame should contain multiple time series in long format, i.e.:
+#'
+#' @details
+#' You can:
+#'
+#' \itemize{
+#'   \item add a single visualisation, with or without creating the container tab, or
+#'   \item add a set of tabs, each based on the same output specification, with or without creating the parent tab.
+#' }
+#'
+#' The supplied data frame should contain multiple time series in long format, i.e.:
 #'
 #' \itemize{
 #'   \item one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
@@ -55,7 +73,36 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #'
 #'   The `inputspec` parameter maps the data frame columns to the above. Optionally, if there are
 #'   multiple columns specified in `item_cols`, one of them can be used to group the time series
-#'   into different tabs on the report, by using the `tab_col` parameter.
+#'   into different child tabs, by using the `tab_col` parameter.
+#'
+#' @examples
+#' \donttest{
+#' # this goes inside a chunk in the rmd file
+#'
+#' # create a parent tab with a set of child tabs
+#' mantis::bespoke_rmd_output(
+#'   df = mantis::example_prescription_numbers,
+#'   inputspec = mantis::inputspec(
+#'     timepoint_col = "PrescriptionDate",
+#'     item_cols = c("Location", "Antibiotic"),
+#'     value_col = "NumberOfPrescriptions",
+#'     tab_col = "Location"
+#'   ),
+#'   outputspec = mantis::outputspec_interactive(
+#'     plot_value_type = "value",
+#'     plot_type = "bar",
+#'     item_labels = c("Antibiotic" = "Antibiotic name"),
+#'     plot_label = "Prescriptions over time",
+#'     sync_axis_range = FALSE,
+#'     item_order = list("Location" = c("SITE3", "SITE2", "SITE1"))
+#'   ),
+#'   fill_with_zero = FALSE,
+#'   tab_name = "Group of child tabs",
+#'   tab_level = 1
+#' )
+#' }
+#'
+#' @seealso [bespoke_rmd_initialise_widgets()]
 #' @export
 bespoke_rmd_output <- function(df,
                             inputspec,
@@ -113,8 +160,31 @@ bespoke_rmd_output <- function(df,
 #' @param tab_level integer specifying the nesting level of the tab. If `tab_name` is specified, a
 #'   value of 1 generates a tab at rmd level "##". If
 #'   `tab_name` is not specified, this is ignored.
-#'
 #' @return (invisibly) the supplied `df`
+#'
+#' @examples
+#' \donttest{
+#' # this goes inside a chunk in the rmd file
+#'
+#' mantis::bespoke_rmd_alert_results(
+#'   df = mantis::example_prescription_numbers,
+#'   inputspec = mantis::inputspec(
+#'     timepoint_col = "PrescriptionDate",
+#'     item_cols = c("Location", "Antibiotic"),
+#'     value_col = "NumberOfPrescriptions",
+#'     tab_col = "Location"
+#'   ),
+#'   alert_rules = alert_rules(
+#'     alert_missing(extent_type = "any", extent_value = 1),
+#'     alert_equals(extent_type = "all", rule_value = 0)
+#'   ),
+#'   filter_results = c("FAIL", "NA"),
+#'   fill_with_zero = FALSE,
+#'   tab_name = "Failed alerts",
+#'   tab_level = 1
+#' )
+#' }
+#'
 #' @export
 bespoke_rmd_alert_results <- function(df,
                                       inputspec,

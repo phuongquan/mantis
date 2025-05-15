@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare.R
 \name{outputspec_interactive}
 \alias{outputspec_interactive}
-\title{Specify output options for the report}
+\title{Specify output options for an interactive report}
 \usage{
 outputspec_interactive(
   plot_value_type = "value",
@@ -23,7 +23,7 @@ outputspec_interactive(
 
 \item{item_labels}{Named vector containing string label(s) to use for the "item" column(s) in the
 report. The names should correspond to the \code{item_cols}, and the values should contain the
-desired labels. If NULL, the original columns name(s) will be used.}
+desired labels. If \code{NULL}, the original columns name(s) will be used.}
 
 \item{plot_label}{String label to use for the time series column in the report. If NULL, the
 original \code{value_col} name will be used.}
@@ -32,7 +32,7 @@ original \code{value_col} name will be used.}
 \code{c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")}.}
 
 \item{sync_axis_range}{Set the y-axis to be the same range for all time series in a table.
-X-axes are always synced.}
+X-axes are always synced. Logical.}
 
 \item{item_order}{named list corresponding to \code{item_cols} columns for ordering the
 items in the output. List values are either \code{TRUE} for ascending order, or a character vector
@@ -47,7 +47,9 @@ Secondary ordering will be based on \code{item_order}.}
 An \code{outputspec()} object
 }
 \description{
-Specify output options for the report
+Each tab contains a single table with one row per time series, and sortable/filterable columns
+based on the \code{item_cols} parameter of the \code{inputspec()}. The time series plots have tooltips and
+can be zoomed in by selecting an area of the plot.
 }
 \section{Details}{
  For \code{item_order}, the names of the list members should correspond to the column
@@ -59,3 +61,39 @@ alphabetically at the end. If you want to order the tabs, it is recommended to p
 as the first item in the list.
 }
 
+\examples{
+# Set explicit labels for the column headings
+outspec <- outputspec_interactive(
+  item_labels = c("Antibiotic" = "ABX", "Location" = "Which site?"),
+  plot_label = "Daily records"
+)
+
+## Change the sort order that the items appear in the table
+
+# Sort alphabetically by Antibiotic
+outspec <- outputspec_interactive(
+  item_order = list("Antibiotic" = TRUE)
+)
+
+# Sort alphabetically by Location first, then put "Vancomycin" and "Linezolid" before other antibiotics
+outspec <- outputspec_interactive(
+  item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
+)
+
+# Put the time series with the largest values first
+outspec <- outputspec_interactive(
+  sort_by = "-max_value"
+)
+
+# Put the time series with failed alerts first
+outspec <- outputspec_interactive(
+  sort_by = "alert_overall"
+)
+
+# Put the time series with failed alerts first, then sort alphabetically by Antibiotic
+outspec <- outputspec_interactive(
+  item_order = list("Antibiotic" = TRUE),
+  sort_by = "alert_overall"
+)
+
+}

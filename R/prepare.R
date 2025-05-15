@@ -189,6 +189,53 @@ prepare_table <-
 #'   This will be used to fill in any gaps in the time series.
 #'
 #' @return A `inputspec()` object
+#' @examples
+#' # create a flat report, and include the "Location" and "Antibiotic" fields in the content
+#' inspec_flat <- inputspec(
+#'   timepoint_col = "PrescriptionDate",
+#'   item_cols = c("Location", "Antibiotic"),
+#'   value_col = "NumberOfPrescriptions",
+#'   timepoint_unit = "day"
+#' )
+#'
+#' # create a flat report, and include the "Location", "Spectrum", and "Antibiotic" fields in the
+#' # content
+#' inspec_flat2 <- inputspec(
+#'   timepoint_col = "PrescriptionDate",
+#'   item_cols = c("Location", "Spectrum", "Antibiotic"),
+#'   value_col = "NumberOfPrescriptions",
+#'   timepoint_unit = "day"
+#' )
+#'
+#' # create a tabbed report, with a separate tab for each unique value of "Location", and include just
+#' # the "Antibiotic" field in the content of each tab
+#' inspec_tabbed <- inputspec(
+#'   timepoint_col = "PrescriptionDate",
+#'   item_cols = c("Antibiotic", "Location"),
+#'   value_col = "NumberOfPrescriptions",
+#'   tab_col = "Location",
+#'   timepoint_unit = "day"
+#' )
+#'
+#' # create a tabbed report, with a separate tab for each unique value of "Location", and include the
+#' # "Antibiotic" and "Spectrum" fields in the content of each tab
+#' inspec_tabbed2 <- inputspec(
+#'   timepoint_col = "PrescriptionDate",
+#'   item_cols = c("Antibiotic", "Spectrum", "Location"),
+#'   value_col = "NumberOfPrescriptions",
+#'   tab_col = "Location",
+#'   timepoint_unit = "day"
+#' )
+#'
+#' # create a tabbed report, with a separate tab for each unique value of "Antibiotic", and include
+#' # just the "Location" field in the content of each tab
+#' inspec_tabbed3 <- inputspec(
+#'   timepoint_col = "PrescriptionDate",
+#'   item_cols = c("Antibiotic", "Location"),
+#'   value_col = "NumberOfPrescriptions",
+#'   tab_col = "Antibiotic",
+#'   timepoint_unit = "day"
+#' )
 #' @export
 inputspec <- function(timepoint_col,
                     item_cols,
@@ -224,20 +271,24 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 
 
 # -----------------------------------------------------------------------------
-#' Specify output options for the report
+#' Specify output options for an interactive report
+#'
+#' Each tab contains a single table with one row per time series, and sortable/filterable columns
+#' based on the `item_cols` parameter of the `inputspec()`. The time series plots have tooltips and
+#' can be zoomed in by selecting an area of the plot.
 #'
 #' @param plot_value_type Display the raw "`value`" for the time series or display the calculated
 #'   "`delta`" between consecutive values.
 #' @param plot_type Display the time series as a "`bar`" or "`line`" chart.
 #' @param item_labels Named vector containing string label(s) to use for the "item" column(s) in the
 #'   report. The names should correspond to the `item_cols`, and the values should contain the
-#'   desired labels. If NULL, the original columns name(s) will be used.
+#'   desired labels. If `NULL`, the original columns name(s) will be used.
 #' @param plot_label String label to use for the time series column in the report. If NULL, the
 #'   original `value_col` name will be used.
 #' @param summary_cols Summary data to include as columns in the report. Options are
 #'   `c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")`.
 #' @param sync_axis_range Set the y-axis to be the same range for all time series in a table.
-#'   X-axes are always synced.
+#'   X-axes are always synced. Logical.
 #' @param item_order named list corresponding to `item_cols` columns for ordering the
 #'   items in the output. List values are either `TRUE` for ascending order, or a character vector
 #'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
@@ -245,6 +296,7 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #' @param sort_by column in output table to sort by. Can be one of `alert_overall`, or one
 #'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
 #'   Secondary ordering will be based on `item_order`.
+#' @return An `outputspec()` object
 #'
 #'@section Details: For `item_order`, the names of the list members should correspond to the column
 #'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
@@ -254,7 +306,41 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
 #'  as the first item in the list.
 #'
-#' @return An `outputspec()` object
+#' @examples
+#' # Set explicit labels for the column headings
+#' outspec <- outputspec_interactive(
+#'   item_labels = c("Antibiotic" = "ABX", "Location" = "Which site?"),
+#'   plot_label = "Daily records"
+#' )
+#'
+#' ## Change the sort order that the items appear in the table
+#'
+#' # Sort alphabetically by Antibiotic
+#' outspec <- outputspec_interactive(
+#'   item_order = list("Antibiotic" = TRUE)
+#' )
+#'
+#' # Sort alphabetically by Location first, then put "Vancomycin" and "Linezolid" before other antibiotics
+#' outspec <- outputspec_interactive(
+#'   item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
+#' )
+#'
+#' # Put the time series with the largest values first
+#' outspec <- outputspec_interactive(
+#'   sort_by = "-max_value"
+#' )
+#'
+#' # Put the time series with failed alerts first
+#' outspec <- outputspec_interactive(
+#'   sort_by = "alert_overall"
+#' )
+#'
+#' # Put the time series with failed alerts first, then sort alphabetically by Antibiotic
+#' outspec <- outputspec_interactive(
+#'   item_order = list("Antibiotic" = TRUE),
+#'   sort_by = "alert_overall"
+#' )
+#'
 #' @export
 outputspec_interactive <- function(plot_value_type = "value",
                        plot_type = "bar",
@@ -292,12 +378,15 @@ outputspec_interactive <- function(plot_value_type = "value",
 
 #' Specify output options for a static report containing heatmaps
 #'
-#' @param fill_colour colour to use for the tiles
-#' @param y_label string for y-axis label. Optional
+#' Each tab contains a heatmap with one row per time series.
+#'
+#' @param fill_colour colour to use for the tiles. Passed to `high` parameter of `ggplot2::scale_fill_gradient()`
+#' @param y_label string for y-axis label. Optional. If `NULL`, the label will be constructed from the `inputspec()`
 #' @param item_order named list corresponding to `item_cols` columns for ordering the
 #'   items in the output. List values are either `TRUE` for ascending order, or a character vector
 #'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
 #'   original order will be kept. See Details.
+#' @return An `outputspec()` object
 #'
 #'@section Details: For `item_order`, the names of the list members should correspond to the column
 #'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
@@ -307,7 +396,22 @@ outputspec_interactive <- function(plot_value_type = "value",
 #'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
 #'  as the first item in the list.
 #'
-#' @return An `outputspec()` object
+#' @examples
+#' # Customise the plot
+#' outspec <- outputspec_static_heatmap(
+#'   fill_colour = "#56B1F7",
+#'   y_label = "Daily records"
+#' )
+#'
+#' # Sort alphabetically by Antibiotic
+#' outspec <- outputspec_static_heatmap(
+#'   item_order = list("Antibiotic" = TRUE)
+#' )
+#'
+#' # Sort alphabetically by Location first, then put "Vancomycin" and "Linezolid" before other antibiotics
+#' outspec <- outputspec_static_heatmap(
+#'   item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
+#' )
 #' @export
 outputspec_static_heatmap <- function(fill_colour = "blue",
                                       y_label = NULL,
@@ -328,17 +432,18 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
     )
 }
 
-#' Specify output options for a static report containing grids of plots.
+#' Specify output options for a static report containing a panel of plots.
 #'
-#' Currently only creates scatter plots
+#' Each tab contains a single column of scatter plots with one row per time series.
 #'
 #' @param sync_axis_range Set the y-axis to be the same range for all the plots.
 #'   X-axes are always synced.
-#' @param y_label string for y-axis label. Optional
+#' @param y_label string for y-axis label. Optional. If `NULL`, the label will be constructed from the `inputspec()`
 #' @param item_order named list corresponding to `item_cols` columns for ordering the
 #'   items in the output. List values are either `TRUE` for ascending order, or a character vector
 #'   of values contained in the named column for explicit ordering. If `item_order = NULL`, the
 #'   original order will be kept. See Details.
+#' @return An `outputspec()` object
 #'
 #'@section Details: For `item_order`, the names of the list members should correspond to the column
 #'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
@@ -348,7 +453,22 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 #'  alphabetically at the end. If you want to order the tabs, it is recommended to put the `tab_col`
 #'  as the first item in the list.
 #'
-#' @return An `outputspec()` object
+#' @examples
+#' # Plot all panels to same scale
+#' outspec <- outputspec_static_multipanel(
+#'   sync_axis_range = TRUE,
+#'   y_label = "Daily records"
+#' )
+#'
+#' # Sort panels alphabetically by Antibiotic
+#' outspec <- outputspec_static_multipanel(
+#'   item_order = list("Antibiotic" = TRUE)
+#' )
+#'
+#' # Sort alphabetically by Location first, then put "Vancomycin" and "Linezolid" before other antibiotics
+#' outspec <- outputspec_static_multipanel(
+#'   item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
+#' )
 #' @export
 outputspec_static_multipanel <- function(sync_axis_range = FALSE,
                                         y_label = NULL,

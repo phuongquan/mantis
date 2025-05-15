@@ -45,3 +45,27 @@ value of 1 generates a tab at rmd level "##". If
 Chunk options must contain \code{results = 'asis'}.
 Function writes directly to the chunk using side-effects
 }
+\examples{
+\donttest{
+# this goes inside a chunk in the rmd file
+
+mantis::bespoke_rmd_alert_results(
+  df = mantis::example_prescription_numbers,
+  inputspec = mantis::inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Location", "Antibiotic"),
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  alert_rules = alert_rules(
+    alert_missing(extent_type = "any", extent_value = 1),
+    alert_equals(extent_type = "all", rule_value = 0)
+  ),
+  filter_results = c("FAIL", "NA"),
+  fill_with_zero = FALSE,
+  tab_name = "Failed alerts",
+  tab_level = 1
+)
+}
+
+}

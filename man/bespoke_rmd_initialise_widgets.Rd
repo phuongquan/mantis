@@ -19,3 +19,12 @@ contains the relevant widgets, otherwise they won't render. The \code{dygraph} a
 See https://github.com/rstudio/rmarkdown/issues/1877 for more info.
 Note: The chunk currently appears like a line break when rendered.
 }
+\examples{
+\donttest{
+# put this inside its own chunk in the rmd file
+# it ensures that the dygraphs render when built using `cat()`
+# set the plot_type to the same plot_type as the real output
+mantis::bespoke_rmd_initialise_widgets(plot_type = "bar")
+}
+
+}

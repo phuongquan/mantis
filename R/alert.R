@@ -10,6 +10,23 @@
 #'   results can be "PASS", "FAIL", or "NA". If NULL, no separate tab will be created.
 #'
 #' @return An `alertspec()` object
+#' @examples
+#' # define some alerting rules
+#' ars <- alert_rules(
+#'   alert_missing(extent_type = "any", extent_value = 1),
+#'   alert_equals(extent_type = "all", rule_value = 0)
+#' )
+#'
+#' # specify that all results should be included in the Alerts tab (the default)
+#'   alsp <- alertspec(
+#'    alert_rules = ars
+#'  )
+#'
+#' # specify that only results which fail or are incalculable should be included in the Alerts tab
+#'   alsp <- alertspec(
+#'    alert_rules = ars,
+#'    show_tab_results = c("FAIL", "NA")
+#'  )
 #' @export
 alertspec <- function(alert_rules,
                       show_tab_results = c("PASS", "FAIL", "NA")) {
@@ -36,11 +53,10 @@ is_alertspec <- function(x) inherits(x, "mantis_alertspec")
 # -----------------------------------------------------------------------------
 #' Create set of alert rules
 #'
-#' Note: this functionality is currently only implemented for interactive outputs and will be ignored for static outputs.
+#' Specify which built-in alert rules should be run on the time series
 #'
 #' @param ... alerts to apply to the time series
 #' @return An `alert_rules` object
-#' @export
 #' @examples
 #' # alert if any values are NA
 #' # or if all values are zero
@@ -48,6 +64,21 @@ is_alertspec <- function(x) inherits(x, "mantis_alertspec")
 #'   alert_missing(extent_type = "any", extent_value = 1),
 #'   alert_equals(extent_type = "all", rule_value = 0)
 #' )
+#'
+#' # alert if any values are over 100, but only for certain antibiotics
+#' ars <- alert_rules(
+#'   alert_above(extent_type = "any", extent_value = 1, rule_value = 100,
+#'               items = list("Antibiotic" = c("Coamoxiclav", "Gentamicin"))
+#'   )
+#' )
+#'
+#' # alert if any values are over 100, but only for SITE1, and only for certain antibiotics
+#' ars <- alert_rules(
+#'   alert_above(extent_type = "any", extent_value = 1, rule_value = 100,
+#'               items = list("Location" = "SITE1", "Antibiotic" = c("Coamoxiclav", "Gentamicin"))
+#'   )
+#' )
+#' @export
 alert_rules <- function(...) {
 
   ars <- list(...)
@@ -154,6 +185,7 @@ is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
 #' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @return An `alert_rule` object
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
@@ -163,9 +195,8 @@ is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
 #'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
+#'   See Examples in [alert_rules()]
 #'
-#' @return An `alert_rule` object
-#' @seealso [alert_rules()], [alert_equals()]
 #' @examples
 #' # alert if all values are NA
 #' ars <- alert_rules(alert_missing(extent_type = "all"))
@@ -178,6 +209,8 @@ is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
 #'   alert_missing(extent_type = "last", extent_value = 3),
 #'   alert_missing(extent_type = "consecutive", extent_value = 5)
 #' )
+#'
+#' @seealso [alert_rules()], [alert_equals()], [alert_above()], [alert_below()], [alert_difference_above_perc()], [alert_difference_below_perc()], [alert_custom()]
 #' @export
 alert_missing <- function(extent_type = "all",
                           extent_value = 1,
@@ -230,6 +263,7 @@ alert_missing <- function(extent_type = "all",
 #' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @return An `alert_rule` object
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
@@ -239,8 +273,8 @@ alert_missing <- function(extent_type = "all",
 #'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
+#'   See Examples in [alert_rules()]
 #'
-#' @return An `alert_rule` object
 #' @examples
 #' # alert if all values are zero
 #' ars <- alert_rules(alert_equals(extent_type = "all", rule_value = 0))
@@ -253,6 +287,7 @@ alert_missing <- function(extent_type = "all",
 #'   alert_equals(extent_type = "last", extent_value = 3, rule_value = 0),
 #'   alert_equals(extent_type = "consecutive", extent_value = 5, rule_value = 0)
 #' )
+#' @seealso [alert_rules()], [alert_missing()], [alert_above()], [alert_below()], [alert_difference_above_perc()], [alert_difference_below_perc()], [alert_custom()]
 #' @export
 alert_equals <- function(extent_type = "all",
                      extent_value = 1,
@@ -312,6 +347,7 @@ alert_equals <- function(extent_type = "all",
 #' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @return An `alert_rule` object
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
@@ -321,8 +357,8 @@ alert_equals <- function(extent_type = "all",
 #'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
+#'   See Examples in [alert_rules()]
 #'
-#' @return An `alert_rule` object
 #' @examples
 #' # alert if all values are less than 2
 #' ars <- alert_rules(alert_below(extent_type = "all", rule_value = 2))
@@ -335,6 +371,8 @@ alert_equals <- function(extent_type = "all",
 #'   alert_below(extent_type = "last", extent_value = 3, rule_value = 2),
 #'   alert_below(extent_type = "consecutive", extent_value = 5, rule_value = 7)
 #' )
+#'
+#' @seealso [alert_rules()], [alert_missing()], [alert_equals()], [alert_above()], [alert_difference_above_perc()], [alert_difference_below_perc()], [alert_custom()]
 #' @export
 alert_below <- function(extent_type = "all",
                      extent_value = 1,
@@ -393,6 +431,7 @@ alert_below <- function(extent_type = "all",
 #' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @return An `alert_rule` object
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
@@ -402,8 +441,8 @@ alert_below <- function(extent_type = "all",
 #'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
+#'   See Examples in [alert_rules()]
 #'
-#' @return An `alert_rule` object
 #' @examples
 #' # alert if all values are greater than 50
 #' ars <- alert_rules(alert_above(extent_type = "all", rule_value = 50))
@@ -416,6 +455,8 @@ alert_below <- function(extent_type = "all",
 #'   alert_above(extent_type = "last", extent_value = 3, rule_value = 60),
 #'   alert_above(extent_type = "consecutive", extent_value = 5, rule_value = 40)
 #' )
+#'
+#' @seealso [alert_rules()], [alert_missing()], [alert_equals()], [alert_below()], [alert_difference_above_perc()], [alert_difference_below_perc()], [alert_custom()]
 #' @export
 alert_above <- function(extent_type = "all",
                      extent_value = 1,
@@ -474,6 +515,7 @@ alert_above <- function(extent_type = "all",
 #' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @return An `alert_rule` object
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
@@ -483,13 +525,15 @@ alert_above <- function(extent_type = "all",
 #'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
+#'   See Examples in [alert_rules()]
 #'
-#' @return An `alert_rule` object
 #' @examples
 #' # alert if mean of last 3 values is over 20% greater than mean of the previous 12 values
 #' ars <- alert_rules(
 #'   alert_difference_above_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
 #' )
+#'
+#' @seealso [alert_rules()], [alert_missing()], [alert_equals()], [alert_above()], [alert_below()], [alert_difference_below_perc()], [alert_custom()]
 #' @export
 alert_difference_above_perc <- function(current_period,
                                         previous_period,
@@ -547,6 +591,7 @@ alert_difference_above_perc <- function(current_period,
 #' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @return An `alert_rule` object
 #'
 #' @section Details: Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
@@ -556,13 +601,15 @@ alert_difference_above_perc <- function(current_period,
 #'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
+#'   See Examples in [alert_rules()]
 #'
-#' @return An `alert_rule` object
 #' @examples
 #' # alert if mean of last 3 values is over 20% lower than mean of the previous 12 values
 #' ars <- alert_rules(
 #'   alert_difference_below_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
 #' )
+#'
+#' @seealso [alert_rules()], [alert_missing()], [alert_equals()], [alert_above()], [alert_below()], [alert_difference_above_perc()], [alert_custom()]
 #' @export
 alert_difference_below_perc <- function(current_period,
                                         previous_period,
@@ -617,6 +664,7 @@ alert_difference_below_perc <- function(current_period,
 #' @param items named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @return An `alert_rule` object
 #'
 #' @section Details:
 #'
@@ -633,9 +681,7 @@ alert_difference_below_perc <- function(current_period,
 #'   will only be applied when the `item_col`'s value is contained in the corresponding character
 #'   vector. When multiple `item_col`s are specified, the rule will be applied only to items that
 #'   satisfy all the conditions.
-#'
-#' @return An `alert_rule` object
-#' @export
+#'   See Examples in [alert_rules()]
 #'
 #' @examples
 #' ars <- alert_rules(
@@ -650,6 +696,9 @@ alert_difference_below_perc <- function(current_period,
 #'     function_call = quote(rev(value)[1] > 2*value[1])
 #'   )
 #' )
+#'
+#' @seealso [alert_rules()], [alert_missing()], [alert_equals()], [alert_above()], [alert_below()], [alert_difference_above_perc()], [alert_difference_below_perc()]
+#' @export
 alert_custom <- function(short_name,
                          description,
                          function_call,
@@ -742,15 +791,43 @@ run_alert <- function(prepared_df, inputspec, alert_rule){
 
 #' Generate a data frame containing alert results
 #'
+#' Test the time series for a set of conditions without generating an html report. This can be
+#' useful for incorporation into a pipeline.
+#'
 #' @param df A data frame containing multiple time series in long format. See Details.
 #' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
-#'   "timepoint", "item", "value"  and (optionally) "tab" for the time series.
+#'   "timepoint", "item", and "value" for the time series.
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
 #' @param filter_results only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".
 #' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`. Can be either Date values or NAs.
-#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count
-#'
+#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count. Logical.
 #' @return tibble
+#'
+#' @details The supplied data frame should contain multiple time series in long format, i.e.:
+#'
+#' \itemize{
+#'   \item one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
+#'   \item one or more "item" (character) columns containing categorical values identifying distinct time series.
+#'   \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
+#' }
+#'
+#' The `inputspec` parameter maps the data frame columns to the above.
+#'
+#' @examples
+#' alert_results <- mantis_alerts(
+#'   example_prescription_numbers,
+#'   inputspec = inputspec(
+#'     timepoint_col = "PrescriptionDate",
+#'     item_cols = c("Antibiotic", "Location"),
+#'     value_col = "NumberOfPrescriptions"
+#'   ),
+#'   alert_rules = alert_rules(
+#'     alert_missing(extent_type = "any", extent_value = 1),
+#'     alert_equals(extent_type = "all", rule_value = 0)
+#'   )
+#' )
+#'
+#' @seealso [alert_rules()], [inputspec()]
 #' @export
 mantis_alerts <- function(df,
                           inputspec,

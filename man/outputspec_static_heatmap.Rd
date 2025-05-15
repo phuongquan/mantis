@@ -11,9 +11,9 @@ outputspec_static_heatmap(
 )
 }
 \arguments{
-\item{fill_colour}{colour to use for the tiles}
+\item{fill_colour}{colour to use for the tiles. Passed to \code{high} parameter of \code{ggplot2::scale_fill_gradient()}}
 
-\item{y_label}{string for y-axis label. Optional}
+\item{y_label}{string for y-axis label. Optional. If \code{NULL}, the label will be constructed from the \code{inputspec()}}
 
 \item{item_order}{named list corresponding to \code{item_cols} columns for ordering the
 items in the output. List values are either \code{TRUE} for ascending order, or a character vector
@@ -24,7 +24,7 @@ original order will be kept. See Details.}
 An \code{outputspec()} object
 }
 \description{
-Specify output options for a static report containing heatmaps
+Each tab contains a heatmap with one row per time series.
 }
 \section{Details}{
  For \code{item_order}, the names of the list members should correspond to the column
@@ -36,3 +36,20 @@ alphabetically at the end. If you want to order the tabs, it is recommended to p
 as the first item in the list.
 }
 
+\examples{
+# Customise the plot
+outspec <- outputspec_static_heatmap(
+  fill_colour = "#56B1F7",
+  y_label = "Daily records"
+)
+
+# Sort alphabetically by Antibiotic
+outspec <- outputspec_static_heatmap(
+  item_order = list("Antibiotic" = TRUE)
+)
+
+# Sort alphabetically by Location first, then put "Vancomycin" and "Linezolid" before other antibiotics
+outspec <- outputspec_static_heatmap(
+  item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
+)
+}

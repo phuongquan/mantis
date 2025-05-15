@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare.R
 \name{outputspec_static_multipanel}
 \alias{outputspec_static_multipanel}
-\title{Specify output options for a static report containing grids of plots.}
+\title{Specify output options for a static report containing a panel of plots.}
 \usage{
 outputspec_static_multipanel(
   sync_axis_range = FALSE,
@@ -14,7 +14,7 @@ outputspec_static_multipanel(
 \item{sync_axis_range}{Set the y-axis to be the same range for all the plots.
 X-axes are always synced.}
 
-\item{y_label}{string for y-axis label. Optional}
+\item{y_label}{string for y-axis label. Optional. If \code{NULL}, the label will be constructed from the \code{inputspec()}}
 
 \item{item_order}{named list corresponding to \code{item_cols} columns for ordering the
 items in the output. List values are either \code{TRUE} for ascending order, or a character vector
@@ -25,7 +25,7 @@ original order will be kept. See Details.}
 An \code{outputspec()} object
 }
 \description{
-Currently only creates scatter plots
+Each tab contains a single column of scatter plots with one row per time series.
 }
 \section{Details}{
  For \code{item_order}, the names of the list members should correspond to the column
@@ -37,3 +37,20 @@ alphabetically at the end. If you want to order the tabs, it is recommended to p
 as the first item in the list.
 }
 
+\examples{
+# Plot all panels to same scale
+outspec <- outputspec_static_multipanel(
+  sync_axis_range = TRUE,
+  y_label = "Daily records"
+)
+
+# Sort panels alphabetically by Antibiotic
+outspec <- outputspec_static_multipanel(
+  item_order = list("Antibiotic" = TRUE)
+)
+
+# Sort alphabetically by Location first, then put "Vancomycin" and "Linezolid" before other antibiotics
+outspec <- outputspec_static_multipanel(
+  item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
+)
+}

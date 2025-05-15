@@ -33,3 +33,51 @@ A \code{inputspec()} object
 \description{
 Specify relevant columns in the source data frame
 }
+\examples{
+# create a flat report, and include the "Location" and "Antibiotic" fields in the content
+inspec_flat <- inputspec(
+  timepoint_col = "PrescriptionDate",
+  item_cols = c("Location", "Antibiotic"),
+  value_col = "NumberOfPrescriptions",
+  timepoint_unit = "day"
+)
+
+# create a flat report, and include the "Location", "Spectrum", and "Antibiotic" fields in the
+# content
+inspec_flat2 <- inputspec(
+  timepoint_col = "PrescriptionDate",
+  item_cols = c("Location", "Spectrum", "Antibiotic"),
+  value_col = "NumberOfPrescriptions",
+  timepoint_unit = "day"
+)
+
+# create a tabbed report, with a separate tab for each unique value of "Location", and include just
+# the "Antibiotic" field in the content of each tab
+inspec_tabbed <- inputspec(
+  timepoint_col = "PrescriptionDate",
+  item_cols = c("Antibiotic", "Location"),
+  value_col = "NumberOfPrescriptions",
+  tab_col = "Location",
+  timepoint_unit = "day"
+)
+
+# create a tabbed report, with a separate tab for each unique value of "Location", and include the
+# "Antibiotic" and "Spectrum" fields in the content of each tab
+inspec_tabbed2 <- inputspec(
+  timepoint_col = "PrescriptionDate",
+  item_cols = c("Antibiotic", "Spectrum", "Location"),
+  value_col = "NumberOfPrescriptions",
+  tab_col = "Location",
+  timepoint_unit = "day"
+)
+
+# create a tabbed report, with a separate tab for each unique value of "Antibiotic", and include
+# just the "Location" field in the content of each tab
+inspec_tabbed3 <- inputspec(
+  timepoint_col = "PrescriptionDate",
+  item_cols = c("Antibiotic", "Location"),
+  value_col = "NumberOfPrescriptions",
+  tab_col = "Antibiotic",
+  timepoint_unit = "day"
+)
+}

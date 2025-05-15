@@ -17,7 +17,7 @@ mantis_alerts(
 \item{df}{A data frame containing multiple time series in long format. See Details.}
 
 \item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the supplied \code{df} represent the
-"timepoint", "item", "value"  and (optionally) "tab" for the time series.}
+"timepoint", "item", and "value" for the time series.}
 
 \item{alert_rules}{\code{\link[=alert_rules]{alert_rules()}} object specifying conditions to test}
 
@@ -25,11 +25,41 @@ mantis_alerts(
 
 \item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of \code{timepoint_col}. Can be either Date values or NAs.}
 
-\item{fill_with_zero}{Replace any missing or NA values with 0? Useful when value_col is a record count}
+\item{fill_with_zero}{Replace any missing or NA values with 0? Useful when value_col is a record count. Logical.}
 }
 \value{
 tibble
 }
 \description{
-Generate a data frame containing alert results
+Test the time series for a set of conditions without generating an html report. This can be
+useful for incorporation into a pipeline.
+}
+\details{
+The supplied data frame should contain multiple time series in long format, i.e.:
+
+\itemize{
+\item one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
+\item one or more "item" (character) columns containing categorical values identifying distinct time series.
+\item one "value" (numeric) column containing the time series values which will be used for the y-axes.
+}
+
+The \code{inputspec} parameter maps the data frame columns to the above.
+}
+\examples{
+alert_results <- mantis_alerts(
+  example_prescription_numbers,
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Antibiotic", "Location"),
+    value_col = "NumberOfPrescriptions"
+  ),
+  alert_rules = alert_rules(
+    alert_missing(extent_type = "any", extent_value = 1),
+    alert_equals(extent_type = "all", rule_value = 0)
+  )
+)
+
+}
+\seealso{
+\code{\link[=alert_rules]{alert_rules()}}, \code{\link[=inputspec]{inputspec()}}
 }

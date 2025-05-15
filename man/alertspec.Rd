@@ -20,3 +20,21 @@ The alert results are displayed in different ways depending on the chosen output
 containing time series which failed at least one alert are highlighted, and a separate tab
 containing the alert results is created by default.
 }
+\examples{
+# define some alerting rules
+ars <- alert_rules(
+  alert_missing(extent_type = "any", extent_value = 1),
+  alert_equals(extent_type = "all", rule_value = 0)
+)
+
+# specify that all results should be included in the Alerts tab (the default)
+  alsp <- alertspec(
+   alert_rules = ars
+ )
+
+# specify that only results which fail or are incalculable should be included in the Alerts tab
+  alsp <- alertspec(
+   alert_rules = ars,
+   show_tab_results = c("FAIL", "NA")
+ )
+}

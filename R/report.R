@@ -21,18 +21,69 @@
 #' @param show_progress Print progress to console. Default = `TRUE`.
 #' @param ... Further parameters to be passed to `rmarkdown::render()`. Cannot include any of
 #'   `input`, `output_dir`, `output_file`, `params`, `quiet`.
-#'
 #' @return A string containing the name and path of the saved report.
+#'
 #' @details The supplied data frame should contain multiple time series in long format, i.e.:
 #'
 #' \itemize{
 #'   \item one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
-#'   \item one "item" (character) column containing categorical values identifying distinct time series.
+#'   \item one or more "item" (character) columns containing categorical values identifying distinct time series.
 #'   \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
 #'   \item Optionally, a "tab" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
 #' }
 #'
 #' The `inputspec` parameter maps the data frame columns to the above.
+#' @examples
+#' \donttest{
+#' # create an interactive report in the current directory, with one tab per Location
+#' filename <- mantis_report(
+#'   df = example_prescription_numbers,
+#'   inputspec = inputspec(
+#'     timepoint_col = "PrescriptionDate",
+#'     item_cols = c("Location", "Antibiotic", "Spectrum"),
+#'     value_col = "NumberOfPrescriptions",
+#'     tab_col = "Location",
+#'     timepoint_unit = "day"
+#'   ),
+#'   outputspec = outputspec_interactive(),
+#'   report_title = "Daily antibiotic prescribing",
+#'   dataset_description = "Antibiotic prescriptions by site",
+#'   save_directory = ".",
+#'   save_filename = "example_prescription_numbers_interactive",
+#'   show_progress = TRUE
+#' )
+#' \dontshow{file.remove("./example_prescription_numbers_interactive.html")}
+#' }
+#'
+#' \donttest{
+#' # create an interactive report in the current directory, with alerting rules
+#' filename <- mantis_report(
+#'   df = example_prescription_numbers,
+#'   inputspec = inputspec(
+#'     timepoint_col = "PrescriptionDate",
+#'     item_cols = c("Location", "Antibiotic", "Spectrum"),
+#'     value_col = "NumberOfPrescriptions",
+#'     tab_col = "Location",
+#'     timepoint_unit = "day"
+#'   ),
+#'   outputspec = outputspec_interactive(),
+#'   alertspec = alertspec(
+#'    alert_rules = alert_rules(
+#'     alert_missing(extent_type = "any", extent_value = 1),
+#'     alert_equals(extent_type = "all", rule_value = 0)
+#'    ),
+#'    show_tab_results = c("FAIL", "NA")
+#'   ),
+#'   report_title = "Daily antibiotic prescribing",
+#'   dataset_description = "Antibiotic prescriptions by site",
+#'   save_directory = ".",
+#'   save_filename = "example_prescription_numbers_interactive",
+#'   show_progress = TRUE
+#' )
+#' \dontshow{file.remove("./example_prescription_numbers_interactive.html")}
+#' }
+#'
+#' @seealso [inputspec()], [outputspec_interactive()], [outputspec_static_heatmap()], [outputspec_static_multipanel()], [alertspec()]
 #' @export
 mantis_report <- function(df,
                         inputspec,

@@ -13,7 +13,7 @@ alert_rules(...)
 An \code{alert_rules} object
 }
 \description{
-Note: this functionality is currently only implemented for interactive outputs and will be ignored for static outputs.
+Specify which built-in alert rules should be run on the time series
 }
 \examples{
 # alert if any values are NA
@@ -21,5 +21,19 @@ Note: this functionality is currently only implemented for interactive outputs a
 ars <- alert_rules(
   alert_missing(extent_type = "any", extent_value = 1),
   alert_equals(extent_type = "all", rule_value = 0)
+)
+
+# alert if any values are over 100, but only for certain antibiotics
+ars <- alert_rules(
+  alert_above(extent_type = "any", extent_value = 1, rule_value = 100,
+              items = list("Antibiotic" = c("Coamoxiclav", "Gentamicin"))
+  )
+)
+
+# alert if any values are over 100, but only for SITE1, and only for certain antibiotics
+ars <- alert_rules(
+  alert_above(extent_type = "any", extent_value = 1, rule_value = 100,
+              items = list("Location" = "SITE1", "Antibiotic" = c("Coamoxiclav", "Gentamicin"))
+  )
 )
 }
