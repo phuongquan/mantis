@@ -78,6 +78,26 @@ results can be "PASS", "FAIL", or "NA". If NULL, no separate tab will be created
     <p>An <code>alertspec()</code> object</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># define some alerting rules</span></span></span>
+<span class="r-in"><span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="alert_rules.html">alert_rules</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="alert_equals.html">alert_equals</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"all"</span>, rule_value <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># specify that all results should be included in the Alerts tab (the default)</span></span></span>
+<span class="r-in"><span>  <span class="va">alsp</span> <span class="op">&lt;-</span> <span class="fu">alertspec</span><span class="op">(</span></span></span>
+<span class="r-in"><span>   alert_rules <span class="op">=</span> <span class="va">ars</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># specify that only results which fail or are incalculable should be included in the Alerts tab</span></span></span>
+<span class="r-in"><span>  <span class="va">alsp</span> <span class="op">&lt;-</span> <span class="fu">alertspec</span><span class="op">(</span></span></span>
+<span class="r-in"><span>   alert_rules <span class="op">=</span> <span class="va">ars</span>,</span></span>
+<span class="r-in"><span>   show_tab_results <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FAIL"</span>, <span class="st">"NA"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
@@ -87,7 +107,7 @@ results can be "PASS", "FAIL", or "NA". If NULL, no separate tab will be created
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer></div>

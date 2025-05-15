@@ -5,7 +5,7 @@ See https://github.com/rstudio/rmarkdown/issues/1877 for more info.
 Note: The chunk currently appears like a line break when rendered."><meta property="og:description" content="If the output is being constructed in results='asis' chunks, there must also be at least one standard chunk that
 contains the relevant widgets, otherwise they won't render. The dygraph also needs to be initialised with the appropriate plot_type.
 See https://github.com/rstudio/rmarkdown/issues/1877 for more info.
-Note: The chunk currently appears like a line break when rendered."><meta name="robots" content="noindex"></head><body>
+Note: The chunk currently appears like a line break when rendered."><meta name="robots" content="noindex"><!-- dependencies from examples --><script src="libs/core-js-2.5.3/shim.min.js"></script><script src="libs/react-18.2.0/react.min.js"></script><script src="libs/react-18.2.0/react-dom.min.js"></script><script src="libs/reactwidget-2.0.0/react-tools.js"></script><script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="libs/reactable-0.4.4/reactable.css" rel="stylesheet"><script src="libs/reactable-binding-0.4.4/reactable.js"></script><link href="libs/dygraphs-1.1.1/dygraph.css" rel="stylesheet"><script src="libs/dygraphs-1.1.1/dygraph-combined.js"></script><script src="libs/dygraphs-1.1.1/shapes.js"></script><script src="libs/moment-2.8.4/moment.js"></script><script src="libs/moment-timezone-0.2.5/moment-timezone-with-data.js"></script><script src="libs/moment-fquarter-1.0.0/moment-fquarter.min.js"></script><script src="libs/dygraphs-binding-1.1.1.6/dygraphs.js"></script><script src="libs/Dygraph.Plotters.BarChart-1.0/barchart.js"></script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -77,6 +77,18 @@ just want a reactable widget without dygraphs e.g. for alerts</p></dd>
     <p>A (mostly) invisible html widget</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># put this inside its own chunk in the rmd file</span></span></span>
+<span class="r-in"><span><span class="co"># it ensures that the dygraphs render when built using `cat()`</span></span></span>
+<span class="r-in"><span><span class="co"># set the plot_type to the same plot_type as the real output</span></span></span>
+<span class="r-in"><span><span class="fu">mantis</span><span class="fu">::</span><span class="fu">bespoke_rmd_initialise_widgets</span><span class="op">(</span>plot_type <span class="op">=</span> <span class="st">"bar"</span><span class="op">)</span></span></span>
+<div id="htmlwidget-36aa3d2a04d42bbc2145" class="reactable html-widget" style="width:700px;height:0px;"></div>
+<script type="application/json" data-for="htmlwidget-36aa3d2a04d42bbc2145">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"item.b":["item"],"last_timepoint":["2023-01-01"],"last_value":[1],"last_value_nonmissing":[1],"max_value":[1],"mean_value":[1],"history":[[[1]]],"alert_overall":[null],"alert_details":[null]},"columns":[{"id":"item.b","name":"b","type":"character","filterable":true},{"id":"last_timepoint","name":"Last timepoint","type":"Date","show":false},{"id":"last_value","name":"Last value","type":"numeric","show":false},{"id":"last_value_nonmissing","name":"Last non-missing value","type":"numeric","show":false},{"id":"max_value","name":"Max value","type":"numeric","show":false},{"id":"mean_value","name":"Mean","type":"numeric","show":false},{"id":"history","name":"c","type":"list","filterable":false,"cell":[{"name":"WidgetContainer","attribs":{"key":"84a29020c604e23a84367f1b31f52308"},"children":[{"name":"Fragment","attribs":[],"children":[{"name":"div","attribs":{"id":"htmlwidget-e5c8c404fe174e4c81bd","style":{"width":"400px","height":"40px"},"className":"dygraphs html-widget"},"children":[]},{"name":"script","attribs":{"type":"application/json","data-for":"htmlwidget-e5c8c404fe174e4c81bd"},"children":["{\"x\":{\"attrs\":{\"axes\":{\"x\":{\"pixelsPerLabel\":60,\"drawAxis\":false},\"y\":{\"drawAxis\":false,\"valueRange\":[0,2]}},\"labels\":[\"second\",\"value\"],\"legend\":\"auto\",\"retainDateWindow\":false,\"stackedGraph\":false,\"fillGraph\":false,\"fillAlpha\":0.15,\"stepPlot\":false,\"drawPoints\":false,\"pointSize\":1,\"drawGapEdgePoints\":false,\"connectSeparatedPoints\":false,\"strokeWidth\":1,\"strokeBorderColor\":\"white\",\"colorValue\":0.5,\"colorSaturation\":1,\"includeZero\":false,\"drawAxesAtZero\":false,\"logscale\":false,\"axisTickSize\":3,\"axisLineColor\":\"black\",\"axisLineWidth\":0.3,\"axisLabelColor\":\"black\",\"axisLabelFontSize\":14,\"axisLabelWidth\":60,\"drawGrid\":false,\"gridLineWidth\":0.3,\"rightGap\":5,\"digitsAfterDecimal\":2,\"labelsKMB\":false,\"labelsKMG2\":false,\"labelsUTC\":false,\"maxNumberWidth\":6,\"animatedZooms\":false,\"mobileDisableYTouch\":true,\"disableZoom\":false,\"xAxisHeight\":0,\"xRangePad\":10,\"xLabelHeight\":0},\"scale\":\"seconds\",\"annotations\":[],\"shadings\":[],\"events\":[],\"format\":\"date\",\"data\":[\"2023-01-01T00:00:00.000Z\",1],\"fixedtz\":false,\"tzone\":\"UTC\",\"plotter\":\"BarChart\"},\"evals\":[],\"jsHooks\":[]}"]}]}]}],"width":410},{"id":"alert_overall","name":"Alerts","type":"logical","filterable":true,"show":false,"cell":["-"],"details":[null]},{"id":"alert_details","name":"alert_details","type":"list","show":false}],"pagination":false,"highlight":true,"striped":true,"compact":true,"height":"0px","dataKey":"1c7afacdb11304a576f89c14b668959f"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script><span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
@@ -86,7 +98,7 @@ just want a reactable widget without dygraphs e.g. for alerts</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer></div>
