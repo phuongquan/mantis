@@ -82,7 +82,7 @@ useful for incorporation into a pipeline.</p>
 
 
 <dt id="arg-filter-results">filter_results<a class="anchor" aria-label="anchor" href="#arg-filter-results"></a></dt>
-<dd><p>only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".</p></dd>
+<dd><p>Only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".</p></dd>
 
 
 <dt id="arg-timepoint-limits">timepoint_limits<a class="anchor" aria-label="anchor" href="#arg-timepoint-limits"></a></dt>
@@ -90,7 +90,7 @@ useful for incorporation into a pipeline.</p>
 
 
 <dt id="arg-fill-with-zero">fill_with_zero<a class="anchor" aria-label="anchor" href="#arg-fill-with-zero"></a></dt>
-<dd><p>Replace any missing or NA values with 0? Useful when value_col is a record count. Logical.</p></dd>
+<dd><p>Logical. Replace any missing or NA values with 0? Useful when value_col is a record count.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -107,7 +107,7 @@ useful for incorporation into a pipeline.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="alert_rules.html">alert_rules()</a></code>, <code><a href="inputspec.html">inputspec()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="alert_rules.html">alert_rules()</a></code>, <code><a href="inputspec.html">inputspec()</a></code>, <code><a href="alert_rule_types.html">alert_rule_types()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -120,8 +120,8 @@ useful for incorporation into a pipeline.</p>
 <span class="r-in"><span>    value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  alert_rules <span class="op">=</span> <span class="fu"><a href="alert_rules.html">alert_rules</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    <span class="fu"><a href="alert_equals.html">alert_equals</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"all"</span>, rule_value <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="alert_rule_types.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="alert_rule_types.html">alert_equals</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"all"</span>, rule_value <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

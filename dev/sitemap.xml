@@ -9,13 +9,7 @@
 <url><loc>/dev/authors.html</loc></url>
 <url><loc>/dev/index.html</loc></url>
 <url><loc>/dev/news/index.html</loc></url>
-<url><loc>/dev/reference/alert_above.html</loc></url>
-<url><loc>/dev/reference/alert_below.html</loc></url>
-<url><loc>/dev/reference/alert_custom.html</loc></url>
-<url><loc>/dev/reference/alert_difference_above_perc.html</loc></url>
-<url><loc>/dev/reference/alert_difference_below_perc.html</loc></url>
-<url><loc>/dev/reference/alert_equals.html</loc></url>
-<url><loc>/dev/reference/alert_missing.html</loc></url>
+<url><loc>/dev/reference/alert_rule_types.html</loc></url>
 <url><loc>/dev/reference/alert_rules.html</loc></url>
 <url><loc>/dev/reference/alertspec.html</loc></url>
 <url><loc>/dev/reference/bespoke_rmd_alert_results.html</loc></url>
