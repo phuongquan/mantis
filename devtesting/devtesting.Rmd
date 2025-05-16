@@ -26,6 +26,23 @@ window.onresize = function(){ location.reload(); }
 
 # {.tabset .tabset-pills}
 
+## explicit max timepoint_limit
+
+```{r, results = 'asis'}
+mantis::bespoke_rmd_output(
+  df,
+  inputspec = mantis::inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Location", "Antibiotic", "Spectrum"),
+    value_col = "NumberOfPrescriptions"
+  ),
+  outputspec = mantis::outputspec_interactive(),
+  timepoint_limits = c(NA, Sys.Date()),
+  tab_level = 2
+)
+
+```
+
 
 ## tab group with parent {.tabset}
 

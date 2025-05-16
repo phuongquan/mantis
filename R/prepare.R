@@ -592,7 +592,14 @@ align_data_timepoints <-
   if (is.na(timepoint_limits[2])) {
     max_timepoint <- max(prepared_df$timepoint)
   } else{
-    max_timepoint <- timepoint_limits[2]
+    # NOTE: While timepoint_limits should already be a date class,
+    # if user supplies an NA first in the vector, the second value gets coerced to numeric
+    # and leads to an error in seq() later on
+    if (inputspec$timepoint_unit %in% c("sec", "min", "hour")){
+      max_timepoint <- as.POSIXct(timepoint_limits[2])
+    } else{
+      max_timepoint <- as.Date(timepoint_limits[2])
+    }
   }
 
   # TODO: Need to work out correct granularity to use based on df

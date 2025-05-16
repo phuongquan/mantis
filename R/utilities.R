@@ -370,7 +370,8 @@ validate_param_byname <- function(param_name, param_value){
       expect_scalar = FALSE,
       validation_function = function(x) {
         # NOTE: can't just test for Date class as if first value is NA, second value gets converted to numeric implicitly
-        length(x) == 2 && all(is_date_or_time(x) | is.numeric(x) | is.na(x))
+        length(x) == 2 && (all(is_date_or_time(x) | is.na(x))
+                           | (is.na(x[1]) && is.numeric(x[2])) )
       },
       error_message = 'Expected a vector of two Dates or NAs',
       error_contents_max_length = 100

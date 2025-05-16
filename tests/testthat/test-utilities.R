@@ -386,6 +386,8 @@ test_that("validate_params_type() checks timepoint_limits params contain valid v
   expect_silent(testfn_params_type(timepoint_limits = c(NA, as.Date("2024-01-01"))))
   expect_silent(testfn_params_type(timepoint_limits = c(as.Date("2024-01-01"), NA)))
   expect_silent(testfn_params_type(timepoint_limits = c(as.Date("2024-01-01"), as.Date("2024-02-01"))))
+  expect_silent(testfn_params_type(timepoint_limits = c(as.POSIXct("2024-01-01"), as.POSIXct("2024-02-01"))))
+  expect_silent(testfn_params_type(timepoint_limits = c(as.POSIXlt("2024-01-01"), as.POSIXlt("2024-02-01"))))
 
   expect_error(testfn_params_type(timepoint_limits = NULL),
                class = "invalid_param_type")
@@ -394,6 +396,8 @@ test_that("validate_params_type() checks timepoint_limits params contain valid v
   expect_error(testfn_params_type(timepoint_limits = "hello"),
                class = "invalid_param_type")
   expect_error(testfn_params_type(timepoint_limits = c("2024-01-01", "2024-02-01")),
+               class = "invalid_param_type")
+  expect_error(testfn_params_type(timepoint_limits = c(1, 10)),
                class = "invalid_param_type")
   expect_error(testfn_params_type(timepoint_limits = 1:3),
                class = "invalid_param_type")
