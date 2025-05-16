@@ -13,7 +13,7 @@ alert_rules(...)
 An \code{alert_rules} object
 }
 \description{
-Specify which built-in alert rules should be run on the time series
+Specify which alert rules should be run on the time series
 }
 \examples{
 # alert if any values are NA
@@ -36,4 +36,8 @@ ars <- alert_rules(
               items = list("Location" = "SITE1", "Antibiotic" = c("Coamoxiclav", "Gentamicin"))
   )
 )
+
+}
+\seealso{
+\code{\link[=alert_rule_types]{alert_rule_types()}}
 }

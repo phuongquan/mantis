@@ -1,3 +1,4 @@
+# -----------------------------------------------------------------------------
 #' Convert supplied df into required format for generating tables/plots
 #'
 #' Supplied df needs to be long (at least for now)
@@ -70,9 +71,8 @@ prepare_df <-
   prepared_df
 }
 
-#' Convert supplied df into required format for generating tables/plots
-#'
-#' Supplied df needs to be long (at least for now)
+# -----------------------------------------------------------------------------
+#' Convert prepared df into required format for generating tables/plots
 #'
 #' @param prepared_df data frame returned from prepare_df()
 #' @param inputspec Specification of data in df
@@ -320,7 +320,8 @@ is_inputspec <- function(x) inherits(x, "mantis_inputspec")
 #'   item_order = list("Antibiotic" = TRUE)
 #' )
 #'
-#' # Sort alphabetically by Location first, then put "Vancomycin" and "Linezolid" before other antibiotics
+#' # Sort alphabetically by Location first,
+#' # then put "Vancomycin" and "Linezolid" before other antibiotics
 #' outspec <- outputspec_interactive(
 #'   item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
 #' )
@@ -376,6 +377,7 @@ outputspec_interactive <- function(plot_value_type = "value",
   )
 }
 
+# -----------------------------------------------------------------------------
 #' Specify output options for a static report containing heatmaps
 #'
 #' Each tab contains a heatmap with one row per time series.
@@ -408,7 +410,8 @@ outputspec_interactive <- function(plot_value_type = "value",
 #'   item_order = list("Antibiotic" = TRUE)
 #' )
 #'
-#' # Sort alphabetically by Location first, then put "Vancomycin" and "Linezolid" before other antibiotics
+#' # Sort alphabetically by Location first,
+#' # then put "Vancomycin" and "Linezolid" before other antibiotics
 #' outspec <- outputspec_static_heatmap(
 #'   item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
 #' )
@@ -432,6 +435,7 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
     )
 }
 
+# -----------------------------------------------------------------------------
 #' Specify output options for a static report containing a panel of plots.
 #'
 #' Each tab contains a single column of scatter plots with one row per time series.
@@ -465,7 +469,8 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 #'   item_order = list("Antibiotic" = TRUE)
 #' )
 #'
-#' # Sort alphabetically by Location first, then put "Vancomycin" and "Linezolid" before other antibiotics
+#' # Sort alphabetically by Location first,
+#' # then put "Vancomycin" and "Linezolid" before other antibiotics
 #' outspec <- outputspec_static_multipanel(
 #'   item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
 #' )
@@ -497,6 +502,7 @@ outputspec_static_multipanel <- function(sync_axis_range = FALSE,
 #' @noRd
 is_outputspec <- function(x) inherits(x, "mantis_outputspec")
 
+# -----------------------------------------------------------------------------
 #' Test if object is an outputspec_interactive
 #'
 #' @param x object to test
@@ -504,6 +510,7 @@ is_outputspec <- function(x) inherits(x, "mantis_outputspec")
 #' @noRd
 is_outputspec_interactive <- function(x) inherits(x, "mantis_outputspec_interactive")
 
+# -----------------------------------------------------------------------------
 #' Test if object is an outputspec_static
 #'
 #' @param x object to test
@@ -511,6 +518,7 @@ is_outputspec_interactive <- function(x) inherits(x, "mantis_outputspec_interact
 #' @noRd
 is_outputspec_static <- function(x) inherits(x, "mantis_outputspec_static")
 
+# -----------------------------------------------------------------------------
 #' Test if object is an outputspec_static_heatmap
 #'
 #' @param x object to test
@@ -518,6 +526,7 @@ is_outputspec_static <- function(x) inherits(x, "mantis_outputspec_static")
 #' @noRd
 is_outputspec_static_heatmap <- function(x) inherits(x, "mantis_outputspec_static_heatmap")
 
+# -----------------------------------------------------------------------------
 #' Test if object is an outputspec_static_multipanel
 #'
 #' @param x object to test
@@ -527,7 +536,6 @@ is_outputspec_static_multipanel <- function(x) inherits(x, "mantis_outputspec_st
 
 
 #-----------------------------------------------------------------------
-
 #' Create a time series as a list so it can be stored in a df cell
 #'
 #' @param value_for_history vector of values
@@ -554,6 +562,7 @@ history_to_list <-
   }
 
 
+# -----------------------------------------------------------------------------
 #' Align the timepoint values across all items
 #'
 #' @param prepared_df Data frame with 2 columns named timepoint and value, plus the item_cols
@@ -615,6 +624,7 @@ align_data_timepoints <-
 }
 
 
+# -----------------------------------------------------------------------------
 #' Wrapper for max function
 #'
 #' Returns NA (instead of Inf) if all values are NA. Retains datatype and avoids using suppressWarnings.
@@ -635,6 +645,7 @@ max_else_na <- function(x){
   }
 }
 
+# -----------------------------------------------------------------------------
 #' Validate the supplied df against the supplied inputspec
 #'
 #' If there are any validation errors, these are all compiled before calling a
@@ -681,6 +692,7 @@ validate_df_to_inputspec <- function(df,
 
 }
 
+# -----------------------------------------------------------------------------
 #' Check names in supplied df and inputspec
 #'
 #' @param df user supplied df
@@ -759,6 +771,7 @@ validate_df_to_inputspec_col_names <- function(df,
   err_validation
 }
 
+# -----------------------------------------------------------------------------
 #' Check datatypes in supplied df and inputspec
 #'
 #' Only run if supplied df and inputspec column names are valid
@@ -861,6 +874,7 @@ validate_df_to_inputspec_col_types <- function(df,
   err_validation
 }
 
+# -----------------------------------------------------------------------------
 #' Check supplied df has only one timepoint per item
 #'
 #' This assumes that the names in inputspec and the df have already been check and are valid
@@ -903,6 +917,7 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
 }
 
 
+# -----------------------------------------------------------------------------
 #' Check supplied df has same timepoint_unit as inputspec timepoint_unit
 #'
 #' This assumes that the names in inputspec and the df have already been check and are valid
@@ -930,6 +945,7 @@ validate_df_to_inputspec_timepoint_unit <- function(df,
   }
 }
 
+# -----------------------------------------------------------------------------
 #' Check supplied df has same timepoint_unit as inputspec timepoint_unit for daily or longer timepoint_units
 #'
 #' This assumes that the names in inputspec and the df have already been check and are valid
@@ -1065,6 +1081,7 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
 }
 
 
+# -----------------------------------------------------------------------------
 #' Check supplied df has same timepoint_unit as inputspec timepoint_unit for shorter than daily timepoint_units
 #'
 #' This assumes that the names in inputspec and the df have already been check and are valid
@@ -1126,6 +1143,7 @@ validate_df_to_inputspec_timepoint_unit_times <- function(df,
 }
 
 
+# -----------------------------------------------------------------------------
 #'Arrange/sort a df based on a list of items
 #'
 #'@param df df to arrange
@@ -1187,6 +1205,7 @@ arrange_items <- function(df, item_order = NULL){
 }
 
 
+# -----------------------------------------------------------------------------
 #' Prefix to be used for item_cols in prepared_df
 #'
 #' So that the original column names can be kept while avoiding potential clashes with calculated columns
@@ -1197,6 +1216,7 @@ item_cols_prefix <- function(x){
   paste0("item.", x)
 }
 
+# -----------------------------------------------------------------------------
 #' Prefix to be removed from item_cols in prepared_df
 #'
 #' So that the original column names can be kept while avoiding potential clashes with calculated columns

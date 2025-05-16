@@ -33,11 +33,39 @@ The function can:
 
 The function also includes a few additional parameters not available in the standard `mantis_report()` to allow some extra control over the display.
 
+**Example:**
+
+````{verbatim}
+```{r, results='asis'}
+# create a parent tab with a set of child tabs
+mantis::bespoke_rmd_output(
+  df = mantis::example_prescription_numbers,
+  inputspec = mantis::inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Location", "Antibiotic"),
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location"
+  ),
+  outputspec = mantis::outputspec_interactive(
+    plot_value_type = "value",
+    plot_type = "bar",
+    item_labels = c("Antibiotic" = "Antibiotic name"),
+    plot_label = "Prescriptions over time",
+    sync_axis_range = FALSE,
+    item_order = list("Location" = c("SITE3", "SITE2", "SITE1"))
+  ),
+  fill_with_zero = FALSE,
+  tab_name = "Group of child tabs",
+  tab_level = 1
+)
+```
+````
+
 ## Extra requirements for interactive reports
 
 Due to complexities in the way `dygraphs` widgets are rendered, there are two additional chunks that must be included in the Rmd file, otherwise the graphs can disappear unexpectedly.
 
-Firstly, add the following chunk to the Rmd file to ensure the `dygraphs` plots are initialised. Remember to set the same `plot_type` as the one you are using for the rest of the report. This is best placed at the bottom of the file as it can lead to an extra line space.
+Firstly, add the following chunk to the Rmd file to ensure the `dygraphs` plots are initialised. Remember to set the same `plot_type` as the one you are using for the rest of the report. This is best placed at the bottom of the file as it can lead to an extra line space. Note: unlike when creating `mantis` content, this chunk should *not* include `results='asis'`.
 
 ````{verbatim}
 ```{r}

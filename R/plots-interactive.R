@@ -1,3 +1,4 @@
+# -----------------------------------------------------------------------------
 #' Create html table from prepared data frame
 #'
 #' @param prepared_df data frame returned from prepare_df()
@@ -174,6 +175,7 @@ output_table_interactive <- function(prepared_df,
 }
 
 
+# -----------------------------------------------------------------------------
 #' Set y-axis range based on plot_value_type and values
 #'
 #' @param value_history lists of history values

@@ -96,6 +96,7 @@ validate_params_type <- function(call, ...) {
   }
 }
 
+# -----------------------------------------------------------------------------
 #' Select and apply type validation rules based on the param name
 #'
 #' @param param_name name of the parameter
@@ -439,6 +440,7 @@ validate_param_byname <- function(param_name, param_value){
 
 }
 
+# -----------------------------------------------------------------------------
 #' Perform specified type validation
 #'
 #' If if fails, return an error message, if it succeeds, return a zero-length character vector
@@ -504,6 +506,7 @@ validate_param <- function(param_name,
   }
 }
 
+# -----------------------------------------------------------------------------
 #' Construct validation failed message
 #'
 #' @param param_name name of the parameter
@@ -529,10 +532,11 @@ validation_failed_message <- function(param_name,
   )
 }
 
-# -----------------------------------------------------------------------------
+# =============================================================================
 # DUMMY FUNCTIONS SET UP PURELY FOR UNIT TESTING
 # integrates better with RStudio when placed here rather than in testthat/helper.R
 
+# -----------------------------------------------------------------------------
 #' Dummy function to assist unit testing of validate_params_required()
 #'
 #' @param p1 required param
@@ -544,6 +548,7 @@ testfn_params_required <- function(p1, p2, p3 = NULL, ...) {
   validate_params_required(match.call())
 }
 
+# -----------------------------------------------------------------------------
 #' Dummy function to assist unit testing of validate_params_type()
 #'
 #' This should contain every parameter defined in an exported function
@@ -689,6 +694,7 @@ stop_custom <- function(.subclass, message, call = NULL, ...) {
 }
 
 
+# -----------------------------------------------------------------------------
 #' Test if object is Date or POSIXt class
 #'
 #' @param x object to test

@@ -1,19 +1,24 @@
-#----------------------------------------------------------------------
+# =============================================================================
 # EXPORTED FUNCTIONS
 
+# -----------------------------------------------------------------------------
 #' Initialise HTML widgets
 #'
-#' If the output is being constructed in `results='asis'` chunks, there must also be at least one standard chunk that
-#' contains the relevant widgets, otherwise they won't render. The `dygraph` also needs to be initialised with the appropriate `plot_type`.
-#' See https://github.com/rstudio/rmarkdown/issues/1877 for more info.
+#' Since the output is being constructed in `results='asis'` chunks, there must also be at least one
+#' standard chunk that contains the relevant widgets, otherwise they will fail to render. The
+#' `dygraph` also needs to be initialised with the appropriate `plot_type`. This is only needed when
+#' creating interactive reports.
+#' Make sure you read the vignette: `vignette("bespoke-reports", package = "mantis")` as it contains
+#' further important information.
 #' Note: The chunk currently appears like a line break when rendered.
+#' See <https://github.com/rstudio/rmarkdown/issues/1877> for more info.
 #'
 #' @param plot_type "`bar`" or "`line`", depending on what will be used in real tables. Or "none" if
 #'   just want a reactable widget without dygraphs e.g. for alerts
 #' @return A (mostly) invisible html widget
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # put this inside its own chunk in the rmd file
 #' # it ensures that the dygraphs render when built using `cat()`
 #' # set the plot_type to the same plot_type as the real output
@@ -30,12 +35,13 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
   initialise_widgets(plot_type = plot_type)
 }
 
+# -----------------------------------------------------------------------------
 #' Dynamically generate mantis output for an rmd chunk
 #'
-#' Chunk options must contain `results = 'asis'`.
-#' The function writes directly to the chunk using side-effects
-#' There is further important information in the vignette:
-#' \code{vignette("bespoke-reports", package = "mantis")}
+#' Add `mantis` tabs and visualisations to an existing `rmarkdown` report.
+#' The function writes directly to the chunk using side-effects, so chunk options must contain `results = 'asis'`.
+#' Make sure you read the vignette: `vignette("bespoke-reports", package = "mantis")` as it contains
+#' further important information.
 #'
 #' @param df A data frame containing multiple time series in long format. See Details.
 #' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent
@@ -76,10 +82,10 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #'   into different child tabs, by using the `tab_col` parameter.
 #'
 #' @examples
-#' \donttest{
-#' # this goes inside a chunk in the rmd file
+#' \dontrun{
 #'
-#' # create a parent tab with a set of child tabs
+#' # put this inside a chunk in the rmd file,
+#' # with chunk option `results = 'asis'`
 #' mantis::bespoke_rmd_output(
 #'   df = mantis::example_prescription_numbers,
 #'   inputspec = mantis::inputspec(
@@ -141,10 +147,11 @@ bespoke_rmd_output <- function(df,
 }
 
 
+# -----------------------------------------------------------------------------
 #' Dynamically generate a table containing alert results for an rmd chunk
 #'
-#' Chunk options must contain `results = 'asis'`.
-#' Function writes directly to the chunk using side-effects
+#' Add `mantis` alert results to an existing `rmarkdown` report.
+#' The function writes directly to the chunk using side-effects, so chunk options must contain `results = 'asis'`.
 #'
 #' @param df A data frame containing multiple time series in long format. See Details.
 #' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent
@@ -163,9 +170,10 @@ bespoke_rmd_output <- function(df,
 #' @return (invisibly) the supplied `df`
 #'
 #' @examples
-#' \donttest{
-#' # this goes inside a chunk in the rmd file
+#' \dontrun{
 #'
+#' # put this inside a chunk in the rmd file,
+#' # with chunk option `results = 'asis'`
 #' mantis::bespoke_rmd_alert_results(
 #'   df = mantis::example_prescription_numbers,
 #'   inputspec = mantis::inputspec(
@@ -243,9 +251,10 @@ bespoke_rmd_alert_results <- function(df,
 }
 
 
-#----------------------------------------------------------------------
+# =============================================================================
 # INTERNAL FUNCTIONS
 
+# -----------------------------------------------------------------------------
 #' Initialise HTML widgets (internal)
 #'
 #' If the output is being constructed in `results='asis'` chunks, there must also be at least one standard chunk that
@@ -281,6 +290,7 @@ initialise_widgets <- function(plot_type = "none"){
 }
 
 
+# -----------------------------------------------------------------------------
 #' Dynamically generate tabs for an rmd chunk (internal)
 #'
 #' A single function to create both single tab items and groups
@@ -413,6 +423,7 @@ construct_rmd_tab <- function(df,
 }
 
 
+# -----------------------------------------------------------------------------
 #' Generate just the contents of a tab using side-effects
 #'
 #' @param prepared_df_subset prepared_df filtered for the tab
@@ -460,6 +471,7 @@ construct_tab_content <- function(prepared_df_subset,
 
 }
 
+# -----------------------------------------------------------------------------
 #' Generate an interactive table containing alert results using side-effects
 #'
 #' @param prepared_df_subset prepared_df filtered for the tab
@@ -492,6 +504,7 @@ construct_alert_results_content <- function(alert_results,
 }
 
 
+# -----------------------------------------------------------------------------
 #' Create markdown for tab label
 #'
 #' @param tab_name string label for the tab
@@ -513,6 +526,7 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, ale
   }
 }
 
+# -----------------------------------------------------------------------------
 #' Calculate appropriate fig.height for the chunks
 #'
 #' Static plots need this setting explicitly otherwise plots with lots of items look squished.

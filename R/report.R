@@ -1,3 +1,4 @@
+# -----------------------------------------------------------------------------
 #' Create an interactive time series report from a data frame
 #'
 #' Accepts a data frame containing multiple time series in long format, generates a collection of

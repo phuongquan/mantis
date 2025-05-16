@@ -42,13 +42,14 @@ value of 1 generates a tab at rmd level "##". If
 (invisibly) the supplied \code{df}
 }
 \description{
-Chunk options must contain \code{results = 'asis'}.
-Function writes directly to the chunk using side-effects
+Add \code{mantis} alert results to an existing \code{rmarkdown} report.
+The function writes directly to the chunk using side-effects, so chunk options must contain \code{results = 'asis'}.
 }
 \examples{
-\donttest{
-# this goes inside a chunk in the rmd file
+\dontrun{
 
+# put this inside a chunk in the rmd file,
+# with chunk option `results = 'asis'`
 mantis::bespoke_rmd_alert_results(
   df = mantis::example_prescription_numbers,
   inputspec = mantis::inputspec(

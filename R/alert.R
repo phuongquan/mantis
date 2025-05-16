@@ -1,4 +1,88 @@
 # -----------------------------------------------------------------------------
+#' Generate a data frame containing alert results
+#'
+#' Test the time series for a set of conditions without generating an html report. This can be
+#' useful for incorporation into a pipeline.
+#'
+#' @param df A data frame containing multiple time series in long format. See Details.
+#' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
+#'   "timepoint", "item", and "value" for the time series.
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
+#' @param filter_results Only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".
+#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`. Can be either Date values or NAs.
+#' @param fill_with_zero Logical. Replace any missing or NA values with 0? Useful when value_col is a record count.
+#' @return tibble
+#'
+#' @details The supplied data frame should contain multiple time series in long format, i.e.:
+#'
+#' \itemize{
+#'   \item one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
+#'   \item one or more "item" (character) columns containing categorical values identifying distinct time series.
+#'   \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
+#' }
+#'
+#' The `inputspec` parameter maps the data frame columns to the above.
+#'
+#' @examples
+#' alert_results <- mantis_alerts(
+#'   example_prescription_numbers,
+#'   inputspec = inputspec(
+#'     timepoint_col = "PrescriptionDate",
+#'     item_cols = c("Antibiotic", "Location"),
+#'     value_col = "NumberOfPrescriptions"
+#'   ),
+#'   alert_rules = alert_rules(
+#'     alert_missing(extent_type = "any", extent_value = 1),
+#'     alert_equals(extent_type = "all", rule_value = 0)
+#'   )
+#' )
+#'
+#' @seealso [alert_rules()], [inputspec()], [alert_rule_types()]
+#' @export
+mantis_alerts <- function(df,
+                          inputspec,
+                          alert_rules,
+                          filter_results = c("PASS", "FAIL", "NA"),
+                          timepoint_limits = c(NA, NA),
+                          fill_with_zero = FALSE) {
+  item <- NULL
+
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       df = df,
+                       inputspec = inputspec,
+                       alert_rules = alert_rules,
+                       filter_results = filter_results,
+                       timepoint_limits = timepoint_limits,
+                       fill_with_zero = fill_with_zero
+  )
+
+  validate_df_to_inputspec(df, inputspec)
+  validate_alert_rules_to_inputspec(alert_rules, inputspec)
+
+  prepared_df <-
+    prepare_df(
+      df,
+      inputspec = inputspec,
+      timepoint_limits = timepoint_limits,
+      fill_with_zero = fill_with_zero
+    )
+
+  results <-
+    run_alerts(
+      prepared_df = prepared_df,
+      inputspec = inputspec,
+      alert_rules = alert_rules,
+      filter_results = filter_results
+    )
+
+  results |>
+    dplyr::rename_with(.fn = item_cols_unprefix,
+                       .cols = dplyr::all_of(item_cols_prefix(inputspec$item_cols)))
+}
+
+
+# -----------------------------------------------------------------------------
 #' Specify alerting rules to be run on the data and displayed in the report
 #'
 #' The alert results are displayed in different ways depending on the chosen outputspec. Tabs
@@ -27,6 +111,8 @@
 #'    alert_rules = ars,
 #'    show_tab_results = c("FAIL", "NA")
 #'  )
+#'
+#' @seealso [alert_rules()], [alert_rule_types()]
 #' @export
 alertspec <- function(alert_rules,
                       show_tab_results = c("PASS", "FAIL", "NA")) {
@@ -53,7 +139,7 @@ is_alertspec <- function(x) inherits(x, "mantis_alertspec")
 # -----------------------------------------------------------------------------
 #' Create set of alert rules
 #'
-#' Specify which built-in alert rules should be run on the time series
+#' Specify which alert rules should be run on the time series
 #'
 #' @param ... alerts to apply to the time series
 #' @return An `alert_rules` object
@@ -78,6 +164,8 @@ is_alertspec <- function(x) inherits(x, "mantis_alertspec")
 #'               items = list("Location" = "SITE1", "Antibiotic" = c("Coamoxiclav", "Gentamicin"))
 #'   )
 #' )
+#'
+#' @seealso [alert_rule_types()]
 #' @export
 alert_rules <- function(...) {
 
@@ -129,10 +217,10 @@ is_alert_rules <- function(x) inherits(x, "mantis_alert_rules")
 #'
 #' @param type type of rule
 #' @param function_call expression to pass to `eval()`, that returns either `TRUE` or `FALSE`.
-#'   Return value of `TRUE` means alert result is FAIL
+#'   Return value of `TRUE` means alert result is "FAIL"
 #' @param short_name a short computer-friendly name to uniquely identify the rule
-#' @param description brief but user-friendly explanation of why the rule result is FAIL
-#' @param items named list with names corresponding to members of `item_cols`. List members are
+#' @param description brief but user-friendly explanation of why the rule result is "FAIL"
+#' @param items Named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
@@ -174,20 +262,20 @@ is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
 
 
 # -----------------------------------------------------------------------------
-#' Test for missing values
+#' Built-in alert rules
 #'
-#' Configure a rule to test the time series for the presence of NA values. Tolerance can be
-#' adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
+#' A range of built-in rules can be run on the time series to test for particular conditions.
 #'
-#' @param extent_type "all", "any", "last", "consecutive"
-#' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means
-#'   alert if there are 5 or more missing values in any position
-#' @param items named list with names corresponding to members of `item_cols`. List members are
-#'   character vectors of values contained in the named column that the rule should be applied to.
-#'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @seealso [alert_rules()], [alertspec()]
+#' @name alert_rule_types
 #' @return An `alert_rule` object
+#' @section Details:
+#' Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, e.g.
+#' `extent_type="all"` means alert if all values satisfy the condition, `extent_type="any"` in
+#' combination with `extent_value=5` means alert if there are 5 or more values that satisfy the
+#' condition, in any position. Also see Examples.
 #'
-#' @section Details: Use `items` to restrict the rule to be applied only to specified items.
+#' Use `items` to restrict the rule to be applied only to specified items.
 #'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
 #'   applied to all items. If a named list, the names must match members of the `item_cols`
 #'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
@@ -196,6 +284,20 @@ is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
 #'   contained in the corresponding character vector. When multiple `item_col`s are
 #'   specified, the rule will be applied only to items that satisfy all the conditions.
 #'   See Examples in [alert_rules()]
+#'
+NULL
+
+# -----------------------------------------------------------------------------
+#' Test for missing values
+#'
+#' @section Details: `alert_missing()` - Test for the presence of NA values.
+#'
+#' @param extent_type Type of subset of the time series values that must satisfy the condition for
+#'   the rule to return "FAIL". One of "all", "any", "last", "consecutive". See Details.
+#' @param extent_value Numeric lower limit of the extent type. See Details.
+#' @param items Named list with names corresponding to members of `item_cols`. List members are
+#'   character vectors of values contained in the named column that the rule should be applied to.
+#'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
 #' @examples
 #' # alert if all values are NA
@@ -210,7 +312,7 @@ is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
 #'   alert_missing(extent_type = "consecutive", extent_value = 5)
 #' )
 #'
-#' @seealso [alert_rules()], [alert_equals()], [alert_above()], [alert_below()], [alert_difference_above_perc()], [alert_difference_below_perc()], [alert_custom()]
+#' @rdname alert_rule_types
 #' @export
 alert_missing <- function(extent_type = "all",
                           extent_value = 1,
@@ -251,43 +353,23 @@ alert_missing <- function(extent_type = "all",
   )
 }
 
+# -----------------------------------------------------------------------------
 #' Test for specific values
 #'
-#' Configure a rule to test the time series for the presence of specific values. Tolerance can be
-#' adjusted using the `extent_type` and `extent_value` parameters, see Examples for details.
+#' @section Details: `alert_equals()` - Test for the presence of values equal to `rule_value`.
 #'
-#' @param extent_type "all", "any", "last", "consecutive"
-#' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means
-#'   alert if there are 5 or more values that satisfy the condition, in any position
-#' @param rule_value value to test against. e.g. `rule_value=0` means alert if value == 0
-#' @param items named list with names corresponding to members of `item_cols`. List members are
+#' @param extent_type Type of subset of the time series values that must satisfy the condition for
+#'   the rule to return "FAIL". One of "all", "any", "last", "consecutive". See Details.
+#' @param extent_value Numeric lower limit of the extent type. See Details.
+#' @param rule_value Numeric value to test against. See Details.
+#' @param items Named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
-#' @return An `alert_rule` object
-#'
-#' @section Details: Use `items` to restrict the rule to be applied only to specified items.
-#'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_cols`
-#'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
-#'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
-#'   contained in the corresponding character vector. When multiple `item_col`s are
-#'   specified, the rule will be applied only to items that satisfy all the conditions.
-#'   See Examples in [alert_rules()]
-#'
 #' @examples
-#' # alert if all values are zero
-#' ars <- alert_rules(alert_equals(extent_type = "all", rule_value = 0))
+#' # alert if any values are zero
+#' ars <- alert_rules(alert_equals(extent_type = "any", rule_value = 0))
 #'
-#' # alert if there are 10 or more zero values in total
-#' # or if the last 3 or more values are zero
-#' # or if 5 or more values in a row are zero
-#' ars <- alert_rules(
-#'   alert_equals(extent_type = "any", extent_value = 10, rule_value = 0),
-#'   alert_equals(extent_type = "last", extent_value = 3, rule_value = 0),
-#'   alert_equals(extent_type = "consecutive", extent_value = 5, rule_value = 0)
-#' )
-#' @seealso [alert_rules()], [alert_missing()], [alert_above()], [alert_below()], [alert_difference_above_perc()], [alert_difference_below_perc()], [alert_custom()]
+#' @rdname alert_rule_types
 #' @export
 alert_equals <- function(extent_type = "all",
                      extent_value = 1,
@@ -332,131 +414,24 @@ alert_equals <- function(extent_type = "all",
   )
 }
 
-
-
-#' Test for values less than a specific value
-#'
-#' Configure a rule to test the time series for the presence of values less than a specific value.
-#' Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see Examples
-#' for details.
-#'
-#' @param extent_type "all", "any", "last", "consecutive"
-#' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means
-#'   alert if there are 5 or more values that satisfy the condition, in any position
-#' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is less than 1
-#' @param items named list with names corresponding to members of `item_cols`. List members are
-#'   character vectors of values contained in the named column that the rule should be applied to.
-#'   If `items = NULL` the rule will be applied to all items. See Details.
-#' @return An `alert_rule` object
-#'
-#' @section Details: Use `items` to restrict the rule to be applied only to specified items.
-#'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_cols`
-#'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
-#'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
-#'   contained in the corresponding character vector. When multiple `item_col`s are
-#'   specified, the rule will be applied only to items that satisfy all the conditions.
-#'   See Examples in [alert_rules()]
-#'
-#' @examples
-#' # alert if all values are less than 2
-#' ars <- alert_rules(alert_below(extent_type = "all", rule_value = 2))
-#'
-#' # alert if there are 10 or more values that are less than 7
-#' # or if the last 3 or more values are less than 2
-#' # or if 5 or more values in a row are less than 7
-#' ars <- alert_rules(
-#'   alert_below(extent_type = "any", extent_value = 10, rule_value = 7),
-#'   alert_below(extent_type = "last", extent_value = 3, rule_value = 2),
-#'   alert_below(extent_type = "consecutive", extent_value = 5, rule_value = 7)
-#' )
-#'
-#' @seealso [alert_rules()], [alert_missing()], [alert_equals()], [alert_above()], [alert_difference_above_perc()], [alert_difference_below_perc()], [alert_custom()]
-#' @export
-alert_below <- function(extent_type = "all",
-                     extent_value = 1,
-                     rule_value,
-                     items = NULL) {
-
-  validate_params_required(match.call())
-  validate_params_type(match.call(),
-                       extent_type = extent_type,
-                       extent_value = extent_value,
-                       rule_value = rule_value,
-                       items = items
-  )
-
-  rule_short_name <- paste0("below_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
-
-  if (extent_type == "all"){
-    function_call <- substitute(all(value[!is.na(value)] < rv), list(rv = rule_value))
-    rule_description <- paste0("All (non-missing) values are < ", rule_value)
-  } else if(extent_type == "any"){
-    function_call <- substitute(sum(value[!is.na(value)] < rv) >= x, list(x = extent_value, rv = rule_value))
-    rule_description <- paste0("At least ", extent_value, " (non-missing) values are < ", rule_value)
-  } else if(extent_type == "last"){
-    function_call <- substitute(all(rev(value[!is.na(value)])[1:x] < rv),
-                                list(x = extent_value, rv = rule_value))
-    rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are < ", rule_value)
-  } else if(extent_type == "consecutive"){
-    function_call <- substitute(
-      {run_lengths <- rle(value[!is.na(value)] < rv);
-      any(run_lengths$lengths[run_lengths$values] >= x)},
-      list(x = extent_value, rv = rule_value))
-    rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are < ", rule_value)
-  }
-
-  alert_rule(
-    type = "below",
-    function_call = function_call,
-    items = items,
-    short_name = rule_short_name,
-    description = rule_description
-  )
-}
-
-
+# -----------------------------------------------------------------------------
 #' Test for values greater than a specific value
 #'
-#' Configure a rule to test the time series for the presence of values greater than a specific
-#' value. Tolerance can be adjusted using the `extent_type` and `extent_value` parameters, see
-#' Examples for details.
+#' @section Details: `alert_above()` - Test for the presence of values strictly greater than `rule_value`.
 #'
-#' @param extent_type "all", "any", "last", "consecutive"
-#' @param extent_value lower limit of extent. e.g. `extent_type="any"` and `extent_value=5` means
-#'   alert if there are 5 or more values that satisfy the condition, in any position
-#' @param rule_value value to test against. e.g. `rule_value=1` means alert if value is greater
-#'   than 1
-#' @param items named list with names corresponding to members of `item_cols`. List members are
+#' @param extent_type Type of subset of the time series values that must satisfy the condition for
+#'   the rule to return "FAIL". One of "all", "any", "last", "consecutive". See Details.
+#' @param extent_value Numeric lower limit of the extent type. See Details.
+#' @param rule_value Numeric value to test against. See Details.
+#' @param items Named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
-#' @return An `alert_rule` object
-#'
-#' @section Details: Use `items` to restrict the rule to be applied only to specified items.
-#'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_cols`
-#'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
-#'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
-#'   contained in the corresponding character vector. When multiple `item_col`s are
-#'   specified, the rule will be applied only to items that satisfy all the conditions.
-#'   See Examples in [alert_rules()]
 #'
 #' @examples
 #' # alert if all values are greater than 50
 #' ars <- alert_rules(alert_above(extent_type = "all", rule_value = 50))
 #'
-#' # alert if there are 10 or more values that are greater than 50
-#' # or if the last 3 or more values are greater than 60
-#' # or if 5 or more values in a row are greater than 40
-#' ars <- alert_rules(
-#'   alert_above(extent_type = "any", extent_value = 10, rule_value = 50),
-#'   alert_above(extent_type = "last", extent_value = 3, rule_value = 60),
-#'   alert_above(extent_type = "consecutive", extent_value = 5, rule_value = 40)
-#' )
-#'
-#' @seealso [alert_rules()], [alert_missing()], [alert_equals()], [alert_below()], [alert_difference_above_perc()], [alert_difference_below_perc()], [alert_custom()]
+#' @rdname alert_rule_types
 #' @export
 alert_above <- function(extent_type = "all",
                      extent_value = 1,
@@ -500,40 +475,87 @@ alert_above <- function(extent_type = "all",
   )
 }
 
+# -----------------------------------------------------------------------------
+#' Test for values less than a specific value
+#'
+#' @section Details: `alert_below()` - Test for the presence of values strictly less than `rule_value`.
+#'
+#' @param extent_type Type of subset of the time series values that must satisfy the condition for
+#'   the rule to return "FAIL". One of "all", "any", "last", "consecutive". See Details.
+#' @param extent_value Numeric lower limit of the extent type. See Details.
+#' @param rule_value Numeric value to test against. See Details.
+#' @param items Named list with names corresponding to members of `item_cols`. List members are
+#'   character vectors of values contained in the named column that the rule should be applied to.
+#'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @examples
+#' # alert if all values are less than 2
+#' ars <- alert_rules(alert_below(extent_type = "all", rule_value = 2))
+#'
+#' @rdname alert_rule_types
+#' @export
+alert_below <- function(extent_type = "all",
+                        extent_value = 1,
+                        rule_value,
+                        items = NULL) {
+
+  validate_params_required(match.call())
+  validate_params_type(match.call(),
+                       extent_type = extent_type,
+                       extent_value = extent_value,
+                       rule_value = rule_value,
+                       items = items
+  )
+
+  rule_short_name <- paste0("below_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
+
+  if (extent_type == "all"){
+    function_call <- substitute(all(value[!is.na(value)] < rv), list(rv = rule_value))
+    rule_description <- paste0("All (non-missing) values are < ", rule_value)
+  } else if(extent_type == "any"){
+    function_call <- substitute(sum(value[!is.na(value)] < rv) >= x, list(x = extent_value, rv = rule_value))
+    rule_description <- paste0("At least ", extent_value, " (non-missing) values are < ", rule_value)
+  } else if(extent_type == "last"){
+    function_call <- substitute(all(rev(value[!is.na(value)])[1:x] < rv),
+                                list(x = extent_value, rv = rule_value))
+    rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are < ", rule_value)
+  } else if(extent_type == "consecutive"){
+    function_call <- substitute(
+      {run_lengths <- rle(value[!is.na(value)] < rv);
+      any(run_lengths$lengths[run_lengths$values] >= x)},
+      list(x = extent_value, rv = rule_value))
+    rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are < ", rule_value)
+  }
+
+  alert_rule(
+    type = "below",
+    function_call = function_call,
+    items = items,
+    short_name = rule_short_name,
+    description = rule_description
+  )
+}
+
+# -----------------------------------------------------------------------------
 #' Test for when there is a percentage increase in latest values
 #'
-#' Check if latest values are greater than in a previous period, over a particular percentage.
-#'
+#' @section Details: `alert_difference_above_perc()` - Test if latest values are greater than in a previous period, increasing strictly more than the percentage stipulated in `rule_value`.
 #' Based on the mean of values in the two periods. Ranges should be contiguous, and denote
 #' positions from the end of the time series.
 #'
-#' @param current_period vector containing positions from end of time series to use for comparison
-#' @param previous_period vector containing positions from end of time series to use for
+#' @param current_period Numeric vector containing positions from end of time series to use for comparison
+#' @param previous_period Numeric vector containing positions from end of time series to use for
 #'   comparison. Can overlap with `current_period` if desired.
-#' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage increase
-#'   is greater than 5
-#' @param items named list with names corresponding to members of `item_cols`. List members are
+#' @param rule_value Numeric value to test against. See Details.
+#' @param items Named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
-#' @return An `alert_rule` object
-#'
-#' @section Details: Use `items` to restrict the rule to be applied only to specified items.
-#'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_cols`
-#'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
-#'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
-#'   contained in the corresponding character vector. When multiple `item_col`s are
-#'   specified, the rule will be applied only to items that satisfy all the conditions.
-#'   See Examples in [alert_rules()]
-#'
 #' @examples
 #' # alert if mean of last 3 values is over 20% greater than mean of the previous 12 values
 #' ars <- alert_rules(
 #'   alert_difference_above_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
 #' )
 #'
-#' @seealso [alert_rules()], [alert_missing()], [alert_equals()], [alert_above()], [alert_below()], [alert_difference_below_perc()], [alert_custom()]
+#' @rdname alert_rule_types
 #' @export
 alert_difference_above_perc <- function(current_period,
                                         previous_period,
@@ -576,40 +598,27 @@ alert_difference_above_perc <- function(current_period,
   )
 }
 
+# -----------------------------------------------------------------------------
 #' Test for when there is a percentage drop in latest values
 #'
-#' Check if latest values are lower than in the previous period, over a particular percentage.
-#'
+#' @section Details: `alert_difference_below_perc()` - Test if latest values are lower than in a previous period, dropping strictly more than the percentage stipulated in `rule_value`.
 #' Based on the mean of values in the two periods. Ranges should be contiguous, and denote
 #' positions from the end of the time series.
 #'
-#' @param current_period vector containing positions from end of time series to use for comparison
-#' @param previous_period vector containing positions from end of time series to use for
+#' @param current_period Numeric vector containing positions from end of time series to use for comparison
+#' @param previous_period Numeric vector containing positions from end of time series to use for
 #'   comparison. Can overlap with `current_period` if desired.
-#' @param rule_value value to test against. e.g. `rule_value=5` means alert if percentage drop is
-#'   greater than 5
-#' @param items named list with names corresponding to members of `item_cols`. List members are
+#' @param rule_value Numeric value to test against. See Details.
+#' @param items Named list with names corresponding to members of `item_cols`. List members are
 #'   character vectors of values contained in the named column that the rule should be applied to.
 #'   If `items = NULL` the rule will be applied to all items. See Details.
-#' @return An `alert_rule` object
-#'
-#' @section Details: Use `items` to restrict the rule to be applied only to specified items.
-#'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_cols`
-#'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
-#'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
-#'   contained in the corresponding character vector. When multiple `item_col`s are
-#'   specified, the rule will be applied only to items that satisfy all the conditions.
-#'   See Examples in [alert_rules()]
-#'
 #' @examples
 #' # alert if mean of last 3 values is over 20% lower than mean of the previous 12 values
 #' ars <- alert_rules(
 #'   alert_difference_below_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
 #' )
 #'
-#' @seealso [alert_rules()], [alert_missing()], [alert_equals()], [alert_above()], [alert_below()], [alert_difference_above_perc()], [alert_custom()]
+#' @rdname alert_rule_types
 #' @export
 alert_difference_below_perc <- function(current_period,
                                         previous_period,
@@ -652,38 +661,26 @@ alert_difference_below_perc <- function(current_period,
   )
 }
 
+# -----------------------------------------------------------------------------
 #' Create a custom alert rule
 #'
-#' Specify a custom rule to run on the time series.
-#'
-#' @param short_name short name to uniquely identify the rule. Only include alphanumeric, '-', and
-#'   '_' characters.
-#' @param description short description of what the rule checks for
-#' @param function_call quoted expression containing the call to be evaluated per item, that returns either `TRUE` or `FALSE`.
-#'   Return value of `TRUE` means alert result is "FAIL". See Details.
-#' @param items named list with names corresponding to members of `item_cols`. List members are
-#'   character vectors of values contained in the named column that the rule should be applied to.
-#'   If `items = NULL` the rule will be applied to all items. See Details.
-#' @return An `alert_rule` object
-#'
-#' @section Details:
-#'
+#' @section Details: `alert_custom()` - Specify a custom rule.
 #'   The supplied `function_call` is passed to `eval()` within a `dplyr::summarise()` after grouping
 #'   by the `item_cols` and ordering by the `timepoint_col`. Column names that can be used
 #'   explicitly in the expression are `value` and `timepoint`, and which refer to the values in the
 #'   `value_col` and `timepoint_col` columns of the data respectively. See Examples.
 #'
-#'   Use `items` to restrict the rule to be applied only to specified items. `items` can either be
-#'   NULL or a named list of character vectors. If `NULL`, the rule will be applied to all items. If
-#'   a named list, the names must match members of the `item_cols` parameter in the `inputspec`, (as
-#'   well as column names in the `df`), though can be a subset. If an `item_col` is not named in the
-#'   list, the rule will apply to all its members. If an `item_col` is named in the list, the rule
-#'   will only be applied when the `item_col`'s value is contained in the corresponding character
-#'   vector. When multiple `item_col`s are specified, the rule will be applied only to items that
-#'   satisfy all the conditions.
-#'   See Examples in [alert_rules()]
+#' @param short_name Short name to uniquely identify the rule. Only include alphanumeric, '-', and
+#'   '_' characters.
+#' @param description Short description of what the rule checks for
+#' @param function_call Quoted expression containing the call to be evaluated per item, that returns either `TRUE` or `FALSE`.
+#'   Return value of `TRUE` means alert result is "FAIL". See Details.
+#' @param items Named list with names corresponding to members of `item_cols`. List members are
+#'   character vectors of values contained in the named column that the rule should be applied to.
+#'   If `items = NULL` the rule will be applied to all items. See Details.
 #'
 #' @examples
+#' # Create two custom rules
 #' ars <- alert_rules(
 #'   alert_custom(
 #'     short_name = "my_rule_combo",
@@ -697,7 +694,7 @@ alert_difference_below_perc <- function(current_period,
 #'   )
 #' )
 #'
-#' @seealso [alert_rules()], [alert_missing()], [alert_equals()], [alert_above()], [alert_below()], [alert_difference_above_perc()], [alert_difference_below_perc()]
+#' @rdname alert_rule_types
 #' @export
 alert_custom <- function(short_name,
                          description,
@@ -727,6 +724,7 @@ alert_custom <- function(short_name,
 }
 
 
+# -----------------------------------------------------------------------------
 #' Run all alert rules and return results
 #'
 #' @param prepared_df prepared_df
@@ -765,7 +763,8 @@ run_alerts <- function(prepared_df,
     dplyr::filter(alert_result %in% filter_results)
 }
 
-#' Run alert rule and return results
+# -----------------------------------------------------------------------------
+#' Run single alert rule and return results
 #'
 #' @param prepared_df prepared_df
 #' @param inputspec Specification of data in df
@@ -789,93 +788,11 @@ run_alert <- function(prepared_df, inputspec, alert_rule){
 }
 
 
-#' Generate a data frame containing alert results
-#'
-#' Test the time series for a set of conditions without generating an html report. This can be
-#' useful for incorporation into a pipeline.
-#'
-#' @param df A data frame containing multiple time series in long format. See Details.
-#' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
-#'   "timepoint", "item", and "value" for the time series.
-#' @param alert_rules [`alert_rules()`] object specifying conditions to test
-#' @param filter_results only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max of `timepoint_col`. Can be either Date values or NAs.
-#' @param fill_with_zero Replace any missing or NA values with 0? Useful when value_col is a record count. Logical.
-#' @return tibble
-#'
-#' @details The supplied data frame should contain multiple time series in long format, i.e.:
-#'
-#' \itemize{
-#'   \item one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
-#'   \item one or more "item" (character) columns containing categorical values identifying distinct time series.
-#'   \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
-#' }
-#'
-#' The `inputspec` parameter maps the data frame columns to the above.
-#'
-#' @examples
-#' alert_results <- mantis_alerts(
-#'   example_prescription_numbers,
-#'   inputspec = inputspec(
-#'     timepoint_col = "PrescriptionDate",
-#'     item_cols = c("Antibiotic", "Location"),
-#'     value_col = "NumberOfPrescriptions"
-#'   ),
-#'   alert_rules = alert_rules(
-#'     alert_missing(extent_type = "any", extent_value = 1),
-#'     alert_equals(extent_type = "all", rule_value = 0)
-#'   )
-#' )
-#'
-#' @seealso [alert_rules()], [inputspec()]
-#' @export
-mantis_alerts <- function(df,
-                          inputspec,
-                          alert_rules,
-                          filter_results = c("PASS", "FAIL", "NA"),
-                          timepoint_limits = c(NA, NA),
-                          fill_with_zero = FALSE) {
-  item <- NULL
-
-  validate_params_required(match.call())
-  validate_params_type(match.call(),
-                       df = df,
-                       inputspec = inputspec,
-                       alert_rules = alert_rules,
-                       filter_results = filter_results,
-                       timepoint_limits = timepoint_limits,
-                       fill_with_zero = fill_with_zero
-                       )
-
-  validate_df_to_inputspec(df, inputspec)
-  validate_alert_rules_to_inputspec(alert_rules, inputspec)
-
-  prepared_df <-
-    prepare_df(
-      df,
-      inputspec = inputspec,
-      timepoint_limits = timepoint_limits,
-      fill_with_zero = fill_with_zero
-    )
-
-  results <-
-    run_alerts(
-      prepared_df = prepared_df,
-      inputspec = inputspec,
-      alert_rules = alert_rules,
-      filter_results = filter_results
-    )
-
-  results |>
-    dplyr::rename_with(.fn = item_cols_unprefix,
-                       .cols = dplyr::all_of(item_cols_prefix(inputspec$item_cols)))
-}
-
-
+# -----------------------------------------------------------------------------
 #' Restrict prepared_df to specified items
 #'
 #' @param prepared_df prepared_df
-#' @param items named list of character vectors
+#' @param items Named list of character vectors
 #'
 #' @return tibble
 #' @noRd
@@ -893,9 +810,10 @@ restrict_items <- function(prepared_df,
 }
 
 
+# -----------------------------------------------------------------------------
 #' Convert items parameter into a filter condition
 #'
-#' @param items named list of character vectors
+#' @param items Named list of character vectors
 #'
 #' @return character string
 #' @noRd
@@ -918,6 +836,8 @@ items_list_to_condition_str <- function(items = NULL){
 
 }
 
+
+# -----------------------------------------------------------------------------
 #' Validate the supplied alert_rules against the supplied inputspec
 #'
 #' If there are any validation errors, these are all compiled before calling a

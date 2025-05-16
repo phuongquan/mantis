@@ -44,10 +44,10 @@ value of 1 generates a tab at rmd level "##", and any \code{tab_col} tabs at a l
 (invisibly) the supplied \code{df}
 }
 \description{
-Chunk options must contain \code{results = 'asis'}.
-The function writes directly to the chunk using side-effects
-There is further important information in the vignette:
-\code{vignette("bespoke-reports", package = "mantis")}
+Add \code{mantis} tabs and visualisations to an existing \code{rmarkdown} report.
+The function writes directly to the chunk using side-effects, so chunk options must contain \code{results = 'asis'}.
+Make sure you read the vignette: \code{vignette("bespoke-reports", package = "mantis")} as it contains
+further important information.
 }
 \details{
 You can:
@@ -70,10 +70,10 @@ multiple columns specified in \code{item_cols}, one of them can be used to group
 into different child tabs, by using the \code{tab_col} parameter.
 }
 \examples{
-\donttest{
-# this goes inside a chunk in the rmd file
+\dontrun{
 
-# create a parent tab with a set of child tabs
+# put this inside a chunk in the rmd file,
+# with chunk option `results = 'asis'`
 mantis::bespoke_rmd_output(
   df = mantis::example_prescription_numbers,
   inputspec = mantis::inputspec(

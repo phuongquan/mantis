@@ -75,7 +75,8 @@ outspec <- outputspec_interactive(
   item_order = list("Antibiotic" = TRUE)
 )
 
-# Sort alphabetically by Location first, then put "Vancomycin" and "Linezolid" before other antibiotics
+# Sort alphabetically by Location first,
+# then put "Vancomycin" and "Linezolid" before other antibiotics
 outspec <- outputspec_interactive(
   item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
 )

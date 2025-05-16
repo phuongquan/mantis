@@ -14,13 +14,17 @@ just want a reactable widget without dygraphs e.g. for alerts}
 A (mostly) invisible html widget
 }
 \description{
-If the output is being constructed in \code{results='asis'} chunks, there must also be at least one standard chunk that
-contains the relevant widgets, otherwise they won't render. The \code{dygraph} also needs to be initialised with the appropriate \code{plot_type}.
-See https://github.com/rstudio/rmarkdown/issues/1877 for more info.
+Since the output is being constructed in \code{results='asis'} chunks, there must also be at least one
+standard chunk that contains the relevant widgets, otherwise they will fail to render. The
+\code{dygraph} also needs to be initialised with the appropriate \code{plot_type}. This is only needed when
+creating interactive reports.
+Make sure you read the vignette: \code{vignette("bespoke-reports", package = "mantis")} as it contains
+further important information.
 Note: The chunk currently appears like a line break when rendered.
+See \url{https://github.com/rstudio/rmarkdown/issues/1877} for more info.
 }
 \examples{
-\donttest{
+\dontrun{
 # put this inside its own chunk in the rmd file
 # it ensures that the dygraphs render when built using `cat()`
 # set the plot_type to the same plot_type as the real output

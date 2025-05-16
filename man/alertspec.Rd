@@ -37,4 +37,8 @@ ars <- alert_rules(
    alert_rules = ars,
    show_tab_results = c("FAIL", "NA")
  )
+
+}
+\seealso{
+\code{\link[=alert_rules]{alert_rules()}}, \code{\link[=alert_rule_types]{alert_rule_types()}}
 }
