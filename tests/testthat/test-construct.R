@@ -1,3 +1,9 @@
+test_that("bespoke_rmd_initialise_widgets() runs without error", {
+  expect_no_error(bespoke_rmd_initialise_widgets(plot_type = "bar"))
+  expect_visible(bespoke_rmd_initialise_widgets(plot_type = "bar"))
+})
+
+
 test_that("rmd_fig_height() returns suitable height for heatmap plots", {
   # each row in the heatmap = 0.6 inches
   # fig heights must be same in all tabs so use highest number of rows across all tabs

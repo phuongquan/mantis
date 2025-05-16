@@ -90,6 +90,7 @@ mantis::bespoke_rmd_output(
     sync_axis_range = FALSE,
     item_order = list("Location" = c("SITE3", "SITE2", "SITE1"))
   ),
+  timepoint_limits = c(NA, Sys.Date()),
   fill_with_zero = FALSE,
   tab_name = "Group of child tabs",
   tab_level = 1
