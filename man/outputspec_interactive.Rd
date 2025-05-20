@@ -98,3 +98,6 @@ outspec <- outputspec_interactive(
 )
 
 }
+\seealso{
+\code{\link[=outputspec_static_heatmap]{outputspec_static_heatmap()}}, \code{\link[=outputspec_static_multipanel]{outputspec_static_multipanel()}}
+}

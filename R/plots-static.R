@@ -92,6 +92,7 @@ plot_heatmap_static <- function(prepared_df,
   g
 }
 
+
 # -----------------------------------------------------------------------------
 #' Create a column of plots showing value across all items
 #'
@@ -126,7 +127,6 @@ plot_multipanel_static <- function(prepared_df,
     }
   }
   data <- prepared_df |>
-#    dplyr::filter(item.Location == "SITE1") |>
   # combine item_cols into single variable
     tidyr::unite(col = "item", dplyr::all_of(item_cols_prefix(item_cols_plot)), sep = " - ") |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
@@ -188,6 +188,7 @@ plot_multipanel_static <- function(prepared_df,
 }
 
 
+# -----------------------------------------------------------------------------
 #' Create an empty gglot object
 #'
 #' Use when there is no data but you still want to display a ggplot (for consistency)

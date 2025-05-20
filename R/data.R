@@ -10,6 +10,8 @@
 #' * tab - Labels to group related time series into tabs
 "example_data"
 
+
+# -----------------------------------------------------------------------------
 #' Example data frame containing numbers of antibiotic prescriptions in long format
 #'
 #' Simulated data to demonstrate package usage

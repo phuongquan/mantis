@@ -1,3 +1,6 @@
+# =============================================================================
+# EXPORTED FUNCTIONS
+
 # -----------------------------------------------------------------------------
 #' Generate a data frame containing alert results
 #'
@@ -125,14 +128,6 @@ alertspec <- function(alert_rules,
             class = "mantis_alertspec")
 }
 
-# -----------------------------------------------------------------------------
-#' Test if object is an alertspec object
-#'
-#' @param x object to test
-#' @return Logical
-#' @noRd
-is_alertspec <- function(x) inherits(x, "mantis_alertspec")
-
 
 # -----------------------------------------------------------------------------
 #' Create set of alert rules
@@ -201,63 +196,6 @@ alert_rules <- function(...) {
   structure(ars, class = "mantis_alert_rules")
 }
 
-# -----------------------------------------------------------------------------
-#' Test if object is an alert_rules object
-#'
-#' @param x object to test
-#' @return Logical
-#' @noRd
-is_alert_rules <- function(x) inherits(x, "mantis_alert_rules")
-
-
-# -----------------------------------------------------------------------------
-#' Constructor for an alert_rule
-#'
-#' @param type type of rule
-#' @param function_call expression to pass to `eval()`, that returns either `TRUE` or `FALSE`.
-#'   Return value of `TRUE` means alert result is "FAIL"
-#' @param short_name a short computer-friendly name to uniquely identify the rule
-#' @param description brief but user-friendly explanation of why the rule result is "FAIL"
-#' @param items Named list with names corresponding to members of `item_cols`. List members are
-#'   character vectors of values contained in the named column that the rule should be applied to.
-#'   If `items = NULL` the rule will be applied to all items. See Details.
-#'
-#' @section Details: Use `items` to restrict the rule to be applied only to specified items.
-#'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_cols`
-#'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
-#'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
-#'   contained in the corresponding character vector. When multiple `item_col`s are
-#'   specified, the rule will be applied only to items that satisfy all the conditions.
-#'
-#' @noRd
-alert_rule <- function(type,
-                       function_call,
-                       short_name,
-                       description,
-                       items = NULL) {
-
-  structure(
-    list(
-      type = type,
-      function_call = function_call,
-      short_name = short_name,
-      description = description,
-      items = items
-    ),
-    class = c(paste0("mantis_alert_rule_", type), "mantis_alert_rule")
-  )
-}
-
-# -----------------------------------------------------------------------------
-#' Test if object is an alert_rule object
-#'
-#' @param x object to test
-#' @return Logical
-#' @noRd
-is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
-
 
 # -----------------------------------------------------------------------------
 #' Built-in alert rules
@@ -284,6 +222,7 @@ is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
 #'   See Examples in [alert_rules()]
 #'
 NULL
+
 
 # -----------------------------------------------------------------------------
 #' Test for missing values
@@ -351,6 +290,7 @@ alert_missing <- function(extent_type = "all",
   )
 }
 
+
 # -----------------------------------------------------------------------------
 #' Test for specific values
 #'
@@ -411,6 +351,7 @@ alert_equals <- function(extent_type = "all",
     description = rule_description
   )
 }
+
 
 # -----------------------------------------------------------------------------
 #' Test for values greater than a specific value
@@ -473,6 +414,7 @@ alert_above <- function(extent_type = "all",
   )
 }
 
+
 # -----------------------------------------------------------------------------
 #' Test for values less than a specific value
 #'
@@ -532,6 +474,7 @@ alert_below <- function(extent_type = "all",
     description = rule_description
   )
 }
+
 
 # -----------------------------------------------------------------------------
 #' Test for when there is a percentage increase in latest values
@@ -596,6 +539,7 @@ alert_difference_above_perc <- function(current_period,
   )
 }
 
+
 # -----------------------------------------------------------------------------
 #' Test for when there is a percentage drop in latest values
 #'
@@ -658,6 +602,7 @@ alert_difference_below_perc <- function(current_period,
     description = rule_description
   )
 }
+
 
 # -----------------------------------------------------------------------------
 #' Create a custom alert rule
@@ -722,6 +667,76 @@ alert_custom <- function(short_name,
 }
 
 
+# =============================================================================
+# INTERNAL FUNCTIONS
+
+# -----------------------------------------------------------------------------
+#' Test if object is an alertspec object
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_alertspec <- function(x) inherits(x, "mantis_alertspec")
+
+
+# -----------------------------------------------------------------------------
+#' Test if object is an alert_rules object
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_alert_rules <- function(x) inherits(x, "mantis_alert_rules")
+
+
+# -----------------------------------------------------------------------------
+#' Constructor for an alert_rule
+#'
+#' @param type type of rule
+#' @param function_call expression to pass to `eval()`, that returns either `TRUE` or `FALSE`.
+#'   Return value of `TRUE` means alert result is "FAIL"
+#' @param short_name a short computer-friendly name to uniquely identify the rule
+#' @param description brief but user-friendly explanation of why the rule result is "FAIL"
+#' @param items Named list with names corresponding to members of `item_cols`. List members are
+#'   character vectors of values contained in the named column that the rule should be applied to.
+#'   If `items = NULL` the rule will be applied to all items. See Details.
+#'
+#' @section Details: Use `items` to restrict the rule to be applied only to specified items.
+#'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
+#'   applied to all items. If a named list, the names must match members of the `item_cols`
+#'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
+#'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
+#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
+#'   contained in the corresponding character vector. When multiple `item_col`s are
+#'   specified, the rule will be applied only to items that satisfy all the conditions.
+#'
+#' @noRd
+alert_rule <- function(type,
+                       function_call,
+                       short_name,
+                       description,
+                       items = NULL) {
+
+  structure(
+    list(
+      type = type,
+      function_call = function_call,
+      short_name = short_name,
+      description = description,
+      items = items
+    ),
+    class = c(paste0("mantis_alert_rule_", type), "mantis_alert_rule")
+  )
+}
+
+# -----------------------------------------------------------------------------
+#' Test if object is an alert_rule object
+#'
+#' @param x object to test
+#' @return Logical
+#' @noRd
+is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
+
+
 # -----------------------------------------------------------------------------
 #' Run all alert rules and return results
 #'
@@ -760,6 +775,7 @@ run_alerts <- function(prepared_df,
     dplyr::mutate(alert_result = tidyr::replace_na(alert_result, "NA")) |>
     dplyr::filter(alert_result %in% filter_results)
 }
+
 
 # -----------------------------------------------------------------------------
 #' Run single alert rule and return results

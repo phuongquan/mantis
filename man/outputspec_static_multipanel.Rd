@@ -55,3 +55,6 @@ outspec <- outputspec_static_multipanel(
   item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
 )
 }
+\seealso{
+\code{\link[=outputspec_interactive]{outputspec_interactive()}}, \code{\link[=outputspec_static_heatmap]{outputspec_static_heatmap()}}
+}

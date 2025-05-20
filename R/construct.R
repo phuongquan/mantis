@@ -141,6 +141,8 @@ bespoke_rmd_output <- function(df,
     tab_name = tab_name,
     tab_level = tab_level
   )
+
+  invisible(df)
 }
 
 
@@ -245,6 +247,8 @@ bespoke_rmd_alert_results <- function(df,
     alert_results = alert_results,
     inputspec = inputspec
   )
+
+  invisible(df)
 }
 
 
@@ -427,6 +431,7 @@ construct_rmd_tab <- function(df,
 #' @param inputspec Specification of data in `df`
 #' @param outputspec Specification for display of tab contents
 #' @param alert_results_subset alert_results filtered for the tab
+#' @return (invisibly) the supplied `df`
 #'
 #' @noRd
 construct_tab_content <- function(prepared_df_subset,
@@ -466,16 +471,17 @@ construct_tab_content <- function(prepared_df_subset,
 
   cat("\n")
 
+  invisible(prepared_df_subset)
 }
+
 
 # -----------------------------------------------------------------------------
 #' Generate an interactive table containing alert results using side-effects
 #'
-#' @param prepared_df_subset prepared_df filtered for the tab
-#'
 #' @param alert_results data frame returned from `run_alerts`
 #' @param inputspec Specification of data in original `df`
 #' @param filter_results only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".
+#' @return (invisibly) the supplied `df`
 #' @noRd
 construct_alert_results_content <- function(alert_results,
                                             inputspec,
@@ -509,7 +515,6 @@ construct_alert_results_content <- function(alert_results,
 #' @param has_child_tabs will there be more tabs underneath
 #' @param alert set to `TRUE` to append an alert icon
 #'
-#' @return markdown-formatted string
 #' @noRd
 construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, alert = FALSE){
   if (!is.null(tab_name)) {
@@ -523,6 +528,7 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, ale
   }
 }
 
+
 # -----------------------------------------------------------------------------
 #' Calculate appropriate fig.height for the chunks
 #'
@@ -535,7 +541,7 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, ale
 #' @param inputspec `inputspec()` object
 #' @param outputspec `outputspec()` object
 #'
-#' @return height in inches or NULL
+#' @return numeric height in inches or NULL
 #' @noRd
 rmd_fig_height <- function(df, inputspec, outputspec){
 

@@ -8,6 +8,7 @@
 #' supplied all required arguments If any are missing, execution is stopped
 #'
 #' @param call call from the function being checked
+#'
 #' @noRd
 validate_params_required <- function(call) {
   # get the required arguments from function definition
@@ -30,6 +31,7 @@ validate_params_required <- function(call) {
       )
     )
   }
+
 }
 
 
@@ -44,6 +46,7 @@ validate_params_required <- function(call) {
 #' @param call call from the function being checked
 #' @param ... the parameters that were actually passed into the function being
 #'   checked, with names
+#'
 #' @noRd
 validate_params_type <- function(call, ...) {
   params_defined <-
@@ -95,6 +98,7 @@ validate_params_type <- function(call, ...) {
     )
   }
 }
+
 
 # -----------------------------------------------------------------------------
 #' Select and apply type validation rules based on the param name
@@ -441,6 +445,7 @@ validate_param_byname <- function(param_name, param_value){
 
 }
 
+
 # -----------------------------------------------------------------------------
 #' Perform specified type validation
 #'
@@ -507,6 +512,7 @@ validate_param <- function(param_name,
   }
 }
 
+
 # -----------------------------------------------------------------------------
 #' Construct validation failed message
 #'
@@ -533,6 +539,7 @@ validation_failed_message <- function(param_name,
   )
 }
 
+
 # =============================================================================
 # DUMMY FUNCTIONS SET UP PURELY FOR UNIT TESTING
 # integrates better with RStudio when placed here rather than in testthat/helper.R
@@ -548,6 +555,7 @@ validation_failed_message <- function(param_name,
 testfn_params_required <- function(p1, p2, p3 = NULL, ...) {
   validate_params_required(match.call())
 }
+
 
 # -----------------------------------------------------------------------------
 #' Dummy function to assist unit testing of validate_params_type()
