@@ -8,12 +8,12 @@
 \subsection{\code{example_prescription_numbers}}{
 
 A data frame with 6,570 rows and 4 columns:
-\describe{
-\item{PrescriptionDate}{Date that the prescriptions were given}
-\item{Antibiotic}{The type of antibiotic prescribed}
-\item{NumberOfPrescriptions}{Number of prescriptions given}
-\item{Location}{Location of the patient}
-...
+\itemize{
+\item PrescriptionDate - The date the prescriptions were written
+\item Antibiotic - The name of the antibiotic prescribed
+\item Spectrum - The spectrum of activity of the antibiotic. This value is always the same for a particular antibiotic
+\item NumberOfPrescriptions - The number of prescriptions written for this antibiotic on this day
+\item Location - The hospital site where the prescription was written
 }
 }
 }

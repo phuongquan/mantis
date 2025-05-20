@@ -64,22 +64,18 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' @details
 #' You can:
 #'
-#' \itemize{
-#'   \item add a single visualisation, with or without creating the container tab, or
-#'   \item add a set of tabs, each based on the same output specification, with or without creating the parent tab.
-#' }
+#' * add a single visualisation, with or without creating the container tab, or
+#' * add a set of tabs, each based on the same output specification, with or without creating the parent tab.
 #'
 #' The supplied data frame should contain multiple time series in long format, i.e.:
 #'
-#' \itemize{
-#'   \item one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
-#'   \item one or more "item" (character) columns containing categorical values identifying distinct time series.
-#'   \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
-#' }
+#' * one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
+#' * one or more "item" (character) columns containing categorical values identifying distinct time series.
+#' * one "value" (numeric) column containing the time series values which will be used for the y-axes.
 #'
-#'   The `inputspec` parameter maps the data frame columns to the above. Optionally, if there are
-#'   multiple columns specified in `item_cols`, one of them can be used to group the time series
-#'   into different child tabs, by using the `tab_col` parameter.
+#' The `inputspec` parameter maps the data frame columns to the above. Optionally, if there are
+#' multiple columns specified in `item_cols`, one of them can be used to group the time series
+#' into different child tabs, by using the `tab_col` parameter.
 #'
 #' @examples
 #' \dontrun{

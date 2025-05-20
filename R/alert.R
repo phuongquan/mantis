@@ -15,11 +15,9 @@
 #'
 #' @details The supplied data frame should contain multiple time series in long format, i.e.:
 #'
-#' \itemize{
-#'   \item one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
-#'   \item one or more "item" (character) columns containing categorical values identifying distinct time series.
-#'   \item one "value" (numeric) column containing the time series values which will be used for the y-axes.
-#' }
+#' * one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
+#' * one or more "item" (character) columns containing categorical values identifying distinct time series.
+#' * one "value" (numeric) column containing the time series values which will be used for the y-axes.
 #'
 #' The `inputspec` parameter maps the data frame columns to the above.
 #'
