@@ -1,4 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/dev/CONTRIBUTING.html</loc></url>
+<url><loc>/dev/LICENSE.html</loc></url>
 <url><loc>/dev/articles/alert-rules.html</loc></url>
 <url><loc>/dev/articles/bespoke-reports.html</loc></url>
 <url><loc>/dev/articles/example-report-interactive.html</loc></url>
@@ -19,6 +21,7 @@
 <url><loc>/dev/reference/example_prescription_numbers.html</loc></url>
 <url><loc>/dev/reference/index.html</loc></url>
 <url><loc>/dev/reference/inputspec.html</loc></url>
+<url><loc>/dev/reference/mantis-package.html</loc></url>
 <url><loc>/dev/reference/mantis_alerts.html</loc></url>
 <url><loc>/dev/reference/mantis_report.html</loc></url>
 <url><loc>/dev/reference/outputspec_interactive.html</loc></url>
