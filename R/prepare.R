@@ -987,12 +987,12 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
 
   err_validation <- character()
 
-  # check same time of day for every record
+  # check same time of day for every record, regardless of granularity
+  # no further checks needed for daily timepoints
   unique_times <-
-    df |>
-    dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
-    strftime(format = "%H:%M:%S") |>
-    unique()
+      unique_timepoint_subunits(df = df,
+                                timepoint_col = inputspec$timepoint_col,
+                                strftime_format = "%H:%M:%S")
 
   if (length(unique_times) > 1) {
     err_validation <-
@@ -1006,14 +1006,13 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
       )
   }
 
-  # no further checks needed for daily timepoints
+
   if (inputspec$timepoint_unit == "week") {
     # must be the same day each week
     unique_dofw <-
-      df |>
-      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
-      strftime(format = "%a") |>
-      unique()
+      unique_timepoint_subunits(df = df,
+                                timepoint_col = inputspec$timepoint_col,
+                                strftime_format = "%a")
 
     if (length(unique_dofw) > 1) {
       err_validation <-
@@ -1026,70 +1025,50 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
           )
         )
     }
-  } else if (inputspec$timepoint_unit == "month") {
+  } else if (inputspec$timepoint_unit %in% c("month", "quarter")) {
     # must be the same day each month
     unique_dofm <-
-      df |>
-      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
-      strftime(format = "%d") |>
-      unique()
+      unique_timepoint_subunits(df = df,
+                                timepoint_col = inputspec$timepoint_col,
+                                strftime_format = "%d")
 
     if (length(unique_dofm) > 1 || any(unique_dofm > 28)) {
       err_validation <-
         append(
           err_validation,
           paste(
-            "When timepoint_unit is 'month', the day of the month in the timepoint_col field must be the same for all records (and <= 28). Instead found [",
-            paste(unique_dofm, collapse = ", "),
-            "]."
-          )
-        )
-    }
-  } else if (inputspec$timepoint_unit == "quarter") {
-    # must be the same day each month
-    unique_dofm <-
-      df |>
-      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
-      strftime(format = "%d") |>
-      unique()
-
-    if (length(unique_dofm) > 1 || any(unique_dofm > 28)) {
-      err_validation <-
-        append(
-          err_validation,
-          paste(
-            "When timepoint_unit is 'quarter', the day of the month in the timepoint_col field must be the same for all records (and <= 28). Instead found [",
+            "When timepoint_unit is 'month' or 'quarter', the day of the month in the timepoint_col field must be the same for all records (and <= 28). Instead found [",
             paste(unique_dofm, collapse = ", "),
             "]."
           )
         )
     }
 
-    # and unique months must be 3 apart
-    unique_mofy <-
-      df |>
-      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
-      strftime(format = "%m") |>
-      unique()
+    if (inputspec$timepoint_unit == "quarter") {
+      # additionally, unique months must be 3 apart
+      unique_mofy <-
+        unique_timepoint_subunits(df = df,
+                                  timepoint_col = inputspec$timepoint_col,
+                                  strftime_format = "%m")
 
-    if (length(unique(as.numeric(unique_mofy) %% 3)) > 1) {
-      err_validation <-
-        append(
-          err_validation,
-          paste(
-            "When timepoint_unit is 'quarter', the months in the timepoint_col field must all be 3 months apart. Instead found months [",
-            paste(unique_mofy, collapse = ", "),
-            "]."
+      if (length(unique(as.numeric(unique_mofy) %% 3)) > 1) {
+        err_validation <-
+          append(
+            err_validation,
+            paste(
+              "When timepoint_unit is 'quarter', the months in the timepoint_col field must all be 3 months apart. Instead found months [",
+              paste(unique_mofy, collapse = ", "),
+              "]."
+            )
           )
-        )
+      }
     }
   } else if (inputspec$timepoint_unit == "year") {
     # must be the same day each year
     unique_dofy <-
-      df |>
-      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
-      strftime(format = "YYYY-%m-%d") |>
-      unique()
+      unique_timepoint_subunits(df = df,
+                                timepoint_col = inputspec$timepoint_col,
+                                strftime_format = "YYYY-%m-%d")
 
     if (length(unique_dofy) > 1 || any(unique_dofy == "YYYY-02-29")) {
       err_validation <-
@@ -1127,11 +1106,11 @@ validate_df_to_inputspec_timepoint_unit_times <- function(df,
   # no checks needed for seconds timepoints
 
   if (inputspec$timepoint_unit %in% c("min", "hour")) {
+    # must be the same seconds past the minute or hour
     unique_seconds <-
-      df |>
-      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
-      strftime(format = "HH:MM:%S") |>
-      unique()
+      unique_timepoint_subunits(df = df,
+                                timepoint_col = inputspec$timepoint_col,
+                                strftime_format = "HH:MM:%S")
 
     if (length(unique_seconds) > 1) {
       err_validation <-
@@ -1148,28 +1127,77 @@ validate_df_to_inputspec_timepoint_unit_times <- function(df,
 
   if (inputspec$timepoint_unit == "hour") {
     # must be the same minute each hour
-    unique_mofh <-
-      df |>
-      dplyr::pull(dplyr::all_of(inputspec$timepoint_col)) |>
-      strftime(format = "HH:%M:SS") |>
-      unique()
-
-    if (length(unique_mofh) > 1) {
-      err_validation <-
-        append(
-          err_validation,
-          paste(
-            "When timepoint_unit is 'hour', any minutes in the timepoint_col field must be the same for all records. Instead found [",
-            paste(unique_mofh, collapse = ", "),
-            "]."
-          )
+    err_validation <-
+      append(
+        err_validation,
+        validate_df_to_inputspec_timepoint_unit_specific(
+          df = df,
+          timepoint_col = inputspec$timepoint_col,
+          strftime_format = "HH:%M:SS",
+          err_string_detail = "When timepoint_unit is 'hour', any minutes in the timepoint_col field must be the same for all records"
         )
-    }
+      )
   }
   err_validation
 }
 
+# -----------------------------------------------------------------------------
+#' Get unique set of datetime subunit values of interest
+#'
+#' This assumes that the names in inputspec and the df have already been checked and are valid
+#'
+#' @param df user supplied df
+#' @param timepoint_col user supplied inputspec$timepoint_col
+#' @param strftime_format datetime subunit
+#' @param err_string_detail User friendly error message
+#'
+#' @return character string
+#' @noRd
+validate_df_to_inputspec_timepoint_unit_specific <- function(df,
+                                     timepoint_col,
+                                     strftime_format,
+                                     err_string_detail){
 
+  err_validation <- character()
+
+  unique_values <-
+    df |>
+    dplyr::pull(dplyr::all_of(timepoint_col)) |>
+    strftime(format = strftime_format) |>
+    unique()
+
+    if (length(unique_values) > 1) {
+      err_validation <-
+          paste0(
+            err_string_detail,
+            ". Instead found [ ",
+            paste(unique_values, collapse = ", "),
+            " ]."
+          )
+    }
+
+  err_validation
+}
+
+# -----------------------------------------------------------------------------
+#' Get unique set of datetime subunit values of interest
+#'
+#' This assumes that the names in inputspec and the df have already been checked and are valid
+#'
+#' @param df user supplied df
+#' @param timepoint_col user supplied inputspec$timepoint_col
+#' @param strftime_format datetime subunit
+#'
+#' @return character vector
+#' @noRd
+unique_timepoint_subunits <- function(df,
+                                     timepoint_col,
+                                     strftime_format){
+    df |>
+    dplyr::pull(dplyr::all_of(timepoint_col)) |>
+    strftime(format = strftime_format) |>
+    unique()
+}
 # -----------------------------------------------------------------------------
 #'Arrange/sort a df based on a list of items
 #'
