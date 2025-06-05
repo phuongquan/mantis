@@ -331,15 +331,11 @@ construct_rmd_tab <- function(df,
       item_order = outputspec$item_order
     )
 
-  if (!is.null(alertspec)) {
-    alert_results <- run_alerts(
-      prepared_df = prepared_df,
-      inputspec = inputspec,
-      alert_rules = alertspec$alert_rules,
-    )
-  } else {
-    alert_results <- NULL
-  }
+  alert_results <- get_alert_results_if_specified(
+    alertspec = alertspec,
+    prepared_df = prepared_df,
+    inputspec = inputspec
+  )
 
   # if alert tab is to be created, main contents must also be in a tab
   if (!is.null(alertspec$show_tab_results) && is.null(tab_name) && is.null(inputspec$tab_col)){
@@ -421,6 +417,32 @@ construct_rmd_tab <- function(df,
   }
 
   invisible(df)
+}
+
+
+#' Get alert_results df if alertspec is supplied
+#'
+#' @param alertspec Specification for alerting conditions
+#' @param prepared_df prepared_df
+#' @param inputspec Specification of data in `df`
+#'
+#' @return dataframe
+#' @noRd
+get_alert_results_if_specified <- function(alertspec,
+                                           prepared_df,
+                                           inputspec){
+
+  if (!is.null(alertspec)) {
+    alert_results <- run_alerts(
+      prepared_df = prepared_df,
+      inputspec = inputspec,
+      alert_rules = alertspec$alert_rules,
+    )
+  } else {
+    alert_results <- NULL
+  }
+
+  alert_results
 }
 
 
