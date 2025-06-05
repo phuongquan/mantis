@@ -742,11 +742,10 @@ validate_df_to_inputspec_col_names <- function(df,
     err_validation <-
       append(
         err_validation,
-        paste(
-          "Duplicate column names in data: [",
-          paste(dfnames[duplicated(dfnames)], collapse = ", "),
-          "]"
-        )
+        construct_err_validation_message(
+          err_string_detail = "Column names in df must all be distinct from each other.",
+          values_found = dfnames[duplicated(dfnames)],
+          values_found_prepend = "Duplicate column names in df")
       )
   }
   # check supplied colnames are present in df
@@ -770,11 +769,10 @@ validate_df_to_inputspec_col_names <- function(df,
     err_validation <-
       append(
         err_validation,
-        paste(
-          "Duplicate column names in inputspec: [",
-          paste(colspec_vector[duplicated(colspec_vector_nontab)], collapse = ", "),
-          "]. Each of the timepoint_col/item_cols/value_col inputspec parameters must refer to a different column in the df"
-        )
+        construct_err_validation_message(
+          err_string_detail = "Each of the timepoint_col/item_cols/value_col inputspec parameters must refer to a different column in the df.",
+          values_found = colspec_vector[duplicated(colspec_vector_nontab)],
+          values_found_prepend = "Duplicate column names in inputspec")
       )
   }
   # check tab_col is one of the item_cols
@@ -783,12 +781,13 @@ validate_df_to_inputspec_col_names <- function(df,
       append(
         err_validation,
         paste(
+          "tab_col must match one of the values in item_cols.",
           "tab_col [",
           inputspec$tab_col,
           "] not in item_cols [",
           paste(inputspec$item_cols, collapse = ", "),
-          "]. tab_col must match one of the values in item_cols"
-        )
+          "]."
+          )
       )
   }
 
@@ -932,11 +931,10 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
 
   if (nrow(duplicate_timepoints) > 0) {
     err_validation <-
-        paste(
-          "Duplicate timepoints for items: [",
-          paste(duplicate_timepoints$baditem, collapse = ", "),
-          "]. Each timepoint-item combination must only appear once in the df"
-        )
+      construct_err_validation_message(
+        err_string_detail = "Each timepoint-item combination must only appear once in the df",
+        values_found =  duplicate_timepoints$baditem,
+        values_found_prepend = "Duplicate timepoints for items:")
   }
 
   err_validation
@@ -989,42 +987,30 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
 
   # check same time of day for every record, regardless of granularity
   # no further checks needed for daily timepoints
-  unique_times <-
-      unique_timepoint_subunits(df = df,
-                                timepoint_col = inputspec$timepoint_col,
-                                strftime_format = "%H:%M:%S")
-
-  if (length(unique_times) > 1) {
-    err_validation <-
-      append(
-        err_validation,
-        paste(
-          "When timepoint_unit is 'day' or longer, any time portion in the timepoint_col field must be the same for all records. Instead found [",
-          paste(unique_times, collapse = ", "),
-          "]."
-        )
+  err_validation <-
+    append(
+      err_validation,
+      validate_df_to_inputspec_timepoint_subunit_single(
+        df = df,
+        timepoint_col = inputspec$timepoint_col,
+        strftime_format = "%H:%M:%S",
+        err_string_detail = "When timepoint_unit is 'day' or longer, any time portion in the timepoint_col field must be the same for all records."
       )
-  }
+    )
 
 
   if (inputspec$timepoint_unit == "week") {
     # must be the same day each week
-    unique_dofw <-
-      unique_timepoint_subunits(df = df,
-                                timepoint_col = inputspec$timepoint_col,
-                                strftime_format = "%a")
-
-    if (length(unique_dofw) > 1) {
-      err_validation <-
-        append(
-          err_validation,
-          paste(
-            "When timepoint_unit is 'week', the day of the week in the timepoint_col field must be the same for all records. Instead found [",
-            paste(unique_dofw, collapse = ", "),
-            "]."
-          )
+    err_validation <-
+      append(
+        err_validation,
+        validate_df_to_inputspec_timepoint_subunit_single(
+          df = df,
+          timepoint_col = inputspec$timepoint_col,
+          strftime_format = "%a",
+          err_string_detail = "When timepoint_unit is 'week', the day of the week in the timepoint_col field must be the same for all records."
         )
-    }
+      )
   } else if (inputspec$timepoint_unit %in% c("month", "quarter")) {
     # must be the same day each month
     unique_dofm <-
@@ -1036,11 +1022,9 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
       err_validation <-
         append(
           err_validation,
-          paste(
-            "When timepoint_unit is 'month' or 'quarter', the day of the month in the timepoint_col field must be the same for all records (and <= 28). Instead found [",
-            paste(unique_dofm, collapse = ", "),
-            "]."
-          )
+          construct_err_validation_message(
+            err_string_detail = "When timepoint_unit is 'month' or 'quarter', the day of the month in the timepoint_col field must be the same for all records (and <= 28).",
+            values_found =  unique_dofm)
         )
     }
 
@@ -1055,30 +1039,28 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
         err_validation <-
           append(
             err_validation,
-            paste(
-              "When timepoint_unit is 'quarter', the months in the timepoint_col field must all be 3 months apart. Instead found months [",
-              paste(unique_mofy, collapse = ", "),
-              "]."
-            )
+            construct_err_validation_message(
+              err_string_detail = "When timepoint_unit is 'quarter', the months in the timepoint_col field must all be 3 months apart.",
+              values_found =  unique_mofy)
           )
       }
     }
   } else if (inputspec$timepoint_unit == "year") {
     # must be the same day each year
     unique_dofy <-
-      unique_timepoint_subunits(df = df,
-                                timepoint_col = inputspec$timepoint_col,
-                                strftime_format = "YYYY-%m-%d")
+      unique_timepoint_subunits(
+        df = df,
+        timepoint_col = inputspec$timepoint_col,
+        strftime_format = "YYYY-%m-%d"
+      )
 
     if (length(unique_dofy) > 1 || any(unique_dofy == "YYYY-02-29")) {
       err_validation <-
         append(
           err_validation,
-          paste(
-            "When timepoint_unit is 'year', the day of the year in the timepoint_col field must be the same for all records (and not a leap year day). Instead found [",
-            paste(unique_dofy, collapse = ", "),
-            "]."
-          )
+          construct_err_validation_message(
+            err_string_detail = "When timepoint_unit is 'year', the day of the year in the timepoint_col field must be the same for all records (and not a leap year day).",
+            values_found =  unique_dofy)
         )
     }
   }
@@ -1107,22 +1089,16 @@ validate_df_to_inputspec_timepoint_unit_times <- function(df,
 
   if (inputspec$timepoint_unit %in% c("min", "hour")) {
     # must be the same seconds past the minute or hour
-    unique_seconds <-
-      unique_timepoint_subunits(df = df,
-                                timepoint_col = inputspec$timepoint_col,
-                                strftime_format = "HH:MM:%S")
-
-    if (length(unique_seconds) > 1) {
-      err_validation <-
-        append(
-          err_validation,
-          paste(
-            "When timepoint_unit is 'min' or 'hour', any seconds in the timepoint_col field must be the same for all records. Instead found [",
-            paste(unique_seconds, collapse = ", "),
-            "]."
-          )
+    err_validation <-
+      append(
+        err_validation,
+        validate_df_to_inputspec_timepoint_subunit_single(
+          df = df,
+          timepoint_col = inputspec$timepoint_col,
+          strftime_format = "HH:MM:%S",
+          err_string_detail = "When timepoint_unit is 'min' or 'hour', any seconds in the timepoint_col field must be the same for all records."
         )
-    }
+      )
   }
 
   if (inputspec$timepoint_unit == "hour") {
@@ -1130,19 +1106,21 @@ validate_df_to_inputspec_timepoint_unit_times <- function(df,
     err_validation <-
       append(
         err_validation,
-        validate_df_to_inputspec_timepoint_unit_specific(
+        validate_df_to_inputspec_timepoint_subunit_single(
           df = df,
           timepoint_col = inputspec$timepoint_col,
           strftime_format = "HH:%M:SS",
-          err_string_detail = "When timepoint_unit is 'hour', any minutes in the timepoint_col field must be the same for all records"
+          err_string_detail = "When timepoint_unit is 'hour', any minutes in the timepoint_col field must be the same for all records."
         )
       )
   }
+
   err_validation
 }
 
+
 # -----------------------------------------------------------------------------
-#' Get unique set of datetime subunit values of interest
+#' Check supplied df has single timepoint subunit value
 #'
 #' This assumes that the names in inputspec and the df have already been checked and are valid
 #'
@@ -1153,7 +1131,7 @@ validate_df_to_inputspec_timepoint_unit_times <- function(df,
 #'
 #' @return character string
 #' @noRd
-validate_df_to_inputspec_timepoint_unit_specific <- function(df,
+validate_df_to_inputspec_timepoint_subunit_single <- function(df,
                                      timepoint_col,
                                      strftime_format,
                                      err_string_detail){
@@ -1161,23 +1139,19 @@ validate_df_to_inputspec_timepoint_unit_specific <- function(df,
   err_validation <- character()
 
   unique_values <-
-    df |>
-    dplyr::pull(dplyr::all_of(timepoint_col)) |>
-    strftime(format = strftime_format) |>
-    unique()
+      unique_timepoint_subunits(df = df,
+                                timepoint_col = timepoint_col,
+                                strftime_format = strftime_format)
 
-    if (length(unique_values) > 1) {
-      err_validation <-
-          paste0(
-            err_string_detail,
-            ". Instead found [ ",
-            paste(unique_values, collapse = ", "),
-            " ]."
-          )
-    }
+  if (length(unique_values) > 1) {
+    err_validation <-
+      construct_err_validation_message(err_string_detail = err_string_detail,
+                                       values_found =  unique_values)
+  }
 
   err_validation
 }
+
 
 # -----------------------------------------------------------------------------
 #' Get unique set of datetime subunit values of interest
@@ -1198,6 +1172,29 @@ unique_timepoint_subunits <- function(df,
     strftime(format = strftime_format) |>
     unique()
 }
+
+
+# -----------------------------------------------------------------------------
+#' Generate validation error string
+#'
+#' @param err_string_detail User friendly error message
+#' @param values_found Vector of values found instead of what was expected
+#'
+#' @return character string
+#' @noRd
+construct_err_validation_message <- function(err_string_detail,
+                                             values_found,
+                                             values_found_prepend = "Instead found") {
+
+  paste0(err_string_detail,
+         " ",
+         values_found_prepend,
+         " [ ",
+         paste(values_found, collapse = ", "),
+         " ].")
+
+}
+
 # -----------------------------------------------------------------------------
 #'Arrange/sort a df based on a list of items
 #'
