@@ -392,9 +392,6 @@ prepare_df <-
            fill_with_zero = FALSE,
            item_order = NULL) {
 
-  # initialise column names to avoid R CMD check Notes
-  item <- NULL
-
   # keep only relevant cols and rename for ease. prefix item_cols with "item." to ensure uniqueness
   prepared_df <-
     df |>

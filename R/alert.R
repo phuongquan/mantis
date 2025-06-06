@@ -46,7 +46,6 @@ mantis_alerts <- function(df,
                           filter_results = c("PASS", "FAIL", "NA"),
                           timepoint_limits = c(NA, NA),
                           fill_with_zero = FALSE) {
-  item <- NULL
 
   validate_params_required(match.call())
   validate_params_type(match.call(),
@@ -275,7 +274,7 @@ alert_missing <- function(extent_type = "all",
     rule_description <- paste0("The last ", extent_value, " or more values are missing")
   } else if(extent_type == "consecutive"){
     function_call <- substitute(
-      {run_lengths <- rle(is.na(value));
+      {run_lengths <- rle(is.na(value))
       any(run_lengths$lengths[run_lengths$values] >= x)},
       list(x = extent_value))
     rule_description <- paste0(extent_value, " or more values in a row are missing")
@@ -337,7 +336,7 @@ alert_equals <- function(extent_type = "all",
     rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are equal to ", rule_value)
   } else if(extent_type == "consecutive"){
     function_call <- substitute(
-      {run_lengths <- rle(value[!is.na(value)]);
+      {run_lengths <- rle(value[!is.na(value)])
       any(run_lengths$lengths[run_lengths$values == rv] >= x)},
       list(x = extent_value, rv = rule_value))
     rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are equal to ", rule_value)
@@ -399,7 +398,7 @@ alert_above <- function(extent_type = "all",
     rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are > ", rule_value)
   } else if(extent_type == "consecutive"){
     function_call <- substitute(
-      {run_lengths <- rle(value[!is.na(value)] > rv);
+      {run_lengths <- rle(value[!is.na(value)] > rv)
       any(run_lengths$lengths[run_lengths$values] >= x)},
       list(x = extent_value, rv = rule_value))
     rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are > ", rule_value)
@@ -460,7 +459,7 @@ alert_below <- function(extent_type = "all",
     rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are < ", rule_value)
   } else if(extent_type == "consecutive"){
     function_call <- substitute(
-      {run_lengths <- rle(value[!is.na(value)] < rv);
+      {run_lengths <- rle(value[!is.na(value)] < rv)
       any(run_lengths$lengths[run_lengths$values] >= x)},
       list(x = extent_value, rv = rule_value))
     rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are < ", rule_value)
@@ -787,7 +786,7 @@ run_alerts <- function(prepared_df,
 #' @return tibble
 #' @noRd
 run_alert <- function(prepared_df, inputspec, alert_rule){
-  item <- timepoint <- NULL
+  timepoint <- NULL
 
   # TODO: if it's a custom rule, wrap it in some error handling
 
