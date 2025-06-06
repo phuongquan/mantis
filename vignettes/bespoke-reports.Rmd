@@ -70,7 +70,7 @@ Firstly, add the following chunk to the Rmd file to ensure the `dygraphs` plots 
 
 ````{verbatim}
 ```{r}
-# this chunk is necessary when using mantis::outputspec_interactive(). 
+# this chunk is necessary when using mantis::outputspec_interactive().
 # it ensures that the dygraphs render when built using `cat()`
 # set the plot_type to the same plot_type as the real output
 mantis::bespoke_rmd_initialise_widgets(plot_type = "bar")
