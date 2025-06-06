@@ -108,7 +108,6 @@ inspec_tabbed3 <- inputspec(
   tab_col = "Antibiotic",
   timepoint_unit = "day"
 )
-
 ```
 
 ### Specifying the timepoint unit
@@ -135,16 +134,16 @@ For the `example_prescription_numbers` dataset above, we will save a report in t
 
 ```{r interactive-test, include=FALSE}
 # quietly test can create the report from an rmd but show the code in the next chunk in the vignette
-filename <- 
+filename <-
   mantis_report(
-  df = example_prescription_numbers,
-  inputspec = inspec_tabbed2,
-  outputspec = outputspec_interactive(),
-  report_title = "mantis report",
-  dataset_description = "Antibiotic prescriptions by site",
-  save_filename = "example_prescription_numbers_interactive",
-  show_progress = FALSE
-)
+    df = example_prescription_numbers,
+    inputspec = inspec_tabbed2,
+    outputspec = outputspec_interactive(),
+    report_title = "mantis report",
+    dataset_description = "Antibiotic prescriptions by site",
+    save_filename = "example_prescription_numbers_interactive",
+    show_progress = FALSE
+  )
 
 # clean up
 file.remove(filename)
@@ -172,16 +171,16 @@ Alternatively, the report can output static plots. This can be useful if interac
 
 ```{r heatmap-test, include=FALSE}
 # quietly test can create the report from an rmd but show the code in the next chunk in the vignette
-filename <- 
+filename <-
   mantis_report(
-  df = example_prescription_numbers,
-  inputspec = inspec_tabbed,
-  outputspec = outputspec_static_heatmap(),
-  report_title = "mantis report",
-  dataset_description = "Antibiotic prescriptions by site",
-  save_filename = "example_prescription_numbers_heatmap",
-  show_progress = FALSE
-)
+    df = example_prescription_numbers,
+    inputspec = inspec_tabbed,
+    outputspec = outputspec_static_heatmap(),
+    report_title = "mantis report",
+    dataset_description = "Antibiotic prescriptions by site",
+    save_filename = "example_prescription_numbers_heatmap",
+    show_progress = FALSE
+  )
 
 # clean up
 file.remove(filename)
@@ -205,16 +204,16 @@ mantis_report(
 
 ```{r multipanel-test, include=FALSE}
 # quietly test can create the report from an rmd but show the code in the next chunk in the vignette
-filename <- 
+filename <-
   mantis_report(
-  df = example_prescription_numbers,
-  inputspec = inspec_tabbed,
-  outputspec = outputspec_static_multipanel(),
-  report_title = "mantis report",
-  dataset_description = "Antibiotic prescriptions by site",
-  save_filename = "example_prescription_numbers_multipanel",
-  show_progress = FALSE
-)
+    df = example_prescription_numbers,
+    inputspec = inspec_tabbed,
+    outputspec = outputspec_static_multipanel(),
+    report_title = "mantis report",
+    dataset_description = "Antibiotic prescriptions by site",
+    save_filename = "example_prescription_numbers_multipanel",
+    show_progress = FALSE
+  )
 
 # clean up
 file.remove(filename)

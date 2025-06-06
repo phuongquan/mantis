@@ -71,7 +71,7 @@ ars <- alert_rules(
   alert_custom(
     short_name = "my_rule_doubled",
     description = "Last value is over double the first value",
-    function_call = quote(rev(value)[1] > 2*value[1])
+    function_call = quote(rev(value)[1] > 2 * value[1])
   )
 )
 ```
@@ -92,7 +92,6 @@ Generate an interactive `mantis` report for the `example_prescription_numbers` d
 library(mantis)
 
 data("example_prescription_numbers")
-
 ```
 
 ```{r, eval=FALSE}
@@ -126,7 +125,7 @@ ars <- alert_rules(
   alert_custom(
     short_name = "my_rule_doubled",
     description = "Last 7 values are over double the first 7 values",
-    function_call = quote(mean(rev(value)[1:7], na.rm = TRUE) > 2*(mean(value[1:7], na.rm = TRUE)))
+    function_call = quote(mean(rev(value)[1:7], na.rm = TRUE) > 2 * (mean(value[1:7], na.rm = TRUE)))
   )
 )
 
@@ -151,7 +150,6 @@ mantis_report(
   save_filename = "example_prescription_numbers_interactive_alerts",
   show_progress = TRUE
 )
-
 ```
 
 The report now includes a column for the alert results, and details can be seen by clicking on the triangles. The tab labels will include an exclamation mark if any items in that tab have failed an alert rule.
@@ -170,7 +168,7 @@ ars_restricted <- alert_rules(
   alert_custom(
     short_name = "my_rule_doubled",
     description = "Last 7 values are over double the first 7 values",
-    function_call = quote(mean(rev(value)[1:7], na.rm = TRUE) > 2*(mean(value[1:7], na.rm = TRUE))),
+    function_call = quote(mean(rev(value)[1:7], na.rm = TRUE) > 2 * (mean(value[1:7], na.rm = TRUE))),
     items = list("Spectrum" = c("Broad"))
   )
 )
@@ -195,7 +193,6 @@ mantis_report(
   save_filename = "example_prescription_numbers_interactive_alerts_restricted",
   show_progress = TRUE
 )
-
 ```
 
 The report now shows two rules for Coamoxiclav and one rule for Metronidazole.

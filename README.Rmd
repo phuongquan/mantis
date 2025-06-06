@@ -40,15 +40,13 @@ We anticipate two main target users:
 
 ```{r, eval = FALSE}
 # install dependencies first
-install.packages(c("remotes","rmarkdown","knitr","reactable","dplyr","tidyr","dygraphs","xts","ggplot2","scales","purrr","htmltools"))
+install.packages(c("remotes", "rmarkdown", "knitr", "reactable", "dplyr", "tidyr", "dygraphs", "xts", "ggplot2", "scales", "purrr", "htmltools"))
 
 # install the latest release version
 remotes::install_github("phuongquan/mantis@v0.2.0", dependencies = FALSE)
 
 # or install the current development version
-#remotes::install_github("phuongquan/mantis", dependencies = FALSE)
-
-
+# remotes::install_github("phuongquan/mantis", dependencies = FALSE)
 ```
 
 ## Usage
@@ -56,11 +54,10 @@ remotes::install_github("phuongquan/mantis@v0.2.0", dependencies = FALSE)
 ```{r}
 library(mantis)
 
-# this example data frame contains numbers of antibiotic prescriptions in long format, 
+# this example data frame contains numbers of antibiotic prescriptions in long format,
 data("example_prescription_numbers")
 
 head(example_prescription_numbers)
-
 ```
 
 ```{r, eval = FALSE}

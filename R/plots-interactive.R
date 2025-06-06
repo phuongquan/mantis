@@ -31,12 +31,13 @@ output_table_interactive <- function(prepared_df,
                                      sort_by = NULL,
                                      bordered = TRUE,
                                      ...) {
-
-  table <- prepare_table(prepared_df = prepared_df,
-                         inputspec = inputspec,
-                         plot_value_type = plot_value_type,
-                         alert_results = alert_results,
-                         sort_by = sort_by)
+  table <- prepare_table(
+    prepared_df = prepared_df,
+    inputspec = inputspec,
+    plot_value_type = plot_value_type,
+    alert_results = alert_results,
+    sort_by = sort_by
+  )
 
   # generate the item column(s)
   item_cols <- inputspec$item_cols
@@ -46,13 +47,16 @@ output_table_interactive <- function(prepared_df,
     if (item_cols[i] %in% inputspec$tab_col) {
       item_colDefs[[item_cols_prefix(item_cols[i])]] <-
         reactable::colDef(show = FALSE)
-    } else{
+    } else {
       # NOTE: if item_labels contains names that don't match the data, just ignore them
       item_colDefs[[item_cols_prefix(item_cols[i])]] <-
-        reactable::colDef(name = ifelse(item_cols[i] %in% names(item_labels),
-                                        item_labels[item_cols[i]],
-                                        item_cols[i]),
-                          filterable = TRUE)
+        reactable::colDef(
+          name = ifelse(item_cols[i] %in% names(item_labels),
+            item_labels[item_cols[i]],
+            item_cols[i]
+          ),
+          filterable = TRUE
+        )
     }
   }
 
@@ -71,16 +75,26 @@ output_table_interactive <- function(prepared_df,
     columns = c(
       item_colDefs,
       list(
-        last_timepoint = reactable::colDef(name = "Last timepoint",
-                                           show = "last_timepoint" %in% summary_cols),
-        last_value = reactable::colDef(name = "Last value",
-                                       show = "last_value" %in% summary_cols),
-        last_value_nonmissing = reactable::colDef(name = "Last non-missing value",
-                                                  show = "last_value_nonmissing" %in% summary_cols),
-        max_value = reactable::colDef(name = "Max value",
-                                      show = "max_value" %in% summary_cols),
-        mean_value = reactable::colDef(name = "Mean",
-                                       show = "mean_value" %in% summary_cols),
+        last_timepoint = reactable::colDef(
+          name = "Last timepoint",
+          show = "last_timepoint" %in% summary_cols
+        ),
+        last_value = reactable::colDef(
+          name = "Last value",
+          show = "last_value" %in% summary_cols
+        ),
+        last_value_nonmissing = reactable::colDef(
+          name = "Last non-missing value",
+          show = "last_value_nonmissing" %in% summary_cols
+        ),
+        max_value = reactable::colDef(
+          name = "Max value",
+          show = "max_value" %in% summary_cols
+        ),
+        mean_value = reactable::colDef(
+          name = "Mean",
+          show = "mean_value" %in% summary_cols
+        ),
         # cell argument accepts a function with cell _values_, row _index_, and/or column _names_ as arguments, below just uses _values_
         history = reactable::colDef(
           name = ifelse(is.null(plot_label), inputspec$value_col, plot_label),
@@ -88,20 +102,23 @@ output_table_interactive <- function(prepared_df,
           filterable = FALSE,
           cell = function(value) {
             dy <- dygraphs::dygraph(value,
-                                    height = 40,
-                                    width = 400) |>
+              height = 40,
+              width = 400
+            ) |>
               dygraphs::dyOptions(
                 drawXAxis = FALSE,
                 drawYAxis = FALSE,
                 drawGrid = FALSE,
                 drawPoints = FALSE
               ) |>
-              dygraphs::dyAxis(name = "y",
-                               valueRange = if (sync_axis_range) {
-                                 value_range_from_history(value_history = table$history)
-                               } else {
-                                 value_range_from_history(value_history = value)
-                               }) |>
+              dygraphs::dyAxis(
+                name = "y",
+                valueRange = if (sync_axis_range) {
+                  value_range_from_history(value_history = table$history)
+                } else {
+                  value_range_from_history(value_history = value)
+                }
+              ) |>
               dygraphs::dyAxis(
                 name = "x",
                 rangePad = 10,
@@ -123,25 +140,25 @@ output_table_interactive <- function(prepared_df,
           cell = function(value) {
             if (!is.na(value)) {
               img_src <- ifelse(grepl("PASS", value),
-                                knitr::image_uri(system.file(
-                                  "images",
-                                  "tick.png",
-                                  package = utils::packageName(),
-                                  mustWork = FALSE
-                                )),
-                                knitr::image_uri(system.file(
-                                  "images",
-                                  "cross.png",
-                                  package = utils::packageName(),
-                                  mustWork = FALSE
-                                ))
-                                )
+                knitr::image_uri(system.file(
+                  "images",
+                  "tick.png",
+                  package = utils::packageName(),
+                  mustWork = FALSE
+                )),
+                knitr::image_uri(system.file(
+                  "images",
+                  "cross.png",
+                  package = utils::packageName(),
+                  mustWork = FALSE
+                ))
+              )
               image <- htmltools::img(src = img_src, style = "height: 14px; padding: 0 3px 2px 0; vertical-align: middle;", alt = "")
               htmltools::tagList(
                 htmltools::div(style = "display: inline-block;", image),
                 value
               )
-            } else{
+            } else {
               "-"
             }
           },
@@ -165,8 +182,8 @@ output_table_interactive <- function(prepared_df,
           }
         ),
         alert_details = reactable::colDef(show = FALSE)
-        )
-      ),
+      )
+    ),
     ...
   )
 }
@@ -183,12 +200,13 @@ value_range_from_history <- function(value_history) {
   # NOTE: add 1 to max otherwise the tooltip doesn't appear
   # NOTE: min/max return warnings when all values are NA
   suppressWarnings(
-    c(min(unlist(lapply(value_history, function(x) {
-      min(c(0, min(x, na.rm = TRUE)))
-    }))),
+    c(
+      min(unlist(lapply(value_history, function(x) {
+        min(c(0, min(x, na.rm = TRUE)))
+      }))),
       max(unlist(lapply(value_history, function(x) {
-      max(c(0, max(x, na.rm = TRUE)))
-    }))) + 1)
+        max(c(0, max(x, na.rm = TRUE)))
+      }))) + 1
+    )
   )
 }
-

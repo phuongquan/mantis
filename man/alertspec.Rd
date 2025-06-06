@@ -28,15 +28,15 @@ ars <- alert_rules(
 )
 
 # specify that all results should be included in the Alerts tab (the default)
-  alsp <- alertspec(
-   alert_rules = ars
- )
+alsp <- alertspec(
+  alert_rules = ars
+)
 
 # specify that only results which fail or are incalculable should be included in the Alerts tab
-  alsp <- alertspec(
-   alert_rules = ars,
-   show_tab_results = c("FAIL", "NA")
- )
+alsp <- alertspec(
+  alert_rules = ars,
+  show_tab_results = c("FAIL", "NA")
+)
 
 }
 \seealso{

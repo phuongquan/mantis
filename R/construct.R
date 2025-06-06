@@ -26,10 +26,10 @@
 #' }
 #'
 #' @export
-bespoke_rmd_initialise_widgets <- function(plot_type){
+bespoke_rmd_initialise_widgets <- function(plot_type) {
   validate_params_required(match.call())
   validate_params_type(match.call(),
-                       plot_type = plot_type
+    plot_type = plot_type
   )
 
   initialise_widgets(plot_type = plot_type)
@@ -108,13 +108,13 @@ bespoke_rmd_initialise_widgets <- function(plot_type){
 #' @seealso [bespoke_rmd_initialise_widgets()]
 #' @export
 bespoke_rmd_output <- function(df,
-                            inputspec,
-                            outputspec,
-                            alertspec = NULL,
-                            timepoint_limits = c(NA, NA),
-                            fill_with_zero = FALSE,
-                            tab_name = NULL,
-                            tab_level = 1) {
+                               inputspec,
+                               outputspec,
+                               alertspec = NULL,
+                               timepoint_limits = c(NA, NA),
+                               fill_with_zero = FALSE,
+                               tab_name = NULL,
+                               tab_level = 1) {
   validate_params_required(match.call())
   validate_params_type(
     match.call(),
@@ -201,7 +201,6 @@ bespoke_rmd_alert_results <- function(df,
                                       fill_with_zero = FALSE,
                                       tab_name = NULL,
                                       tab_level = 1) {
-
   validate_params_required(match.call())
   validate_params_type(
     match.call(),
@@ -236,7 +235,7 @@ bespoke_rmd_alert_results <- function(df,
     )
 
   # create parent tab if specified
-  if (!is.null(tab_name)){
+  if (!is.null(tab_name)) {
     construct_tab_label(
       tab_name = tab_name,
       tab_level = tab_level
@@ -264,20 +263,21 @@ bespoke_rmd_alert_results <- function(df,
 #'
 #' @return A (mostly) invisible html widget
 #' @noRd
-initialise_widgets <- function(plot_type = "none"){
+initialise_widgets <- function(plot_type = "none") {
   # https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
   # https://github.com/rstudio/rmarkdown/issues/1877
   # Currently appears like a line break when rendered. Could try harder to make it invisible but
   # people can always put it at the end of the file if required
   dummy_df <- data.frame(a = as.Date("2023-01-01"), b = "item", c = 1)
 
-  if(plot_type == "none") {
+  if (plot_type == "none") {
     reactable::reactable(dummy_df, height = 0, bordered = FALSE)
-
-  } else{
-    inputspec <- inputspec(timepoint_col = "a",
-                           item_cols = "b",
-                           value_col = "c")
+  } else {
+    inputspec <- inputspec(
+      timepoint_col = "a",
+      item_cols = "b",
+      value_col = "c"
+    )
 
     prepare_df(dummy_df, inputspec = inputspec) |>
       output_table_interactive(
@@ -338,12 +338,12 @@ construct_rmd_tab <- function(df,
   )
 
   # if alert tab is to be created, main contents must also be in a tab
-  if (!is.null(alertspec$show_tab_results) && is.null(tab_name) && is.null(inputspec$tab_col)){
+  if (!is.null(alertspec$show_tab_results) && is.null(tab_name) && is.null(inputspec$tab_col)) {
     tab_name <- "Output"
   }
 
   # create parent tab if specified
-  if (!is.null(tab_name)){
+  if (!is.null(tab_name)) {
     construct_tab_label(
       tab_name = tab_name,
       tab_level = tab_level,
@@ -352,7 +352,7 @@ construct_rmd_tab <- function(df,
     )
 
     tab_col_level <- tab_level + 1
-  } else{
+  } else {
     tab_col_level <- tab_level
   }
 
@@ -364,27 +364,29 @@ construct_rmd_tab <- function(df,
       outputspec = outputspec,
       alert_results_subset = alert_results
     )
-  } else{
+  } else {
     # create tab group
     tab_col_names <- unique(prepared_df[item_cols_prefix(inputspec$tab_col)] |>
-                              dplyr::pull())
+      dplyr::pull())
 
     for (i in seq_along(tab_col_names)) {
       prepared_df_subset <-
         prepared_df |>
         dplyr::filter(.data[[item_cols_prefix(inputspec$tab_col)]] == tab_col_names[i])
 
-      if (is.null(alert_results)){
+      if (is.null(alert_results)) {
         alert_results_subset <- NULL
-      } else{
+      } else {
         alert_results_subset <-
           alert_results |>
           dplyr::filter(.data[[item_cols_prefix(inputspec$tab_col)]] == tab_col_names[i])
       }
 
-      construct_tab_label(tab_name = tab_col_names[i],
-                          tab_level = tab_col_level,
-                          alert = any(alert_results_subset$alert_result %in% c("FAIL")))
+      construct_tab_label(
+        tab_name = tab_col_names[i],
+        tab_level = tab_col_level,
+        alert = any(alert_results_subset$alert_result %in% c("FAIL"))
+      )
 
       construct_tab_content(
         prepared_df_subset = prepared_df_subset,
@@ -396,11 +398,11 @@ construct_rmd_tab <- function(df,
   }
 
   # create alert tab
-  if (!is.null(alertspec$show_tab_results)){
+  if (!is.null(alertspec$show_tab_results)) {
     # should be at same level as any tab_col tabs
-    if(!is.null(inputspec$tab_col)){
+    if (!is.null(inputspec$tab_col)) {
       tab_alert_level <- tab_col_level
-    } else{
+    } else {
       tab_alert_level <- tab_level
     }
 
@@ -410,10 +412,11 @@ construct_rmd_tab <- function(df,
       has_child_tabs = FALSE
     )
 
-    construct_alert_results_content(alert_results = alert_results,
-                                    inputspec = inputspec,
-                                    filter_results = alertspec$show_tab_results)
-
+    construct_alert_results_content(
+      alert_results = alert_results,
+      inputspec = inputspec,
+      filter_results = alertspec$show_tab_results
+    )
   }
 
   invisible(df)
@@ -430,8 +433,7 @@ construct_rmd_tab <- function(df,
 #' @noRd
 get_alert_results_if_specified <- function(alertspec,
                                            prepared_df,
-                                           inputspec){
-
+                                           inputspec) {
   if (!is.null(alertspec)) {
     alert_results <- run_alerts(
       prepared_df = prepared_df,
@@ -457,21 +459,24 @@ get_alert_results_if_specified <- function(alertspec,
 #'
 #' @noRd
 construct_tab_content <- function(prepared_df_subset,
-                       inputspec,
-                       outputspec,
-                       alert_results_subset = NULL) {
-
+                                  inputspec,
+                                  outputspec,
+                                  alert_results_subset = NULL) {
   if (is_outputspec_static_heatmap(outputspec)) {
-    plot_heatmap_static(prepared_df = prepared_df_subset,
-                        inputspec = inputspec,
-                        fill_colour = outputspec$fill_colour,
-                        y_label = outputspec$y_label) |>
+    plot_heatmap_static(
+      prepared_df = prepared_df_subset,
+      inputspec = inputspec,
+      fill_colour = outputspec$fill_colour,
+      y_label = outputspec$y_label
+    ) |>
       print()
   } else if (is_outputspec_static_multipanel(outputspec)) {
-    plot_multipanel_static(prepared_df = prepared_df_subset,
-                           inputspec = inputspec,
-                           sync_axis_range = outputspec$sync_axis_range,
-                           y_label = outputspec$y_label) |>
+    plot_multipanel_static(
+      prepared_df = prepared_df_subset,
+      inputspec = inputspec,
+      sync_axis_range = outputspec$sync_axis_range,
+      y_label = outputspec$y_label
+    ) |>
       print()
   } else if (is_outputspec_interactive(outputspec)) {
     p <-
@@ -508,17 +513,19 @@ construct_tab_content <- function(prepared_df_subset,
 construct_alert_results_content <- function(alert_results,
                                             inputspec,
                                             filter_results = c("PASS", "FAIL", "NA")) {
-
   alert_description <- alert_result <- NULL
 
   p <-
     alert_results |>
-    dplyr::rename_with(.fn = item_cols_unprefix,
-                       .cols = dplyr::all_of(item_cols_prefix(inputspec$item_cols))) |>
+    dplyr::rename_with(
+      .fn = item_cols_unprefix,
+      .cols = dplyr::all_of(item_cols_prefix(inputspec$item_cols))
+    ) |>
     dplyr::filter(alert_result %in% filter_results) |>
     dplyr::select(dplyr::all_of(inputspec$item_cols),
-                  "Rule" = alert_description,
-                  "Result" = alert_result) |>
+      "Rule" = alert_description,
+      "Result" = alert_result
+    ) |>
     reactable::reactable(filterable = TRUE, pagination = FALSE)
 
   cat(knitr::knit_print(p))
@@ -538,15 +545,16 @@ construct_alert_results_content <- function(alert_results,
 #' @param alert set to `TRUE` to append an alert icon
 #'
 #' @noRd
-construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, alert = FALSE){
+construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, alert = FALSE) {
   if (!is.null(tab_name)) {
     cat("\n",
-        paste0(rep("#", tab_level + 1), collapse = ""),
-        " ", tab_name,
-        ifelse(alert," <b>!</b>", ""),
-        ifelse(has_child_tabs," {.tabset}", ""),
-        "\n",
-        sep = "")
+      paste0(rep("#", tab_level + 1), collapse = ""),
+      " ", tab_name,
+      ifelse(alert, " <b>!</b>", ""),
+      ifelse(has_child_tabs, " {.tabset}", ""),
+      "\n",
+      sep = ""
+    )
   }
 }
 
@@ -565,12 +573,11 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, ale
 #'
 #' @return numeric height in inches or NULL
 #' @noRd
-rmd_fig_height <- function(df, inputspec, outputspec){
-
+rmd_fig_height <- function(df, inputspec, outputspec) {
   rows <- NULL
 
   fig_height <- NULL
-  if (is_outputspec_static(outputspec) && nrow(df) > 0){
+  if (is_outputspec_static(outputspec) && nrow(df) > 0) {
     maxrows <-
       df |>
       dplyr::select(
@@ -586,9 +593,11 @@ rmd_fig_height <- function(df, inputspec, outputspec){
       dplyr::summarise(maxrows = max(rows)) |>
       dplyr::pull()
 
-    fig_height <- maxrows*dplyr::case_when(is_outputspec_static_heatmap(outputspec) ~ 0.6,
-                                           is_outputspec_static_multipanel(outputspec) ~ 0.8,
-                                           TRUE ~ 0.8)
+    fig_height <- maxrows * dplyr::case_when(
+      is_outputspec_static_heatmap(outputspec) ~ 0.6,
+      is_outputspec_static_multipanel(outputspec) ~ 0.8,
+      TRUE ~ 0.8
+    )
   }
 
   fig_height

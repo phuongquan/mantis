@@ -5,12 +5,16 @@ test_that("Valid alert_rules can be specified", {
       alert_equals(rule_value = 0),
       alert_above(rule_value = 0),
       alert_below(rule_value = 0),
-      alert_difference_above_perc(current_period = 1,
-                                  previous_period = 2,
-                                  rule_value = 10),
-      alert_difference_below_perc(current_period = 1,
-                                  previous_period = 2,
-                                  rule_value = 10),
+      alert_difference_above_perc(
+        current_period = 1,
+        previous_period = 2,
+        rule_value = 10
+      ),
+      alert_difference_below_perc(
+        current_period = 1,
+        previous_period = 2,
+        rule_value = 10
+      ),
       alert_custom(
         short_name = "my_rule_doubled",
         description = "Last value is over double the first value",
@@ -22,10 +26,14 @@ test_that("Valid alert_rules can be specified", {
 })
 
 test_that("Invalid alert_rules cannot be specified", {
-  expect_error(alert_rules(alert_missing(),
-                           quote(rev(value)[1] > 2 * value[1]),
-                           "hello"),
-               class = "invalid_alert_rules")
+  expect_error(
+    alert_rules(
+      alert_missing(),
+      quote(rev(value)[1] > 2 * value[1]),
+      "hello"
+    ),
+    class = "invalid_alert_rules"
+  )
 })
 
 test_that("alert_missing(all) returns condition correctly", {
@@ -36,7 +44,6 @@ test_that("alert_missing(all) returns condition correctly", {
 
   value <- c(1, rep(NA, 10))
   expect_false(eval(fc))
-
 })
 
 test_that("alert_missing(any) returns condition correctly", {
@@ -47,7 +54,6 @@ test_that("alert_missing(any) returns condition correctly", {
 
   value <- c(1, 2, NA, 3, NA)
   expect_false(eval(fc))
-
 })
 
 test_that("alert_missing(last) returns condition correctly", {
@@ -58,7 +64,6 @@ test_that("alert_missing(last) returns condition correctly", {
 
   value <- c(NA, 1, 2, NA, NA)
   expect_false(eval(fc))
-
 })
 
 test_that("alert_missing(consecutive) returns condition correctly", {
@@ -69,7 +74,6 @@ test_that("alert_missing(consecutive) returns condition correctly", {
 
   value <- c(NA, 1, 1, NA, NA, 1)
   expect_false(eval(fc))
-
 })
 
 
@@ -81,7 +85,6 @@ test_that("alert_equals(all) returns condition correctly", {
 
   value <- c(1, rep(0, 10))
   expect_false(eval(fc))
-
 })
 
 test_that("alert_equals(any) returns condition correctly", {
@@ -95,7 +98,6 @@ test_that("alert_equals(any) returns condition correctly", {
 
   value <- c(NA, 0, NA, 0, NA, 0)
   expect_true(eval(fc))
-
 })
 
 test_that("alert_equals(last) returns condition correctly", {
@@ -115,7 +117,6 @@ test_that("alert_equals(last) returns condition correctly", {
 
   value <- c(1, 2, NA, NA, NA)
   expect_false(eval(fc))
-
 })
 
 test_that("alert_equals(consecutive) returns condition correctly", {
@@ -130,7 +131,6 @@ test_that("alert_equals(consecutive) returns condition correctly", {
   # any NAs should be skipped
   value <- c(0, NA, 0, 0, 1)
   expect_true(eval(fc))
-
 })
 
 
@@ -145,7 +145,6 @@ test_that("alert_below(all) returns condition correctly", {
 
   value <- c(3, rep(0, 10))
   expect_false(eval(fc))
-
 })
 
 test_that("alert_below(any) returns condition correctly", {
@@ -159,7 +158,6 @@ test_that("alert_below(any) returns condition correctly", {
 
   value <- c(3, 3, 2, 1, 3)
   expect_false(eval(fc))
-
 })
 
 test_that("alert_below(last) returns condition correctly", {
@@ -170,7 +168,6 @@ test_that("alert_below(last) returns condition correctly", {
 
   value <- c(0, 1, 3, 0, 0)
   expect_false(eval(fc))
-
 })
 
 test_that("alert_below(consecutive) returns condition correctly", {
@@ -185,7 +182,6 @@ test_that("alert_below(consecutive) returns condition correctly", {
   # any NAs should be skipped
   value <- c(0, NA, 0, 2, 21)
   expect_true(eval(fc))
-
 })
 
 
@@ -200,7 +196,6 @@ test_that("alert_above(all) returns condition correctly", {
 
   value <- c(1, rep(0, 10))
   expect_false(eval(fc))
-
 })
 
 test_that("alert_above(any) returns condition correctly", {
@@ -211,7 +206,6 @@ test_that("alert_above(any) returns condition correctly", {
 
   value <- c(0, 0, 2, 0, 3, 0)
   expect_false(eval(fc))
-
 })
 
 test_that("alert_above(last) returns condition correctly", {
@@ -222,7 +216,6 @@ test_that("alert_above(last) returns condition correctly", {
 
   value <- c(0, 1, 2, 0, 0)
   expect_false(eval(fc))
-
 })
 
 test_that("alert_above(consecutive) returns condition correctly", {
@@ -237,7 +230,6 @@ test_that("alert_above(consecutive) returns condition correctly", {
   # any NAs should be skipped
   value <- c(20, NA, 20, 2, 1)
   expect_true(eval(fc))
-
 })
 
 # TODO: more tests for equals/above/below with NAs in
@@ -264,7 +256,6 @@ test_that("alert_difference_above_perc() returns condition correctly", {
 
   value <- c(3, NA, NA, NA, NA, 4, 6)
   expect_equal(eval(fc), NA)
-
 })
 
 test_that("alert_difference_below_perc() returns condition correctly", {
@@ -299,7 +290,7 @@ test_that("alert_custom() returns condition correctly", {
   fc <- alert_custom(
     short_name = "my_rule_doubled",
     description = "Last value is over double the first value",
-    function_call = quote(rev(value)[1] > 2*value[1])
+    function_call = quote(rev(value)[1] > 2 * value[1])
   )$function_call
 
 
@@ -316,70 +307,90 @@ test_that("alert_custom() returns condition correctly", {
 
 
 test_that("mantis_alerts() returns expected df", {
-  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
-                   item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
-                   category = c(rep("one", 20), rep("two", 10)),
-                   value = c(rep(5, 2), rep(3, 27), NA),
-                   stringsAsFactors = FALSE)
+  df <- data.frame(
+    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+    item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
+    category = c(rep("one", 20), rep("two", 10)),
+    value = c(rep(5, 2), rep(3, 27), NA),
+    stringsAsFactors = FALSE
+  )
 
   results <- mantis_alerts(df,
-                           inputspec = inputspec(timepoint_col = "timepoint",
-                                                 item_cols = c("item", "category"),
-                                                 value_col = "value"),
-                           alert_rules = alert_rules(alert_missing(extent_type = "all"),
-                                                     alert_above(extent_type = "any",
-                                                                 extent_value = 1,
-                                                                 rule_value = 4)),
-                           fill_with_zero = FALSE)
+    inputspec = inputspec(
+      timepoint_col = "timepoint",
+      item_cols = c("item", "category"),
+      value_col = "value"
+    ),
+    alert_rules = alert_rules(
+      alert_missing(extent_type = "all"),
+      alert_above(
+        extent_type = "any",
+        extent_value = 1,
+        rule_value = 4
+      )
+    ),
+    fill_with_zero = FALSE
+  )
 
   expect_equal(results$alert_result[which(results$alert_name == "missing_all")], rep("PASS", 3))
   expect_equal(results$alert_result[which(results$alert_name == "above_4_any_1")], c("FAIL", "PASS", "PASS"))
-
 })
 
 test_that("mantis_alerts() returns an empty df if supplied an empty df", {
-  df <- data.frame(timepoint = as.Date(numeric()),
-                   item = character(),
-                   value = numeric(),
-                   tab = character())
+  df <- data.frame(
+    timepoint = as.Date(numeric()),
+    item = character(),
+    value = numeric(),
+    tab = character()
+  )
 
   results <- mantis_alerts(df,
-                           inputspec = inputspec(timepoint_col = "timepoint",
-                                                 item_cols = "item",
-                                                 value_col = "value"),
-                           alert_rules = alert_rules(alert_missing()),
-                           timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
-                           fill_with_zero = FALSE)
+    inputspec = inputspec(
+      timepoint_col = "timepoint",
+      item_cols = "item",
+      value_col = "value"
+    ),
+    alert_rules = alert_rules(alert_missing()),
+    timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
+    fill_with_zero = FALSE
+  )
 
   expect_equal(nrow(results), 0)
 })
 
 test_that("mantis_alerts() returns an empty df if supplied an empty df with tab_col", {
-  df <- data.frame(timepoint = as.Date(numeric()),
-                   item = character(),
-                   value = numeric(),
-                   tab = character())
+  df <- data.frame(
+    timepoint = as.Date(numeric()),
+    item = character(),
+    value = numeric(),
+    tab = character()
+  )
 
   results <- mantis_alerts(df,
-                           inputspec = inputspec(timepoint_col = "timepoint",
-                                                 item_cols = c("item", "tab"),
-                                                 value_col = "value",
-                                                 tab_col = "tab"),
-                           alert_rules = alert_rules(alert_missing()),
-                           timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
-                           fill_with_zero = FALSE)
+    inputspec = inputspec(
+      timepoint_col = "timepoint",
+      item_cols = c("item", "tab"),
+      value_col = "value",
+      tab_col = "tab"
+    ),
+    alert_rules = alert_rules(alert_missing()),
+    timepoint_limits = c(as.Date("2022-01-01"), as.Date("2022-01-10")),
+    fill_with_zero = FALSE
+  )
 
   expect_equal(nrow(results), 0)
 })
 
 
 test_that("restrict_items() doesn't filter prepared_df when no items specified", {
-  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 6),
-                   item1 = c(rep("a", 20), rep("b", 20), rep("c", 20)),
-                   item2 = rep(c(rep("x", 10), rep("y", 10)), 3),
-                   item3 = c(rep("one", 40), rep("two", 20)),
-                   value = rep(3, 60),
-                   stringsAsFactors = FALSE)
+  df <- data.frame(
+    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 6),
+    item1 = c(rep("a", 20), rep("b", 20), rep("c", 20)),
+    item2 = rep(c(rep("x", 10), rep("y", 10)), 3),
+    item3 = c(rep("one", 40), rep("two", 20)),
+    value = rep(3, 60),
+    stringsAsFactors = FALSE
+  )
 
   inputspec <- inputspec(
     timepoint_col = "timepoint",
@@ -399,16 +410,17 @@ test_that("restrict_items() doesn't filter prepared_df when no items specified",
       nrow(),
     nrow(prepared_df)
   )
-
 })
 
 test_that("restrict_items() filters prepared_df items correctly when items are specified", {
-  df <- data.frame(timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 6),
-                   item1 = c(rep("a", 20), rep("b", 20), rep("c", 20)),
-                   item2 = rep(c(rep("x", 10), rep("y", 10)), 3),
-                   item3 = c(rep("one", 40), rep("two", 20)),
-                   value = rep(3, 60),
-                   stringsAsFactors = FALSE)
+  df <- data.frame(
+    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 6),
+    item1 = c(rep("a", 20), rep("b", 20), rep("c", 20)),
+    item2 = rep(c(rep("x", 10), rep("y", 10)), 3),
+    item3 = c(rep("one", 40), rep("two", 20)),
+    value = rep(3, 60),
+    stringsAsFactors = FALSE
+  )
 
   inputspec <- inputspec(
     timepoint_col = "timepoint",
@@ -446,11 +458,9 @@ test_that("restrict_items() filters prepared_df items correctly when items are s
       unique(),
     c("x")
   )
-
 })
 
 test_that("alert_rules items can be left unspecified", {
-
   inputspec <- inputspec(
     timepoint_col = "timepoint",
     item_cols = c("item1", "item2"),
@@ -458,8 +468,10 @@ test_that("alert_rules items can be left unspecified", {
   )
 
   expect_silent(
-    validate_alert_rules_to_inputspec(alert_rules = NULL,
-                                      inputspec = inputspec)
+    validate_alert_rules_to_inputspec(
+      alert_rules = NULL,
+      inputspec = inputspec
+    )
   )
 
   expect_silent(
@@ -468,11 +480,9 @@ test_that("alert_rules items can be left unspecified", {
       inputspec = inputspec
     )
   )
-
 })
 
 test_that("alert_rules items must match item_cols when specified", {
-
   inputspec <- inputspec(
     timepoint_col = "timepoint",
     item_cols = c("item1", "item2"),
@@ -505,8 +515,10 @@ test_that("alert_rules items must match item_cols when specified", {
     validate_alert_rules_to_inputspec(
       alert_rules = alert_rules(
         alert_missing(items = list("item1" = "a")),
-        alert_below(rule_value = 0,
-                    items = list("otheritem" = "z"))
+        alert_below(
+          rule_value = 0,
+          items = list("otheritem" = "z")
+        )
       ),
       inputspec = inputspec
     ),
@@ -517,8 +529,10 @@ test_that("alert_rules items must match item_cols when specified", {
   expect_error(
     validate_alert_rules_to_inputspec(
       alert_rules = alert_rules(
-        alert_missing(items = list("item1" = "a",
-                                   "otheritem" = "z"))
+        alert_missing(items = list(
+          "item1" = "a",
+          "otheritem" = "z"
+        ))
       ),
       inputspec = inputspec
     ),
@@ -530,11 +544,12 @@ test_that("alert_rules items must match item_cols when specified", {
     validate_alert_rules_to_inputspec(
       alert_rules = alert_rules(
         alert_missing(items = list("item1" = "a")),
-        alert_below(rule_value = 0,
-                    items = list("item1" = "z"))
+        alert_below(
+          rule_value = 0,
+          items = list("item1" = "z")
+        )
       ),
       inputspec = inputspec
     )
   )
-
-  })
+})

@@ -64,27 +64,29 @@
 #' )
 #' @export
 inputspec <- function(timepoint_col,
-                    item_cols,
-                    value_col,
-                    tab_col = NULL,
-                    timepoint_unit = "day"){
-
+                      item_cols,
+                      value_col,
+                      tab_col = NULL,
+                      timepoint_unit = "day") {
   validate_params_required(match.call())
   validate_params_type(match.call(),
-                       timepoint_col = timepoint_col,
-                       item_cols = item_cols,
-                       value_col = value_col,
-                       tab_col = tab_col,
-                       timepoint_unit = timepoint_unit
+    timepoint_col = timepoint_col,
+    item_cols = item_cols,
+    value_col = value_col,
+    tab_col = tab_col,
+    timepoint_unit = timepoint_unit
   )
 
   structure(
-    list(timepoint_col = timepoint_col,
-       item_cols = item_cols,
-       value_col = value_col,
-       tab_col = tab_col,
-       timepoint_unit = timepoint_unit),
-    class = "mantis_inputspec")
+    list(
+      timepoint_col = timepoint_col,
+      item_cols = item_cols,
+      value_col = value_col,
+      tab_col = tab_col,
+      timepoint_unit = timepoint_unit
+    ),
+    class = "mantis_inputspec"
+  )
 }
 
 
@@ -116,7 +118,7 @@ inputspec <- function(timepoint_col,
 #'   Secondary ordering will be based on `item_order`.
 #' @return An `outputspec()` object
 #'
-#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#' @section Details: For `item_order`, the names of the list members should correspond to the column
 #'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
 #'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
 #'  then that column is sorted in ascending order. If a list item is a character vector then that
@@ -163,35 +165,36 @@ inputspec <- function(timepoint_col,
 #' @seealso [outputspec_static_heatmap()], [outputspec_static_multipanel()]
 #' @export
 outputspec_interactive <- function(plot_value_type = "value",
-                       plot_type = "bar",
-                       item_labels = NULL,
-                       plot_label = NULL,
-                       summary_cols = c("max_value"),
-                       sync_axis_range = FALSE,
-                       item_order = NULL,
-                       sort_by = NULL){
-
+                                   plot_type = "bar",
+                                   item_labels = NULL,
+                                   plot_label = NULL,
+                                   summary_cols = c("max_value"),
+                                   sync_axis_range = FALSE,
+                                   item_order = NULL,
+                                   sort_by = NULL) {
   validate_params_required(match.call())
   validate_params_type(match.call(),
-                       plot_value_type = plot_value_type,
-                       plot_type = plot_type,
-                       item_labels = item_labels,
-                       plot_label = plot_label,
-                       summary_cols = summary_cols,
-                       sync_axis_range = sync_axis_range,
-                       item_order = item_order,
-                       sort_by = sort_by
-                       )
+    plot_value_type = plot_value_type,
+    plot_type = plot_type,
+    item_labels = item_labels,
+    plot_label = plot_label,
+    summary_cols = summary_cols,
+    sync_axis_range = sync_axis_range,
+    item_order = item_order,
+    sort_by = sort_by
+  )
 
   structure(
-    list(plot_value_type = plot_value_type,
-         plot_type = plot_type,
-         item_labels = item_labels,
-         plot_label = plot_label,
-         summary_cols = summary_cols,
-         sync_axis_range = sync_axis_range,
-         item_order = item_order,
-         sort_by = sort_by),
+    list(
+      plot_value_type = plot_value_type,
+      plot_type = plot_type,
+      item_labels = item_labels,
+      plot_label = plot_label,
+      summary_cols = summary_cols,
+      sync_axis_range = sync_axis_range,
+      item_order = item_order,
+      sort_by = sort_by
+    ),
     class = c("mantis_outputspec", "mantis_outputspec_interactive")
   )
 }
@@ -210,7 +213,7 @@ outputspec_interactive <- function(plot_value_type = "value",
 #'   original order will be kept. See Details.
 #' @return An `outputspec()` object
 #'
-#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#' @section Details: For `item_order`, the names of the list members should correspond to the column
 #'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
 #'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
 #'  then that column is sorted in ascending order. If a list item is a character vector then that
@@ -240,20 +243,21 @@ outputspec_interactive <- function(plot_value_type = "value",
 outputspec_static_heatmap <- function(fill_colour = "blue",
                                       y_label = NULL,
                                       item_order = NULL) {
-
   validate_params_required(match.call())
   validate_params_type(match.call(),
-                       fill_colour = fill_colour,
-                       y_label = y_label,
-                       item_order = item_order
-                       )
+    fill_colour = fill_colour,
+    y_label = y_label,
+    item_order = item_order
+  )
 
   structure(
-    list(fill_colour = fill_colour,
-         y_label = y_label,
-         item_order = item_order),
+    list(
+      fill_colour = fill_colour,
+      y_label = y_label,
+      item_order = item_order
+    ),
     class = c("mantis_outputspec", "mantis_outputspec_static", "mantis_outputspec_static_heatmap")
-    )
+  )
 }
 
 
@@ -271,7 +275,7 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 #'   original order will be kept. See Details.
 #' @return An `outputspec()` object
 #'
-#'@section Details: For `item_order`, the names of the list members should correspond to the column
+#' @section Details: For `item_order`, the names of the list members should correspond to the column
 #'  names in the `df`. Any names that don't match will be ignored. When multiple columns are
 #'  specified, they are sorted together, in the same priority order as the list. If a list item is `TRUE`
 #'  then that column is sorted in ascending order. If a list item is a character vector then that
@@ -299,20 +303,21 @@ outputspec_static_heatmap <- function(fill_colour = "blue",
 #' @seealso [outputspec_interactive()], [outputspec_static_heatmap()]
 #' @export
 outputspec_static_multipanel <- function(sync_axis_range = FALSE,
-                                        y_label = NULL,
-                                        item_order = NULL) {
-
+                                         y_label = NULL,
+                                         item_order = NULL) {
   validate_params_required(match.call())
   validate_params_type(match.call(),
-                       sync_axis_range = sync_axis_range,
-                       y_label = y_label,
-                       item_order = item_order
-                       )
+    sync_axis_range = sync_axis_range,
+    y_label = y_label,
+    item_order = item_order
+  )
 
   structure(
-    list(sync_axis_range = sync_axis_range,
-         y_label = y_label,
-         item_order = item_order),
+    list(
+      sync_axis_range = sync_axis_range,
+      y_label = y_label,
+      item_order = item_order
+    ),
     class = c("mantis_outputspec", "mantis_outputspec_static", "mantis_outputspec_static_multipanel")
   )
 }
@@ -391,54 +396,56 @@ prepare_df <-
            timepoint_limits = c(NA, NA),
            fill_with_zero = FALSE,
            item_order = NULL) {
-
-  # keep only relevant cols and rename for ease. prefix item_cols with "item." to ensure uniqueness
-  prepared_df <-
-    df |>
-    dplyr::select(dplyr::all_of(
-      c(
-        inputspec$item_cols,
-        inputspec$timepoint_col,
-        inputspec$value_col
-      )
-    )) |>
-    dplyr::rename(
-      timepoint = dplyr::all_of(inputspec$timepoint_col),
-      value = dplyr::all_of(inputspec$value_col)
-    ) |>
-    dplyr::rename_with(
-      .cols = dplyr::all_of(inputspec$item_cols),
-      .fn = item_cols_prefix
-      )
-
-  # if there is no data, return the formatted (empty) df
-  if(nrow(prepared_df) == 0){
-    return(prepared_df)
-  }
-
-  prepared_df <-
-    align_data_timepoints(prepared_df,
-                          inputspec = inputspec,
-                          timepoint_limits = timepoint_limits)
-
-  if (fill_with_zero) {
+    # keep only relevant cols and rename for ease. prefix item_cols with "item." to ensure uniqueness
     prepared_df <-
-      prepared_df |>
-      tidyr::replace_na(list(value = 0))
-  }
+      df |>
+      dplyr::select(dplyr::all_of(
+        c(
+          inputspec$item_cols,
+          inputspec$timepoint_col,
+          inputspec$value_col
+        )
+      )) |>
+      dplyr::rename(
+        timepoint = dplyr::all_of(inputspec$timepoint_col),
+        value = dplyr::all_of(inputspec$value_col)
+      ) |>
+      dplyr::rename_with(
+        .cols = dplyr::all_of(inputspec$item_cols),
+        .fn = item_cols_prefix
+      )
 
-  if (!is.null(item_order)){
-    # prepared_df has item columns renamed so pass in renamed item_order
-    item_order_renamed <- item_order
-    names(item_order_renamed) <- item_cols_prefix(names(item_order))
+    # if there is no data, return the formatted (empty) df
+    if (nrow(prepared_df) == 0) {
+      return(prepared_df)
+    }
 
     prepared_df <-
-      arrange_items(df = prepared_df,
-                    item_order = item_order_renamed)
-  }
+      align_data_timepoints(prepared_df,
+        inputspec = inputspec,
+        timepoint_limits = timepoint_limits
+      )
 
-  prepared_df
-}
+    if (fill_with_zero) {
+      prepared_df <-
+        prepared_df |>
+        tidyr::replace_na(list(value = 0))
+    }
+
+    if (!is.null(item_order)) {
+      # prepared_df has item columns renamed so pass in renamed item_order
+      item_order_renamed <- item_order
+      names(item_order_renamed) <- item_cols_prefix(names(item_order))
+
+      prepared_df <-
+        arrange_items(
+          df = prepared_df,
+          item_order = item_order_renamed
+        )
+    }
+
+    prepared_df
+  }
 
 
 # -----------------------------------------------------------------------------
@@ -460,89 +467,95 @@ prepare_table <-
            plot_value_type = "value",
            alert_results = NULL,
            sort_by = NULL) {
+    # TODO: Consider passing in just item_cols rather than entire inputspec?
 
-  # TODO: Consider passing in just item_cols rather than entire inputspec?
+    # initialise column names to avoid R CMD check Notes
+    timepoint <- value <- value_for_history <- alert_description <- alert_result <- item_order_final <- NULL
 
-  # initialise column names to avoid R CMD check Notes
-  timepoint <- value <- value_for_history <- alert_description <- alert_result <- item_order_final <- NULL
-
-  table_df <-
-    prepared_df |>
-    # store original sort order as later group_by will alphabetise
-    dplyr::mutate(item_order_final = dplyr::row_number()) |>
-    # remember prepared_df has had its item_cols renamed to ensure uniqueness
-    dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
-    dplyr::arrange(timepoint) |>
-    dplyr::mutate(
-      value_for_history = dplyr::case_when(
-        plot_value_type == "value" ~ as.numeric(value),
-        plot_value_type == "delta" ~ as.numeric(value) - dplyr::lag(as.numeric(value))
-      )
-    ) |>
-    dplyr::summarise(
-      item_order_final = min(item_order_final),
-      # summary columns
-      # TODO: only generate these if requested
-      last_timepoint = max_else_na(timepoint[!is.na(value)]),
-      last_value = rev(value)[1],
-      last_value_nonmissing = rev(value[!is.na(value)])[1],
-      max_value = max_else_na(value),
-      # TODO: match precision to values
-      mean_value = round(mean(value, na.rm = TRUE),
-                   digits = 1),
-      # history column
-      history = history_to_list(value_for_history,
-                                timepoint,
-                                plot_value_type),
-      .groups = "drop"
-    )
-
-  # add alerts column
-  if (!is.null(alert_results)) {
     table_df <-
-      table_df |>
-      dplyr::left_join(
-        alert_results |>
-          dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
-          dplyr::summarise(
-            alert_overall = ifelse(
-              any(alert_result == "FAIL"),
-              paste0("FAIL (", sum(alert_result == "FAIL"), "/", dplyr::n(), ")"),
-              paste0("PASS (", dplyr::n(), ")")
+      prepared_df |>
+      # store original sort order as later group_by will alphabetise
+      dplyr::mutate(item_order_final = dplyr::row_number()) |>
+      # remember prepared_df has had its item_cols renamed to ensure uniqueness
+      dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
+      dplyr::arrange(timepoint) |>
+      dplyr::mutate(
+        value_for_history = dplyr::case_when(
+          plot_value_type == "value" ~ as.numeric(value),
+          plot_value_type == "delta" ~ as.numeric(value) - dplyr::lag(as.numeric(value))
+        )
+      ) |>
+      dplyr::summarise(
+        item_order_final = min(item_order_final),
+        # summary columns
+        # TODO: only generate these if requested
+        last_timepoint = max_else_na(timepoint[!is.na(value)]),
+        last_value = rev(value)[1],
+        last_value_nonmissing = rev(value[!is.na(value)])[1],
+        max_value = max_else_na(value),
+        # TODO: match precision to values
+        mean_value = round(mean(value, na.rm = TRUE),
+          digits = 1
+        ),
+        # history column
+        history = history_to_list(
+          value_for_history,
+          timepoint,
+          plot_value_type
+        ),
+        .groups = "drop"
+      )
+
+    # add alerts column
+    if (!is.null(alert_results)) {
+      table_df <-
+        table_df |>
+        dplyr::left_join(
+          alert_results |>
+            dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
+            dplyr::summarise(
+              alert_overall = ifelse(
+                any(alert_result == "FAIL"),
+                paste0("FAIL (", sum(alert_result == "FAIL"), "/", dplyr::n(), ")"),
+                paste0("PASS (", dplyr::n(), ")")
+              ),
+              alert_details = list(data.frame(
+                alert_description, alert_result,
+                stringsAsFactors = FALSE
+              )),
+              .groups = "drop"
             ),
-            alert_details = list(data.frame(
-              alert_description, alert_result, stringsAsFactors = FALSE
-            )),
-            .groups = "drop"
-          ),
-        by = dplyr::all_of(item_cols_prefix(inputspec$item_cols)),
-      )
+          by = dplyr::all_of(item_cols_prefix(inputspec$item_cols)),
+        )
+    } else {
+      table_df$alert_overall <- NA
+      table_df$alert_details <- list(NULL)
+    }
 
-  } else{
-    table_df$alert_overall <- NA
-    table_df$alert_details <- list(NULL)
+    # sort table
+    if (is.null(sort_by)) {
+      table_df <-
+        table_df |>
+        dplyr::arrange(item_order_final)
+    } else if (substring(sort_by, 1, 1) == "-") {
+      table_df <-
+        table_df |>
+        dplyr::arrange(
+          dplyr::across(dplyr::any_of(substring(sort_by, 2)), dplyr::desc),
+          item_order_final
+        )
+    } else {
+      table_df <-
+        table_df |>
+        dplyr::arrange(
+          dplyr::pick(dplyr::any_of(sort_by)),
+          item_order_final
+        )
+    }
+
+    table_df |>
+      dplyr::select(-item_order_final)
   }
-
-  # sort table
-  if (is.null(sort_by)){
-    table_df <-
-      table_df |>
-      dplyr::arrange(item_order_final)
-  } else if (substring(sort_by, 1, 1) == "-"){
-    table_df <-
-      table_df |>
-      dplyr::arrange(dplyr::across(dplyr::any_of(substring(sort_by, 2)), dplyr::desc),
-                     item_order_final)
-  } else{
-    table_df <-
-      table_df |>
-      dplyr::arrange(dplyr::pick(dplyr::any_of(sort_by)),
-                     item_order_final)
-  }
-
-  table_df |>
-    dplyr::select(-item_order_final)
-}
 
 
 #-----------------------------------------------------------------------
@@ -558,13 +571,14 @@ history_to_list <-
   function(value_for_history,
            timepoint,
            plot_value_type) {
-
     ts <-
-      xts::xts(x = value_for_history,
-               order.by = timepoint) |>
+      xts::xts(
+        x = value_for_history,
+        order.by = timepoint
+      ) |>
       list()
 
-    if (length(ts[[1]]) > 0){
+    if (length(ts[[1]]) > 0) {
       names(ts[[1]]) <- plot_value_type
     }
 
@@ -588,57 +602,61 @@ align_data_timepoints <-
   function(prepared_df,
            inputspec = inputspec,
            timepoint_limits = c(NA, NA)) {
+    # initialise column names to avoid R CMD check Notes
+    timepoint <- value <- NULL
 
-  # initialise column names to avoid R CMD check Notes
-  timepoint <- value <- NULL
-
-  # TODO: Need to work out correct limits to use based on df
-  #  in case supplied limits don't match df granularity
-  if (is.na(timepoint_limits[1])) {
-    min_timepoint <- min(prepared_df$timepoint)
-  } else{
-    min_timepoint <- timepoint_limits[1]
-  }
-  if (is.na(timepoint_limits[2])) {
-    max_timepoint <- max(prepared_df$timepoint)
-  } else{
-    # NOTE: While timepoint_limits should already be a date class,
-    # if user supplies an NA first in the vector, the second value gets coerced to numeric
-    # and leads to an error in seq() later on
-    if (inputspec$timepoint_unit %in% c("sec", "min", "hour")){
-      max_timepoint <- as.POSIXct(timepoint_limits[2])
-    } else{
-      max_timepoint <- as.Date(timepoint_limits[2])
+    # TODO: Need to work out correct limits to use based on df
+    #  in case supplied limits don't match df granularity
+    if (is.na(timepoint_limits[1])) {
+      min_timepoint <- min(prepared_df$timepoint)
+    } else {
+      min_timepoint <- timepoint_limits[1]
     }
+    if (is.na(timepoint_limits[2])) {
+      max_timepoint <- max(prepared_df$timepoint)
+    } else {
+      # NOTE: While timepoint_limits should already be a date class,
+      # if user supplies an NA first in the vector, the second value gets coerced to numeric
+      # and leads to an error in seq() later on
+      if (inputspec$timepoint_unit %in% c("sec", "min", "hour")) {
+        max_timepoint <- as.POSIXct(timepoint_limits[2])
+      } else {
+        max_timepoint <- as.Date(timepoint_limits[2])
+      }
+    }
+
+    # TODO: Need to work out correct granularity to use based on df
+    #  as don't want to insert unnecessary rows
+    all_timepoints <- seq(min_timepoint, max_timepoint, by = inputspec$timepoint_unit)
+
+    item_cols_prepared <- item_cols_prefix(inputspec$item_cols)
+
+    df_out <-
+      prepared_df |>
+      # NOTE: uses an unusual separator :~: to separate multiple item_cols,
+      # assuming the string won't appear in the column names
+      tidyr::pivot_wider(
+        names_from = dplyr::all_of(item_cols_prepared),
+        values_from = value,
+        names_glue = paste0("piv_{`", paste(item_cols_prepared, collapse = "`}:~:{`"), "`}")
+      ) |>
+      # insert any missing timepoint values
+      dplyr::full_join(data.frame("timepoint" = all_timepoints), by = "timepoint") |>
+      # restrict to specified limits
+      dplyr::filter(timepoint >= min_timepoint & timepoint <= max_timepoint) |>
+      tidyr::pivot_longer(
+        cols = dplyr::starts_with("piv_"),
+        names_to = item_cols_prepared,
+        names_pattern = paste0(
+          "piv_?(.*)",
+          paste0(rep(":~:(.*)", length(item_cols_prepared) - 1),
+            collapse = ""
+          )
+        )
+      )
+
+    df_out
   }
-
-  # TODO: Need to work out correct granularity to use based on df
-  #  as don't want to insert unnecessary rows
-  all_timepoints <- seq(min_timepoint, max_timepoint, by = inputspec$timepoint_unit)
-
-  item_cols_prepared <- item_cols_prefix(inputspec$item_cols)
-
-  df_out <-
-    prepared_df |>
-    # NOTE: uses an unusual separator :~: to separate multiple item_cols,
-    # assuming the string won't appear in the column names
-    tidyr::pivot_wider(names_from = dplyr::all_of(item_cols_prepared),
-                       values_from = value,
-                       names_glue = paste0("piv_{`", paste(item_cols_prepared, collapse = "`}:~:{`"), "`}")) |>
-    # insert any missing timepoint values
-    dplyr::full_join(data.frame("timepoint" = all_timepoints), by = "timepoint") |>
-    # restrict to specified limits
-    dplyr::filter(timepoint >= min_timepoint & timepoint <= max_timepoint) |>
-    tidyr::pivot_longer(cols = dplyr::starts_with("piv_"),
-                        names_to = item_cols_prepared,
-                        names_pattern = paste0("piv_?(.*)",
-                                               paste0(rep(":~:(.*)", length(item_cols_prepared) - 1),
-                                                      collapse = "")
-                                               ))
-
-  df_out
-
-}
 
 
 # -----------------------------------------------------------------------------
@@ -650,14 +668,14 @@ align_data_timepoints <-
 #'
 #' @return Maximum value excluding NAs
 #' @noRd
-max_else_na <- function(x){
+max_else_na <- function(x) {
   if (all(is.na(x))) {
     if ("Date" %in% class(x)) {
       as.Date(NA)
-    } else{
+    } else {
       NA_real_
     }
-  } else{
+  } else {
     max(x, na.rm = TRUE)
   }
 }
@@ -675,27 +693,34 @@ max_else_na <- function(x){
 #' @return (invisibly) the supplied `df`
 #' @noRd
 validate_df_to_inputspec <- function(df,
-                                     inputspec){
-
+                                     inputspec) {
   # validate - collect all errors together and return only once
   err_validation <- character()
 
   # check the inputspec and df names are valid first
   err_validation <-
-    append(err_validation,
-           validate_df_to_inputspec_col_names(df, inputspec))
+    append(
+      err_validation,
+      validate_df_to_inputspec_col_names(df, inputspec)
+    )
 
   # only do the following checks if the inputspec and df names are valid
   if (length(err_validation) == 0) {
     err_validation <-
-      append(err_validation,
-             validate_df_to_inputspec_col_types(df, inputspec))
+      append(
+        err_validation,
+        validate_df_to_inputspec_col_types(df, inputspec)
+      )
     err_validation <-
-      append(err_validation,
-             validate_df_to_inputspec_duplicate_timepoints(df, inputspec))
+      append(
+        err_validation,
+        validate_df_to_inputspec_duplicate_timepoints(df, inputspec)
+      )
     err_validation <-
-      append(err_validation,
-             validate_df_to_inputspec_timepoint_unit(df, inputspec))
+      append(
+        err_validation,
+        validate_df_to_inputspec_timepoint_unit(df, inputspec)
+      )
   }
 
   # call stop() if there are any validation errors
@@ -722,8 +747,7 @@ validate_df_to_inputspec <- function(df,
 #' @return character string containing any error messages
 #' @noRd
 validate_df_to_inputspec_col_names <- function(df,
-                                               inputspec){
-
+                                               inputspec) {
   err_validation <- character()
 
   # only keep the cols params
@@ -742,11 +766,12 @@ validate_df_to_inputspec_col_names <- function(df,
         construct_err_validation_message(
           err_string_detail = "Column names in df must all be distinct from each other.",
           values_found = dfnames[duplicated(dfnames)],
-          values_found_prepend = "Duplicate column names in df")
+          values_found_prepend = "Duplicate column names in df"
+        )
       )
   }
   # check supplied colnames are present in df
-  for (i in seq_along(colspec_vector)){
+  for (i in seq_along(colspec_vector)) {
     if (!colspec_vector[i] %in% dfnames) {
       err_validation <-
         append(
@@ -769,11 +794,12 @@ validate_df_to_inputspec_col_names <- function(df,
         construct_err_validation_message(
           err_string_detail = "Each of the timepoint_col/item_cols/value_col inputspec parameters must refer to a different column in the df.",
           values_found = colspec_vector[duplicated(colspec_vector_nontab)],
-          values_found_prepend = "Duplicate column names in inputspec")
+          values_found_prepend = "Duplicate column names in inputspec"
+        )
       )
   }
   # check tab_col is one of the item_cols
-  if (!is.null(inputspec$tab_col) && !inputspec$tab_col %in% inputspec$item_cols){
+  if (!is.null(inputspec$tab_col) && !inputspec$tab_col %in% inputspec$item_cols) {
     err_validation <-
       append(
         err_validation,
@@ -784,7 +810,7 @@ validate_df_to_inputspec_col_names <- function(df,
           "] not in item_cols [",
           paste(inputspec$item_cols, collapse = ", "),
           "]."
-          )
+        )
       )
   }
 
@@ -803,8 +829,7 @@ validate_df_to_inputspec_col_names <- function(df,
 #' @return character string containing any error messages
 #' @noRd
 validate_df_to_inputspec_col_types <- function(df,
-                                               inputspec){
-
+                                               inputspec) {
   err_validation <- character()
 
   # check timepoint col is datetime type
@@ -907,8 +932,7 @@ validate_df_to_inputspec_col_types <- function(df,
 #' @return character string containing any error message
 #' @noRd
 validate_df_to_inputspec_duplicate_timepoints <- function(df,
-                                                        inputspec){
-
+                                                          inputspec) {
   # initialise column names to avoid R CMD check Notes
   baditem <- NULL
 
@@ -919,19 +943,23 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
     dplyr::group_by(dplyr::pick(dplyr::all_of(inputspec$item_cols))) |>
     dplyr::summarise(
       duplicate_timepoints = anyDuplicated(dplyr::pick(dplyr::all_of(
-        inputspec$timepoint_col))),
-      .groups = "drop") |>
+        inputspec$timepoint_col
+      ))),
+      .groups = "drop"
+    ) |>
     dplyr::filter(duplicate_timepoints > 0) |>
     tidyr::unite(baditem,
-                 dplyr::all_of(inputspec$item_cols),
-                 sep = ":")
+      dplyr::all_of(inputspec$item_cols),
+      sep = ":"
+    )
 
   if (nrow(duplicate_timepoints) > 0) {
     err_validation <-
       construct_err_validation_message(
         err_string_detail = "Each timepoint-item combination must only appear once in the df",
-        values_found =  duplicate_timepoints$baditem,
-        values_found_prepend = "Duplicate timepoints for items:")
+        values_found = duplicate_timepoints$baditem,
+        values_found_prepend = "Duplicate timepoints for items:"
+      )
   }
 
   err_validation
@@ -949,8 +977,7 @@ validate_df_to_inputspec_duplicate_timepoints <- function(df,
 #' @return character string containing any error message
 #' @noRd
 validate_df_to_inputspec_timepoint_unit <- function(df,
-                                                 inputspec){
-
+                                                    inputspec) {
   # if there is no data, skip the checks
   if (nrow(df) == 0) {
     return(character())
@@ -958,11 +985,15 @@ validate_df_to_inputspec_timepoint_unit <- function(df,
 
   # different checks for above or below daily granularity
   if (inputspec$timepoint_unit %in% c("day", "week", "month", "quarter", "year")) {
-    validate_df_to_inputspec_timepoint_unit_dates(df,
-                                             inputspec)
+    validate_df_to_inputspec_timepoint_unit_dates(
+      df,
+      inputspec
+    )
   } else if (inputspec$timepoint_unit %in% c("sec", "min", "hour")) {
-    validate_df_to_inputspec_timepoint_unit_times(df,
-                                               inputspec)
+    validate_df_to_inputspec_timepoint_unit_times(
+      df,
+      inputspec
+    )
   }
 }
 
@@ -978,8 +1009,7 @@ validate_df_to_inputspec_timepoint_unit <- function(df,
 #' @return character string containing any error message
 #' @noRd
 validate_df_to_inputspec_timepoint_unit_dates <- function(df,
-                                                 inputspec){
-
+                                                          inputspec) {
   err_validation <- character()
 
   # check same time of day for every record, regardless of granularity
@@ -1011,9 +1041,11 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
   } else if (inputspec$timepoint_unit %in% c("month", "quarter")) {
     # must be the same day each month
     unique_dofm <-
-      unique_timepoint_subunits(df = df,
-                                timepoint_col = inputspec$timepoint_col,
-                                strftime_format = "%d")
+      unique_timepoint_subunits(
+        df = df,
+        timepoint_col = inputspec$timepoint_col,
+        strftime_format = "%d"
+      )
 
     if (length(unique_dofm) > 1 || any(unique_dofm > 28)) {
       err_validation <-
@@ -1021,16 +1053,19 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
           err_validation,
           construct_err_validation_message(
             err_string_detail = "When timepoint_unit is 'month' or 'quarter', the day of the month in the timepoint_col field must be the same for all records (and <= 28).",
-            values_found =  unique_dofm)
+            values_found = unique_dofm
+          )
         )
     }
 
     if (inputspec$timepoint_unit == "quarter") {
       # additionally, unique months must be 3 apart
       unique_mofy <-
-        unique_timepoint_subunits(df = df,
-                                  timepoint_col = inputspec$timepoint_col,
-                                  strftime_format = "%m")
+        unique_timepoint_subunits(
+          df = df,
+          timepoint_col = inputspec$timepoint_col,
+          strftime_format = "%m"
+        )
 
       if (length(unique(as.numeric(unique_mofy) %% 3)) > 1) {
         err_validation <-
@@ -1038,7 +1073,8 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
             err_validation,
             construct_err_validation_message(
               err_string_detail = "When timepoint_unit is 'quarter', the months in the timepoint_col field must all be 3 months apart.",
-              values_found =  unique_mofy)
+              values_found = unique_mofy
+            )
           )
       }
     }
@@ -1057,7 +1093,8 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
           err_validation,
           construct_err_validation_message(
             err_string_detail = "When timepoint_unit is 'year', the day of the year in the timepoint_col field must be the same for all records (and not a leap year day).",
-            values_found =  unique_dofy)
+            values_found = unique_dofy
+          )
         )
     }
   }
@@ -1077,9 +1114,7 @@ validate_df_to_inputspec_timepoint_unit_dates <- function(df,
 #' @return character string containing any error message
 #' @noRd
 validate_df_to_inputspec_timepoint_unit_times <- function(df,
-                                                       inputspec){
-
-
+                                                          inputspec) {
   err_validation <- character()
 
   # no checks needed for seconds timepoints
@@ -1129,21 +1164,24 @@ validate_df_to_inputspec_timepoint_unit_times <- function(df,
 #' @return character string
 #' @noRd
 validate_df_to_inputspec_timepoint_subunit_single <- function(df,
-                                     timepoint_col,
-                                     strftime_format,
-                                     err_string_detail){
-
+                                                              timepoint_col,
+                                                              strftime_format,
+                                                              err_string_detail) {
   err_validation <- character()
 
   unique_values <-
-      unique_timepoint_subunits(df = df,
-                                timepoint_col = timepoint_col,
-                                strftime_format = strftime_format)
+    unique_timepoint_subunits(
+      df = df,
+      timepoint_col = timepoint_col,
+      strftime_format = strftime_format
+    )
 
   if (length(unique_values) > 1) {
     err_validation <-
-      construct_err_validation_message(err_string_detail = err_string_detail,
-                                       values_found =  unique_values)
+      construct_err_validation_message(
+        err_string_detail = err_string_detail,
+        values_found = unique_values
+      )
   }
 
   err_validation
@@ -1162,9 +1200,9 @@ validate_df_to_inputspec_timepoint_subunit_single <- function(df,
 #' @return character vector
 #' @noRd
 unique_timepoint_subunits <- function(df,
-                                     timepoint_col,
-                                     strftime_format){
-    df |>
+                                      timepoint_col,
+                                      strftime_format) {
+  df |>
     dplyr::pull(dplyr::all_of(timepoint_col)) |>
     strftime(format = strftime_format) |>
     unique()
@@ -1182,18 +1220,18 @@ unique_timepoint_subunits <- function(df,
 construct_err_validation_message <- function(err_string_detail,
                                              values_found,
                                              values_found_prepend = "Instead found") {
-
-  paste0(err_string_detail,
-         " ",
-         values_found_prepend,
-         " [ ",
-         paste(values_found, collapse = ", "),
-         " ].")
-
+  paste0(
+    err_string_detail,
+    " ",
+    values_found_prepend,
+    " [ ",
+    paste(values_found, collapse = ", "),
+    " ]."
+  )
 }
 
 # -----------------------------------------------------------------------------
-#'Arrange/sort a df based on a list of items
+#' Arrange/sort a df based on a list of items
 #'
 #' @param df df to arrange
 #' @param item_order named list with names corresponding to columns in the supplied `df`. List members are
@@ -1211,7 +1249,7 @@ construct_err_validation_message <- function(err_string_detail,
 #' @return data frame
 #' @noRd
 #' @importFrom dplyr .data
-arrange_items <- function(df, item_order = NULL){
+arrange_items <- function(df, item_order = NULL) {
   if (is.null(item_order)) {
     return(df)
   }
@@ -1221,36 +1259,39 @@ arrange_items <- function(df, item_order = NULL){
 
   # explicitly note the levels for each item
   levels <- items
-  for(i in seq_along(items)){
+  for (i in seq_along(items)) {
     ascending <- sort(unique(df[names(items[i])][[1]]))
-    if(all(is.character(items[i][[1]]))){
+    if (all(is.character(items[i][[1]]))) {
       levels[i][[1]] <- unique(c(items[i][[1]], ascending))
-    } else{
+    } else {
       levels[i][[1]] <- ascending
     }
   }
 
   # sort using factors for all items, otherwise values not mentioned explicitly can get unsorted by subsequent items
   # this is super ugly but temporarily just limit it to 3 items until find better way
-  if (length(items) == 1){
+  if (length(items) == 1) {
     df_sorted <-
       df |>
       dplyr::arrange(factor(.data[[names(items[1])]], levels = levels[1][[1]]))
-  } else if (length(items) == 2){
+  } else if (length(items) == 2) {
     df_sorted <-
       df |>
-      dplyr::arrange(factor(.data[[names(items[1])]], levels = levels[1][[1]]),
-                     factor(.data[[names(items[2])]], levels = levels[2][[1]]))
-  } else if (length(items) == 3){
+      dplyr::arrange(
+        factor(.data[[names(items[1])]], levels = levels[1][[1]]),
+        factor(.data[[names(items[2])]], levels = levels[2][[1]])
+      )
+  } else if (length(items) == 3) {
     df_sorted <-
       df |>
-      dplyr::arrange(factor(.data[[names(items[1])]], levels = levels[1][[1]]),
-                     factor(.data[[names(items[2])]], levels = levels[2][[1]]),
-                     factor(.data[[names(items[3])]], levels = levels[3][[1]]))
+      dplyr::arrange(
+        factor(.data[[names(items[1])]], levels = levels[1][[1]]),
+        factor(.data[[names(items[2])]], levels = levels[2][[1]]),
+        factor(.data[[names(items[3])]], levels = levels[3][[1]])
+      )
   }
 
   df_sorted
-
 }
 
 
@@ -1262,7 +1303,7 @@ arrange_items <- function(df, item_order = NULL){
 #' @param x column names to prefix
 #' @return character
 #' @noRd
-item_cols_prefix <- function(x){
+item_cols_prefix <- function(x) {
   paste0("item.", x)
 }
 
@@ -1275,6 +1316,6 @@ item_cols_prefix <- function(x){
 #' @param x column names to remove prefix from
 #' @return character
 #' @noRd
-item_cols_unprefix <- function(x){
+item_cols_unprefix <- function(x) {
   sub("^item.", "", x)
 }

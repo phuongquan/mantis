@@ -64,24 +64,26 @@ Return value of \code{TRUE} means alert result is "FAIL". See Details.}
 An \code{alert_rule} object
 }
 \description{
-A range of built-in rules can be run on the time series to test for particular conditions.
+A range of built-in rules can be run on the time series to test for
+particular conditions.
 }
 \section{Details}{
-
-Tolerance can be adjusted using the \code{extent_type} and \code{extent_value} parameters, e.g.
-\code{extent_type="all"} means alert if all values satisfy the condition, \code{extent_type="any"} in
-combination with \code{extent_value=5} means alert if there are 5 or more values that satisfy the
+ Tolerance can be adjusted using the \code{extent_type} and
+\code{extent_value} parameters, e.g. \code{extent_type="all"} means alert if all
+values satisfy the condition, \code{extent_type="any"} in combination with
+\code{extent_value=5} means alert if there are 5 or more values that satisfy the
 condition, in any position. Also see Examples.
 
 Use \code{items} to restrict the rule to be applied only to specified items.
-\code{items} can either be NULL or a named list of character vectors. If \code{NULL}, the rule will be
-applied to all items. If a named list, the names must match members of the \code{item_cols}
-parameter in the \code{inputspec}, (as well as column names in the \code{df}), though can be a subset.
-If an \code{item_col} is not named in the list, the rule will apply to all its members. If an
-\code{item_col} is named in the list, the rule will only be applied when the \code{item_col}'s value is
-contained in the corresponding character vector. When multiple \code{item_col}s are
-specified, the rule will be applied only to items that satisfy all the conditions.
-See Examples in \code{\link[=alert_rules]{alert_rules()}}
+\code{items} can either be NULL or a named list of character vectors. If \code{NULL},
+the rule will be applied to all items. If a named list, the names must
+match members of the \code{item_cols} parameter in the \code{inputspec}, (as well as
+column names in the \code{df}), though can be a subset. If an \code{item_col} is not
+named in the list, the rule will apply to all its members. If an \code{item_col}
+is named in the list, the rule will only be applied when the \code{item_col}'s
+value is contained in the corresponding character vector. When multiple
+\code{item_col}s are specified, the rule will be applied only to items that
+satisfy all the conditions. See Examples in \code{\link[=alert_rules]{alert_rules()}}
 
  \code{alert_missing()} - Test for the presence of NA values.
 
@@ -148,7 +150,7 @@ ars <- alert_rules(
   alert_custom(
     short_name = "my_rule_doubled",
     description = "Last value is over double the first value",
-    function_call = quote(rev(value)[1] > 2*value[1])
+    function_call = quote(rev(value)[1] > 2 * value[1])
   )
 )
 

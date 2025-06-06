@@ -26,12 +26,11 @@ validate_params_required <- function(call) {
       message = paste(
         "Required argument(s) missing:",
         paste(setdiff(params_required, params_passed),
-              collapse = ", "
+          collapse = ", "
         )
       )
     )
   }
-
 }
 
 
@@ -83,9 +82,12 @@ validate_params_type <- function(call, ...) {
   err_validation <- character()
   for (i in seq_along(params_names)) {
     err_validation <- append(
-        err_validation,
-        validate_param_byname(param_name = params_names[i],
-                              param_value = params_passed[[i]]))
+      err_validation,
+      validate_param_byname(
+        param_name = params_names[i],
+        param_value = params_passed[[i]]
+      )
+    )
   }
 
   if (length(err_validation) > 0) {
@@ -108,7 +110,7 @@ validate_params_type <- function(call, ...) {
 #'
 #' @return character
 #' @noRd
-validate_param_byname <- function(param_name, param_value){
+validate_param_byname <- function(param_name, param_value) {
   switch(param_name,
     "df" = validate_param(
       param_name = param_name,
@@ -297,12 +299,16 @@ validate_param_byname <- function(param_name, param_value){
       allow_null = TRUE,
       expect_scalar = FALSE,
       validation_function = function(x) {
-        all(is.list(x),
-            length(names(x)) == length(x),
-            unlist(lapply(x,
-                          function(x) {
-                            (length(x) == 1 && x == TRUE) || is.character(x)
-                          })))
+        all(
+          is.list(x),
+          length(names(x)) == length(x),
+          unlist(lapply(
+            x,
+            function(x) {
+              (length(x) == 1 && x == TRUE) || is.character(x)
+            }
+          ))
+        )
       },
       error_message = "Expected a named list with each item either TRUE or a vector of character strings",
       error_contents_max_length = 500
@@ -313,9 +319,11 @@ validate_param_byname <- function(param_name, param_value){
       allow_null = TRUE,
       expect_scalar = FALSE,
       validation_function = function(x) {
-        all(is.list(x),
-            length(names(x)) == length(x),
-            unlist(lapply(x, is.character)))
+        all(
+          is.list(x),
+          length(names(x)) == length(x),
+          unlist(lapply(x, is.character))
+        )
       },
       error_message = "Expected a named list with each item a vector of character strings",
       error_contents_max_length = 500
@@ -327,9 +335,11 @@ validate_param_byname <- function(param_name, param_value){
       allow_null = TRUE,
       expect_scalar = FALSE,
       validation_function = function(x) {
-        all(!is.list(x),
-            length(names(x)) == length(x),
-            is.character(x))
+        all(
+          !is.list(x),
+          length(names(x)) == length(x),
+          is.character(x)
+        )
       },
       error_message = "Expected a named vector of character strings",
       error_contents_max_length = 500
@@ -374,8 +384,8 @@ validate_param_byname <- function(param_name, param_value){
       expect_scalar = FALSE,
       validation_function = function(x) {
         # NOTE: can't just test for Date class as if first value is NA, second value gets converted to numeric implicitly
-        length(x) == 2 && (all(is_date_or_time(x) | is.na(x))
-                           | (is.na(x[1]) && is.numeric(x[2])) )
+        length(x) == 2 && (all(is_date_or_time(x) | is.na(x)) |
+          (is.na(x[1]) && is.numeric(x[2])))
       },
       error_message = "Expected a vector of two Dates or NAs",
       error_contents_max_length = 100
@@ -387,7 +397,9 @@ validate_param_byname <- function(param_name, param_value){
       param_value = param_value,
       allow_null = FALSE,
       expect_scalar = TRUE,
-      validation_function = function(x){is.numeric(x) && x == as.integer(x) && x >= 1},
+      validation_function = function(x) {
+        is.numeric(x) && x == as.integer(x) && x >= 1
+      },
       error_message = "Expected an integer >= 1",
       error_contents_max_length = 100
     ),
@@ -396,9 +408,9 @@ validate_param_byname <- function(param_name, param_value){
       param_value = param_value,
       allow_null = FALSE,
       expect_scalar = TRUE,
-      validation_function = function(x){
+      validation_function = function(x) {
         x %in% c("all", "any", "last", "consecutive")
-        },
+      },
       error_message = "Values allowed are: all, any, last, consecutive",
       error_contents_max_length = 100
     ),
@@ -417,7 +429,9 @@ validate_param_byname <- function(param_name, param_value){
       param_value = param_value,
       allow_null = FALSE,
       expect_scalar = FALSE,
-      validation_function = function(x){all(is.numeric(x)) && all(x == as.integer(x))},
+      validation_function = function(x) {
+        all(is.numeric(x)) && all(x == as.integer(x))
+      },
       error_message = "Expected a vector of integers",
       error_contents_max_length = 100
     ),
@@ -442,7 +456,6 @@ validate_param_byname <- function(param_name, param_value){
       error_contents_max_length = 100
     ),
   )
-
 }
 
 
@@ -468,12 +481,11 @@ validate_param <- function(param_name,
                            validation_function,
                            error_message,
                            error_contents_max_length) {
-
   # null value supplied
   if (is.null(param_value)) {
     if (allow_null) {
       return(character())
-    } else{
+    } else {
       return(
         validation_failed_message(
           param_name = param_name,
@@ -500,7 +512,7 @@ validate_param <- function(param_name,
   # else do the validation
   if (validation_function(param_value)) {
     return(character())
-  } else{
+  } else {
     return(
       validation_failed_message(
         param_name = param_name,
@@ -605,15 +617,13 @@ testfn_params_type <- function(df,
                                previous_period = 4:9,
                                short_name = "my_rule",
                                description = "rule_description",
-                               function_call = quote(all(is.na(value)))
-) {
+                               function_call = quote(all(is.na(value)))) {
   if (missing(df)) {
     df <- data.frame("Fieldname" = 123)
   }
   if (missing(inputspec)) {
     inputspec <-
       structure(list(rule = NA), class = "mantis_inputspec")
-
   }
   if (missing(outputspec)) {
     outputspec <-
@@ -710,6 +720,6 @@ stop_custom <- function(.subclass, message, call = NULL, ...) {
 #'
 #' @return logical(1)
 #' @noRd
-is_date_or_time <- function(x){
+is_date_or_time <- function(x) {
   inherits(x, what = "Date") || inherits(x, what = "POSIXt")
 }

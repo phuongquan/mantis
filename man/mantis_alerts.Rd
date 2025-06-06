@@ -14,35 +14,45 @@ mantis_alerts(
 )
 }
 \arguments{
-\item{df}{A data frame containing multiple time series in long format. See Details.}
+\item{df}{A data frame containing multiple time series in long format. See
+Details.}
 
-\item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the supplied \code{df} represent the
-"timepoint", "item", and "value" for the time series.}
+\item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the
+supplied \code{df} represent the "timepoint", "item", and "value" for the time
+series.}
 
 \item{alert_rules}{\code{\link[=alert_rules]{alert_rules()}} object specifying conditions to test}
 
-\item{filter_results}{Only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".}
+\item{filter_results}{Only return rows where the alert result is in this
+vector of values. Alert results can be "PASS", "FAIL", or "NA".}
 
-\item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max of \code{timepoint_col}. Can be either Date values or NAs.}
+\item{timepoint_limits}{Set start and end dates for time period to include.
+Defaults to min/max of \code{timepoint_col}. Can be either Date values or NAs.}
 
-\item{fill_with_zero}{Logical. Replace any missing or NA values with 0? Useful when value_col is a record count.}
+\item{fill_with_zero}{Logical. Replace any missing or NA values with 0?
+Useful when value_col is a record count.}
 }
 \value{
 tibble
 }
 \description{
-Test the time series for a set of conditions without generating an html report. This can be
-useful for incorporation into a pipeline.
+Test the time series for a set of conditions without generating an html
+report. This can be useful for incorporation into a pipeline.
 }
 \details{
-The supplied data frame should contain multiple time series in long format, i.e.:
+The supplied data frame should contain multiple time series in long
+format, i.e.:
 \itemize{
-\item one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
-\item one or more "item" (character) columns containing categorical values identifying distinct time series.
-\item one "value" (numeric) column containing the time series values which will be used for the y-axes.
-}
+\item one "timepoint" (date/posixt) column which will be used for the x-axes.
+Values should follow a regular pattern, e.g. daily or monthly, but do not
+have to be consecutive.
+\item one or more "item" (character) columns containing categorical values
+identifying distinct time series.
+\item one "value" (numeric) column containing the time series values which will
+be used for the y-axes.
 
 The \code{inputspec} parameter maps the data frame columns to the above.
+}
 }
 \examples{
 alert_results <- mantis_alerts(

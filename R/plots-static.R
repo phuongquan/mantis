@@ -11,19 +11,18 @@ plot_heatmap_static <- function(prepared_df,
                                 inputspec,
                                 fill_colour = "blue",
                                 y_label = NULL) {
-
   # initialise known column names to prevent R CMD check notes
   item <- timepoint <- value <- NULL
 
-  if (nrow(prepared_df) == 0){
+  if (nrow(prepared_df) == 0) {
     return(empty_plot_static())
   }
 
   # if an item_col is used for a tabset, move it to the y_label
   item_cols_plot <- base::setdiff(inputspec$item_cols, inputspec$tab_col)
-  if (is.null(y_label)){
+  if (is.null(y_label)) {
     y_label <- paste0(item_cols_plot, collapse = " - ")
-    if (!is.null(inputspec$tab_col)){
+    if (!is.null(inputspec$tab_col)) {
       current_tab <- prepared_df[item_cols_prefix(inputspec$tab_col)][[1]][1]
       y_label <- paste(y_label, current_tab, sep = " - ")
     }
@@ -109,25 +108,24 @@ plot_multipanel_static <- function(prepared_df,
                                    inputspec,
                                    sync_axis_range = FALSE,
                                    y_label = NULL) {
-
   # initialise known column names to prevent R CMD check notes
   item <- timepoint <- value <- NULL
 
-  if (nrow(prepared_df) == 0){
+  if (nrow(prepared_df) == 0) {
     return(empty_plot_static())
   }
 
   # if the item_col is used for a tabset, move it to the y_label
   item_cols_plot <- base::setdiff(inputspec$item_cols, inputspec$tab_col)
-  if (is.null(y_label)){
+  if (is.null(y_label)) {
     y_label <- paste0(item_cols_plot, collapse = " - ")
-    if (!is.null(inputspec$tab_col)){
+    if (!is.null(inputspec$tab_col)) {
       current_tab <- prepared_df[item_cols_prefix(inputspec$tab_col)][[1]][1]
       y_label <- paste(y_label, current_tab, sep = " - ")
     }
   }
   data <- prepared_df |>
-  # combine item_cols into single variable
+    # combine item_cols into single variable
     tidyr::unite(col = "item", dplyr::all_of(item_cols_prefix(item_cols_plot)), sep = " - ") |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
 
@@ -152,12 +150,14 @@ plot_multipanel_static <- function(prepared_df,
     ) +
     ggplot2::labs(
       y = y_label,
-      x = NULL) +
+      x = NULL
+    ) +
     # create column of plots
     ggplot2::facet_grid(
       item ~ .,
       switch = "y",
-      scales = ifelse(sync_axis_range, "fixed", "free")) +
+      scales = ifelse(sync_axis_range, "fixed", "free")
+    ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       # remove grid lines
@@ -195,13 +195,14 @@ plot_multipanel_static <- function(prepared_df,
 #'
 #' @return ggplot
 #' @noRd
-empty_plot_static <- function(){
-
+empty_plot_static <- function() {
   # initialise known column names to prevent R CMD check notes
   x <- y <- NULL
 
-  ggplot2::ggplot(data.frame(x = 0, y = 0),
-                  ggplot2::aes(x = x, y = y)) +
+  ggplot2::ggplot(
+    data.frame(x = 0, y = 0),
+    ggplot2::aes(x = x, y = y)
+  ) +
     ggplot2::theme_bw() +
     ggplot2::geom_blank() +
     ggplot2::labs(x = NULL, y = NULL) +
@@ -216,5 +217,4 @@ empty_plot_static <- function(){
       panel.grid.minor = ggplot2::element_blank()
     ) +
     ggplot2::annotate("text", x = 0, y = 0, label = "No data")
-
 }
