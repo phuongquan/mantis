@@ -32,9 +32,6 @@ output_table_interactive <- function(prepared_df,
                                      bordered = TRUE,
                                      ...) {
 
-  # initialise column names to avoid R CMD check Notes
-  timepoint <- item <- value <- value_for_history <- NULL
-
   table <- prepare_table(prepared_df = prepared_df,
                          inputspec = inputspec,
                          plot_value_type = plot_value_type,

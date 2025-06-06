@@ -377,7 +377,7 @@ validate_param_byname <- function(param_name, param_value){
         length(x) == 2 && (all(is_date_or_time(x) | is.na(x))
                            | (is.na(x[1]) && is.numeric(x[2])) )
       },
-      error_message = 'Expected a vector of two Dates or NAs',
+      error_message = "Expected a vector of two Dates or NAs",
       error_contents_max_length = 100
     ),
     "extent_value" = ,
