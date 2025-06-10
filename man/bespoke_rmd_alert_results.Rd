@@ -16,34 +16,38 @@ bespoke_rmd_alert_results(
 )
 }
 \arguments{
-\item{df}{A data frame containing multiple time series in long format. See Details.}
+\item{df}{A data frame containing multiple time series in long format. See
+Details.}
 
-\item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the supplied \code{df} represent
-the "timepoint", "item", and "value" for the time series. Any "tab" column specification will be ignored.}
+\item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the
+supplied \code{df} represent the "timepoint", "item", and "value" for the time
+series. Any "tab" column specification will be ignored.}
 
 \item{alert_rules}{\code{\link[=alert_rules]{alert_rules()}} object specifying conditions to test}
 
-\item{filter_results}{only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".}
+\item{filter_results}{only return rows where the alert result is in this
+vector of values. Alert results can be "PASS", "FAIL", or "NA".}
 
-\item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max
-of \code{timepoint_col}}
+\item{timepoint_limits}{Set start and end dates for time period to include.
+Defaults to min/max of \code{timepoint_col}}
 
-\item{fill_with_zero}{Logical. Replace any missing or \code{NA} values with 0? Useful when
-\code{value_col} is a record count}
+\item{fill_with_zero}{Logical. Replace any missing or \code{NA} values with 0?
+Useful when \code{value_col} is a record count}
 
-\item{tab_name}{Character string to appear on the tab label. If omitted or \code{NULL}, only the
-content (and not the parent tab) will be created.}
+\item{tab_name}{Character string to appear on the tab label. If omitted or
+\code{NULL}, only the content (and not the parent tab) will be created.}
 
-\item{tab_level}{integer specifying the nesting level of the tab. If \code{tab_name} is specified, a
-value of 1 generates a tab at rmd level "##". If
+\item{tab_level}{integer specifying the nesting level of the tab. If
+\code{tab_name} is specified, a value of 1 generates a tab at rmd level "##". If
 \code{tab_name} is not specified, this is ignored.}
 }
 \value{
 (invisibly) the supplied \code{df}
 }
 \description{
-Add \code{mantis} alert results to an existing \code{rmarkdown} report.
-The function writes directly to the chunk using side-effects, so chunk options must contain \code{results = 'asis'}.
+Add \code{mantis} alert results to an existing \code{rmarkdown} report. The function
+writes directly to the chunk using side-effects, so chunk options must
+contain \code{results = 'asis'}.
 }
 \examples{
 \dontrun{

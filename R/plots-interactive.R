@@ -4,33 +4,38 @@
 #' @param prepared_df data frame returned from prepare_df()
 #' @param inputspec Specification of data in df
 #' @param plot_value_type "value" or "delta"
-#' @param item_labels Named vector containing string label(s) to use for the "item" column(s) in the
-#'   report. The names should correspond to the `item_cols`, and the values should contain the
-#'   desired labels. If NULL, the original columns name(s) will be used.
+#' @param item_labels Named vector containing string label(s) to use for the
+#'   "item" column(s) in the report. The names should correspond to the
+#'   `item_cols`, and the values should contain the desired labels. If NULL, the
+#'   original columns name(s) will be used.
 #' @param plot_label Label for History column
 #' @param summary_cols vector of which summary columns to include
 #' @param plot_type "bar" or "line"
 #' @param sync_axis_range sync all history graphs to same y-axis range
 #' @param alert_results `alert_results` object returned from `run_alerts()`
-#' @param sort_by column in output table to sort by. Can be one of `item`, `alert_overall`, or one
-#'   of the summary columns. Append a minus sign to sort in descending order e.g. `-max_value`.
-#'   Secondary ordering will be based on `item_order`.
-#' @param bordered this param is needed so that we can initialise an "invisible" widget
+#' @param sort_by column in output table to sort by. Can be one of `item`,
+#'   `alert_overall`, or one of the summary columns. Append a minus sign to sort
+#'   in descending order e.g. `-max_value`. Secondary ordering will be based on
+#'   `item_order`.
+#' @param bordered this param is needed so that we can initialise an "invisible"
+#'   widget
 #'
 #' @return html table
 #' @noRd
-output_table_interactive <- function(prepared_df,
-                                     inputspec,
-                                     plot_value_type = "value",
-                                     item_labels = NULL,
-                                     plot_label = NULL,
-                                     summary_cols = c("max_value"),
-                                     plot_type = "bar",
-                                     sync_axis_range = FALSE,
-                                     alert_results = NULL,
-                                     sort_by = NULL,
-                                     bordered = TRUE,
-                                     ...) {
+output_table_interactive <- function(
+  prepared_df,
+  inputspec,
+  plot_value_type = "value",
+  item_labels = NULL,
+  plot_label = NULL,
+  summary_cols = c("max_value"),
+  plot_type = "bar",
+  sync_axis_range = FALSE,
+  alert_results = NULL,
+  sort_by = NULL,
+  bordered = TRUE,
+  ...
+) {
   table <- prepare_table(
     prepared_df = prepared_df,
     inputspec = inputspec,
@@ -48,10 +53,12 @@ output_table_interactive <- function(prepared_df,
       item_colDefs[[item_cols_prefix(item_cols[i])]] <-
         reactable::colDef(show = FALSE)
     } else {
-      # NOTE: if item_labels contains names that don't match the data, just ignore them
+      # NOTE: if item_labels contains names that don't match the data, just
+      # ignore them
       item_colDefs[[item_cols_prefix(item_cols[i])]] <-
         reactable::colDef(
-          name = ifelse(item_cols[i] %in% names(item_labels),
+          name = ifelse(
+            item_cols[i] %in% names(item_labels),
             item_labels[item_cols[i]],
             item_cols[i]
           ),
@@ -95,16 +102,14 @@ output_table_interactive <- function(prepared_df,
           name = "Mean",
           show = "mean_value" %in% summary_cols
         ),
-        # cell argument accepts a function with cell _values_, row _index_, and/or column _names_ as arguments, below just uses _values_
+        # cell argument accepts a function with cell _values_, row _index_,
+        # and/or column _names_ as arguments, below just uses _values_
         history = reactable::colDef(
           name = ifelse(is.null(plot_label), inputspec$value_col, plot_label),
           width = 410,
           filterable = FALSE,
           cell = function(value) {
-            dy <- dygraphs::dygraph(value,
-              height = 40,
-              width = 400
-            ) |>
+            dy <- dygraphs::dygraph(value, height = 40, width = 400) |>
               dygraphs::dyOptions(
                 drawXAxis = FALSE,
                 drawYAxis = FALSE,
@@ -139,7 +144,8 @@ output_table_interactive <- function(prepared_df,
           filterable = TRUE,
           cell = function(value) {
             if (!is.na(value)) {
-              img_src <- ifelse(grepl("PASS", value),
+              img_src <- ifelse(
+                grepl("PASS", value),
                 knitr::image_uri(system.file(
                   "images",
                   "tick.png",
@@ -153,7 +159,11 @@ output_table_interactive <- function(prepared_df,
                   mustWork = FALSE
                 ))
               )
-              image <- htmltools::img(src = img_src, style = "height: 14px; padding: 0 3px 2px 0; vertical-align: middle;", alt = "")
+              image <- htmltools::img(
+                src = img_src,
+                style = "height: 14px; padding: 0 3px 2px 0; vertical-align: middle;",
+                alt = ""
+              )
               htmltools::tagList(
                 htmltools::div(style = "display: inline-block;", image),
                 value
@@ -196,7 +206,9 @@ output_table_interactive <- function(prepared_df,
 #'
 #' @return vector of min and max values
 #' @noRd
-value_range_from_history <- function(value_history) {
+value_range_from_history <- function(
+  value_history
+) {
   # NOTE: add 1 to max otherwise the tooltip doesn't appear
   # NOTE: min/max return warnings when all values are NA
   suppressWarnings(
@@ -206,7 +218,8 @@ value_range_from_history <- function(value_history) {
       }))),
       max(unlist(lapply(value_history, function(x) {
         max(c(0, max(x, na.rm = TRUE)))
-      }))) + 1
+      }))) +
+        1
     )
   )
 }

@@ -14,24 +14,37 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette introduces the basics of how to generate a bespoke html report containing tabs and visualisations from the `mantis` package. The easiest way to get started is to clone the [mantis-templates](https://github.com/phuongquan/mantis-templates) project to see it in action, then choose a template Rmd file that you can adapt.
+This vignette introduces the basics of how to generate a bespoke html report
+containing tabs and visualisations from the `mantis` package. The easiest way to
+get started is to clone the
+[mantis-templates](https://github.com/phuongquan/mantis-templates) project to
+see it in action, then choose a template Rmd file that you can adapt.
 
-Note: Currently, `mantis` uses `rmarkdown` to generate its reports. In future there will be functionality to create Quarto reports.
+Note: Currently, `mantis` uses `rmarkdown` to generate its reports. In future
+there should be functionality to create Quarto reports.
 
 
 ## Overview 
 
-You can use existing `rmarkdown` functionality to create your own bespoke html report, and insert `mantis` content and/or tabs as desired. At a minimum, you need to know how to generate html documents from a Rmd file, including creating tabsets. If you don't, take a look at the official documentation and/or the many other online resources available.
+You can use existing `rmarkdown` functionality to create your own bespoke html
+report, and insert `mantis` content and/or tabs as desired. At a minimum, you
+need to know how to generate html documents from a Rmd file, including creating
+tabsets. If you don't, take a look at the official documentation and/or the many
+other online resources available.
 
-`mantis` includes one main function `bespoke_rmd_output()` for creating content for bespoke reports. This function use side-effects to generate the desired markdown, and must be placed inside a `{r, results='asis'}` chunk.
+`mantis` includes one main function `bespoke_rmd_output()` for creating content
+for bespoke reports. This function use side-effects to generate the desired
+markdown, and must be placed inside a `{r, results='asis'}` chunk.
 
 The function can:
 
 * add a single visualisation, with or without creating the container tab, or
 
-* add a set of tabs, each based on the same output specification, with or without creating the parent tab.
+* add a set of tabs, each based on the same output specification, 
+  with or without creating the parent tab.
 
-The function also includes a few additional parameters not available in the standard `mantis_report()` to allow some extra control over the display.
+The function also includes a few additional parameters not available in the
+standard `mantis_report()` to allow some extra control over the display.
 
 **Example:**
 
@@ -64,9 +77,15 @@ mantis::bespoke_rmd_output(
 
 ## Extra requirements for interactive reports
 
-Due to complexities in the way `dygraphs` widgets are rendered, there are two additional chunks that must be included in the Rmd file, otherwise the graphs can disappear unexpectedly.
+Due to complexities in the way `dygraphs` widgets are rendered, there are two
+additional chunks that must be included in the Rmd file, otherwise the graphs
+can disappear unexpectedly.
 
-Firstly, add the following chunk to the Rmd file to ensure the `dygraphs` plots are initialised. Remember to set the same `plot_type` as the one you are using for the rest of the report. This is best placed at the bottom of the file as it can lead to an extra line space. Note: unlike when creating `mantis` content, this chunk should *not* include `results='asis'`.
+Firstly, add the following chunk to the Rmd file to ensure the `dygraphs` plots
+are initialised. Remember to set the same `plot_type` as the one you are using
+for the rest of the report. This is best placed at the bottom of the file as it
+can lead to an extra line space. Note: unlike when creating `mantis` content,
+this chunk should *not* include `results='asis'`.
 
 ````{verbatim}
 ```{r}
@@ -77,7 +96,9 @@ mantis::bespoke_rmd_initialise_widgets(plot_type = "bar")
 ```
 ````
 
-Secondly, when the browser window is resized, all `dygraphs` plots on inactive tabs disappear. A workaround for this is to redraw them all by reloading the page. To do this, add the following chunk at the top of the Rmd file.
+Secondly, when the browser window is resized, all `dygraphs` plots on inactive
+tabs disappear. A workaround for this is to redraw them all by reloading the
+page. To do this, add the following chunk at the top of the Rmd file.
 
 ````{verbatim}
 ```{js}

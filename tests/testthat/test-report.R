@@ -1,6 +1,9 @@
 test_that("mantis_report() creates single-tab interactive report and returns path successfully", {
   df <- data.frame(
-    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 2),
+    timepoint = rep(
+      seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+      2
+    ),
     item = c(rep("a", 10), rep("b", 10)),
     value = rep(c(3, -3), 10),
     stringsAsFactors = FALSE
@@ -28,7 +31,10 @@ test_that("mantis_report() creates single-tab interactive report and returns pat
 
 test_that("mantis_report() creates multi-tab interactive report and returns path successfully", {
   df <- data.frame(
-    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+    timepoint = rep(
+      seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+      3
+    ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
     value = rep(3, 30),
     tab = c(rep("one", 20), rep("two", 10)),
@@ -58,7 +64,10 @@ test_that("mantis_report() creates multi-tab interactive report and returns path
 
 test_that("mantis_report() creates heatmap report and returns path successfully", {
   df <- data.frame(
-    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+    timepoint = rep(
+      seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+      3
+    ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
     value = rep(3, 30),
     tab = c(rep("one", 20), rep("two", 10)),
@@ -103,7 +112,10 @@ test_that("mantis_report() creates heatmap report and returns path successfully"
 
 test_that("mantis_report() creates multipanel report and returns path successfully", {
   df <- data.frame(
-    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+    timepoint = rep(
+      seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+      3
+    ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
     value = rep(3, 30),
     tab = c(rep("one", 20), rep("two", 10)),
@@ -148,7 +160,10 @@ test_that("mantis_report() creates multipanel report and returns path successful
 
 test_that("mantis_report() creates interactive report with alerts successfully", {
   df <- data.frame(
-    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+    timepoint = rep(
+      seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+      3
+    ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
     value = rep(3, 30),
     tab = c(rep("one", 20), rep("two", 10)),
@@ -360,7 +375,10 @@ test_that("mantis_report() creates multipanel report even if supplied an empty d
 
 test_that("mantis_report() creates multi-item_cols interactive report and returns path successfully", {
   df <- data.frame(
-    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+    timepoint = rep(
+      seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+      3
+    ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
     value = rep(3, 30),
     tab = c(rep("one", 20), rep("two", 10)),
@@ -390,7 +408,10 @@ test_that("mantis_report() creates multi-item_cols interactive report and return
 
 test_that("mantis_report() creates interactive report with spaces in item_cols names", {
   df <- data.frame(
-    "m timepoint" = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+    "m timepoint" = rep(
+      seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+      3
+    ),
     "m item" = c(rep("a", 10), rep("b", 10), rep("c", 10)),
     "m value" = rep(3, 30),
     "m tab" = c(rep("one", 20), rep("two", 10)),

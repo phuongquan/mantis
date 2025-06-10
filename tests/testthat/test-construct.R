@@ -6,7 +6,8 @@ test_that("bespoke_rmd_initialise_widgets() runs without error", {
 
 test_that("rmd_fig_height() returns suitable height for heatmap plots", {
   # each row in the heatmap = 0.6 inches
-  # fig heights must be same in all tabs so use highest number of rows across all tabs
+  # fig heights must be same in all tabs so use highest number of rows across
+  # all tabs
 
   quick_df <- function(items, tabs = NA) {
     data.frame(
@@ -36,14 +37,23 @@ test_that("rmd_fig_height() returns suitable height for heatmap plots", {
   # 0 rows
   expect_null(
     rmd_fig_height(
-      df = data.frame(timepoint = as.Date(numeric()), item = character(), value = character()),
+      df = data.frame(
+        timepoint = as.Date(numeric()),
+        item = character(),
+        value = character()
+      ),
       inputspec = inputspec_notab,
       outputspec = outputspec_static_heatmap()
     )
   )
   expect_null(
     rmd_fig_height(
-      df = data.frame(timepoint = as.Date(numeric()), item = character(), value = character(), tab = character()),
+      df = data.frame(
+        timepoint = as.Date(numeric()),
+        item = character(),
+        value = character(),
+        tab = character()
+      ),
       inputspec = inputspec_tab,
       outputspec = outputspec_static_heatmap()
     )
@@ -92,7 +102,8 @@ test_that("rmd_fig_height() returns suitable height for heatmap plots", {
 
 test_that("rmd_fig_height() returns suitable height for multipanel plots", {
   # each row in the multipanel = 0.8 inches
-  # fig heights must be same in all tabs so use highest number of rows across all tabs
+  # fig heights must be same in all tabs so use highest number of rows across
+  # all tabs
 
   quick_df <- function(items, tabs = NA) {
     data.frame(
@@ -122,14 +133,23 @@ test_that("rmd_fig_height() returns suitable height for multipanel plots", {
   # 0 rows
   expect_null(
     rmd_fig_height(
-      df = data.frame(timepoint = as.Date(numeric()), item = character(), value = character()),
+      df = data.frame(
+        timepoint = as.Date(numeric()),
+        item = character(),
+        value = character()
+      ),
       inputspec = inputspec_notab,
       outputspec = outputspec_static_multipanel()
     )
   )
   expect_null(
     rmd_fig_height(
-      df = data.frame(timepoint = as.Date(numeric()), item = character(), value = character(), tab = character()),
+      df = data.frame(
+        timepoint = as.Date(numeric()),
+        item = character(),
+        value = character(),
+        tab = character()
+      ),
       inputspec = inputspec_tab,
       outputspec = outputspec_static_multipanel()
     )

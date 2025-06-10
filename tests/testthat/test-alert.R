@@ -47,7 +47,10 @@ test_that("alert_missing(all) returns condition correctly", {
 })
 
 test_that("alert_missing(any) returns condition correctly", {
-  fc <- alert_missing(extent_type = "any", extent_value = 3)$function_call
+  fc <- alert_missing(
+    extent_type = "any",
+    extent_value = 3
+  )$function_call
 
   value <- c(1, NA, 2, NA, 3, NA)
   expect_true(eval(fc))
@@ -57,7 +60,10 @@ test_that("alert_missing(any) returns condition correctly", {
 })
 
 test_that("alert_missing(last) returns condition correctly", {
-  fc <- alert_missing(extent_type = "last", extent_value = 3)$function_call
+  fc <- alert_missing(
+    extent_type = "last",
+    extent_value = 3
+  )$function_call
 
   value <- c(1, 2, NA, NA, NA)
   expect_true(eval(fc))
@@ -67,7 +73,10 @@ test_that("alert_missing(last) returns condition correctly", {
 })
 
 test_that("alert_missing(consecutive) returns condition correctly", {
-  fc <- alert_missing(extent_type = "consecutive", extent_value = 3)$function_call
+  fc <- alert_missing(
+    extent_type = "consecutive",
+    extent_value = 3
+  )$function_call
 
   value <- c(1, 1, NA, NA, NA, 1)
   expect_true(eval(fc))
@@ -78,7 +87,10 @@ test_that("alert_missing(consecutive) returns condition correctly", {
 
 
 test_that("alert_equals(all) returns condition correctly", {
-  fc <- alert_equals(extent_type = "all", rule_value = 0)$function_call
+  fc <- alert_equals(
+    extent_type = "all",
+    rule_value = 0
+  )$function_call
 
   value <- rep(0, 10)
   expect_true(eval(fc))
@@ -88,7 +100,11 @@ test_that("alert_equals(all) returns condition correctly", {
 })
 
 test_that("alert_equals(any) returns condition correctly", {
-  fc <- alert_equals(extent_type = "any", extent_value = 3, rule_value = 0)$function_call
+  fc <- alert_equals(
+    extent_type = "any",
+    extent_value = 3,
+    rule_value = 0
+  )$function_call
 
   value <- c(1, 0, 2, 0, 3, 0)
   expect_true(eval(fc))
@@ -101,7 +117,11 @@ test_that("alert_equals(any) returns condition correctly", {
 })
 
 test_that("alert_equals(last) returns condition correctly", {
-  fc <- alert_equals(extent_type = "last", extent_value = 3, rule_value = 0)$function_call
+  fc <- alert_equals(
+    extent_type = "last",
+    extent_value = 3,
+    rule_value = 0
+  )$function_call
 
   value <- c(1, 2, 0, 0, 0)
   expect_true(eval(fc))
@@ -120,7 +140,11 @@ test_that("alert_equals(last) returns condition correctly", {
 })
 
 test_that("alert_equals(consecutive) returns condition correctly", {
-  fc <- alert_equals(extent_type = "consecutive", extent_value = 3, rule_value = 0)$function_call
+  fc <- alert_equals(
+    extent_type = "consecutive",
+    extent_value = 3,
+    rule_value = 0
+  )$function_call
 
   value <- c(1, 2, 0, 0, 0, 1)
   expect_true(eval(fc))
@@ -135,7 +159,10 @@ test_that("alert_equals(consecutive) returns condition correctly", {
 
 
 test_that("alert_below(all) returns condition correctly", {
-  fc <- alert_below(extent_type = "all", rule_value = 3)$function_call
+  fc <- alert_below(
+    extent_type = "all",
+    rule_value = 3
+  )$function_call
 
   value <- rep(0, 10)
   expect_true(eval(fc))
@@ -148,7 +175,11 @@ test_that("alert_below(all) returns condition correctly", {
 })
 
 test_that("alert_below(any) returns condition correctly", {
-  fc <- alert_below(extent_type = "any", extent_value = 3, rule_value = 3)$function_call
+  fc <- alert_below(
+    extent_type = "any",
+    extent_value = 3,
+    rule_value = 3
+  )$function_call
 
   value <- c(1, 0, 2, 0, 3, 0)
   expect_true(eval(fc))
@@ -161,7 +192,11 @@ test_that("alert_below(any) returns condition correctly", {
 })
 
 test_that("alert_below(last) returns condition correctly", {
-  fc <- alert_below(extent_type = "last", extent_value = 3, rule_value = 3)$function_call
+  fc <- alert_below(
+    extent_type = "last",
+    extent_value = 3,
+    rule_value = 3
+  )$function_call
 
   value <- c(1, 3, 0, 0, 0)
   expect_true(eval(fc))
@@ -171,7 +206,11 @@ test_that("alert_below(last) returns condition correctly", {
 })
 
 test_that("alert_below(consecutive) returns condition correctly", {
-  fc <- alert_below(extent_type = "consecutive", extent_value = 3, rule_value = 3)$function_call
+  fc <- alert_below(
+    extent_type = "consecutive",
+    extent_value = 3,
+    rule_value = 3
+  )$function_call
 
   value <- c(10, 20, 2, 1, 2, 10)
   expect_true(eval(fc))
@@ -186,7 +225,10 @@ test_that("alert_below(consecutive) returns condition correctly", {
 
 
 test_that("alert_above(all) returns condition correctly", {
-  fc <- alert_above(extent_type = "all", rule_value = 0)$function_call
+  fc <- alert_above(
+    extent_type = "all",
+    rule_value = 0
+  )$function_call
 
   value <- rep(2, 10)
   expect_true(eval(fc))
@@ -199,7 +241,11 @@ test_that("alert_above(all) returns condition correctly", {
 })
 
 test_that("alert_above(any) returns condition correctly", {
-  fc <- alert_above(extent_type = "any", extent_value = 3, rule_value = 0)$function_call
+  fc <- alert_above(
+    extent_type = "any",
+    extent_value = 3,
+    rule_value = 0
+  )$function_call
 
   value <- c(1, 2, 0, 3, 0)
   expect_true(eval(fc))
@@ -209,7 +255,11 @@ test_that("alert_above(any) returns condition correctly", {
 })
 
 test_that("alert_above(last) returns condition correctly", {
-  fc <- alert_above(extent_type = "last", extent_value = 3, rule_value = 0)$function_call
+  fc <- alert_above(
+    extent_type = "last",
+    extent_value = 3,
+    rule_value = 0
+  )$function_call
 
   value <- c(1, 0, 1, 3, 2)
   expect_true(eval(fc))
@@ -219,7 +269,11 @@ test_that("alert_above(last) returns condition correctly", {
 })
 
 test_that("alert_above(consecutive) returns condition correctly", {
-  fc <- alert_above(extent_type = "consecutive", extent_value = 3, rule_value = 1)$function_call
+  fc <- alert_above(
+    extent_type = "consecutive",
+    extent_value = 3,
+    rule_value = 1
+  )$function_call
 
   value <- c(1, 20, 20, 10, 2, 10)
   expect_true(eval(fc))
@@ -235,7 +289,11 @@ test_that("alert_above(consecutive) returns condition correctly", {
 # TODO: more tests for equals/above/below with NAs in
 
 test_that("alert_difference_above_perc() returns condition correctly", {
-  fc <- alert_difference_above_perc(current_period = 1:2, previous_period = 3:6, rule_value = 50)$function_call
+  fc <- alert_difference_above_perc(
+    current_period = 1:2,
+    previous_period = 3:6,
+    rule_value = 50
+  )$function_call
 
   value <- c(100, 3, 3, 5, 5, 8, 6)
   expect_true(eval(fc))
@@ -259,7 +317,11 @@ test_that("alert_difference_above_perc() returns condition correctly", {
 })
 
 test_that("alert_difference_below_perc() returns condition correctly", {
-  fc <- alert_difference_below_perc(current_period = 1:2, previous_period = 3:6, rule_value = 50)$function_call
+  fc <- alert_difference_below_perc(
+    current_period = 1:2,
+    previous_period = 3:6,
+    rule_value = 50
+  )$function_call
 
   value <- c(0, 10, 10, 10, 10, 4, 4)
   expect_true(eval(fc))
@@ -293,7 +355,6 @@ test_that("alert_custom() returns condition correctly", {
     function_call = quote(rev(value)[1] > 2 * value[1])
   )$function_call
 
-
   value <- c(1, 0, 3)
   expect_true(eval(fc))
 
@@ -308,14 +369,18 @@ test_that("alert_custom() returns condition correctly", {
 
 test_that("mantis_alerts() returns expected df", {
   df <- data.frame(
-    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 3),
+    timepoint = rep(
+      seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+      3
+    ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
     category = c(rep("one", 20), rep("two", 10)),
     value = c(rep(5, 2), rep(3, 27), NA),
     stringsAsFactors = FALSE
   )
 
-  results <- mantis_alerts(df,
+  results <- mantis_alerts(
+    df,
     inputspec = inputspec(
       timepoint_col = "timepoint",
       item_cols = c("item", "category"),
@@ -332,8 +397,14 @@ test_that("mantis_alerts() returns expected df", {
     fill_with_zero = FALSE
   )
 
-  expect_equal(results$alert_result[which(results$alert_name == "missing_all")], rep("PASS", 3))
-  expect_equal(results$alert_result[which(results$alert_name == "above_4_any_1")], c("FAIL", "PASS", "PASS"))
+  expect_equal(
+    results$alert_result[which(results$alert_name == "missing_all")],
+    rep("PASS", 3)
+  )
+  expect_equal(
+    results$alert_result[which(results$alert_name == "above_4_any_1")],
+    c("FAIL", "PASS", "PASS")
+  )
 })
 
 test_that("mantis_alerts() returns an empty df if supplied an empty df", {
@@ -344,7 +415,8 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df", {
     tab = character()
   )
 
-  results <- mantis_alerts(df,
+  results <- mantis_alerts(
+    df,
     inputspec = inputspec(
       timepoint_col = "timepoint",
       item_cols = "item",
@@ -366,7 +438,8 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df with tab_
     tab = character()
   )
 
-  results <- mantis_alerts(df,
+  results <- mantis_alerts(
+    df,
     inputspec = inputspec(
       timepoint_col = "timepoint",
       item_cols = c("item", "tab"),
@@ -384,7 +457,10 @@ test_that("mantis_alerts() returns an empty df if supplied an empty df with tab_
 
 test_that("restrict_items() doesn't filter prepared_df when no items specified", {
   df <- data.frame(
-    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 6),
+    timepoint = rep(
+      seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+      6
+    ),
     item1 = c(rep("a", 20), rep("b", 20), rep("c", 20)),
     item2 = rep(c(rep("x", 10), rep("y", 10)), 3),
     item3 = c(rep("one", 40), rep("two", 20)),
@@ -414,7 +490,10 @@ test_that("restrict_items() doesn't filter prepared_df when no items specified",
 
 test_that("restrict_items() filters prepared_df items correctly when items are specified", {
   df <- data.frame(
-    timepoint = rep(seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"), 6),
+    timepoint = rep(
+      seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+      6
+    ),
     item1 = c(rep("a", 20), rep("b", 20), rep("c", 20)),
     item2 = rep(c(rep("x", 10), rep("y", 10)), 3),
     item3 = c(rep("one", 40), rep("two", 20)),
@@ -529,10 +608,12 @@ test_that("alert_rules items must match item_cols when specified", {
   expect_error(
     validate_alert_rules_to_inputspec(
       alert_rules = alert_rules(
-        alert_missing(items = list(
-          "item1" = "a",
-          "otheritem" = "z"
-        ))
+        alert_missing(
+          items = list(
+            "item1" = "a",
+            "otheritem" = "z"
+          )
+        )
       ),
       inputspec = inputspec
     ),

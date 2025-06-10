@@ -4,17 +4,19 @@
 # -----------------------------------------------------------------------------
 #' Initialise HTML widgets
 #'
-#' Since the output is being constructed in `results='asis'` chunks, there must also be at least one
-#' standard chunk that contains the relevant widgets, otherwise they will fail to render. The
-#' `dygraph` also needs to be initialised with the appropriate `plot_type`. This is only needed when
-#' creating interactive reports.
-#' Make sure you read the vignette: `vignette("bespoke-reports", package = "mantis")` as it contains
-#' further important information.
-#' Note: The chunk currently appears like a line break when rendered.
-#' See <https://github.com/rstudio/rmarkdown/issues/1877> for more info.
+#' Since the output is being constructed in `results='asis'` chunks, there must
+#' also be at least one standard chunk that contains the relevant widgets,
+#' otherwise they will fail to render. The `dygraph` also needs to be
+#' initialised with the appropriate `plot_type`. This is only needed when
+#' creating interactive reports. Make sure you read the vignette:
+#' `vignette("bespoke-reports", package = "mantis")` as it contains further
+#' important information. Note: The chunk currently appears like a line break
+#' when rendered. See <https://github.com/rstudio/rmarkdown/issues/1877> for
+#' more info.
 #'
-#' @param plot_type "`bar`" or "`line`", depending on what will be used in real tables. Or "none" if
-#'   just want a reactable widget without dygraphs e.g. for alerts
+#' @param plot_type "`bar`" or "`line`", depending on what will be used in real
+#'   tables. Or "none" if just want a reactable widget without dygraphs e.g. for
+#'   alerts
 #' @return A (mostly) invisible html widget
 #'
 #' @examples
@@ -26,56 +28,72 @@
 #' }
 #'
 #' @export
-bespoke_rmd_initialise_widgets <- function(plot_type) {
+bespoke_rmd_initialise_widgets <- function(
+  plot_type
+) {
   validate_params_required(match.call())
-  validate_params_type(match.call(),
+  validate_params_type(
+    match.call(),
     plot_type = plot_type
   )
 
   initialise_widgets(plot_type = plot_type)
 }
 
+
 # -----------------------------------------------------------------------------
 #' Dynamically generate mantis output for an rmd chunk
 #'
-#' Add `mantis` tabs and visualisations to an existing `rmarkdown` report.
-#' The function writes directly to the chunk using side-effects, so chunk options must contain `results = 'asis'`.
-#' Make sure you read the vignette: `vignette("bespoke-reports", package = "mantis")` as it contains
-#' further important information.
+#' Add `mantis` tabs and visualisations to an existing `rmarkdown` report. The
+#' function writes directly to the chunk using side-effects, so chunk options
+#' must contain `results = 'asis'`. Make sure you read the vignette:
+#' `vignette("bespoke-reports", package = "mantis")` as it contains further
+#' important information.
 #'
-#' @param df A data frame containing multiple time series in long format. See Details.
-#' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent
-#'   the "timepoint", "item", and "value" for the time series. A separate tab will be created for
-#'   each distinct value in the "tab" column.
-#' @param outputspec `outputspec` object specifying the desired format of the html
-#'   table(s)/plot(s). If not supplied, default values will be used.
-#' @param alertspec [`alertspec()`] object specifying conditions to test and display
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max
-#'   of `timepoint_col`
-#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when
-#'   `value_col` is a record count
-#' @param tab_name Character string to appear on the tab label. If omitted or `NULL`, only the
-#'   content/child tabs (and not the parent tab) will be created.
-#' @param tab_level integer specifying the nesting level of the tab. If `tab_name` is specified, a
-#'   value of 1 generates a tab at rmd level "##", and any `tab_col` tabs at a level down. If
-#'   `tab_name` is not specified, any `tab_col` tabs will be created at rmd level "##".
+#' @param df A data frame containing multiple time series in long format. See
+#'   Details.
+#' @param inputspec [`inputspec()`] object specifying which columns in the
+#'   supplied `df` represent the "timepoint", "item", and "value" for the time
+#'   series. A separate tab will be created for each distinct value in the "tab"
+#'   column.
+#' @param outputspec `outputspec` object specifying the desired format of the
+#'   html table(s)/plot(s). If not supplied, default values will be used.
+#' @param alertspec [`alertspec()`] object specifying conditions to test and
+#'   display
+#' @param timepoint_limits Set start and end dates for time period to include.
+#'   Defaults to min/max of `timepoint_col`
+#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0?
+#'   Useful when `value_col` is a record count
+#' @param tab_name Character string to appear on the tab label. If omitted or
+#'   `NULL`, only the content/child tabs (and not the parent tab) will be
+#'   created.
+#' @param tab_level integer specifying the nesting level of the tab. If
+#'   `tab_name` is specified, a value of 1 generates a tab at rmd level "##",
+#'   and any `tab_col` tabs at a level down. If `tab_name` is not specified, any
+#'   `tab_col` tabs will be created at rmd level "##".
 #' @return (invisibly) the supplied `df`
 #'
-#' @details
-#' You can:
+#' @details You can:
 #'
 #' * add a single visualisation, with or without creating the container tab, or
-#' * add a set of tabs, each based on the same output specification, with or without creating the parent tab.
+#' * add a set of tabs, each based on the same output specification,
+#'   with or without creating the parent tab.
 #'
-#' The supplied data frame should contain multiple time series in long format, i.e.:
+#' The supplied data frame should contain multiple time series in long format,
+#' i.e.:
 #'
-#' * one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
-#' * one or more "item" (character) columns containing categorical values identifying distinct time series.
-#' * one "value" (numeric) column containing the time series values which will be used for the y-axes.
+#' * one "timepoint" (date/posixt) column which will be used for the x-axes.
+#'   Values should follow a regular pattern, e.g. daily or monthly, but do not
+#'   have to be consecutive.
+#' * one or more "item" (character) columns containing categorical values
+#'   identifying distinct time series.
+#' * one "value" (numeric) column containing the time series values which will
+#'   be used for the y-axes.
 #'
-#' The `inputspec` parameter maps the data frame columns to the above. Optionally, if there are
-#' multiple columns specified in `item_cols`, one of them can be used to group the time series
-#' into different child tabs, by using the `tab_col` parameter.
+#' The `inputspec` parameter maps the data frame columns to the above.
+#' Optionally, if there are multiple columns specified in `item_cols`, one of
+#' them can be used to group the time series into different child tabs, by using
+#' the `tab_col` parameter.
 #'
 #' @examples
 #' \dontrun{
@@ -107,14 +125,16 @@ bespoke_rmd_initialise_widgets <- function(plot_type) {
 #'
 #' @seealso [bespoke_rmd_initialise_widgets()]
 #' @export
-bespoke_rmd_output <- function(df,
-                               inputspec,
-                               outputspec,
-                               alertspec = NULL,
-                               timepoint_limits = c(NA, NA),
-                               fill_with_zero = FALSE,
-                               tab_name = NULL,
-                               tab_level = 1) {
+bespoke_rmd_output <- function(
+  df,
+  inputspec,
+  outputspec,
+  alertspec = NULL,
+  timepoint_limits = c(NA, NA),
+  fill_with_zero = FALSE,
+  tab_name = NULL,
+  tab_level = 1
+) {
   validate_params_required(match.call())
   validate_params_type(
     match.call(),
@@ -149,22 +169,26 @@ bespoke_rmd_output <- function(df,
 # -----------------------------------------------------------------------------
 #' Dynamically generate a table containing alert results for an rmd chunk
 #'
-#' Add `mantis` alert results to an existing `rmarkdown` report.
-#' The function writes directly to the chunk using side-effects, so chunk options must contain `results = 'asis'`.
+#' Add `mantis` alert results to an existing `rmarkdown` report. The function
+#' writes directly to the chunk using side-effects, so chunk options must
+#' contain `results = 'asis'`.
 #'
-#' @param df A data frame containing multiple time series in long format. See Details.
-#' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent
-#'   the "timepoint", "item", and "value" for the time series. Any "tab" column specification will be ignored.
+#' @param df A data frame containing multiple time series in long format. See
+#'   Details.
+#' @param inputspec [`inputspec()`] object specifying which columns in the
+#'   supplied `df` represent the "timepoint", "item", and "value" for the time
+#'   series. Any "tab" column specification will be ignored.
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
-#' @param filter_results only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max
-#'   of `timepoint_col`
-#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when
-#'   `value_col` is a record count
-#' @param tab_name Character string to appear on the tab label. If omitted or `NULL`, only the
-#'   content (and not the parent tab) will be created.
-#' @param tab_level integer specifying the nesting level of the tab. If `tab_name` is specified, a
-#'   value of 1 generates a tab at rmd level "##". If
+#' @param filter_results only return rows where the alert result is in this
+#'   vector of values. Alert results can be "PASS", "FAIL", or "NA".
+#' @param timepoint_limits Set start and end dates for time period to include.
+#'   Defaults to min/max of `timepoint_col`
+#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0?
+#'   Useful when `value_col` is a record count
+#' @param tab_name Character string to appear on the tab label. If omitted or
+#'   `NULL`, only the content (and not the parent tab) will be created.
+#' @param tab_level integer specifying the nesting level of the tab. If
+#'   `tab_name` is specified, a value of 1 generates a tab at rmd level "##". If
 #'   `tab_name` is not specified, this is ignored.
 #' @return (invisibly) the supplied `df`
 #'
@@ -193,14 +217,16 @@ bespoke_rmd_output <- function(df,
 #' }
 #'
 #' @export
-bespoke_rmd_alert_results <- function(df,
-                                      inputspec,
-                                      alert_rules,
-                                      filter_results = c("PASS", "FAIL", "NA"),
-                                      timepoint_limits = c(NA, NA),
-                                      fill_with_zero = FALSE,
-                                      tab_name = NULL,
-                                      tab_level = 1) {
+bespoke_rmd_alert_results <- function(
+  df,
+  inputspec,
+  alert_rules,
+  filter_results = c("PASS", "FAIL", "NA"),
+  timepoint_limits = c(NA, NA),
+  fill_with_zero = FALSE,
+  tab_name = NULL,
+  tab_level = 1
+) {
   validate_params_required(match.call())
   validate_params_type(
     match.call(),
@@ -257,17 +283,22 @@ bespoke_rmd_alert_results <- function(df,
 # -----------------------------------------------------------------------------
 #' Initialise HTML widgets (internal)
 #'
-#' If the output is being constructed in `results='asis'` chunks, there must also be at least one standard chunk that
-#' contains the relevant widgets, otherwise they won't render. The `dygraph` also needs to be initialised with the appropriate `plot_type`.
-#' @param plot_type "`bar`" or "`line`", depending on what will be used in real tables. "none" if just want a reactable widget without dygraphs
+#' If the output is being constructed in `results='asis'` chunks, there must
+#' also be at least one standard chunk that contains the relevant widgets,
+#' otherwise they won't render. The `dygraph` also needs to be initialised with
+#' the appropriate `plot_type`.
+#' @param plot_type "`bar`" or "`line`", depending on what will be used in real
+#'   tables. "none" if just want a reactable widget without dygraphs
 #'
 #' @return A (mostly) invisible html widget
 #' @noRd
-initialise_widgets <- function(plot_type = "none") {
+initialise_widgets <- function(
+  plot_type = "none"
+) {
   # https://stackoverflow.com/questions/63534247/recommended-way-to-initialize-js-renderer-in-asis-r-markdown-chunk
   # https://github.com/rstudio/rmarkdown/issues/1877
-  # Currently appears like a line break when rendered. Could try harder to make it invisible but
-  # people can always put it at the end of the file if required
+  # Currently appears like a line break when rendered. Could try harder to make
+  # it invisible but people can always put it at the end of the file if required
   dummy_df <- data.frame(a = as.Date("2023-01-01"), b = "item", c = 1)
 
   if (plot_type == "none") {
@@ -294,34 +325,38 @@ initialise_widgets <- function(plot_type = "none") {
 # -----------------------------------------------------------------------------
 #' Dynamically generate tabs for an rmd chunk (internal)
 #'
-#' A single function to create both single tab items and groups
-#' Prepare the df and alerts only once at the start, rather than for each tab item individually
+#' A single function to create both single tab items and groups Prepare the df
+#' and alerts only once at the start, rather than for each tab item individually
 #' Allows you to flag alerts at the parent tab level.
 #'
 #' @param df Data frame containing time series in long format
 #' @param inputspec Specification of data in `df`
 #' @param outputspec Specification for display of tab contents
 #' @param alertspec Specification for alerting conditions
-#' @param timepoint_limits Set start and end dates for time period to include. Defaults to min/max
-#'   of `timepoint_col`
-#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0? Useful when
-#'   `value_col` is a record count
-#' @param tab_name Character string to appear on the tab label. If omitted or `NULL`, only the
-#'   content/child tabs (and not the parent tab) will be created.
-#' @param tab_level integer specifying the nesting level of the tab. If `tab_name` is specified, a
-#'   value of 1 generates a tab at rmd level "##", and any `tab_col` tabs at a level down. If
-#'   `tab_name` is not specified, any `tab_col` tabs will be created at rmd level "##".
+#' @param timepoint_limits Set start and end dates for time period to include.
+#'   Defaults to min/max of `timepoint_col`
+#' @param fill_with_zero Logical. Replace any missing or `NA` values with 0?
+#'   Useful when `value_col` is a record count
+#' @param tab_name Character string to appear on the tab label. If omitted or
+#'   `NULL`, only the content/child tabs (and not the parent tab) will be
+#'   created.
+#' @param tab_level integer specifying the nesting level of the tab. If
+#'   `tab_name` is specified, a value of 1 generates a tab at rmd level "##",
+#'   and any `tab_col` tabs at a level down. If `tab_name` is not specified, any
+#'   `tab_col` tabs will be created at rmd level "##".
 #'
 #' @return (invisibly) the supplied `df`
 #' @noRd
-construct_rmd_tab <- function(df,
-                              inputspec,
-                              outputspec = NULL,
-                              alertspec = NULL,
-                              timepoint_limits = c(NA, NA),
-                              fill_with_zero = FALSE,
-                              tab_name = NULL,
-                              tab_level = 1) {
+construct_rmd_tab <- function(
+  df,
+  inputspec,
+  outputspec = NULL,
+  alertspec = NULL,
+  timepoint_limits = c(NA, NA),
+  fill_with_zero = FALSE,
+  tab_name = NULL,
+  tab_level = 1
+) {
   prepared_df <-
     prepare_df(
       df,
@@ -338,7 +373,11 @@ construct_rmd_tab <- function(df,
   )
 
   # if alert tab is to be created, main contents must also be in a tab
-  if (!is.null(alertspec$show_tab_results) && is.null(tab_name) && is.null(inputspec$tab_col)) {
+  if (
+    !is.null(alertspec$show_tab_results) &&
+      is.null(tab_name) &&
+      is.null(inputspec$tab_col)
+  ) {
     tab_name <- "Output"
   }
 
@@ -366,20 +405,26 @@ construct_rmd_tab <- function(df,
     )
   } else {
     # create tab group
-    tab_col_names <- unique(prepared_df[item_cols_prefix(inputspec$tab_col)] |>
-      dplyr::pull())
+    tab_col_names <- unique(
+      prepared_df[item_cols_prefix(inputspec$tab_col)] |>
+        dplyr::pull()
+    )
 
     for (i in seq_along(tab_col_names)) {
       prepared_df_subset <-
         prepared_df |>
-        dplyr::filter(.data[[item_cols_prefix(inputspec$tab_col)]] == tab_col_names[i])
+        dplyr::filter(
+          .data[[item_cols_prefix(inputspec$tab_col)]] == tab_col_names[i]
+        )
 
       if (is.null(alert_results)) {
         alert_results_subset <- NULL
       } else {
         alert_results_subset <-
           alert_results |>
-          dplyr::filter(.data[[item_cols_prefix(inputspec$tab_col)]] == tab_col_names[i])
+          dplyr::filter(
+            .data[[item_cols_prefix(inputspec$tab_col)]] == tab_col_names[i]
+          )
       }
 
       construct_tab_label(
@@ -423,6 +468,7 @@ construct_rmd_tab <- function(df,
 }
 
 
+# -----------------------------------------------------------------------------
 #' Get alert_results df if alertspec is supplied
 #'
 #' @param alertspec Specification for alerting conditions
@@ -431,9 +477,11 @@ construct_rmd_tab <- function(df,
 #'
 #' @return dataframe
 #' @noRd
-get_alert_results_if_specified <- function(alertspec,
-                                           prepared_df,
-                                           inputspec) {
+get_alert_results_if_specified <- function(
+  alertspec,
+  prepared_df,
+  inputspec
+) {
   if (!is.null(alertspec)) {
     alert_results <- run_alerts(
       prepared_df = prepared_df,
@@ -458,10 +506,12 @@ get_alert_results_if_specified <- function(alertspec,
 #' @return (invisibly) the supplied `df`
 #'
 #' @noRd
-construct_tab_content <- function(prepared_df_subset,
-                                  inputspec,
-                                  outputspec,
-                                  alert_results_subset = NULL) {
+construct_tab_content <- function(
+  prepared_df_subset,
+  inputspec,
+  outputspec,
+  alert_results_subset = NULL
+) {
   if (is_outputspec_static_heatmap(outputspec)) {
     plot_heatmap_static(
       prepared_df = prepared_df_subset,
@@ -507,12 +557,15 @@ construct_tab_content <- function(prepared_df_subset,
 #'
 #' @param alert_results data frame returned from `run_alerts`
 #' @param inputspec Specification of data in original `df`
-#' @param filter_results only return rows where the alert result is in this vector of values. Alert results can be "PASS", "FAIL", or "NA".
+#' @param filter_results only return rows where the alert result is in this
+#'   vector of values. Alert results can be "PASS", "FAIL", or "NA".
 #' @return (invisibly) the supplied `df`
 #' @noRd
-construct_alert_results_content <- function(alert_results,
-                                            inputspec,
-                                            filter_results = c("PASS", "FAIL", "NA")) {
+construct_alert_results_content <- function(
+  alert_results,
+  inputspec,
+  filter_results = c("PASS", "FAIL", "NA")
+) {
   alert_description <- alert_result <- NULL
 
   p <-
@@ -522,7 +575,8 @@ construct_alert_results_content <- function(alert_results,
       .cols = dplyr::all_of(item_cols_prefix(inputspec$item_cols))
     ) |>
     dplyr::filter(alert_result %in% filter_results) |>
-    dplyr::select(dplyr::all_of(inputspec$item_cols),
+    dplyr::select(
+      dplyr::all_of(inputspec$item_cols),
       "Rule" = alert_description,
       "Result" = alert_result
     ) |>
@@ -545,11 +599,18 @@ construct_alert_results_content <- function(alert_results,
 #' @param alert set to `TRUE` to append an alert icon
 #'
 #' @noRd
-construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, alert = FALSE) {
+construct_tab_label <- function(
+  tab_name,
+  tab_level,
+  has_child_tabs = FALSE,
+  alert = FALSE
+) {
   if (!is.null(tab_name)) {
-    cat("\n",
+    cat(
+      "\n",
       paste0(rep("#", tab_level + 1), collapse = ""),
-      " ", tab_name,
+      " ",
+      tab_name,
       ifelse(alert, " <b>!</b>", ""),
       ifelse(has_child_tabs, " {.tabset}", ""),
       "\n",
@@ -562,8 +623,8 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, ale
 # -----------------------------------------------------------------------------
 #' Calculate appropriate fig.height for the chunks
 #'
-#' Static plots need this setting explicitly otherwise plots with lots of items look squished.
-#' Interactive plots flex automatically.
+#' Static plots need this setting explicitly otherwise plots with lots of items
+#' look squished. Interactive plots flex automatically.
 #'
 #' If NULL is returned, the rmd should use the default fig.height.
 #'
@@ -573,7 +634,11 @@ construct_tab_label <- function(tab_name, tab_level, has_child_tabs = FALSE, ale
 #'
 #' @return numeric height in inches or NULL
 #' @noRd
-rmd_fig_height <- function(df, inputspec, outputspec) {
+rmd_fig_height <- function(
+  df,
+  inputspec,
+  outputspec
+) {
   rows <- NULL
 
   fig_height <- NULL
@@ -593,11 +658,12 @@ rmd_fig_height <- function(df, inputspec, outputspec) {
       dplyr::summarise(maxrows = max(rows)) |>
       dplyr::pull()
 
-    fig_height <- maxrows * dplyr::case_when(
-      is_outputspec_static_heatmap(outputspec) ~ 0.6,
-      is_outputspec_static_multipanel(outputspec) ~ 0.8,
-      TRUE ~ 0.8
-    )
+    fig_height <- maxrows *
+      dplyr::case_when(
+        is_outputspec_static_heatmap(outputspec) ~ 0.6,
+        is_outputspec_static_multipanel(outputspec) ~ 0.8,
+        TRUE ~ 0.8
+      )
   }
 
   fig_height

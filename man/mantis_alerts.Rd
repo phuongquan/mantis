@@ -50,9 +50,9 @@ have to be consecutive.
 identifying distinct time series.
 \item one "value" (numeric) column containing the time series values which will
 be used for the y-axes.
+}
 
 The \code{inputspec} parameter maps the data frame columns to the above.
-}
 }
 \examples{
 alert_results <- mantis_alerts(

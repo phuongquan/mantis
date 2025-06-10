@@ -7,10 +7,12 @@
 #' @param y_label string for y-axis label. Optional
 #' @return ggplot
 #' @noRd
-plot_heatmap_static <- function(prepared_df,
-                                inputspec,
-                                fill_colour = "blue",
-                                y_label = NULL) {
+plot_heatmap_static <- function(
+  prepared_df,
+  inputspec,
+  fill_colour = "blue",
+  y_label = NULL
+) {
   # initialise known column names to prevent R CMD check notes
   item <- timepoint <- value <- NULL
 
@@ -29,7 +31,11 @@ plot_heatmap_static <- function(prepared_df,
   }
   data <- prepared_df |>
     # combine item_cols into single variable
-    tidyr::unite(col = "item", dplyr::all_of(item_cols_prefix(item_cols_plot)), sep = " - ") |>
+    tidyr::unite(
+      col = "item",
+      dplyr::all_of(item_cols_prefix(item_cols_plot)),
+      sep = " - "
+    ) |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
 
   # when the only values are zero, make sure the fill colour is white (as
@@ -104,10 +110,12 @@ plot_heatmap_static <- function(prepared_df,
 #' @param y_label string for y-axis label. Optional
 #' @return ggplot
 #' @noRd
-plot_multipanel_static <- function(prepared_df,
-                                   inputspec,
-                                   sync_axis_range = FALSE,
-                                   y_label = NULL) {
+plot_multipanel_static <- function(
+  prepared_df,
+  inputspec,
+  sync_axis_range = FALSE,
+  y_label = NULL
+) {
   # initialise known column names to prevent R CMD check notes
   item <- timepoint <- value <- NULL
 
@@ -126,11 +134,12 @@ plot_multipanel_static <- function(prepared_df,
   }
   data <- prepared_df |>
     # combine item_cols into single variable
-    tidyr::unite(col = "item", dplyr::all_of(item_cols_prefix(item_cols_plot)), sep = " - ") |>
+    tidyr::unite(
+      col = "item",
+      dplyr::all_of(item_cols_prefix(item_cols_plot)),
+      sep = " - "
+    ) |>
     dplyr::mutate(item = factor(item, levels = unique(item)))
-
-
-
 
   g <-
     ggplot2::ggplot(
@@ -191,7 +200,8 @@ plot_multipanel_static <- function(prepared_df,
 # -----------------------------------------------------------------------------
 #' Create an empty gglot object
 #'
-#' Use when there is no data but you still want to display a ggplot (for consistency)
+#' Use when there is no data but you still want to display a ggplot (for
+#' consistency)
 #'
 #' @return ggplot
 #' @noRd

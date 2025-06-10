@@ -12,7 +12,13 @@ knitr::opts_chunk$set(
 
 ```{r generate-report}
 # only generate it if this is a release version
-if (length(unlist(strsplit(as.character(utils::packageVersion("mantis")), "[.]"))) < 4) {
+if (
+  length(unlist(strsplit(
+    as.character(utils::packageVersion("mantis")),
+    "[.]"
+  ))) <
+    4
+) {
   example_prescription_numbers <- mantis::example_prescription_numbers
 
   filename <-

@@ -16,56 +16,69 @@ bespoke_rmd_output(
 )
 }
 \arguments{
-\item{df}{A data frame containing multiple time series in long format. See Details.}
+\item{df}{A data frame containing multiple time series in long format. See
+Details.}
 
-\item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the supplied \code{df} represent
-the "timepoint", "item", and "value" for the time series. A separate tab will be created for
-each distinct value in the "tab" column.}
+\item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the
+supplied \code{df} represent the "timepoint", "item", and "value" for the time
+series. A separate tab will be created for each distinct value in the "tab"
+column.}
 
-\item{outputspec}{\code{outputspec} object specifying the desired format of the html
-table(s)/plot(s). If not supplied, default values will be used.}
+\item{outputspec}{\code{outputspec} object specifying the desired format of the
+html table(s)/plot(s). If not supplied, default values will be used.}
 
-\item{alertspec}{\code{\link[=alertspec]{alertspec()}} object specifying conditions to test and display}
+\item{alertspec}{\code{\link[=alertspec]{alertspec()}} object specifying conditions to test and
+display}
 
-\item{timepoint_limits}{Set start and end dates for time period to include. Defaults to min/max
-of \code{timepoint_col}}
+\item{timepoint_limits}{Set start and end dates for time period to include.
+Defaults to min/max of \code{timepoint_col}}
 
-\item{fill_with_zero}{Logical. Replace any missing or \code{NA} values with 0? Useful when
-\code{value_col} is a record count}
+\item{fill_with_zero}{Logical. Replace any missing or \code{NA} values with 0?
+Useful when \code{value_col} is a record count}
 
-\item{tab_name}{Character string to appear on the tab label. If omitted or \code{NULL}, only the
-content/child tabs (and not the parent tab) will be created.}
+\item{tab_name}{Character string to appear on the tab label. If omitted or
+\code{NULL}, only the content/child tabs (and not the parent tab) will be
+created.}
 
-\item{tab_level}{integer specifying the nesting level of the tab. If \code{tab_name} is specified, a
-value of 1 generates a tab at rmd level "##", and any \code{tab_col} tabs at a level down. If
-\code{tab_name} is not specified, any \code{tab_col} tabs will be created at rmd level "##".}
+\item{tab_level}{integer specifying the nesting level of the tab. If
+\code{tab_name} is specified, a value of 1 generates a tab at rmd level "##",
+and any \code{tab_col} tabs at a level down. If \code{tab_name} is not specified, any
+\code{tab_col} tabs will be created at rmd level "##".}
 }
 \value{
 (invisibly) the supplied \code{df}
 }
 \description{
-Add \code{mantis} tabs and visualisations to an existing \code{rmarkdown} report.
-The function writes directly to the chunk using side-effects, so chunk options must contain \code{results = 'asis'}.
-Make sure you read the vignette: \code{vignette("bespoke-reports", package = "mantis")} as it contains
-further important information.
+Add \code{mantis} tabs and visualisations to an existing \code{rmarkdown} report. The
+function writes directly to the chunk using side-effects, so chunk options
+must contain \code{results = 'asis'}. Make sure you read the vignette:
+\code{vignette("bespoke-reports", package = "mantis")} as it contains further
+important information.
 }
 \details{
 You can:
 \itemize{
 \item add a single visualisation, with or without creating the container tab, or
-\item add a set of tabs, each based on the same output specification, with or without creating the parent tab.
+\item add a set of tabs, each based on the same output specification,
+with or without creating the parent tab.
 }
 
-The supplied data frame should contain multiple time series in long format, i.e.:
+The supplied data frame should contain multiple time series in long format,
+i.e.:
 \itemize{
-\item one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
-\item one or more "item" (character) columns containing categorical values identifying distinct time series.
-\item one "value" (numeric) column containing the time series values which will be used for the y-axes.
+\item one "timepoint" (date/posixt) column which will be used for the x-axes.
+Values should follow a regular pattern, e.g. daily or monthly, but do not
+have to be consecutive.
+\item one or more "item" (character) columns containing categorical values
+identifying distinct time series.
+\item one "value" (numeric) column containing the time series values which will
+be used for the y-axes.
 }
 
-The \code{inputspec} parameter maps the data frame columns to the above. Optionally, if there are
-multiple columns specified in \code{item_cols}, one of them can be used to group the time series
-into different child tabs, by using the \code{tab_col} parameter.
+The \code{inputspec} parameter maps the data frame columns to the above.
+Optionally, if there are multiple columns specified in \code{item_cols}, one of
+them can be used to group the time series into different child tabs, by using
+the \code{tab_col} parameter.
 }
 \examples{
 \dontrun{

@@ -12,9 +12,7 @@ test_that("output_table_interactive() avoids min/max warnings when all values ar
     value_col = "value"
   )
 
-  prepared_df <- prepare_df(df,
-    inputspec = inputspec
-  )
+  prepared_df <- prepare_df(df, inputspec = inputspec)
 
   expect_no_warning(output_table_interactive(
     prepared_df = prepared_df,
@@ -37,9 +35,7 @@ test_that("output_table_interactive() avoids min/max warnings when all deltas ar
     value_col = "value"
   )
 
-  prepared_df <- prepare_df(df,
-    inputspec = inputspec
-  )
+  prepared_df <- prepare_df(df, inputspec = inputspec)
 
   expect_no_warning(output_table_interactive(
     prepared_df = prepared_df,

@@ -35,27 +35,28 @@ Report created on: `r Sys.time()` ; mantis version `r utils::packageVersion(util
 </p>
 
 ```{r mantis-initialise}
-has_tabs <- !is.null(params$inputspec$tab_col) || (!is.null(params$alertspec) && !is.null(params$alertspec$show_tab_results))
+has_tabs <- !is.null(params$inputspec$tab_col) ||
+  (!is.null(params$alertspec) && !is.null(params$alertspec$show_tab_results))
 is_interactive <- is_outputspec_interactive(params$outputspec)
-requires_initialisation <- is_interactive || (!is.null(params$alertspec) && !is.null(params$alertspec$show_tab_results))
+requires_initialisation <- is_interactive ||
+  (!is.null(params$alertspec) && !is.null(params$alertspec$show_tab_results))
 requires_refresh <- has_tabs && is_interactive
 
 # NOTE: can't modify chunk options within a chunk to get different fig heights
-# (https://github.com/yihui/knitr/issues/841) so have to make static plots consistent for all tabs
-fig_height <- rmd_fig_height(params$df,
-                             params$inputspec,
-                             params$outputspec)
-if (is.null(fig_height)){
+# (https://github.com/yihui/knitr/issues/841) so have to make static plots
+# consistent for all tabs
+fig_height <- rmd_fig_height(params$df, params$inputspec, params$outputspec)
+if (is.null(fig_height)) {
   fig_height <- knitr::opts_chunk$get("fig.height")
 }
-
 ```
 
 #  {.tabset .tabset-pills}
 
 
 ```{js mantis-js, eval=requires_refresh}
-// when browser window is resized, all dygraphs on inactive tabs disappear. Reload page to redraw them all.
+// when browser window is resized, all dygraphs on inactive tabs disappear.
+// reload page to redraw them all.
 // unfortunately this also means you lose your active tab
 window.onresize = function(){ location.reload(); }
 ```
@@ -74,9 +75,9 @@ construct_rmd_tab(
 ```{r mantis-init-widgets, eval=requires_initialisation}
 # initialise htmlwidgets otherwise they won't render
 # this chunk can be placed anywhere
-if(is_interactive) {
+if (is_interactive) {
   initialise_widgets(plot_type = params$outputspec$plot_type)
-} else{
+} else {
   initialise_widgets(plot_type = "none")
 }
 ```

@@ -51,12 +51,12 @@
 #' @seealso [alert_rules()], [inputspec()], [alert_rule_types()]
 #' @export
 mantis_alerts <- function(
-    df,
-    inputspec,
-    alert_rules,
-    filter_results = c("PASS", "FAIL", "NA"),
-    timepoint_limits = c(NA, NA),
-    fill_with_zero = FALSE
+  df,
+  inputspec,
+  alert_rules,
+  filter_results = c("PASS", "FAIL", "NA"),
+  timepoint_limits = c(NA, NA),
+  fill_with_zero = FALSE
 ) {
   validate_params_required(match.call())
   validate_params_type(
@@ -132,8 +132,8 @@ mantis_alerts <- function(
 #' @seealso [alert_rules()], [alert_rule_types()]
 #' @export
 alertspec <- function(
-    alert_rules,
-    show_tab_results = c("PASS", "FAIL", "NA")
+  alert_rules,
+  show_tab_results = c("PASS", "FAIL", "NA")
 ) {
   validate_params_required(match.call())
   validate_params_type(
@@ -189,7 +189,9 @@ alertspec <- function(
 #'
 #' @seealso [alert_rule_types()]
 #' @export
-alert_rules <- function(...) {
+alert_rules <- function(
+  ...
+) {
   ars <- list(...)
 
   # TODO: check only one rule of each type? Don't know if this is necessary
@@ -205,7 +207,8 @@ alert_rules <- function(...) {
           paste(which(!is_alert_rule), collapse = ", "),
           "]",
           ": Found [ class =",
-          paste(vapply(ars[which(!is_alert_rule)], class, character(1)),
+          paste(
+            vapply(ars[which(!is_alert_rule)], class, character(1)),
             collapse = ", "
           ),
           "]"
@@ -286,9 +289,9 @@ NULL
 #' @rdname alert_rule_types
 #' @export
 alert_missing <- function(
-    extent_type = "all",
-    extent_value = 1,
-    items = NULL
+  extent_type = "all",
+  extent_value = 1,
+  items = NULL
 ) {
   validate_params_type(
     match.call(),
@@ -331,12 +334,13 @@ alert_missing <- function(
       " or more values are missing"
     )
   } else if (extent_type == "consecutive") {
-    function_call <-substitute(
+    function_call <- substitute(
       {
         run_lengths <- rle(is.na(value))
         any(run_lengths$lengths[run_lengths$values] >= x)
       },
-      list(x = extent_value))
+      list(x = extent_value)
+    )
     rule_description <- paste0(
       extent_value,
       " or more values in a row are missing"
@@ -375,10 +379,10 @@ alert_missing <- function(
 #' @rdname alert_rule_types
 #' @export
 alert_equals <- function(
-    extent_type = "all",
-    extent_value = 1,
-    rule_value,
-    items = NULL
+  extent_type = "all",
+  extent_value = 1,
+  rule_value,
+  items = NULL
 ) {
   # TODO: NEED TO THINK ABOUT WHAT TO DO WITH NAs
   # currently just removing them but may want them in the extent_value
@@ -400,24 +404,40 @@ alert_equals <- function(
       extent_type == "all",
       "",
       paste0("_", extent_value)
-      )
     )
+  )
 
   if (extent_type == "all") {
     function_call <- substitute(
       all(value[!is.na(value)] == rv),
       list(rv = rule_value)
-      )
-    rule_description <- paste0("All (non-missing) values are equal to ", rule_value)
+    )
+    rule_description <- paste0(
+      "All (non-missing) values are equal to ",
+      rule_value
+    )
   } else if (extent_type == "any") {
-    function_call <- substitute(sum(value[!is.na(value)] == rv) >= x, list(x = extent_value, rv = rule_value))
-    rule_description <- paste0("At least ", extent_value, " (non-missing) values are equal to ", rule_value)
+    function_call <- substitute(
+      sum(value[!is.na(value)] == rv) >= x,
+      list(x = extent_value, rv = rule_value)
+    )
+    rule_description <- paste0(
+      "At least ",
+      extent_value,
+      " (non-missing) values are equal to ",
+      rule_value
+    )
   } else if (extent_type == "last") {
     function_call <- substitute(
       all(rev(value[!is.na(value)])[1:x] == rv),
       list(x = extent_value, rv = rule_value)
     )
-    rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are equal to ", rule_value)
+    rule_description <- paste0(
+      "The last ",
+      extent_value,
+      " or more (non-missing) values are equal to ",
+      rule_value
+    )
   } else if (extent_type == "consecutive") {
     function_call <- substitute(
       {
@@ -426,7 +446,11 @@ alert_equals <- function(
       },
       list(x = extent_value, rv = rule_value)
     )
-    rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are equal to ", rule_value)
+    rule_description <- paste0(
+      extent_value,
+      " or more (non-missing) values in a row are are equal to ",
+      rule_value
+    )
   }
 
   alert_rule(
@@ -442,15 +466,18 @@ alert_equals <- function(
 # -----------------------------------------------------------------------------
 #' Test for values greater than a specific value
 #'
-#' @section Details: `alert_above()` - Test for the presence of values strictly greater than `rule_value`.
+#' @section Details: `alert_above()` - Test for the presence of values strictly
+#'   greater than `rule_value`.
 #'
-#' @param extent_type Type of subset of the time series values that must satisfy the condition for
-#'   the rule to return "FAIL". One of "all", "any", "last", "consecutive". See Details.
+#' @param extent_type Type of subset of the time series values that must satisfy
+#'   the condition for the rule to return "FAIL". One of "all", "any", "last",
+#'   "consecutive". See Details.
 #' @param extent_value Numeric lower limit of the extent type. See Details.
 #' @param rule_value Numeric value to test against. See Details.
-#' @param items Named list with names corresponding to members of `item_cols`. List members are
-#'   character vectors of values contained in the named column that the rule should be applied to.
-#'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @param items Named list with names corresponding to members of `item_cols`.
+#'   List members are character vectors of values contained in the named column
+#'   that the rule should be applied to. If `items = NULL` the rule will be
+#'   applied to all items. See Details.
 #'
 #' @examples
 #' # alert if all values are greater than 50
@@ -458,32 +485,60 @@ alert_equals <- function(
 #'
 #' @rdname alert_rule_types
 #' @export
-alert_above <- function(extent_type = "all",
-                        extent_value = 1,
-                        rule_value,
-                        items = NULL) {
+alert_above <- function(
+  extent_type = "all",
+  extent_value = 1,
+  rule_value,
+  items = NULL
+) {
   validate_params_required(match.call())
-  validate_params_type(match.call(),
+  validate_params_type(
+    match.call(),
     extent_type = extent_type,
     extent_value = extent_value,
     rule_value = rule_value,
     items = items
   )
 
-  rule_short_name <- paste0("above_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
+  rule_short_name <- paste0(
+    "above_",
+    rule_value,
+    "_",
+    extent_type,
+    ifelse(extent_type == "all", "", paste0("_", extent_value))
+  )
 
   if (extent_type == "all") {
-    function_call <- substitute(all(value[!is.na(value)] > rv), list(rv = rule_value))
-    rule_description <- paste0("All (non-missing) values are > ", rule_value)
+    function_call <- substitute(
+      all(value[!is.na(value)] > rv),
+      list(rv = rule_value)
+    )
+    rule_description <- paste0(
+      "All (non-missing) values are > ",
+      rule_value
+    )
   } else if (extent_type == "any") {
-    function_call <- substitute(sum(value[!is.na(value)] > rv) >= x, list(x = extent_value, rv = rule_value))
-    rule_description <- paste0("At least ", extent_value, " (non-missing) values are > ", rule_value)
+    function_call <- substitute(
+      sum(value[!is.na(value)] > rv) >= x,
+      list(x = extent_value, rv = rule_value)
+    )
+    rule_description <- paste0(
+      "At least ",
+      extent_value,
+      " (non-missing) values are > ",
+      rule_value
+    )
   } else if (extent_type == "last") {
     function_call <- substitute(
       all(rev(value[!is.na(value)])[1:x] > rv),
       list(x = extent_value, rv = rule_value)
     )
-    rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are > ", rule_value)
+    rule_description <- paste0(
+      "The last ",
+      extent_value,
+      " or more (non-missing) values are > ",
+      rule_value
+    )
   } else if (extent_type == "consecutive") {
     function_call <- substitute(
       {
@@ -492,7 +547,11 @@ alert_above <- function(extent_type = "all",
       },
       list(x = extent_value, rv = rule_value)
     )
-    rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are > ", rule_value)
+    rule_description <- paste0(
+      extent_value,
+      " or more (non-missing) values in a row are are > ",
+      rule_value
+    )
   }
 
   alert_rule(
@@ -508,47 +567,78 @@ alert_above <- function(extent_type = "all",
 # -----------------------------------------------------------------------------
 #' Test for values less than a specific value
 #'
-#' @section Details: `alert_below()` - Test for the presence of values strictly less than `rule_value`.
+#' @section Details: `alert_below()` - Test for the presence of values strictly
+#'   less than `rule_value`.
 #'
-#' @param extent_type Type of subset of the time series values that must satisfy the condition for
-#'   the rule to return "FAIL". One of "all", "any", "last", "consecutive". See Details.
+#' @param extent_type Type of subset of the time series values that must satisfy
+#'   the condition for the rule to return "FAIL". One of "all", "any", "last",
+#'   "consecutive". See Details.
 #' @param extent_value Numeric lower limit of the extent type. See Details.
 #' @param rule_value Numeric value to test against. See Details.
-#' @param items Named list with names corresponding to members of `item_cols`. List members are
-#'   character vectors of values contained in the named column that the rule should be applied to.
-#'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @param items Named list with names corresponding to members of `item_cols`.
+#'   List members are character vectors of values contained in the named column
+#'   that the rule should be applied to. If `items = NULL` the rule will be
+#'   applied to all items. See Details.
 #' @examples
 #' # alert if all values are less than 2
 #' ars <- alert_rules(alert_below(extent_type = "all", rule_value = 2))
 #'
 #' @rdname alert_rule_types
 #' @export
-alert_below <- function(extent_type = "all",
-                        extent_value = 1,
-                        rule_value,
-                        items = NULL) {
+alert_below <- function(
+  extent_type = "all",
+  extent_value = 1,
+  rule_value,
+  items = NULL
+) {
   validate_params_required(match.call())
-  validate_params_type(match.call(),
+  validate_params_type(
+    match.call(),
     extent_type = extent_type,
     extent_value = extent_value,
     rule_value = rule_value,
     items = items
   )
 
-  rule_short_name <- paste0("below_", rule_value, "_", extent_type, ifelse(extent_type == "all", "", paste0("_", extent_value)))
+  rule_short_name <- paste0(
+    "below_",
+    rule_value,
+    "_",
+    extent_type,
+    ifelse(extent_type == "all", "", paste0("_", extent_value))
+  )
 
   if (extent_type == "all") {
-    function_call <- substitute(all(value[!is.na(value)] < rv), list(rv = rule_value))
-    rule_description <- paste0("All (non-missing) values are < ", rule_value)
+    function_call <- substitute(
+      all(value[!is.na(value)] < rv),
+      list(rv = rule_value)
+    )
+    rule_description <- paste0(
+      "All (non-missing) values are < ",
+      rule_value
+    )
   } else if (extent_type == "any") {
-    function_call <- substitute(sum(value[!is.na(value)] < rv) >= x, list(x = extent_value, rv = rule_value))
-    rule_description <- paste0("At least ", extent_value, " (non-missing) values are < ", rule_value)
+    function_call <- substitute(
+      sum(value[!is.na(value)] < rv) >= x,
+      list(x = extent_value, rv = rule_value)
+    )
+    rule_description <- paste0(
+      "At least ",
+      extent_value,
+      " (non-missing) values are < ",
+      rule_value
+    )
   } else if (extent_type == "last") {
     function_call <- substitute(
       all(rev(value[!is.na(value)])[1:x] < rv),
       list(x = extent_value, rv = rule_value)
     )
-    rule_description <- paste0("The last ", extent_value, " or more (non-missing) values are < ", rule_value)
+    rule_description <- paste0(
+      "The last ",
+      extent_value,
+      " or more (non-missing) values are < ",
+      rule_value
+    )
   } else if (extent_type == "consecutive") {
     function_call <- substitute(
       {
@@ -557,7 +647,11 @@ alert_below <- function(extent_type = "all",
       },
       list(x = extent_value, rv = rule_value)
     )
-    rule_description <- paste0(extent_value, " or more (non-missing) values in a row are are < ", rule_value)
+    rule_description <- paste0(
+      extent_value,
+      " or more (non-missing) values in a row are are < ",
+      rule_value
+    )
   }
 
   alert_rule(
@@ -573,31 +667,42 @@ alert_below <- function(extent_type = "all",
 # -----------------------------------------------------------------------------
 #' Test for when there is a percentage increase in latest values
 #'
-#' @section Details: `alert_difference_above_perc()` - Test if latest values are greater than in a previous period, increasing strictly more than the percentage stipulated in `rule_value`.
-#' Based on the mean of values in the two periods. Ranges should be contiguous, and denote
-#' positions from the end of the time series.
+#' @section Details: `alert_difference_above_perc()` - Test if latest values are
+#'   greater than in a previous period, increasing strictly more than the
+#'   percentage stipulated in `rule_value`. Based on the mean of values in the
+#'   two periods. Ranges should be contiguous, and denote positions from the end
+#'   of the time series.
 #'
-#' @param current_period Numeric vector containing positions from end of time series to use for comparison
-#' @param previous_period Numeric vector containing positions from end of time series to use for
-#'   comparison. Can overlap with `current_period` if desired.
+#' @param current_period Numeric vector containing positions from end of time
+#'   series to use for comparison
+#' @param previous_period Numeric vector containing positions from end of time
+#'   series to use for comparison. Can overlap with `current_period` if desired.
 #' @param rule_value Numeric value to test against. See Details.
-#' @param items Named list with names corresponding to members of `item_cols`. List members are
-#'   character vectors of values contained in the named column that the rule should be applied to.
-#'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @param items Named list with names corresponding to members of `item_cols`.
+#'   List members are character vectors of values contained in the named column
+#'   that the rule should be applied to. If `items = NULL` the rule will be
+#'   applied to all items. See Details.
 #' @examples
-#' # alert if mean of last 3 values is over 20% greater than mean of the previous 12 values
+#' # alert if mean of last 3 values is over 20% greater
+#' # than mean of the previous 12 values
 #' ars <- alert_rules(
-#'   alert_difference_above_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
-#' )
+#'   alert_difference_above_perc(
+#'     current_period = 1:3,
+#'     previous_period = 4:15,
+#'     rule_value = 20)
+#'   )
 #'
 #' @rdname alert_rule_types
 #' @export
-alert_difference_above_perc <- function(current_period,
-                                        previous_period,
-                                        rule_value,
-                                        items = NULL) {
+alert_difference_above_perc <- function(
+  current_period,
+  previous_period,
+  rule_value,
+  items = NULL
+) {
   validate_params_required(match.call())
-  validate_params_type(match.call(),
+  validate_params_type(
+    match.call(),
     current_period = current_period,
     previous_period = previous_period,
     rule_value = rule_value,
@@ -605,28 +710,44 @@ alert_difference_above_perc <- function(current_period,
   )
 
   rule_short_name <- paste0(
-    "diff_above_perc_", rule_value,
-    "_period_", ifelse(length(current_period) == 1,
+    "diff_above_perc_",
+    rule_value,
+    "_period_",
+    ifelse(
+      length(current_period) == 1,
       current_period,
       paste0(current_period[1], "-", rev(current_period)[1])
     ),
-    "_v_", ifelse(length(previous_period) == 1,
+    "_v_",
+    ifelse(
+      length(previous_period) == 1,
       previous_period,
       paste0(previous_period[1], "-", rev(previous_period)[1])
     )
   )
 
   function_call <- substitute(
-    mean(rev(value)[cp], na.rm = TRUE) > (1 + rv / 100) * mean(rev(value)[pp], na.rm = TRUE),
+    mean(rev(value)[cp], na.rm = TRUE) >
+      (1 + rv / 100) * mean(rev(value)[pp], na.rm = TRUE),
     list(cp = current_period, pp = previous_period, rv = rule_value)
   )
   rule_description <- paste0(
-    ifelse(length(current_period) == 1,
+    ifelse(
+      length(current_period) == 1,
       paste0("Value ", current_period, " from end is"),
-      paste0("Values ", current_period[1], "-", rev(current_period)[1], " from end are")
+      paste0(
+        "Values ",
+        current_period[1],
+        "-",
+        rev(current_period)[1],
+        " from end are"
+      )
     ),
-    " over ", rule_value, "% greater than ",
-    ifelse(length(previous_period) == 1,
+    " over ",
+    rule_value,
+    "% greater than ",
+    ifelse(
+      length(previous_period) == 1,
       paste0("value ", previous_period),
       paste0("values ", previous_period[1], "-", rev(previous_period)[1])
     ),
@@ -646,31 +767,42 @@ alert_difference_above_perc <- function(current_period,
 # -----------------------------------------------------------------------------
 #' Test for when there is a percentage drop in latest values
 #'
-#' @section Details: `alert_difference_below_perc()` - Test if latest values are lower than in a previous period, dropping strictly more than the percentage stipulated in `rule_value`.
-#' Based on the mean of values in the two periods. Ranges should be contiguous, and denote
-#' positions from the end of the time series.
+#' @section Details: `alert_difference_below_perc()` - Test if latest values are
+#'   lower than in a previous period, dropping strictly more than the percentage
+#'   stipulated in `rule_value`. Based on the mean of values in the two periods.
+#'   Ranges should be contiguous, and denote positions from the end of the time
+#'   series.
 #'
-#' @param current_period Numeric vector containing positions from end of time series to use for comparison
-#' @param previous_period Numeric vector containing positions from end of time series to use for
-#'   comparison. Can overlap with `current_period` if desired.
+#' @param current_period Numeric vector containing positions from end of time
+#'   series to use for comparison
+#' @param previous_period Numeric vector containing positions from end of time
+#'   series to use for comparison. Can overlap with `current_period` if desired.
 #' @param rule_value Numeric value to test against. See Details.
-#' @param items Named list with names corresponding to members of `item_cols`. List members are
-#'   character vectors of values contained in the named column that the rule should be applied to.
-#'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @param items Named list with names corresponding to members of `item_cols`.
+#'   List members are character vectors of values contained in the named column
+#'   that the rule should be applied to. If `items = NULL` the rule will be
+#'   applied to all items. See Details.
 #' @examples
-#' # alert if mean of last 3 values is over 20% lower than mean of the previous 12 values
+#' # alert if mean of last 3 values is over 20% lower than mean of
+#' # the previous 12 values
 #' ars <- alert_rules(
-#'   alert_difference_below_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
-#' )
+#'   alert_difference_below_perc(
+#'     current_period = 1:3,
+#'     previous_period = 4:15,
+#'     rule_value = 20)
+#'   )
 #'
 #' @rdname alert_rule_types
 #' @export
-alert_difference_below_perc <- function(current_period,
-                                        previous_period,
-                                        rule_value,
-                                        items = NULL) {
+alert_difference_below_perc <- function(
+  current_period,
+  previous_period,
+  rule_value,
+  items = NULL
+) {
   validate_params_required(match.call())
-  validate_params_type(match.call(),
+  validate_params_type(
+    match.call(),
     current_period = current_period,
     previous_period = previous_period,
     rule_value = rule_value,
@@ -678,28 +810,44 @@ alert_difference_below_perc <- function(current_period,
   )
 
   rule_short_name <- paste0(
-    "diff_below_perc_", rule_value,
-    "_period_", ifelse(length(current_period) == 1,
+    "diff_below_perc_",
+    rule_value,
+    "_period_",
+    ifelse(
+      length(current_period) == 1,
       current_period,
       paste0(current_period[1], "-", rev(current_period)[1])
     ),
-    "_v_", ifelse(length(previous_period) == 1,
+    "_v_",
+    ifelse(
+      length(previous_period) == 1,
       previous_period,
       paste0(previous_period[1], "-", rev(previous_period)[1])
     )
   )
 
   function_call <- substitute(
-    mean(rev(value)[cp], na.rm = TRUE) < (1 - rv / 100) * mean(rev(value)[pp], na.rm = TRUE),
+    mean(rev(value)[cp], na.rm = TRUE) <
+      (1 - rv / 100) * mean(rev(value)[pp], na.rm = TRUE),
     list(cp = current_period, pp = previous_period, rv = rule_value)
   )
   rule_description <- paste0(
-    ifelse(length(current_period) == 1,
+    ifelse(
+      length(current_period) == 1,
       paste0("Value ", current_period, " from end is"),
-      paste0("Values ", current_period[1], "-", rev(current_period)[1], " from end are")
+      paste0(
+        "Values ",
+        current_period[1],
+        "-",
+        rev(current_period)[1],
+        " from end are"
+      )
     ),
-    " over ", rule_value, "% less than ",
-    ifelse(length(previous_period) == 1,
+    " over ",
+    rule_value,
+    "% less than ",
+    ifelse(
+      length(previous_period) == 1,
       paste0("value ", previous_period),
       paste0("values ", previous_period[1], "-", rev(previous_period)[1])
     ),
@@ -719,20 +867,23 @@ alert_difference_below_perc <- function(current_period,
 # -----------------------------------------------------------------------------
 #' Create a custom alert rule
 #'
-#' @section Details: `alert_custom()` - Specify a custom rule.
-#'   The supplied `function_call` is passed to `eval()` within a `dplyr::summarise()` after grouping
-#'   by the `item_cols` and ordering by the `timepoint_col`. Column names that can be used
-#'   explicitly in the expression are `value` and `timepoint`, and which refer to the values in the
-#'   `value_col` and `timepoint_col` columns of the data respectively. See Examples.
+#' @section Details: `alert_custom()` - Specify a custom rule. The supplied
+#'   `function_call` is passed to `eval()` within a `dplyr::summarise()` after
+#'   grouping by the `item_cols` and ordering by the `timepoint_col`. Column
+#'   names that can be used explicitly in the expression are `value` and
+#'   `timepoint`, and which refer to the values in the `value_col` and
+#'   `timepoint_col` columns of the data respectively. See Examples.
 #'
-#' @param short_name Short name to uniquely identify the rule. Only include alphanumeric, '-', and
-#'   '_' characters.
+#' @param short_name Short name to uniquely identify the rule. Only include
+#'   alphanumeric, '-', and '_' characters.
 #' @param description Short description of what the rule checks for
-#' @param function_call Quoted expression containing the call to be evaluated per item, that returns either `TRUE` or `FALSE`.
-#'   Return value of `TRUE` means alert result is "FAIL". See Details.
-#' @param items Named list with names corresponding to members of `item_cols`. List members are
-#'   character vectors of values contained in the named column that the rule should be applied to.
-#'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @param function_call Quoted expression containing the call to be evaluated
+#'   per item, that returns either `TRUE` or `FALSE`. Return value of `TRUE`
+#'   means alert result is "FAIL". See Details.
+#' @param items Named list with names corresponding to members of `item_cols`.
+#'   List members are character vectors of values contained in the named column
+#'   that the rule should be applied to. If `items = NULL` the rule will be
+#'   applied to all items. See Details.
 #'
 #' @examples
 #' # Create two custom rules
@@ -740,7 +891,9 @@ alert_difference_below_perc <- function(current_period,
 #'   alert_custom(
 #'     short_name = "my_rule_combo",
 #'     description = "Over 3 missing values and max value is > 10",
-#'     function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
+#'     function_call = quote(
+#'       sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10
+#'     )
 #'   ),
 #'   alert_custom(
 #'     short_name = "my_rule_doubled",
@@ -751,14 +904,17 @@ alert_difference_below_perc <- function(current_period,
 #'
 #' @rdname alert_rule_types
 #' @export
-alert_custom <- function(short_name,
-                         description,
-                         function_call,
-                         items = NULL) {
+alert_custom <- function(
+  short_name,
+  description,
+  function_call,
+  items = NULL
+) {
   # TODO: Consider renaming function_call to quoted_expression
 
   validate_params_required(match.call())
-  validate_params_type(match.call(),
+  validate_params_type(
+    match.call(),
     short_name = short_name,
     description = description,
     function_call = function_call,
@@ -803,29 +959,36 @@ is_alert_rules <- function(x) inherits(x, "mantis_alert_rules")
 #' Constructor for an alert_rule
 #'
 #' @param type type of rule
-#' @param function_call expression to pass to `eval()`, that returns either `TRUE` or `FALSE`.
-#'   Return value of `TRUE` means alert result is "FAIL"
-#' @param short_name a short computer-friendly name to uniquely identify the rule
-#' @param description brief but user-friendly explanation of why the rule result is "FAIL"
-#' @param items Named list with names corresponding to members of `item_cols`. List members are
-#'   character vectors of values contained in the named column that the rule should be applied to.
-#'   If `items = NULL` the rule will be applied to all items. See Details.
+#' @param function_call expression to pass to `eval()`, that returns either
+#'   `TRUE` or `FALSE`. Return value of `TRUE` means alert result is "FAIL"
+#' @param short_name a short computer-friendly name to uniquely identify the
+#'   rule
+#' @param description brief but user-friendly explanation of why the rule result
+#'   is "FAIL"
+#' @param items Named list with names corresponding to members of `item_cols`.
+#'   List members are character vectors of values contained in the named column
+#'   that the rule should be applied to. If `items = NULL` the rule will be
+#'   applied to all items. See Details.
 #'
-#' @section Details: Use `items` to restrict the rule to be applied only to specified items.
-#'   `items` can either be NULL or a named list of character vectors. If `NULL`, the rule will be
-#'   applied to all items. If a named list, the names must match members of the `item_cols`
-#'   parameter in the `inputspec`, (as well as column names in the `df`), though can be a subset.
-#'   If an `item_col` is not named in the list, the rule will apply to all its members. If an
-#'   `item_col` is named in the list, the rule will only be applied when the `item_col`'s value is
-#'   contained in the corresponding character vector. When multiple `item_col`s are
-#'   specified, the rule will be applied only to items that satisfy all the conditions.
+#' @section Details: Use `items` to restrict the rule to be applied only to
+#'   specified items. `items` can either be NULL or a named list of character
+#'   vectors. If `NULL`, the rule will be applied to all items. If a named list,
+#'   the names must match members of the `item_cols` parameter in the
+#'   `inputspec`, (as well as column names in the `df`), though can be a subset.
+#'   If an `item_col` is not named in the list, the rule will apply to all its
+#'   members. If an `item_col` is named in the list, the rule will only be
+#'   applied when the `item_col`'s value is contained in the corresponding
+#'   character vector. When multiple `item_col`s are specified, the rule will be
+#'   applied only to items that satisfy all the conditions.
 #'
 #' @noRd
-alert_rule <- function(type,
-                       function_call,
-                       short_name,
-                       description,
-                       items = NULL) {
+alert_rule <- function(
+  type,
+  function_call,
+  short_name,
+  description,
+  items = NULL
+) {
   structure(
     list(
       type = type,
@@ -853,14 +1016,17 @@ is_alert_rule <- function(x) inherits(x, "mantis_alert_rule")
 #' @param prepared_df prepared_df
 #' @param inputspec Specification of data in df
 #' @param alert_rules [`alert_rules()`] object specifying conditions to test
-#' @param filter_results only return rows where the alert result is in this vector of values
+#' @param filter_results only return rows where the alert result is in this
+#'   vector of values
 #'
 #' @return tibble
 #' @noRd
-run_alerts <- function(prepared_df,
-                       inputspec,
-                       alert_rules,
-                       filter_results = c("PASS", "FAIL", "NA")) {
+run_alerts <- function(
+  prepared_df,
+  inputspec,
+  alert_rules,
+  filter_results = c("PASS", "FAIL", "NA")
+) {
   alert_result <- NULL
 
   # if there is no data, return a formatted (empty) df
@@ -877,7 +1043,12 @@ run_alerts <- function(prepared_df,
   }
 
   results <-
-    lapply(alert_rules, FUN = run_alert, prepared_df = prepared_df, inputspec = inputspec) |>
+    lapply(
+      alert_rules,
+      FUN = run_alert,
+      prepared_df = prepared_df,
+      inputspec = inputspec
+    ) |>
     purrr::reduce(dplyr::bind_rows) |>
     dplyr::ungroup()
 
@@ -896,14 +1067,20 @@ run_alerts <- function(prepared_df,
 #'
 #' @return tibble
 #' @noRd
-run_alert <- function(prepared_df, inputspec, alert_rule) {
+run_alert <- function(
+  prepared_df,
+  inputspec,
+  alert_rule
+) {
   timepoint <- NULL
 
   # TODO: if it's a custom rule, wrap it in some error handling
 
   prepared_df |>
     restrict_items(items = alert_rule$items) |>
-    dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(inputspec$item_cols)))) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(item_cols_prefix(
+      inputspec$item_cols
+    )))) |>
     dplyr::arrange(timepoint) |>
     dplyr::summarise(
       alert_name = alert_rule$short_name,
@@ -921,8 +1098,10 @@ run_alert <- function(prepared_df, inputspec, alert_rule) {
 #'
 #' @return tibble
 #' @noRd
-restrict_items <- function(prepared_df,
-                           items = NULL) {
+restrict_items <- function(
+  prepared_df,
+  items = NULL
+) {
   # Note: items param is validated at an earlier stage
 
   if (is.null(items)) {
@@ -941,13 +1120,17 @@ restrict_items <- function(prepared_df,
 #'
 #' @return character string
 #' @noRd
-items_list_to_condition_str <- function(items = NULL) {
+items_list_to_condition_str <- function(
+  items = NULL
+) {
   condition_str <-
     paste(
       mapply(
         FUN = function(x, y) {
           paste0(
-            "`", item_cols_prefix(x), "`",
+            "`",
+            item_cols_prefix(x),
+            "`",
             " %in% c('",
             paste(y, collapse = "', '"),
             "') "
@@ -973,9 +1156,12 @@ items_list_to_condition_str <- function(items = NULL) {
 #' @param inputspec user supplied inputspec
 #'
 #' @noRd
-validate_alert_rules_to_inputspec <- function(alert_rules,
-                                              inputspec) {
-  # Note: item_cols should already have been validated against the df so don't need to do it again for items
+validate_alert_rules_to_inputspec <- function(
+  alert_rules,
+  inputspec
+) {
+  # Note: item_cols should already have been validated against the df so don't
+  # need to do it again for items
 
   # validate - collect all errors together and return only once
   err_validation <- character()
@@ -995,7 +1181,10 @@ validate_alert_rules_to_inputspec <- function(alert_rules,
         err_validation,
         paste(
           "alert_rule item(s) [",
-          paste(all_items[!all_items %in% inputspec$item_cols], collapse = ", "),
+          paste(
+            all_items[!all_items %in% inputspec$item_cols],
+            collapse = ", "
+          ),
           "] not in item_cols [",
           paste(inputspec$item_cols, collapse = ", "),
           "]. Named items must match one of the values in item_cols"

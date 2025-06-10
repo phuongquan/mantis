@@ -36,29 +36,33 @@ alert_difference_below_perc(
 alert_custom(short_name, description, function_call, items = NULL)
 }
 \arguments{
-\item{extent_type}{Type of subset of the time series values that must satisfy the condition for
-the rule to return "FAIL". One of "all", "any", "last", "consecutive". See Details.}
+\item{extent_type}{Type of subset of the time series values that must satisfy
+the condition for the rule to return "FAIL". One of "all", "any", "last",
+"consecutive". See Details.}
 
 \item{extent_value}{Numeric lower limit of the extent type. See Details.}
 
-\item{items}{Named list with names corresponding to members of \code{item_cols}. List members are
-character vectors of values contained in the named column that the rule should be applied to.
-If \code{items = NULL} the rule will be applied to all items. See Details.}
+\item{items}{Named list with names corresponding to members of \code{item_cols}.
+List members are character vectors of values contained in the named column
+that the rule should be applied to. If \code{items = NULL} the rule will be
+applied to all items. See Details.}
 
 \item{rule_value}{Numeric value to test against. See Details.}
 
-\item{current_period}{Numeric vector containing positions from end of time series to use for comparison}
+\item{current_period}{Numeric vector containing positions from end of time
+series to use for comparison}
 
-\item{previous_period}{Numeric vector containing positions from end of time series to use for
-comparison. Can overlap with \code{current_period} if desired.}
+\item{previous_period}{Numeric vector containing positions from end of time
+series to use for comparison. Can overlap with \code{current_period} if desired.}
 
-\item{short_name}{Short name to uniquely identify the rule. Only include alphanumeric, '-', and
-'_' characters.}
+\item{short_name}{Short name to uniquely identify the rule. Only include
+alphanumeric, '-', and '_' characters.}
 
 \item{description}{Short description of what the rule checks for}
 
-\item{function_call}{Quoted expression containing the call to be evaluated per item, that returns either \code{TRUE} or \code{FALSE}.
-Return value of \code{TRUE} means alert result is "FAIL". See Details.}
+\item{function_call}{Quoted expression containing the call to be evaluated
+per item, that returns either \code{TRUE} or \code{FALSE}. Return value of \code{TRUE}
+means alert result is "FAIL". See Details.}
 }
 \value{
 An \code{alert_rule} object
@@ -87,25 +91,33 @@ satisfy all the conditions. See Examples in \code{\link[=alert_rules]{alert_rule
 
  \code{alert_missing()} - Test for the presence of NA values.
 
- \code{alert_equals()} - Test for the presence of values equal to \code{rule_value}.
+ \code{alert_equals()} - Test for the presence of values equal to
+\code{rule_value}.
 
- \code{alert_above()} - Test for the presence of values strictly greater than \code{rule_value}.
+ \code{alert_above()} - Test for the presence of values strictly
+greater than \code{rule_value}.
 
- \code{alert_below()} - Test for the presence of values strictly less than \code{rule_value}.
+ \code{alert_below()} - Test for the presence of values strictly
+less than \code{rule_value}.
 
- \code{alert_difference_above_perc()} - Test if latest values are greater than in a previous period, increasing strictly more than the percentage stipulated in \code{rule_value}.
-Based on the mean of values in the two periods. Ranges should be contiguous, and denote
-positions from the end of the time series.
+ \code{alert_difference_above_perc()} - Test if latest values are
+greater than in a previous period, increasing strictly more than the
+percentage stipulated in \code{rule_value}. Based on the mean of values in the
+two periods. Ranges should be contiguous, and denote positions from the end
+of the time series.
 
- \code{alert_difference_below_perc()} - Test if latest values are lower than in a previous period, dropping strictly more than the percentage stipulated in \code{rule_value}.
-Based on the mean of values in the two periods. Ranges should be contiguous, and denote
-positions from the end of the time series.
+ \code{alert_difference_below_perc()} - Test if latest values are
+lower than in a previous period, dropping strictly more than the percentage
+stipulated in \code{rule_value}. Based on the mean of values in the two periods.
+Ranges should be contiguous, and denote positions from the end of the time
+series.
 
- \code{alert_custom()} - Specify a custom rule.
-The supplied \code{function_call} is passed to \code{eval()} within a \code{dplyr::summarise()} after grouping
-by the \code{item_cols} and ordering by the \code{timepoint_col}. Column names that can be used
-explicitly in the expression are \code{value} and \code{timepoint}, and which refer to the values in the
-\code{value_col} and \code{timepoint_col} columns of the data respectively. See Examples.
+ \code{alert_custom()} - Specify a custom rule. The supplied
+\code{function_call} is passed to \code{eval()} within a \code{dplyr::summarise()} after
+grouping by the \code{item_cols} and ordering by the \code{timepoint_col}. Column
+names that can be used explicitly in the expression are \code{value} and
+\code{timepoint}, and which refer to the values in the \code{value_col} and
+\code{timepoint_col} columns of the data respectively. See Examples.
 }
 
 \examples{
@@ -130,22 +142,32 @@ ars <- alert_rules(alert_above(extent_type = "all", rule_value = 50))
 # alert if all values are less than 2
 ars <- alert_rules(alert_below(extent_type = "all", rule_value = 2))
 
-# alert if mean of last 3 values is over 20\% greater than mean of the previous 12 values
+# alert if mean of last 3 values is over 20\% greater
+# than mean of the previous 12 values
 ars <- alert_rules(
-  alert_difference_above_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
-)
+  alert_difference_above_perc(
+    current_period = 1:3,
+    previous_period = 4:15,
+    rule_value = 20)
+  )
 
-# alert if mean of last 3 values is over 20\% lower than mean of the previous 12 values
+# alert if mean of last 3 values is over 20\% lower than mean of
+# the previous 12 values
 ars <- alert_rules(
-  alert_difference_below_perc(current_period = 1:3, previous_period = 4:15, rule_value = 20)
-)
+  alert_difference_below_perc(
+    current_period = 1:3,
+    previous_period = 4:15,
+    rule_value = 20)
+  )
 
 # Create two custom rules
 ars <- alert_rules(
   alert_custom(
     short_name = "my_rule_combo",
     description = "Over 3 missing values and max value is > 10",
-    function_call = quote(sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10)
+    function_call = quote(
+      sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10
+    )
   ),
   alert_custom(
     short_name = "my_rule_doubled",
