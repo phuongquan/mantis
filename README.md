@@ -5,9 +5,9 @@
 
 <!-- badges: start -->
 
-[![Project Status: WIP – Initial development is in progress, but there
-has not yet been a stable, usable release suitable for the
-public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check](https://github.com/phuongquan/mantis/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/phuongquan/mantis/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/phuongquan/mantis/graph/badge.svg)](https://app.codecov.io/gh/phuongquan/mantis)
@@ -20,17 +20,18 @@ of visualisations include interactive plots with adjustable axes and
 tooltips showing the individual dates and values, as well as static
 heatmap and scatter plots for more lightweight applications. E.g.
 
-<img src="man/figures/example_prescription_numbers_interactive.png" width="350" /><img src="man/figures/example_prescription_numbers_heatmap.png" width="350" />
+<img src="man/figures/example_prescription_numbers_interactive.png" width="350" />
+<img src="man/figures/example_prescription_numbers_heatmap.png" width="350" />
 
 The resulting html reports are self-contained and shareable without a
 web server.
 
 ‘mantis’ is designed for use on data that is essentially a collection of
-time series in a data frame, where you have already decided which values
-you are interested in reviewing. If you want to check more generally for
-temporal changes in record-level, non-numeric data, then check out our
-sister package
-[‘daiquiri’](https://ropensci.github.io/daiquiri/index.html).
+time ‘series in a data frame, where you have already decided which
+values you are ’interested in reviewing. If you want to check more
+generally for temporal ’changes in record-level, non-numeric data, then
+check out our sister
+package’[‘daiquiri’](https://ropensci.github.io/daiquiri/index.html).
 
 ## Why should I use it?
 
@@ -56,13 +57,26 @@ We anticipate two main target users:
 
 ``` r
 # install dependencies first
-install.packages(c("remotes","rmarkdown","knitr","reactable","dplyr","tidyr","dygraphs","xts","ggplot2","scales","purrr","htmltools"))
+install.packages(c(
+  "remotes",
+  "rmarkdown",
+  "knitr",
+  "reactable",
+  "dplyr",
+  "tidyr",
+  "dygraphs",
+  "xts",
+  "ggplot2",
+  "scales",
+  "purrr",
+  "htmltools"
+))
 
 # install the latest release version
 remotes::install_github("phuongquan/mantis@v0.2.0", dependencies = FALSE)
 
 # or install the current development version
-#remotes::install_github("phuongquan/mantis", dependencies = FALSE)
+# remotes::install_github("phuongquan/mantis", dependencies = FALSE)
 ```
 
 ## Usage
@@ -70,7 +84,8 @@ remotes::install_github("phuongquan/mantis@v0.2.0", dependencies = FALSE)
 ``` r
 library(mantis)
 
-# this example data frame contains numbers of antibiotic prescriptions in long format, 
+# this example data frame contains numbers of antibiotic prescriptions 
+# in long format
 data("example_prescription_numbers")
 
 head(example_prescription_numbers)
