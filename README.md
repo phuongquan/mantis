@@ -13,20 +13,19 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 coverage](https://codecov.io/gh/phuongquan/mantis/graph/badge.svg)](https://app.codecov.io/gh/phuongquan/mantis)
 <!-- badges: end -->
 
-The ‘mantis’ package generates interactive reports that enable quick
+The `mantis` package generates interactive reports that enable quick
 visual review of multiple related time series. This can help with
 identification of temporal artefacts and unexpected trends. The choice
 of visualisations include interactive plots with adjustable axes and
 tooltips showing the individual dates and values, as well as static
 heatmap and scatter plots for more lightweight applications. E.g.
 
-<img src="man/figures/example_prescription_numbers_interactive.png" width="350" />
-<img src="man/figures/example_prescription_numbers_heatmap.png" width="350" />
+<img src="man/figures/example_prescription_numbers_interactive.png" width="350" /><img src="man/figures/example_prescription_numbers_heatmap.png" width="350" />
 
 The resulting html reports are self-contained and shareable without a
 web server.
 
-‘mantis’ is designed for use on data that is essentially a collection of
+`mantis` is designed for use on data that is essentially a collection of
 time series in a data frame, where you have already decided which values
 you are interested in reviewing. If you want to check more generally for
 temporal changes in record-level, non-numeric data, then check out our
