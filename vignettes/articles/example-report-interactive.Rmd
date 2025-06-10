@@ -12,27 +12,32 @@ knitr::opts_chunk$set(
 
 ```{r generate-report}
 # only generate it if this is a release version
-if(length(unlist(strsplit(as.character(utils::packageVersion("mantis")), "[.]"))) < 4){
+if (
+  length(unlist(strsplit(
+    as.character(utils::packageVersion("mantis")),
+    "[.]"
+  ))) <
+    4
+) {
   example_prescription_numbers <- mantis::example_prescription_numbers
-  
-  filename <- 
-    mantis::mantis_report(
-    df = example_prescription_numbers,
-    inputspec = mantis::inputspec(
-      timepoint_col = "PrescriptionDate",
-      item_cols = c("Antibiotic", "Spectrum", "Location"),
-      value_col = "NumberOfPrescriptions",
-      tab_col = "Location"
-    ),
-    outputspec = mantis::outputspec_interactive(),
-    report_title = "Example mantis report - interactive",
-    dataset_description = "Hover mouse over the graphs to see dates and values. Filter the table by typing into the boxes under the column headings.",
-    save_directory = "../../docs/articles",
-    save_filename = "example-prescriptions-interactive",
-    show_progress = FALSE
-  )
-}
 
+  filename <-
+    mantis::mantis_report(
+      df = example_prescription_numbers,
+      inputspec = mantis::inputspec(
+        timepoint_col = "PrescriptionDate",
+        item_cols = c("Antibiotic", "Spectrum", "Location"),
+        value_col = "NumberOfPrescriptions",
+        tab_col = "Location"
+      ),
+      outputspec = mantis::outputspec_interactive(),
+      report_title = "Example mantis report - interactive",
+      dataset_description = "Hover mouse over the graphs to see dates and values. Filter the table by typing into the boxes under the column headings.",
+      save_directory = "../../docs/articles",
+      save_filename = "example-prescriptions-interactive",
+      show_progress = FALSE
+    )
+}
 ```
 
 ```{css hide-header-logo, echo=FALSE}

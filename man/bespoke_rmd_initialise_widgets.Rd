@@ -7,21 +7,23 @@
 bespoke_rmd_initialise_widgets(plot_type)
 }
 \arguments{
-\item{plot_type}{"\code{bar}" or "\code{line}", depending on what will be used in real tables. Or "none" if
-just want a reactable widget without dygraphs e.g. for alerts}
+\item{plot_type}{"\code{bar}" or "\code{line}", depending on what will be used in real
+tables. Or "none" if just want a reactable widget without dygraphs e.g. for
+alerts}
 }
 \value{
 A (mostly) invisible html widget
 }
 \description{
-Since the output is being constructed in \code{results='asis'} chunks, there must also be at least one
-standard chunk that contains the relevant widgets, otherwise they will fail to render. The
-\code{dygraph} also needs to be initialised with the appropriate \code{plot_type}. This is only needed when
-creating interactive reports.
-Make sure you read the vignette: \code{vignette("bespoke-reports", package = "mantis")} as it contains
-further important information.
-Note: The chunk currently appears like a line break when rendered.
-See \url{https://github.com/rstudio/rmarkdown/issues/1877} for more info.
+Since the output is being constructed in \code{results='asis'} chunks, there must
+also be at least one standard chunk that contains the relevant widgets,
+otherwise they will fail to render. The \code{dygraph} also needs to be
+initialised with the appropriate \code{plot_type}. This is only needed when
+creating interactive reports. Make sure you read the vignette:
+\code{vignette("bespoke-reports", package = "mantis")} as it contains further
+important information. Note: The chunk currently appears like a line break
+when rendered. See \url{https://github.com/rstudio/rmarkdown/issues/1877} for
+more info.
 }
 \examples{
 \dontrun{

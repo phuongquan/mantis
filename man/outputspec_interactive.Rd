@@ -16,49 +16,55 @@ outputspec_interactive(
 )
 }
 \arguments{
-\item{plot_value_type}{Display the raw "\code{value}" for the time series or display the calculated
-"\code{delta}" between consecutive values.}
+\item{plot_value_type}{Display the raw "\code{value}" for the time series or
+display the calculated "\code{delta}" between consecutive values.}
 
 \item{plot_type}{Display the time series as a "\code{bar}" or "\code{line}" chart.}
 
-\item{item_labels}{Named vector containing string label(s) to use for the "item" column(s) in the
-report. The names should correspond to the \code{item_cols}, and the values should contain the
-desired labels. If \code{NULL}, the original columns name(s) will be used.}
+\item{item_labels}{Named vector containing string label(s) to use for the
+"item" column(s) in the report. The names should correspond to the
+\code{item_cols}, and the values should contain the desired labels. If \code{NULL},
+the original columns name(s) will be used.}
 
-\item{plot_label}{String label to use for the time series column in the report. If NULL, the
-original \code{value_col} name will be used.}
+\item{plot_label}{String label to use for the time series column in the
+report. If NULL, the original \code{value_col} name will be used.}
 
-\item{summary_cols}{Summary data to include as columns in the report. Options are
-\code{c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")}.}
+\item{summary_cols}{Summary data to include as columns in the report. Options
+are \code{c("max_value", "last_value", "last_value_nonmissing", "last_timepoint", "mean_value")}.}
 
-\item{sync_axis_range}{Set the y-axis to be the same range for all time series in a table.
-X-axes are always synced. Logical.}
+\item{sync_axis_range}{Set the y-axis to be the same range for all time
+series in a table. X-axes are always synced. Logical.}
 
-\item{item_order}{named list corresponding to \code{item_cols} columns for ordering the
-items in the output. List values are either \code{TRUE} for ascending order, or a character vector
-of values contained in the named column for explicit ordering. If \code{item_order = NULL}, the
-original order will be kept. See Details.}
+\item{item_order}{named list corresponding to \code{item_cols} columns for
+ordering the items in the output. List values are either \code{TRUE} for
+ascending order, or a character vector of values contained in the named
+column for explicit ordering. If \code{item_order = NULL}, the original order
+will be kept. See Details.}
 
-\item{sort_by}{column in output table to sort by. Can be one of \code{alert_overall}, or one
-of the summary columns. Append a minus sign to sort in descending order e.g. \code{-max_value}.
-Secondary ordering will be based on \code{item_order}.}
+\item{sort_by}{column in output table to sort by. Can be one of
+\code{alert_overall}, or one of the summary columns. Append a minus sign to sort
+in descending order e.g. \code{-max_value}. Secondary ordering will be based on
+\code{item_order}.}
 }
 \value{
 An \code{outputspec()} object
 }
 \description{
-Each tab contains a single table with one row per time series, and sortable/filterable columns
-based on the \code{item_cols} parameter of the \code{inputspec()}. The time series plots have tooltips and
-can be zoomed in by selecting an area of the plot.
+Each tab contains a single table with one row per time series, and
+sortable/filterable columns based on the \code{item_cols} parameter of the
+\code{inputspec()}. The time series plots have tooltips and can be zoomed in by
+selecting an area of the plot.
 }
 \section{Details}{
- For \code{item_order}, the names of the list members should correspond to the column
-names in the \code{df}. Any names that don't match will be ignored. When multiple columns are
-specified, they are sorted together, in the same priority order as the list. If a list item is \code{TRUE}
-then that column is sorted in ascending order. If a list item is a character vector then that
-column is sorted in the order of the vector first, with any remaining values included
-alphabetically at the end. If you want to order the tabs, it is recommended to put the \code{tab_col}
-as the first item in the list.
+ For \code{item_order}, the names of the list members should
+correspond to the column names in the \code{df}. Any names that don't match will
+be ignored. When multiple columns are specified, they are sorted together,
+in the same priority order as the list. If a list item is \code{TRUE} then that
+column is sorted in ascending order. If a list item is a character vector
+then that column is sorted in the order of the vector first, with any
+remaining values included alphabetically at the end. If you want to order
+the tabs, it is recommended to put the \code{tab_col} as the first item in the
+list.
 }
 
 \examples{
@@ -78,7 +84,8 @@ outspec <- outputspec_interactive(
 # Sort alphabetically by Location first,
 # then put "Vancomycin" and "Linezolid" before other antibiotics
 outspec <- outputspec_interactive(
-  item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
+  item_order = list("Location" = TRUE,
+                    "Antibiotic" = c("Vancomycin", "Linezolid"))
 )
 
 # Put the time series with the largest values first
@@ -91,7 +98,8 @@ outspec <- outputspec_interactive(
   sort_by = "alert_overall"
 )
 
-# Put the time series with failed alerts first, then sort alphabetically by Antibiotic
+# Put the time series with failed alerts first,
+# then sort alphabetically by Antibiotic
 outspec <- outputspec_interactive(
   item_order = list("Antibiotic" = TRUE),
   sort_by = "alert_overall"

@@ -14,27 +14,32 @@ outputspec_static_multipanel(
 \item{sync_axis_range}{Set the y-axis to be the same range for all the plots.
 X-axes are always synced.}
 
-\item{y_label}{string for y-axis label. Optional. If \code{NULL}, the label will be constructed from the \code{inputspec()}}
+\item{y_label}{string for y-axis label. Optional. If \code{NULL}, the label will
+be constructed from the \code{inputspec()}}
 
-\item{item_order}{named list corresponding to \code{item_cols} columns for ordering the
-items in the output. List values are either \code{TRUE} for ascending order, or a character vector
-of values contained in the named column for explicit ordering. If \code{item_order = NULL}, the
-original order will be kept. See Details.}
+\item{item_order}{named list corresponding to \code{item_cols} columns for
+ordering the items in the output. List values are either \code{TRUE} for
+ascending order, or a character vector of values contained in the named
+column for explicit ordering. If \code{item_order = NULL}, the original order
+will be kept. See Details.}
 }
 \value{
 An \code{outputspec()} object
 }
 \description{
-Each tab contains a single column of scatter plots with one row per time series.
+Each tab contains a single column of scatter plots with one row per time
+series.
 }
 \section{Details}{
- For \code{item_order}, the names of the list members should correspond to the column
-names in the \code{df}. Any names that don't match will be ignored. When multiple columns are
-specified, they are sorted together, in the same priority order as the list. If a list item is \code{TRUE}
-then that column is sorted in ascending order. If a list item is a character vector then that
-column is sorted in the order of the vector first, with any remaining values included
-alphabetically at the end. If you want to order the tabs, it is recommended to put the \code{tab_col}
-as the first item in the list.
+ For \code{item_order}, the names of the list members should
+correspond to the column names in the \code{df}. Any names that don't match will
+be ignored. When multiple columns are specified, they are sorted together,
+in the same priority order as the list. If a list item is \code{TRUE} then that
+column is sorted in ascending order. If a list item is a character vector
+then that column is sorted in the order of the vector first, with any
+remaining values included alphabetically at the end. If you want to order
+the tabs, it is recommended to put the \code{tab_col} as the first item in the
+list.
 }
 
 \examples{
@@ -52,7 +57,8 @@ outspec <- outputspec_static_multipanel(
 # Sort alphabetically by Location first,
 # then put "Vancomycin" and "Linezolid" before other antibiotics
 outspec <- outputspec_static_multipanel(
-  item_order = list("Location" = TRUE, "Antibiotic" = c("Vancomycin", "Linezolid"))
+  item_order = list("Location" = TRUE,
+                    "Antibiotic" = c("Vancomycin", "Linezolid"))
 )
 }
 \seealso{

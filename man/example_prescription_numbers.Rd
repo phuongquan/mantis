@@ -3,7 +3,8 @@
 \docType{data}
 \name{example_prescription_numbers}
 \alias{example_prescription_numbers}
-\title{Example data frame containing numbers of antibiotic prescriptions in long format}
+\title{Example data frame containing numbers of antibiotic prescriptions in long
+format}
 \format{
 \subsection{\code{example_prescription_numbers}}{
 
@@ -11,8 +12,10 @@ A data frame with 6,570 rows and 4 columns:
 \itemize{
 \item PrescriptionDate - The date the prescriptions were written
 \item Antibiotic - The name of the antibiotic prescribed
-\item Spectrum - The spectrum of activity of the antibiotic. This value is always the same for a particular antibiotic
-\item NumberOfPrescriptions - The number of prescriptions written for this antibiotic on this day
+\item Spectrum - The spectrum of activity of the antibiotic.
+This value is always the same for a particular antibiotic
+\item NumberOfPrescriptions - The number of prescriptions written for this
+antibiotic on this day
 \item Location - The hospital site where the prescription was written
 }
 }

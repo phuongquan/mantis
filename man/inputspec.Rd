@@ -13,19 +13,23 @@ inputspec(
 )
 }
 \arguments{
-\item{timepoint_col}{String denoting the (date/posixt) column which will be used for the x-axes.}
+\item{timepoint_col}{String denoting the (date/posixt) column which will be
+used for the x-axes.}
 
-\item{item_cols}{String denoting the (character) column containing categorical values identifying
-distinct time series. Multiple columns that together identify a time series can be provided as a vector}
+\item{item_cols}{String denoting the (character) column containing
+categorical values identifying distinct time series. Multiple columns that
+together identify a time series can be provided as a vector}
 
-\item{value_col}{String denoting the (numeric) column containing the time series values which
-will be used for the y-axes.}
+\item{value_col}{String denoting the (numeric) column containing the time
+series values which will be used for the y-axes.}
 
-\item{tab_col}{Optional. String denoting the (character) column containing categorical values
-which will be used to group the time series into different tabs on the report.}
+\item{tab_col}{Optional. String denoting the (character) column containing
+categorical values which will be used to group the time series into
+different tabs on the report.}
 
-\item{timepoint_unit}{expected pattern of the timepoint_col values. "sec"/"min"/"hour"/"day"/"month"/"quarter"/year".
-This will be used to fill in any gaps in the time series.}
+\item{timepoint_unit}{expected pattern of the timepoint_col values.
+"sec"/"min"/"hour"/"day"/"month"/"quarter"/year". This will be used to fill
+in any gaps in the time series.}
 }
 \value{
 A \code{inputspec()} object
@@ -34,7 +38,8 @@ A \code{inputspec()} object
 Specify relevant columns in the source data frame
 }
 \examples{
-# create a flat report, and include the "Location" and "Antibiotic" fields in the content
+# create a flat report, and include the "Location" and "Antibiotic" fields
+# in the content
 inspec_flat <- inputspec(
   timepoint_col = "PrescriptionDate",
   item_cols = c("Location", "Antibiotic"),
@@ -42,8 +47,8 @@ inspec_flat <- inputspec(
   timepoint_unit = "day"
 )
 
-# create a flat report, and include the "Location", "Spectrum", and "Antibiotic" fields in the
-# content
+# create a flat report, and include the "Location", "Spectrum",
+# and "Antibiotic" fields in the content
 inspec_flat2 <- inputspec(
   timepoint_col = "PrescriptionDate",
   item_cols = c("Location", "Spectrum", "Antibiotic"),
@@ -51,8 +56,9 @@ inspec_flat2 <- inputspec(
   timepoint_unit = "day"
 )
 
-# create a tabbed report, with a separate tab for each unique value of "Location", and include just
-# the "Antibiotic" field in the content of each tab
+# create a tabbed report, with a separate tab for each unique value of
+# "Location", and include just the "Antibiotic" field in the content of
+# each tab
 inspec_tabbed <- inputspec(
   timepoint_col = "PrescriptionDate",
   item_cols = c("Antibiotic", "Location"),
@@ -61,8 +67,9 @@ inspec_tabbed <- inputspec(
   timepoint_unit = "day"
 )
 
-# create a tabbed report, with a separate tab for each unique value of "Location", and include the
-# "Antibiotic" and "Spectrum" fields in the content of each tab
+# create a tabbed report, with a separate tab for each unique value of
+# "Location", and include the "Antibiotic" and "Spectrum" fields in the
+# content of each tab
 inspec_tabbed2 <- inputspec(
   timepoint_col = "PrescriptionDate",
   item_cols = c("Antibiotic", "Spectrum", "Location"),
@@ -71,8 +78,9 @@ inspec_tabbed2 <- inputspec(
   timepoint_unit = "day"
 )
 
-# create a tabbed report, with a separate tab for each unique value of "Antibiotic", and include
-# just the "Location" field in the content of each tab
+# create a tabbed report, with a separate tab for each unique value of
+# "Antibiotic", and include just the "Location" field in the content of
+# each tab
 inspec_tabbed3 <- inputspec(
   timepoint_col = "PrescriptionDate",
   item_cols = c("Antibiotic", "Location"),

@@ -25,15 +25,21 @@ ars <- alert_rules(
 
 # alert if any values are over 100, but only for certain antibiotics
 ars <- alert_rules(
-  alert_above(extent_type = "any", extent_value = 1, rule_value = 100,
-              items = list("Antibiotic" = c("Coamoxiclav", "Gentamicin"))
+  alert_above(
+    extent_type = "any", extent_value = 1, rule_value = 100,
+    items = list("Antibiotic" = c("Coamoxiclav", "Gentamicin"))
   )
 )
 
-# alert if any values are over 100, but only for SITE1, and only for certain antibiotics
+# alert if any values are over 100, but only for SITE1,
+# and only for certain antibiotics
 ars <- alert_rules(
-  alert_above(extent_type = "any", extent_value = 1, rule_value = 100,
-              items = list("Location" = "SITE1", "Antibiotic" = c("Coamoxiclav", "Gentamicin"))
+  alert_above(
+    extent_type = "any", extent_value = 1, rule_value = 100,
+    items = list(
+      "Location" = "SITE1",
+      "Antibiotic" = c("Coamoxiclav", "Gentamicin")
+    )
   )
 )
 

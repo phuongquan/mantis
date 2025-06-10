@@ -1,40 +1,51 @@
 # -----------------------------------------------------------------------------
 #' Create an interactive time series report from a data frame
 #'
-#' Accepts a data frame containing multiple time series in long format, generates a collection of
-#' interactive time series plots for visual inspection, and saves the report to disk.
+#' Accepts a data frame containing multiple time series in long format,
+#' generates a collection of interactive time series plots for visual
+#' inspection, and saves the report to disk.
 #'
-#' @param df A data frame containing multiple time series in long format. See Details.
-#' @param inputspec [`inputspec()`] object specifying which columns in the supplied `df` represent the
-#'   "timepoint", "item", "value"  and (optionally) "tab" for the time series. If a "tab" column is specified, a separate tab
+#' @param df A data frame containing multiple time series in long format. See
+#'   Details.
+#' @param inputspec [`inputspec()`] object specifying which columns in the
+#'   supplied `df` represent the "timepoint", "item", "value"  and (optionally)
+#'   "tab" for the time series. If a "tab" column is specified, a separate tab
 #'   will be created for each distinct value in the column.
-#' @param outputspec `outputspec` object specifying the desired format of the html table(s). If
-#'   not supplied, default values will be used.
-#' @param alertspec [`alertspec()`] object specifying conditions to test and display
+#' @param outputspec `outputspec` object specifying the desired format of the
+#'   html table(s). If not supplied, default values will be used.
+#' @param alertspec [`alertspec()`] object specifying conditions to test and
+#'   display
 #' @param report_title Title to appear on the report.
-#' @param dataset_description Short description of the dataset being shown.
-#'   This will appear on the report.
-#' @param save_directory String specifying directory in which to save the report. Default is
-#'   current directory.
-#' @param save_filename String specifying filename for the report, excluding any file extension. If
-#'   no filename is supplied, one will be automatically generated with the format
-#'   `mantis_report_YYMMDD_HHMMSS`.
+#' @param dataset_description Short description of the dataset being shown. This
+#'   will appear on the report.
+#' @param save_directory String specifying directory in which to save the
+#'   report. Default is current directory.
+#' @param save_filename String specifying filename for the report, excluding any
+#'   file extension. If no filename is supplied, one will be automatically
+#'   generated with the format `mantis_report_YYMMDD_HHMMSS`.
 #' @param show_progress Print progress to console. Default = `TRUE`.
-#' @param ... Further parameters to be passed to `rmarkdown::render()`. Cannot include any of
-#'   `input`, `output_dir`, `output_file`, `params`, `quiet`.
+#' @param ... Further parameters to be passed to `rmarkdown::render()`. Cannot
+#'   include any of `input`, `output_dir`, `output_file`, `params`, `quiet`.
 #' @return A string containing the name and path of the saved report.
 #'
-#' @details The supplied data frame should contain multiple time series in long format, i.e.:
+#' @details The supplied data frame should contain multiple time series in long
+#'   format, i.e.:
 #'
-#' * one "timepoint" (date/posixt) column which will be used for the x-axes. Values should follow a regular pattern, e.g. daily or monthly, but do not have to be consecutive.
-#' * one or more "item" (character) columns containing categorical values identifying distinct time series.
-#' * one "value" (numeric) column containing the time series values which will be used for the y-axes.
-#' * Optionally, a "tab" (character) column containing categorical values which will be used to group the time series into different tabs on the report.
+#' * one "timepoint" (date/posixt) column which will be used for the x-axes.
+#'   Values should follow a regular pattern, e.g. daily or monthly, but do not
+#'   have to be consecutive.
+#' * one or more "item" (character) columns containing categorical values
+#'   identifying distinct time series.
+#' * one "value" (numeric) column containing the time series values which will
+#'   be used for the y-axes.
+#' * Optionally, a "tab" (character) column containing categorical values which
+#'   will be used to group the time series into different tabs on the report.
 #'
-#' The `inputspec` parameter maps the data frame columns to the above.
+#'   The `inputspec` parameter maps the data frame columns to the above.
 #' @examples
 #' \donttest{
-#' # create an interactive report in the current directory, with one tab per Location
+#' # create an interactive report in the current directory,
+#' # with one tab per Location
 #' filename <- mantis_report(
 #'   df = example_prescription_numbers,
 #'   inputspec = inputspec(
@@ -82,30 +93,34 @@
 #' \dontshow{file.remove("./example_prescription_numbers_interactive.html")}
 #' }
 #'
-#' @seealso [inputspec()], [outputspec_interactive()], [outputspec_static_heatmap()], [outputspec_static_multipanel()], [alertspec()]
+#' @seealso [inputspec()], [outputspec_interactive()],
+#'   [outputspec_static_heatmap()], [outputspec_static_multipanel()],
+#'   [alertspec()]
 #' @export
-mantis_report <- function(df,
-                        inputspec,
-                        outputspec = NULL,
-                        alertspec = NULL,
-                        report_title = "mantis report",
-                        dataset_description = "",
-                        save_directory = ".",
-                        save_filename = NULL,
-                        show_progress = TRUE,
-                        ...) {
-
+mantis_report <- function(
+  df,
+  inputspec,
+  outputspec = NULL,
+  alertspec = NULL,
+  report_title = "mantis report",
+  dataset_description = "",
+  save_directory = ".",
+  save_filename = NULL,
+  show_progress = TRUE,
+  ...
+) {
   validate_params_required(match.call())
-  validate_params_type(match.call(),
-                       df = df,
-                       inputspec = inputspec,
-                       outputspec = outputspec,
-                       alertspec = alertspec,
-                       report_title = report_title,
-                       dataset_description = dataset_description,
-                       save_directory = save_directory,
-                       save_filename = save_filename,
-                       show_progress = show_progress
+  validate_params_type(
+    match.call(),
+    df = df,
+    inputspec = inputspec,
+    outputspec = outputspec,
+    alertspec = alertspec,
+    report_title = report_title,
+    dataset_description = dataset_description,
+    save_directory = save_directory,
+    save_filename = save_filename,
+    show_progress = show_progress
   )
 
   validate_df_to_inputspec(df, inputspec)
@@ -144,8 +159,7 @@ mantis_report <- function(df,
   )
 
   rmarkdown::render(
-    input = file.path(temp_dirname,
-                      "report-html.Rmd"),
+    input = file.path(temp_dirname, "report-html.Rmd"),
     output_file = paste0(save_filename, ".html"),
     output_dir = save_directory,
     params = list(
