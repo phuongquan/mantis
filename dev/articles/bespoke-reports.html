@@ -82,7 +82,7 @@ package. The easiest way to get started is to clone the <a href="https://github.
 project to see it in action, then choose a template Rmd file that you
 can adapt.</p>
 <p>Note: Currently, <code>mantis</code> uses <code>rmarkdown</code> to
-generate its reports. In future there will be functionality to create
+generate its reports. In future there should be functionality to create
 Quarto reports.</p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -148,7 +148,7 @@ an extra line space. Note: unlike when creating <code>mantis</code>
 content, this chunk should <em>not</em> include
 <code>results='asis'</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>```{r}</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a># this chunk is necessary when using mantis::outputspec_interactive(). </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a># this chunk is necessary when using mantis::outputspec_interactive().</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a># it ensures that the dygraphs render when built using `cat()`</span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a># set the plot_type to the same plot_type as the real output</span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>mantis::bespoke_rmd_initialise_widgets(plot_type = "bar")</span>

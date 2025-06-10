@@ -65,27 +65,31 @@
 
 
 <dl><dt id="arg-timepoint-col">timepoint_col<a class="anchor" aria-label="anchor" href="#arg-timepoint-col"></a></dt>
-<dd><p>String denoting the (date/posixt) column which will be used for the x-axes.</p></dd>
+<dd><p>String denoting the (date/posixt) column which will be
+used for the x-axes.</p></dd>
 
 
 <dt id="arg-item-cols">item_cols<a class="anchor" aria-label="anchor" href="#arg-item-cols"></a></dt>
-<dd><p>String denoting the (character) column containing categorical values identifying
-distinct time series. Multiple columns that together identify a time series can be provided as a vector</p></dd>
+<dd><p>String denoting the (character) column containing
+categorical values identifying distinct time series. Multiple columns that
+together identify a time series can be provided as a vector</p></dd>
 
 
 <dt id="arg-value-col">value_col<a class="anchor" aria-label="anchor" href="#arg-value-col"></a></dt>
-<dd><p>String denoting the (numeric) column containing the time series values which
-will be used for the y-axes.</p></dd>
+<dd><p>String denoting the (numeric) column containing the time
+series values which will be used for the y-axes.</p></dd>
 
 
 <dt id="arg-tab-col">tab_col<a class="anchor" aria-label="anchor" href="#arg-tab-col"></a></dt>
-<dd><p>Optional. String denoting the (character) column containing categorical values
-which will be used to group the time series into different tabs on the report.</p></dd>
+<dd><p>Optional. String denoting the (character) column containing
+categorical values which will be used to group the time series into
+different tabs on the report.</p></dd>
 
 
 <dt id="arg-timepoint-unit">timepoint_unit<a class="anchor" aria-label="anchor" href="#arg-timepoint-unit"></a></dt>
-<dd><p>expected pattern of the timepoint_col values. "sec"/"min"/"hour"/"day"/"month"/"quarter"/year".
-This will be used to fill in any gaps in the time series.</p></dd>
+<dd><p>expected pattern of the timepoint_col values.
+"sec"/"min"/"hour"/"day"/"month"/"quarter"/year". This will be used to fill
+in any gaps in the time series.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -95,7 +99,8 @@ This will be used to fill in any gaps in the time series.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># create a flat report, and include the "Location" and "Antibiotic" fields in the content</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># create a flat report, and include the "Location" and "Antibiotic" fields</span></span></span>
+<span class="r-in"><span><span class="co"># in the content</span></span></span>
 <span class="r-in"><span><span class="va">inspec_flat</span> <span class="op">&lt;-</span> <span class="fu">inputspec</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span></span>
 <span class="r-in"><span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Antibiotic"</span><span class="op">)</span>,</span></span>
@@ -103,8 +108,8 @@ This will be used to fill in any gaps in the time series.</p></dd>
 <span class="r-in"><span>  timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># create a flat report, and include the "Location", "Spectrum", and "Antibiotic" fields in the</span></span></span>
-<span class="r-in"><span><span class="co"># content</span></span></span>
+<span class="r-in"><span><span class="co"># create a flat report, and include the "Location", "Spectrum",</span></span></span>
+<span class="r-in"><span><span class="co"># and "Antibiotic" fields in the content</span></span></span>
 <span class="r-in"><span><span class="va">inspec_flat2</span> <span class="op">&lt;-</span> <span class="fu">inputspec</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span></span>
 <span class="r-in"><span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Spectrum"</span>, <span class="st">"Antibiotic"</span><span class="op">)</span>,</span></span>
@@ -112,8 +117,9 @@ This will be used to fill in any gaps in the time series.</p></dd>
 <span class="r-in"><span>  timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># create a tabbed report, with a separate tab for each unique value of "Location", and include just</span></span></span>
-<span class="r-in"><span><span class="co"># the "Antibiotic" field in the content of each tab</span></span></span>
+<span class="r-in"><span><span class="co"># create a tabbed report, with a separate tab for each unique value of</span></span></span>
+<span class="r-in"><span><span class="co"># "Location", and include just the "Antibiotic" field in the content of</span></span></span>
+<span class="r-in"><span><span class="co"># each tab</span></span></span>
 <span class="r-in"><span><span class="va">inspec_tabbed</span> <span class="op">&lt;-</span> <span class="fu">inputspec</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span></span>
 <span class="r-in"><span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span></span>
@@ -122,8 +128,9 @@ This will be used to fill in any gaps in the time series.</p></dd>
 <span class="r-in"><span>  timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># create a tabbed report, with a separate tab for each unique value of "Location", and include the</span></span></span>
-<span class="r-in"><span><span class="co"># "Antibiotic" and "Spectrum" fields in the content of each tab</span></span></span>
+<span class="r-in"><span><span class="co"># create a tabbed report, with a separate tab for each unique value of</span></span></span>
+<span class="r-in"><span><span class="co"># "Location", and include the "Antibiotic" and "Spectrum" fields in the</span></span></span>
+<span class="r-in"><span><span class="co"># content of each tab</span></span></span>
 <span class="r-in"><span><span class="va">inspec_tabbed2</span> <span class="op">&lt;-</span> <span class="fu">inputspec</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span></span>
 <span class="r-in"><span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span></span>
@@ -132,8 +139,9 @@ This will be used to fill in any gaps in the time series.</p></dd>
 <span class="r-in"><span>  timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># create a tabbed report, with a separate tab for each unique value of "Antibiotic", and include</span></span></span>
-<span class="r-in"><span><span class="co"># just the "Location" field in the content of each tab</span></span></span>
+<span class="r-in"><span><span class="co"># create a tabbed report, with a separate tab for each unique value of</span></span></span>
+<span class="r-in"><span><span class="co"># "Antibiotic", and include just the "Location" field in the content of</span></span></span>
+<span class="r-in"><span><span class="co"># each tab</span></span></span>
 <span class="r-in"><span><span class="va">inspec_tabbed3</span> <span class="op">&lt;-</span> <span class="fu">inputspec</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span></span>
 <span class="r-in"><span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span></span>
