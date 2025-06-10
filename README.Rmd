@@ -33,10 +33,10 @@ applications. E.g.
 The resulting html reports are self-contained and shareable without a web server.
 
 'mantis' is designed for use on data that is essentially a collection of time
-'series in a data frame, where you have already decided which values you are
-'interested in reviewing. If you want to check more generally for temporal
-'changes in record-level, non-numeric data, then check out our sister package
-'['daiquiri'](https://ropensci.github.io/daiquiri/index.html).
+series in a data frame, where you have already decided which values you are
+interested in reviewing. If you want to check more generally for temporal
+changes in record-level, non-numeric data, then check out our sister package
+['daiquiri'](https://ropensci.github.io/daiquiri/index.html).
 
 ## Why should I use it?
 
