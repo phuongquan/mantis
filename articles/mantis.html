@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@
       <h1>Get started with mantis</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/v0.2.0/vignettes/mantis.Rmd" class="external-link"><code>vignettes/mantis.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/main/vignettes/mantis.Rmd" class="external-link"><code>vignettes/mantis.Rmd</code></a></small>
       <div class="d-none name"><code>mantis.Rmd</code></div>
     </div>
 
@@ -85,9 +85,9 @@ multiple related time series quickly and easily.</p>
 with the following columns (though the actual column names can be
 different):</p>
 <ul>
-<li>one “timepoint” (date) column which will be used for the x-axes.
-Values should have a regular periodicity, e.g. daily, but do not have to
-be consecutive.</li>
+<li>one “timepoint” (date/posixt) column which will be used for the
+x-axes. Values should follow a regular pattern, e.g. daily or monthly,
+but do not have to be consecutive.</li>
 <li>one or more “item” (character) columns containing categorical values
 identifying distinct time series.</li>
 <li>one “value” (numeric) column containing the time series values which
@@ -111,7 +111,8 @@ antibiotic on this day</li>
 <code class="sourceCode R"><span><span class="co"># first, attach the package if you haven't already</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/phuongquan/mantis" class="external-link">mantis</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># this example data frame contains numbers of antibiotic prescriptions in long format</span></span>
+<span><span class="co"># this example data frame contains numbers of antibiotic prescriptions</span></span>
+<span><span class="co"># in long format</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_prescription_numbers"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">example_prescription_numbers</span><span class="op">)</span></span>
@@ -152,47 +153,63 @@ additional column/label. Otherwise it will be ignored.</p>
 how you want the report to look:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co"># create a flat report, and include the "Location" and "Antibiotic" fields in the content</span></span>
+<span><span class="co"># create a flat report, and include the "Location" and "Antibiotic" fields</span></span>
+<span><span class="co"># in the content</span></span>
 <span><span class="va">inspec_flat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
 <span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
 <span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Antibiotic"</span><span class="op">)</span>,</span>
-<span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span></span>
+<span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
+<span>  timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># create a flat report, and include the "Location", "Spectrum", and "Antibiotic" fields in the</span></span>
-<span><span class="co"># content</span></span>
+<span><span class="co"># create a flat report, and include the "Location", "Spectrum", and "Antibiotic"</span></span>
+<span><span class="co"># fields in the content</span></span>
 <span><span class="va">inspec_flat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
 <span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
 <span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Spectrum"</span>, <span class="st">"Antibiotic"</span><span class="op">)</span>,</span>
-<span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span></span>
+<span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
+<span>  timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># create a tabbed report, with a separate tab for each unique value of "Location", and include just</span></span>
-<span><span class="co"># the "Antibiotic" field in the content of each tab</span></span>
+<span><span class="co"># create a tabbed report, with a separate tab for each unique value of</span></span>
+<span><span class="co"># "Location", and include just the "Antibiotic" field in the content of each tab</span></span>
 <span><span class="va">inspec_tabbed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
 <span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
 <span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span>
 <span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
-<span>  tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
+<span>  tab_col <span class="op">=</span> <span class="st">"Location"</span>,</span>
+<span>  timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># create a tabbed report, with a separate tab for each unique value of "Location", and include the</span></span>
-<span><span class="co"># "Antibiotic" and "Spectrum" fields in the content of each tab</span></span>
+<span><span class="co"># create a tabbed report, with a separate tab for each unique value of</span></span>
+<span><span class="co"># "Location", and include the "Antibiotic" and "Spectrum" fields in the content</span></span>
+<span><span class="co"># of each tab</span></span>
 <span><span class="va">inspec_tabbed2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
 <span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
 <span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span>
 <span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
-<span>  tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
+<span>  tab_col <span class="op">=</span> <span class="st">"Location"</span>,</span>
+<span>  timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># create a tabbed report, with a separate tab for each unique value of "Antibiotic", and include</span></span>
-<span><span class="co"># just the "Location" field in the content of each tab</span></span>
+<span><span class="co"># create a tabbed report, with a separate tab for each unique value of</span></span>
+<span><span class="co"># "Antibiotic", and include just the "Location" field in the content of each tab</span></span>
 <span><span class="va">inspec_tabbed3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
 <span>  timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
 <span>  item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Antibiotic"</span>, <span class="st">"Location"</span><span class="op">)</span>,</span>
 <span>  value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
-<span>  tab_col <span class="op">=</span> <span class="st">"Antibiotic"</span></span>
+<span>  tab_col <span class="op">=</span> <span class="st">"Antibiotic"</span>,</span>
+<span>  timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="specifying-the-timepoint-unit">Specifying the timepoint unit<a class="anchor" aria-label="anchor" href="#specifying-the-timepoint-unit"></a>
+</h3>
+<p>In this example dataset, the time series contain daily values, which
+is the default pattern of timepoints expected by the package. If the
+time series were to contain e.g. monthly or hourly values, this should
+be specified using the <code>timepoint_unit</code> parameter of
+<code><a href="../reference/inputspec.html">inputspec()</a></code>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -291,7 +308,7 @@ multipanel, and are selected by using the
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

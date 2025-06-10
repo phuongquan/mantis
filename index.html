@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Multiple Time Series Scanner">
-<meta name="description" content="Generate interactive html reports that enable quick visual review of multiple related time series. This can help with identification of any temporal artefacts or unexpected trends. The resulting reports are shareable and can contribute to forming a transparent record of the entire analysis process.">
-<meta property="og:description" content="Generate interactive html reports that enable quick visual review of multiple related time series. This can help with identification of any temporal artefacts or unexpected trends. The resulting reports are shareable and can contribute to forming a transparent record of the entire analysis process.">
+<meta name="description" content="Generate interactive html reports that enable quick visual review of multiple related time series stored in a data frame. For static datasets, this can help to identify any temporal artefacts that may affect the validity of subsequent analyses. For live data feeds, regularly scheduled reports can help to pro-actively identify data feed problems or unexpected trends that may require action. The reports are self-contained and shareable without a web server.">
+<meta property="og:description" content="Generate interactive html reports that enable quick visual review of multiple related time series stored in a data frame. For static datasets, this can help to identify any temporal artefacts that may affect the validity of subsequent analyses. For live data feeds, regularly scheduled reports can help to pro-actively identify data feed problems or unexpected trends that may require action. The reports are self-contained and shareable without a web server.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,26 +67,31 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The mantis package generates interactive html reports that enable quick visual review of multiple related time series. This can help with identification of temporal artefacts and unexpected trends. The time series visualisations include adjustable axes and tooltips showing the individual dates and values.</p>
-<p>The data frame containing the time series should be in long format, i.e.:</p>
-<ul>
-<li>one “timepoint” (date) column which will be used for the x-axes. Values should have a regular periodicity, e.g. daily, but do not have to be consecutive.</li>
-<li>one or more “item” (character) columns containing categorical values identifying distinct time series.</li>
-<li>one “value” (numeric) column containing the time series values which will be used for the y-axes.</li>
-</ul>
-<p>The <code>inputspec</code> parameter maps the data frame columns to the above, and can optionally include a column for grouping the time series into tabs.</p>
-<p>The reports are shareable and can contribute to forming a transparent record of the entire analysis process. It is designed with electronic health records in mind, but can be used for any types of time series.</p>
+<p>The ‘mantis’ package generates interactive reports that enable quick visual review of multiple related time series. This can help with identification of temporal artefacts and unexpected trends. The choice of visualisations include interactive plots with adjustable axes and tooltips showing the individual dates and values, as well as static heatmap and scatter plots for more lightweight applications. E.g.</p>
+<p><img src="reference/figures/example_prescription_numbers_interactive.png" width="350"><img src="reference/figures/example_prescription_numbers_heatmap.png" width="350"></p>
+<p>The resulting html reports are self-contained and shareable without a web server.</p>
+<p>‘mantis’ is designed for use on data that is essentially a collection of time series in a data frame, where you have already decided which values you are interested in reviewing. If you want to check more generally for temporal changes in record-level, non-numeric data, then check out our sister package <a href="https://ropensci.github.io/daiquiri/index.html" class="external-link">‘daiquiri’</a>.</p>
+<div class="section level2">
+<h2 id="why-should-i-use-it">Why should I use it?<a class="anchor" aria-label="anchor" href="#why-should-i-use-it"></a>
+</h2>
+<p>We anticipate two main target users:</p>
+<ol style="list-style-type: decimal">
+<li><p>Researchers who analyse data from large, temporal datasets, particularly routinely-collected data such as electronic health records. Included as part of the initial analysis stage, it will help you to check for any temporal biases in your datasets before embarking on your main analyses, therefore improving the reliability of your study.</p></li>
+<li><p>Managers of live data feeds that are used as a data source for downstream analyses. Regular inspection of data that is frequently updated will help to identify any issues early and enable a timely response to rectify issues such as missing data. While a set of validation checks in a data pipeline could also work in this circumstance, the benefit of this package is the ability to check for temporal anomalies that are obvious to the human eye but that are difficult to capture programmatically.</p></li>
+</ol>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<code class="sourceCode R"><span><span class="co"># install dependencies first</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"remotes"</span>,<span class="st">"rmarkdown"</span>,<span class="st">"knitr"</span>,<span class="st">"reactable"</span>,<span class="st">"dplyr"</span>,<span class="st">"tidyr"</span>,<span class="st">"dygraphs"</span>,<span class="st">"xts"</span>,<span class="st">"ggplot2"</span>,<span class="st">"scales"</span>,<span class="st">"purrr"</span>,<span class="st">"htmltools"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># install the current development version</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"phuongquan/mantis"</span><span class="op">)</span></span>
+<span><span class="co"># install the latest release version</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"phuongquan/mantis@v0.2.0"</span>, dependencies <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># or install the latest release version</span></span>
-<span><span class="co">#remotes::install_github("phuongquan/mantis@v0.2.0")</span></span></code></pre></div>
+<span><span class="co"># or install the current development version</span></span>
+<span><span class="co">#remotes::install_github("phuongquan/mantis", dependencies = FALSE)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -95,7 +100,6 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/phuongquan/mantis" class="external-link">mantis</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># this example data frame contains numbers of antibiotic prescriptions in long format, </span></span>
-<span><span class="co">#   plus a column for grouping the output:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_prescription_numbers"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">example_prescription_numbers</span><span class="op">)</span></span></code></pre></div>
@@ -109,21 +113,23 @@
 <span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="do">## 5 2022-01-01       Meropenem     Broad                       10 SITE1   </span></span>
 <span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="do">## 6 2022-01-01       Vancomycin    Limited                      0 SITE1</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># create a report in the current directory</span></span>
+<code class="sourceCode R"><span><span class="co"># create a report in the current directory, with one tab per Location</span></span>
 <span><span class="fu"><a href="reference/mantis_report.html">mantis_report</a></span><span class="op">(</span></span>
 <span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
 <span>  inputspec <span class="op">=</span> <span class="fu"><a href="reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
 <span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
 <span>    item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span><span class="op">)</span>,</span>
 <span>    value_col <span class="op">=</span> <span class="st">"NumberOfPrescriptions"</span>,</span>
-<span>    tab_col <span class="op">=</span> <span class="st">"Location"</span></span>
+<span>    tab_col <span class="op">=</span> <span class="st">"Location"</span>,</span>
+<span>    timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>Example reports and more detailed guidance can be found in the <a href="https://phuongquan.github.io/mantis/index.html" class="external-link">package website</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
 </h2>
-<p>This work was supported by the National Institute for Health Research Health Protection Research Unit (NIHR HPRU) in Healthcare Associated Infections and Antimicrobial Resistance at the University of Oxford in partnership with Public Health England (PHE) (NIHR200915), and by the NIHR Oxford Biomedical Research Centre.</p>
+<p>This work was supported by the National Institute for Health Research Health Protection Research Unit (NIHR HPRU) in Healthcare Associated Infections and Antimicrobial Resistance at the University of Oxford in partnership with the UK Health Security Agency (UKHSA) (NIHR200915), and by the NIHR Oxford Biomedical Research Centre.</p>
 </div>
 <div class="section level2">
 <h2 id="contributing-to-this-package">Contributing to this package<a class="anchor" aria-label="anchor" href="#contributing-to-this-package"></a>
@@ -142,10 +148,17 @@
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li>GPL (&gt;= 3)</li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small>GPL (&gt;= 3)</small></li>
 </ul>
 </div>
 
+<div class="community">
+<h2 data-toc-skip>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CONTRIBUTING.html">Contributing guide</a></li>
+</ul>
+</div>
 
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
@@ -157,8 +170,8 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>T. Phuong Quan <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-8566-1817" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li> University of Oxford <br><small class="roles"> Copyright holder </small>  </li>
+<li>T. Phuong Quan <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-8566-1817" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li> University of Oxford <br><small class="roles"> Copyright holder </small>   </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
@@ -174,7 +187,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

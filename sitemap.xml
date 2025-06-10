@@ -1,5 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
+<url><loc>/CONTRIBUTING.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
 <url><loc>/articles/alert-rules.html</loc></url>
 <url><loc>/articles/bespoke-reports.html</loc></url>
 <url><loc>/articles/example-prescriptions-interactive.html</loc></url>
@@ -13,13 +15,7 @@
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/news/index.html</loc></url>
-<url><loc>/reference/alert_above.html</loc></url>
-<url><loc>/reference/alert_below.html</loc></url>
-<url><loc>/reference/alert_custom.html</loc></url>
-<url><loc>/reference/alert_difference_above_perc.html</loc></url>
-<url><loc>/reference/alert_difference_below_perc.html</loc></url>
-<url><loc>/reference/alert_equals.html</loc></url>
-<url><loc>/reference/alert_missing.html</loc></url>
+<url><loc>/reference/alert_rule_types.html</loc></url>
 <url><loc>/reference/alert_rules.html</loc></url>
 <url><loc>/reference/alertspec.html</loc></url>
 <url><loc>/reference/bespoke_rmd_alert_results.html</loc></url>
@@ -29,6 +25,7 @@
 <url><loc>/reference/example_prescription_numbers.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/inputspec.html</loc></url>
+<url><loc>/reference/mantis-package.html</loc></url>
 <url><loc>/reference/mantis_alerts.html</loc></url>
 <url><loc>/reference/mantis_report.html</loc></url>
 <url><loc>/reference/outputspec_interactive.html</loc></url>

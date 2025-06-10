@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@
       <h1>Specifying alerting rules</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/v0.2.0/vignettes/alert-rules.Rmd" class="external-link"><code>vignettes/alert-rules.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phuongquan/mantis/blob/main/vignettes/alert-rules.Rmd" class="external-link"><code>vignettes/alert-rules.Rmd</code></a></small>
       <div class="d-none name"><code>alert-rules.Rmd</code></div>
     </div>
 
@@ -109,48 +109,57 @@ missing values. The <code>extent_type</code> and
 tolerance. E.g.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># alert if all values are NA</span></span>
-<span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span><span class="fu"><a href="../reference/alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span><span class="fu"><a href="../reference/alert_rule_types.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># alert if there are 10 or more missing values in total</span></span>
 <span><span class="co"># or if the last 3 or more values are missing</span></span>
 <span><span class="co"># or if 5 or more values in a row are missing</span></span>
 <span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"last"</span>, extent_value <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"consecutive"</span>, extent_value <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/alert_rule_types.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/alert_rule_types.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"last"</span>, extent_value <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/alert_rule_types.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"consecutive"</span>, extent_value <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>The <code><a href="../reference/alert_equals.html">alert_equals()</a></code>, <code><a href="../reference/alert_below.html">alert_below()</a></code>,
-<code><a href="../reference/alert_above.html">alert_above()</a></code> rules work similarly, but with an extra
-parameter <code>rule_value</code> to compare against.</p>
-<p>It is also possible to compare a range of values with another range
-of values using the <code><a href="../reference/alert_difference_above_perc.html">alert_difference_above_perc()</a></code> and
-<code><a href="../reference/alert_difference_below_perc.html">alert_difference_below_perc()</a></code> rules. This can be useful for
+<p>The <code><a href="../reference/alert_rule_types.html">alert_equals()</a></code>, <code><a href="../reference/alert_rule_types.html">alert_below()</a></code>,
+<code><a href="../reference/alert_rule_types.html">alert_above()</a></code> rules work similarly, but with an extra
+parameter <code>rule_value</code> to compare against. It is also
+possible to compare a range of values with another range of values using
+the <code><a href="../reference/alert_rule_types.html">alert_difference_above_perc()</a></code> and
+<code><a href="../reference/alert_rule_types.html">alert_difference_below_perc()</a></code> rules. This can be useful for
 checking if recent values are lower/higher than in a previous period,
 over a particular percentage. This comparison is based on the mean of
 values in the two periods. The ranges should be contiguous, and denote
 positions from the end of the time series. E.g.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># alert if the mean of last 3 values is more than 20% higher than the mean of the preceding 12 values</span></span>
+<code class="sourceCode R"><span><span class="co"># alert if the mean of last 3 values is more than 20% higher than</span></span>
+<span><span class="co"># the mean of the preceding 12 values</span></span>
 <span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/alert_difference_above_perc.html">alert_difference_above_perc</a></span><span class="op">(</span>current_period <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, previous_period <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">15</span>, rule_value <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/alert_rule_types.html">alert_difference_above_perc</a></span><span class="op">(</span></span>
+<span>    current_period <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,</span>
+<span>    previous_period <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">15</span>,</span>
+<span>    rule_value <span class="op">=</span> <span class="fl">20</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="custom-rules">Custom rules<a class="anchor" aria-label="anchor" href="#custom-rules"></a>
 </h2>
 <p>If you want to apply a more complex rule, you can specify your own
-using <code><a href="../reference/alert_custom.html">alert_custom()</a></code>. E.g.</p>
+using <code><a href="../reference/alert_rule_types.html">alert_custom()</a></code>. E.g.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/alert_custom.html">alert_custom</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/alert_rule_types.html">alert_custom</a></span><span class="op">(</span></span>
 <span>    short_name <span class="op">=</span> <span class="st">"my_rule_combo"</span>,</span>
 <span>    description <span class="op">=</span> <span class="st">"Over 3 missing values and max value is &gt; 10"</span>,</span>
-<span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">3</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">value</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span></span>
+<span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">3</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">value</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">10</span></span>
+<span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/alert_custom.html">alert_custom</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/alert_rule_types.html">alert_custom</a></span><span class="op">(</span></span>
 <span>    short_name <span class="op">=</span> <span class="st">"my_rule_doubled"</span>,</span>
 <span>    description <span class="op">=</span> <span class="st">"Last value is over double the first value"</span>,</span>
-<span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">*</span><span class="va">value</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">value</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The function_call is evaluated per time series, and the expression
@@ -213,11 +222,13 @@ Coamoxiclav prescriptions have become much higher than they were at the
 start.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/alert_custom.html">alert_custom</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/alert_rule_types.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/alert_rule_types.html">alert_custom</a></span><span class="op">(</span></span>
 <span>    short_name <span class="op">=</span> <span class="st">"my_rule_doubled"</span>,</span>
 <span>    description <span class="op">=</span> <span class="st">"Last 7 values are over double the first 7 values"</span>,</span>
-<span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">value</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">value</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -254,11 +265,13 @@ spectrum antibiotics, we can indicate this using the <code>items</code>
 parameter of the rule.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ars_restricted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alert_rules.html">alert_rules</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/alert_missing.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/alert_custom.html">alert_custom</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/alert_rule_types.html">alert_missing</a></span><span class="op">(</span>extent_type <span class="op">=</span> <span class="st">"any"</span>, extent_value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/alert_rule_types.html">alert_custom</a></span><span class="op">(</span></span>
 <span>    short_name <span class="op">=</span> <span class="st">"my_rule_doubled"</span>,</span>
 <span>    description <span class="op">=</span> <span class="st">"Last 7 values are over double the first 7 values"</span>,</span>
-<span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">value</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    function_call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">value</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
 <span>    items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Spectrum"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Broad"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -298,7 +311,7 @@ Metronidazole.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
