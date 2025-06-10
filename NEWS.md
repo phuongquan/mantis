@@ -1,3 +1,9 @@
+# mantis 0.3.0 (2025-06-10)
+
+Breaking changes
+
+* `timepoint_unit` parameter of `inputspec()` replaces `period` 
+
 # mantis 0.2.0 (2025-02-07)
 
 Breaking changes
