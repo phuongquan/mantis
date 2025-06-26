@@ -75,7 +75,7 @@ install.packages(c(
 ))
 
 # install the latest release version
-remotes::install_github("phuongquan/mantis@v0.2.0", dependencies = FALSE)
+remotes::install_github("phuongquan/mantis@v0.3.0", dependencies = FALSE)
 
 # or install the current development version
 # remotes::install_github("phuongquan/mantis", dependencies = FALSE)
