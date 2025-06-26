@@ -77,7 +77,7 @@ plot_heatmap_static <- function(
       panel.border = ggplot2::element_rect(
         colour = "darkgrey",
         fill = NA,
-        size = 0.75
+        linewidth = 0.75
       ),
       # remove space between facets
       panel.spacing = ggplot2::unit(0, "lines"),
@@ -178,7 +178,7 @@ plot_multipanel_static <- function(
       panel.border = ggplot2::element_rect(
         colour = "darkgrey",
         fill = NA,
-        size = 0.75
+        linewidth = 0.75
       ),
       # set space between facets
       panel.spacing = ggplot2::unit(0.5, "lines"),
