@@ -1,7 +1,7 @@
 Package: mantis
 Type: Package
 Title: Multiple Time Series Scanner
-Version: 0.3.0
+Version: 0.3.0.9000
 Authors@R: c(
     person(c("T.", "Phuong"), "Quan", email = "phuong.quan@ndm.ox.ac.uk",
         role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8566-1817")),
@@ -36,7 +36,8 @@ Imports:
     htmltools
 Suggests: 
     covr,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    vdiffr
 Config/testthat/edition: 3
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
