@@ -5,12 +5,14 @@
 
 <!-- badges: start -->
 
-[![Project Status: Active – The project has reached a stable, usable
-state and is being actively
-developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check](https://github.com/phuongquan/mantis/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/phuongquan/mantis/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/phuongquan/mantis/graph/badge.svg)](https://app.codecov.io/gh/phuongquan/mantis)
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Status at rOpenSci Software Peer
+Review](https://badges.ropensci.org/710_status.svg)](https://github.com/ropensci/software-review/issues/710)
 <!-- badges: end -->
 
 The `mantis` package generates interactive reports that enable quick
