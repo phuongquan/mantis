@@ -12,8 +12,6 @@ navbar:
     articles:
       text: Articles
       menu:
-      - text: Creating bespoke reports
-        href: articles/bespoke-reports.html
       - text: Specifying alerting rules
         href: articles/alert-rules.html
     example-report:
@@ -51,12 +49,6 @@ reference:
   - alert_difference_below_perc
   - alert_custom
   - mantis_alerts
-
-- title: Creating a bespoke report
-  contents:
-  - bespoke_rmd_initialise_widgets
-  - bespoke_rmd_output
-  - bespoke_rmd_alert_results
 
 - title: internal
   contents:

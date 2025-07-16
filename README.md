@@ -57,6 +57,10 @@ We anticipate two main target users:
 ## Installation
 
 ``` r
+# install from CRAN
+install.packages("mantis")
+
+# or install the latest github release
 # install dependencies first
 install.packages(c(
   "remotes",
@@ -72,12 +76,10 @@ install.packages(c(
   "purrr",
   "htmltools"
 ))
-
-# install the latest release version
 remotes::install_github("phuongquan/mantis@v0.3.0", dependencies = FALSE)
 
 # or install the current development version
-# remotes::install_github("phuongquan/mantis", dependencies = FALSE)
+remotes::install_github("phuongquan/mantis", dependencies = FALSE)
 ```
 
 ## Usage

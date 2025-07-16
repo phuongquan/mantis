@@ -1,3 +1,7 @@
+# mantis 0.4.0 (2025-07-16)
+
+Lightweight initial CRAN submission. Only includes standard (non-bespoke) reports.
+
 # mantis 0.3.0 (2025-06-10)
 
 Breaking changes

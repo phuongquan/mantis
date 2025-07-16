@@ -14,3 +14,4 @@
 ^Meta$
 ^LICENSE\.md$
 ^codemeta\.json$
+^air.toml$
