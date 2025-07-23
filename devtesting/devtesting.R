@@ -39,6 +39,7 @@ monthly_data <- example_data |>
 
 
 mantis_report(df = monthly_data,
+              file = "monthly.html",
               inputspec = inputspec(timepoint_col = "timepoint",
                                 item_cols = "item",
                                 value_col = "value",
@@ -50,8 +51,7 @@ mantis_report(df = monthly_data,
                                                        extent_value = 5,
                                                       rule_value = 0,
                                                        items = c("norm", "norm_na"))
-              ),
-              save_filename = "monthly"
+              )
 )
 
 
@@ -86,6 +86,7 @@ alert_results <-
   )
 
 mantis_report(df = example_data,
+              file = "alert_rules.html",
               inputspec = inputspec(timepoint_col = "timepoint",
                                     item_cols = "item",
                                     value_col = "value"),
@@ -125,21 +126,9 @@ prepare_df(
   item_order = item_order
 )
 
-mantis_report(df = example_prescription_numbers,
-              inputspec = inputspec(
-                timepoint_col = "PrescriptionDate",
-                item_cols = "Antibiotic",
-                value_col = "NumberOfPrescriptions",
-                tab_col = "Location"
-              ),
-              outputspec = outputspec_interactive(
-                item_labels = "Antibiotic"
-              ),
-              report_title = "mantis report",
-              dataset_description = "Antibiotic prescriptions by site"
-)
 
 mantis_report(df = example_prescription_numbers,
+              file = "item_order_interactive.html",
               inputspec = inputspec(
                 timepoint_col = "PrescriptionDate",
                 item_cols = c("Antibiotic", "Location"),
@@ -158,7 +147,8 @@ mantis_report(df = example_prescription_numbers,
               dataset_description = "Antibiotic prescriptions by site"
 )
 
-mantis_report(df = example_prescription_numbers,
+filename <- mantis_report(df = example_prescription_numbers,
+              file = "",
               inputspec = inputspec(
                 timepoint_col = "PrescriptionDate",
                 item_cols = c("Antibiotic", "Location"),
@@ -167,7 +157,8 @@ mantis_report(df = example_prescription_numbers,
               outputspec = outputspec_static_multipanel(
               ),
               report_title = "mantis report",
-              dataset_description = "Antibiotic prescriptions by site"
+              dataset_description = "Antibiotic prescriptions by site",
+              add_timestamp = TRUE
 )
 
 mantis_alerts(
@@ -187,31 +178,7 @@ mantis_alerts(
   )
 )
 
-# new item
-mantis_report(
-  df = example_prescription_numbers,
-  inputspec = inputspec(
-    timepoint_col = "PrescriptionDate",
-    item_cols = c("Antibiotic", "Spectrum", "Location"),
-    value_col = "NumberOfPrescriptions",
-    #tab_col = NULL
-                    tab_col = c("Location")
-  ),
-  outputspec = outputspec_interactive(
-    item_labels = c("Antibiotic" = "ABX", "Location" = "Which site?", "X" = "X"),
-  ),
-  report_title = "mantis report",
-  dataset_description = "Antibiotic prescriptions by site",
-  # alertspec = alertspec(alert_rules = alert_rules(
-  #   alert_custom(
-  #     short_name = "my_rule_doubled",
-  #     description = "Last value is over double the first value",
-  #     function_call = quote(rev(value)[1] > 2 * value[1])
-  #   )
-  # ),
-  # show_tab_results = "FAIL"),
-  save_filename = "tabgroup"
-)
+
 
 mantis_report(df = data.frame(timepoint = c(seq(as.POSIXlt("2022-01-01 12:00:00"), as.POSIXlt("2022-01-03 12:00:00"), by = "hours"),
                                                          seq(as.POSIXlt("2022-01-04 12:00:00"), as.POSIXlt("2022-01-05 12:00:00"), by = "hours")),
@@ -219,6 +186,7 @@ mantis_report(df = data.frame(timepoint = c(seq(as.POSIXlt("2022-01-01 12:00:00"
                                            value = rep(3, 74),
                                            stringsAsFactors = FALSE)
               ,
+              file = "hourly.html",
               inputspec = inputspec(
                 timepoint_col = "timepoint",
                 item_cols = c("item"),
@@ -235,6 +203,5 @@ mantis_report(df = data.frame(timepoint = c(seq(as.POSIXlt("2022-01-01 12:00:00"
                   description = "Last value is over double the first value",
                   function_call = quote(rev(value)[1] > 2*value[1]),
                 )
-              ),
-              save_filename = "hourly"
+              )
 )

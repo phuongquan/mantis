@@ -147,11 +147,11 @@ to contain e.g. monthly or hourly values, this should be specified using the
 
 The simplest way to create a report is to use the `mantis_report()` function. 
 
-We need to decide where to save the report, and optionally specify a filename
-(excluding file extension). The filename can only contain alphanumeric, `-` and
-`_` characters. If a filename is not supplied, one will be automatically
-generated. We can also optionally specify a short description for the dataset,
-which will appear on the report.
+We need to decide where to save the report to. The file name can only contain
+alphanumeric, `-` and `_` characters, and should include the extension ".html".
+If a path is supplied, the directory should already exist. We can also
+optionally specify a short description for the dataset, which will appear on the
+report.
 
 There are 3 different options for visualising the time series. This is set using
 the `outputspec` parameter.
@@ -172,21 +172,26 @@ the `outputspec` parameter.
 **Example:**
 
 For the `example_prescription_numbers` dataset above, we will save a report in
-the current directory, with separate tabs for each hospital site.
+the working directory, with separate tabs for each hospital site.
 
 ```{r interactive-test, include=FALSE}
 # quietly test can create the report from an rmd but show the code in the next
 # chunk in the vignette
-filename <-
-  mantis_report(
-    df = example_prescription_numbers,
-    inputspec = inspec_tabbed2,
-    outputspec = outputspec_interactive(),
-    report_title = "mantis report",
-    dataset_description = "Antibiotic prescriptions by site",
-    save_filename = "example_prescription_numbers_interactive",
-    show_progress = FALSE
-  )
+
+# temporarily set working directory to tempdir
+withr::with_dir(
+  tempdir(),
+  filename <-
+    mantis_report(
+      df = example_prescription_numbers,
+      file = "example_prescription_numbers_interactive.html",
+      inputspec = inspec_tabbed2,
+      outputspec = outputspec_interactive(),
+      report_title = "mantis report",
+      dataset_description = "Antibiotic prescriptions by site",
+      show_progress = FALSE
+    )
+)
 
 # clean up
 file.remove(filename)
@@ -195,11 +200,11 @@ file.remove(filename)
 ```{r interactive-display, eval=FALSE}
 mantis_report(
   df = example_prescription_numbers,
+  file = "example_prescription_numbers_interactive.html",
   inputspec = inspec_tabbed2,
   outputspec = outputspec_interactive(),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
-  save_filename = "example_prescription_numbers_interactive",
   show_progress = TRUE
 )
 ```
@@ -220,16 +225,21 @@ parameter.
 ```{r heatmap-test, include=FALSE}
 # quietly test can create the report from an rmd but show the code in the next
 # chunk in the vignette
-filename <-
-  mantis_report(
-    df = example_prescription_numbers,
-    inputspec = inspec_tabbed,
-    outputspec = outputspec_static_heatmap(),
-    report_title = "mantis report",
-    dataset_description = "Antibiotic prescriptions by site",
-    save_filename = "example_prescription_numbers_heatmap",
-    show_progress = FALSE
-  )
+
+# temporarily set working directory to tempdir
+withr::with_dir(
+  tempdir(),
+  filename <-
+    mantis_report(
+      df = example_prescription_numbers,
+      file = "example_prescription_numbers_heatmap.html",
+      inputspec = inspec_tabbed,
+      outputspec = outputspec_static_heatmap(),
+      report_title = "mantis report",
+      dataset_description = "Antibiotic prescriptions by site",
+      show_progress = FALSE
+    )
+)
 
 # clean up
 file.remove(filename)
@@ -238,11 +248,11 @@ file.remove(filename)
 ```{r heatmap-display, eval=FALSE}
 mantis_report(
   df = example_prescription_numbers,
+  file = "example_prescription_numbers_heatmap.html",
   inputspec = inspec_tabbed,
   outputspec = outputspec_static_heatmap(),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
-  save_filename = "example_prescription_numbers_heatmap",
   show_progress = TRUE
 )
 ```
@@ -254,16 +264,21 @@ mantis_report(
 ```{r multipanel-test, include=FALSE}
 # quietly test can create the report from an rmd but show the code in the next
 # chunk in the vignette
-filename <-
-  mantis_report(
-    df = example_prescription_numbers,
-    inputspec = inspec_tabbed,
-    outputspec = outputspec_static_multipanel(),
-    report_title = "mantis report",
-    dataset_description = "Antibiotic prescriptions by site",
-    save_filename = "example_prescription_numbers_multipanel",
-    show_progress = FALSE
-  )
+
+# temporarily set working directory to tempdir
+withr::with_dir(
+  tempdir(),
+  filename <-
+    mantis_report(
+      df = example_prescription_numbers,
+      file = "example_prescription_numbers_multipanel.html",
+      inputspec = inspec_tabbed,
+      outputspec = outputspec_static_multipanel(),
+      report_title = "mantis report",
+      dataset_description = "Antibiotic prescriptions by site",
+      show_progress = FALSE
+    )
+)
 
 # clean up
 file.remove(filename)
@@ -272,11 +287,11 @@ file.remove(filename)
 ```{r multipanel-display, eval=FALSE}
 mantis_report(
   df = example_prescription_numbers,
+  file = "example_prescription_numbers_multipanel.html",
   inputspec = inspec_tabbed,
   outputspec = outputspec_static_multipanel(),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
-  save_filename = "example_prescription_numbers_multipanel",
   show_progress = TRUE
 )
 ```

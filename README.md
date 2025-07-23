@@ -105,9 +105,10 @@ head(example_prescription_numbers)
     ## 6 2022-01-01       Vancomycin    Limited                      0 SITE1
 
 ``` r
-# create a report in the current directory, with one tab per Location
+# create a report in the working directory, with one tab per Location
 mantis_report(
   df = example_prescription_numbers,
+  file = "example_prescription_numbers_report.html",
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
     item_cols = c("Location", "Antibiotic", "Spectrum"),

@@ -137,6 +137,7 @@ data("example_prescription_numbers")
 ```{r, eval=FALSE}
 mantis_report(
   df = example_prescription_numbers,
+  file = "example_prescription_numbers_interactive.html",
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
     item_cols = c("Antibiotic", "Spectrum", "Location"),
@@ -148,7 +149,6 @@ mantis_report(
   ),
   report_title = "mantis report",
   dataset_description = "Antibiotic prescriptions by site",
-  save_filename = "example_prescription_numbers_interactive",
   show_progress = TRUE
 )
 ```
@@ -179,6 +179,7 @@ ars <- alert_rules(
 # create a new report
 mantis_report(
   df = example_prescription_numbers,
+  file = "example_prescription_numbers_interactive_alerts.html",
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
     item_cols = c("Antibiotic", "Spectrum", "Location"),
@@ -194,7 +195,6 @@ mantis_report(
   ),
   report_title = "mantis report with alerts",
   dataset_description = "Antibiotic prescriptions by site",
-  save_filename = "example_prescription_numbers_interactive_alerts",
   show_progress = TRUE
 )
 ```
@@ -229,6 +229,7 @@ ars_restricted <- alert_rules(
 # create a new report
 mantis_report(
   df = example_prescription_numbers,
+  file = "example_prescription_numbers_interactive_alerts_restricted.html",
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
     item_cols = c("Antibiotic", "Spectrum", "Location"),
@@ -243,7 +244,6 @@ mantis_report(
   ),
   report_title = "mantis report with alerts",
   dataset_description = "Antibiotic prescriptions by site",
-  save_filename = "example_prescription_numbers_interactive_alerts_restricted",
   show_progress = TRUE
 )
 ```

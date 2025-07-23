@@ -47,6 +47,84 @@ test_that("validate_params_type() checks df params are of correct type", {
 })
 
 
+test_that("validate_params_type() checks file params contain a valid directory (or no directory)", {
+  # Real dir
+  expect_silent(testfn_params_type(file = file.path(test_path(), "filename.html")))
+  # No dir
+  expect_silent(testfn_params_type(file = "filename.html"))
+
+  # Fake dir
+  expect_error(
+    testfn_params_type(file = file.path("fakedir", "filename.html")),
+    class = "invalid_param_type"
+  )
+})
+
+test_that("validate_params_type() checks file params are scalar", {
+  expect_error(
+    testfn_params_type(file = file.path(c("filename.html", "filename2.html"))),
+    class = "invalid_param_type"
+  )
+})
+
+test_that("validate_params_type() checks file params are not allowed to be empty", {
+  expect_error(testfn_params_type(file = NULL))
+  expect_error(testfn_params_type(file = ""))
+  expect_error(testfn_params_type(file = NA))
+  expect_error(testfn_params_type(file = character(0)))
+})
+
+test_that("validate_params_type() checks file name of file params includes valid extension", {
+  # Valid
+  expect_silent(testfn_params_type(file = file.path(test_path(), "filename.html")))
+  expect_silent(testfn_params_type(file = "filename.html"))
+  expect_silent(testfn_params_type(file = file.path(test_path(), "filename.htm")))
+  expect_silent(testfn_params_type(file = "filename.htm"))
+
+  # Invalid
+  expect_error(testfn_params_type(file = file.path(test_path(), "filename.css")))
+  expect_error(testfn_params_type(file = file.path(test_path(), "filename")))
+  expect_error(testfn_params_type(file = "filename.css"))
+  expect_error(testfn_params_type(file = "filename"))
+})
+
+test_that("validate_params_type() checks file name of file params can contain alphanumerics, - and _", {
+  expect_silent(testfn_params_type(file = "alpha123.html"))
+  expect_silent(testfn_params_type(file = "alpha-123.html"))
+  expect_silent(testfn_params_type(file = "alpha_123.html"))
+  expect_silent(testfn_params_type(file = file.path(test_path(), "alpha123.html")))
+  expect_silent(testfn_params_type(file = file.path(test_path(), "alpha-123.html")))
+  expect_silent(testfn_params_type(file = file.path(test_path(), "alpha_123.html")))
+})
+
+test_that("validate_params_type() checks file name of file params are not allowed to contain punctuation other than - and _", {
+  expect_error(
+    testfn_params_type(file = "bad.name.html"),
+    class = "invalid_param_type"
+  )
+  expect_error(
+    testfn_params_type(file = "badname&.html"),
+    class = "invalid_param_type"
+  )
+  expect_error(
+    testfn_params_type(file = "badname*.html"),
+    class = "invalid_param_type"
+  )
+  expect_error(
+    testfn_params_type(file = file.path(test_path(), "bad.name.html")),
+    class = "invalid_param_type"
+  )
+  expect_error(
+    testfn_params_type(file = file.path(test_path(), "badname&.html")),
+    class = "invalid_param_type"
+  )
+  expect_error(
+    testfn_params_type(file = file.path(test_path(), "badname*.html")),
+    class = "invalid_param_type"
+  )
+})
+
+
 test_that("validate_params_type() checks inputspec params are of correct type", {
   expect_error(
     testfn_params_type(inputspec = 1),
@@ -262,68 +340,6 @@ test_that("validate_params_type() checks report_title params are of correct type
   )
   expect_error(
     testfn_params_type(report_title = c("col1", "col2")),
-    class = "invalid_param_type"
-  )
-})
-
-test_that("validate_params_type() checks save_directory params are of correct type", {
-  # Real dir
-  expect_silent(testfn_params_type(save_directory = test_path()))
-  # Real dir with trailing slash
-  expect_silent(testfn_params_type(save_directory = paste0(test_path(), "/")))
-
-  # Fake dir
-  expect_error(
-    testfn_params_type(save_directory = "fakedir"),
-    class = "invalid_param_type"
-  )
-  # Dir includes filename
-  expect_error(
-    testfn_params_type(save_directory = test_path("test_utilities.R")),
-    class = "invalid_param_type"
-  )
-  # Multiple dirs
-  expect_error(
-    testfn_params_type(save_directory = c(".", test_path())),
-    class = "invalid_param_type"
-  )
-})
-
-test_that("validate_params_type() checks save_filename params are allowed to contain alphanumerics, - and _", {
-  expect_silent(testfn_params_type(save_filename = "alpha123"))
-  expect_silent(testfn_params_type(save_filename = "alpha-123"))
-  expect_silent(testfn_params_type(save_filename = "alpha_123"))
-})
-
-test_that("validate_params_type() checks save_filename params are allowed to be NULL", {
-  expect_silent(testfn_params_type(save_filename = NULL))
-})
-
-test_that("validate_params_type() checks save_filename params are not allowed to contain the extension", {
-  expect_error(
-    testfn_params_type(save_filename = "badname.html"),
-    class = "invalid_param_type"
-  )
-})
-
-test_that("validate_params_type() checks save_filename params are not allowed to contain punctuation other than - and _", {
-  expect_error(
-    testfn_params_type(save_filename = "bad.name"),
-    class = "invalid_param_type"
-  )
-  expect_error(
-    testfn_params_type(save_filename = "badname&"),
-    class = "invalid_param_type"
-  )
-  expect_error(
-    testfn_params_type(save_filename = "badname*"),
-    class = "invalid_param_type"
-  )
-})
-
-test_that("validate_params_type() checks save_filename params are scalar", {
-  expect_error(
-    testfn_params_type(save_filename = c("file1", "file2")),
     class = "invalid_param_type"
   )
 })

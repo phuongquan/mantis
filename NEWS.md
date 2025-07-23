@@ -1,6 +1,11 @@
-# mantis 0.4.0 (2025-07-16)
+# mantis 0.4.1 (2025-07-23)
 
 Lightweight initial CRAN submission. Only includes standard (non-bespoke) reports.
+
+Breaking changes
+
+* New `file` parameter in `mantis_report()` replaces `save_directory` and `save_filename` 
+* New `add_timestamp` parameter in `mantis_report()` adds a timestamp to the supplied file name
 
 # mantis 0.3.0 (2025-06-10)
 
