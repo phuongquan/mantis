@@ -168,6 +168,7 @@ mantis_report <- function(
     ),
     output_file = file_fullname,
     intermediates_dir = temp_dirname,
+    knit_root_dir = temp_dirname,
     params = list(
       df = df,
       inputspec = inputspec,
