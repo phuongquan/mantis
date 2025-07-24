@@ -132,39 +132,42 @@ mantis_report <- function(
   validate_df_to_inputspec(df, inputspec)
   validate_alert_rules_to_inputspec(alertspec$alert_rules, inputspec)
 
-  timestamp_string <- format(Sys.time(), "_%Y%m%d%_%H%M%S")
-
   if (is.null(outputspec)) {
     outputspec <- outputspec_interactive()
   }
 
   file_fullname <- format_filename(
     file,
-    append_string = ifelse(add_timestamp, timestamp_string, "")
+    append_string = ifelse(
+      add_timestamp,
+      format(Sys.time(), "_%Y%m%d%_%H%M%S"),
+      ""
+    )
   )
 
-  # temporarily copy rmd file from package library into output directory so that
-  # intermediate files also get created there.
-  # NOTE: explicitly setting intermediates_dir in rmarkdown::render() to
+  # NOTE: setting intermediates_dir in rmarkdown::render() to
   # output directory or tempdir() causes duplicate chunk label errors when package
   # is run from inside an rmd/qmd
+  # So need to designate a unique subfolder of tempdir()
   temp_dirname <-
-    file.path(dirname(file_fullname), paste0("mantis_temp", timestamp_string))
-  dir.create(temp_dirname)
-  file.copy(
-    from = system.file(
+    file.path(
+      tempdir(),
+      paste0(
+        "mantis_temp_",
+        # append a short random ID
+        paste0(sample(c(0:9, letters), 8, replace = TRUE), collapse = "")
+      )
+    )
+
+  rmarkdown::render(
+    input = system.file(
       "rmd",
       "report-html.Rmd",
       package = utils::packageName(),
       mustWork = TRUE
     ),
-    to = temp_dirname,
-    overwrite = TRUE
-  )
-
-  rmarkdown::render(
-    input = file.path(temp_dirname, "report-html.Rmd"),
     output_file = file_fullname,
+    intermediates_dir = temp_dirname,
     params = list(
       df = df,
       inputspec = inputspec,
@@ -177,7 +180,7 @@ mantis_report <- function(
     ...
   )
 
-  # remove temporary directory created earlier
+  # remove temporary directory created earlier by rmarkdown::render()
   unlink(temp_dirname, recursive = TRUE)
 
   file_fullname
