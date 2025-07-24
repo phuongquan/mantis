@@ -505,6 +505,8 @@ test_that("mantis_report() appends timestamp to filename appropriately", {
       show_progress = FALSE
     )
 
+  # temporarily check to see what the filename looks like on different platforms
+  expect_equal(basename(reportpath), "mantis_testthatreport.html")
   expect_true(grepl("^mantis_testthatreport_[0-9]{8}_[0-9]{6}\\.html$", basename(reportpath)))
 
   # clean up
