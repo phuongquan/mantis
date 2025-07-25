@@ -7,6 +7,10 @@ Breaking changes
 * New `file` parameter in `mantis_report()` replaces `save_directory` and `save_filename` 
 * New `add_timestamp` parameter in `mantis_report()` adds a timestamp to the supplied file name
 
+Bug fixes
+
+* Timestamps added to filenames are now formatted correctly on linux
+
 # mantis 0.3.0 (2025-06-10)
 
 Breaking changes
