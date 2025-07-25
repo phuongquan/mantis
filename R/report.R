@@ -140,7 +140,7 @@ mantis_report <- function(
     file,
     append_string = ifelse(
       add_timestamp,
-      format(Sys.time(), "_%Y%m%d%_%H%M%S"),
+      format(Sys.time(), "_%Y%m%d%%H%M%S"),
       ""
     )
   )
