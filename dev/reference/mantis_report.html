@@ -11,7 +11,7 @@ inspection, and saves the report to disk."><meta name="robots" content="noindex"
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,13 +59,13 @@ inspection, and saves the report to disk.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mantis_report</span><span class="op">(</span></span>
 <span>  <span class="va">df</span>,</span>
+<span>  <span class="va">file</span>,</span>
 <span>  <span class="va">inputspec</span>,</span>
 <span>  outputspec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alertspec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  report_title <span class="op">=</span> <span class="st">"mantis report"</span>,</span>
 <span>  dataset_description <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  save_directory <span class="op">=</span> <span class="st">"."</span>,</span>
-<span>  save_filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_timestamp <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -78,6 +78,15 @@ inspection, and saves the report to disk.</p>
 <dl><dt id="arg-df">df<a class="anchor" aria-label="anchor" href="#arg-df"></a></dt>
 <dd><p>A data frame containing multiple time series in long format. See
 Details.</p></dd>
+
+
+<dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
+<dd><p>String specifying the desired file name (and path) to save the
+report to. The file name should include the extension ".html". If only a
+file name is supplied, the report will be saved in the current working
+directory. If a path is supplied, the directory should already exist. Any
+existing file of the same name will be overwritten unless
+<code>add_timestamp</code> is set to <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-inputspec">inputspec<a class="anchor" aria-label="anchor" href="#arg-inputspec"></a></dt>
@@ -94,7 +103,7 @@ html table(s). If not supplied, default values will be used.</p></dd>
 
 <dt id="arg-alertspec">alertspec<a class="anchor" aria-label="anchor" href="#arg-alertspec"></a></dt>
 <dd><p><code><a href="alertspec.html">alertspec()</a></code> object specifying conditions to test and
-display</p></dd>
+display.</p></dd>
 
 
 <dt id="arg-report-title">report_title<a class="anchor" aria-label="anchor" href="#arg-report-title"></a></dt>
@@ -106,15 +115,10 @@ display</p></dd>
 will appear on the report.</p></dd>
 
 
-<dt id="arg-save-directory">save_directory<a class="anchor" aria-label="anchor" href="#arg-save-directory"></a></dt>
-<dd><p>String specifying directory in which to save the
-report. Default is current directory.</p></dd>
-
-
-<dt id="arg-save-filename">save_filename<a class="anchor" aria-label="anchor" href="#arg-save-filename"></a></dt>
-<dd><p>String specifying filename for the report, excluding any
-file extension. If no filename is supplied, one will be automatically
-generated with the format <code>mantis_report_YYMMDD_HHMMSS</code>.</p></dd>
+<dt id="arg-add-timestamp">add_timestamp<a class="anchor" aria-label="anchor" href="#arg-add-timestamp"></a></dt>
+<dd><p>Append a timestamp to the end of the filename with
+format <code>_YYMMDD_HHMMSS</code>. This can be used to keep multiple versions of the
+same report. Default = <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-show-progress">show_progress<a class="anchor" aria-label="anchor" href="#arg-show-progress"></a></dt>
@@ -128,7 +132,7 @@ include any of <code>input</code>, <code>output_dir</code>, <code>output_file</c
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A string containing the name and path of the saved report.</p>
+    <p>A string containing the name and full path of the saved report.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -154,10 +158,11 @@ will be used to group the time series into different tabs on the report.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="co"># create an interactive report in the current directory,</span></span></span>
+<span class="r-in"><span><span class="co"># create an interactive report in the temp directory,</span></span></span>
 <span class="r-in"><span><span class="co"># with one tab per Location</span></span></span>
 <span class="r-in"><span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu">mantis_report</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span></span>
+<span class="r-in"><span>  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"example_prescription_numbers_interactive.html"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  inputspec <span class="op">=</span> <span class="fu"><a href="inputspec.html">inputspec</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span></span>
 <span class="r-in"><span>    item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span><span class="op">)</span>,</span></span>
@@ -168,8 +173,6 @@ will be used to group the time series into different tabs on the report.</p>
 <span class="r-in"><span>  outputspec <span class="op">=</span> <span class="fu"><a href="outputspec_interactive.html">outputspec_interactive</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  report_title <span class="op">=</span> <span class="st">"Daily antibiotic prescribing"</span>,</span></span>
 <span class="r-in"><span>  dataset_description <span class="op">=</span> <span class="st">"Antibiotic prescriptions by site"</span>,</span></span>
-<span class="r-in"><span>  save_directory <span class="op">=</span> <span class="st">"."</span>,</span></span>
-<span class="r-in"><span>  save_filename <span class="op">=</span> <span class="st">"example_prescription_numbers_interactive"</span>,</span></span>
 <span class="r-in"><span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -187,16 +190,20 @@ will be used to group the time series into different tabs on the report.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10/12 [mantis-content]     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11/12                      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12/12 [mantis-init-widgets]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> output file: report-html.knit.md</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS report-html.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output /home/runner/work/mantis/mantis/docs/dev/reference/example_prescription_numbers_interactive.html --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --variable bs3=TRUE --section-divs --template /home/runner/work/_temp/Library/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/RtmpeC47nL/rmarkdown-str1d58634a3341.html </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> output file: /tmp/RtmpCoXsd8/mantis_temp_14kx53xy/report-html.knit.md</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS /tmp/RtmpCoXsd8/mantis_temp_14kx53xy/report-html.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output /tmp/RtmpCoXsd8/example_prescription_numbers_interactive.html --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --variable bs3=TRUE --section-divs --template /home/runner/work/_temp/Library/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/RtmpCoXsd8/rmarkdown-str1ca04d25aa81.html </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Output created: example_prescription_numbers_interactive.html</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Output created: /tmp/RtmpCoXsd8/example_prescription_numbers_interactive.html</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">filename</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpCoXsd8/example_prescription_numbers_interactive.html"</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="co"># create an interactive report in the current directory, with alerting rules</span></span></span>
+<span class="r-in"><span><span class="co"># create an interactive report in the temp directory, with alerting rules</span></span></span>
 <span class="r-in"><span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu">mantis_report</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span></span>
+<span class="r-in"><span>  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"example_prescription_numbers_interactive.html"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  inputspec <span class="op">=</span> <span class="fu"><a href="inputspec.html">inputspec</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span></span>
 <span class="r-in"><span>    item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span><span class="op">)</span>,</span></span>
@@ -214,8 +221,6 @@ will be used to group the time series into different tabs on the report.</p>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  report_title <span class="op">=</span> <span class="st">"Daily antibiotic prescribing"</span>,</span></span>
 <span class="r-in"><span>  dataset_description <span class="op">=</span> <span class="st">"Antibiotic prescriptions by site"</span>,</span></span>
-<span class="r-in"><span>  save_directory <span class="op">=</span> <span class="st">"."</span>,</span></span>
-<span class="r-in"><span>  save_filename <span class="op">=</span> <span class="st">"example_prescription_numbers_interactive"</span>,</span></span>
 <span class="r-in"><span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -233,10 +238,13 @@ will be used to group the time series into different tabs on the report.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10/12 [mantis-content]     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11/12                      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12/12 [mantis-init-widgets]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> output file: report-html.knit.md</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS report-html.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output /home/runner/work/mantis/mantis/docs/dev/reference/example_prescription_numbers_interactive.html --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --variable bs3=TRUE --section-divs --template /home/runner/work/_temp/Library/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/RtmpeC47nL/rmarkdown-str1d5840c00d73.html </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> output file: /tmp/RtmpCoXsd8/mantis_temp_ol6v58l9/report-html.knit.md</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS /tmp/RtmpCoXsd8/mantis_temp_ol6v58l9/report-html.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output /tmp/RtmpCoXsd8/example_prescription_numbers_interactive.html --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --variable bs3=TRUE --section-divs --template /home/runner/work/_temp/Library/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/RtmpCoXsd8/rmarkdown-str1ca06258bdd.html </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Output created: example_prescription_numbers_interactive.html</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Output created: /tmp/RtmpCoXsd8/example_prescription_numbers_interactive.html</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">filename</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpCoXsd8/example_prescription_numbers_interactive.html"</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
