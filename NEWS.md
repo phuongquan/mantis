@@ -1,12 +1,30 @@
+# mantis (development version)
+
+Re-align with initial CRAN release but with full functionality
+
+# mantis 0.4.2 (2025-07-25)
+
+Lightweight initial CRAN submission. Only includes standard (non-bespoke) reports.
+
+## Breaking changes
+
+* New `file` parameter in `mantis_report()` replaces `save_directory` and `save_filename` (#24)
+* New `add_timestamp` parameter in `mantis_report()` adds a timestamp to the supplied file name (#24)
+
+## Bug fixes and minor improvements
+
+* Timestamps added to filenames are now formatted correctly on linux
+* Intermediate files that are generated while creating a report are now created in `tempdir()` instead of the working directory where possible (#24)
+
 # mantis 0.3.0 (2025-06-10)
 
-Breaking changes
+## Breaking changes
 
 * `timepoint_unit` parameter of `inputspec()` replaces `period` 
 
 # mantis 0.2.0 (2025-02-07)
 
-Breaking changes
+## Breaking changes
 
 * `inputspec()` object now takes a `item_cols` parameter, allowing more than one column in the df to define individual time series, and must include the column being used for tabs (if any).
 * New `alertspec()` object adds additional output options and wraps `alert_rules()` where relevant
@@ -17,7 +35,7 @@ Breaking changes
 * `bespoke_rmd_output()` replaces `bespoke_rmd_tab_group()` and `bespoke_rmd_tab_item()`
 * New `bespoke_rmd_alert_results()` function creates a table containing the alert results for bespoke reports 
 
-Other changes
+## Bug fixes and minor improvements
 
 * example_prescription_numbers dataset now has additional data
 

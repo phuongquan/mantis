@@ -6,13 +6,13 @@
 \usage{
 mantis_report(
   df,
+  file,
   inputspec,
   outputspec = NULL,
   alertspec = NULL,
   report_title = "mantis report",
   dataset_description = "",
-  save_directory = ".",
-  save_filename = NULL,
+  add_timestamp = FALSE,
   show_progress = TRUE,
   ...
 )
@@ -20,6 +20,13 @@ mantis_report(
 \arguments{
 \item{df}{A data frame containing multiple time series in long format. See
 Details.}
+
+\item{file}{String specifying the desired file name (and path) to save the
+report to. The file name should include the extension ".html". If only a
+file name is supplied, the report will be saved in the current working
+directory. If a path is supplied, the directory should already exist. Any
+existing file of the same name will be overwritten unless
+\code{add_timestamp} is set to \code{TRUE}.}
 
 \item{inputspec}{\code{\link[=inputspec]{inputspec()}} object specifying which columns in the
 supplied \code{df} represent the "timepoint", "item", "value"  and (optionally)
@@ -30,19 +37,16 @@ will be created for each distinct value in the column.}
 html table(s). If not supplied, default values will be used.}
 
 \item{alertspec}{\code{\link[=alertspec]{alertspec()}} object specifying conditions to test and
-display}
+display.}
 
 \item{report_title}{Title to appear on the report.}
 
 \item{dataset_description}{Short description of the dataset being shown. This
 will appear on the report.}
 
-\item{save_directory}{String specifying directory in which to save the
-report. Default is current directory.}
-
-\item{save_filename}{String specifying filename for the report, excluding any
-file extension. If no filename is supplied, one will be automatically
-generated with the format \code{mantis_report_YYMMDD_HHMMSS}.}
+\item{add_timestamp}{Append a timestamp to the end of the filename with
+format \verb{_YYMMDD_HHMMSS}. This can be used to keep multiple versions of the
+same report. Default = \code{FALSE}.}
 
 \item{show_progress}{Print progress to console. Default = \code{TRUE}.}
 
@@ -50,7 +54,7 @@ generated with the format \code{mantis_report_YYMMDD_HHMMSS}.}
 include any of \code{input}, \code{output_dir}, \code{output_file}, \code{params}, \code{quiet}.}
 }
 \value{
-A string containing the name and path of the saved report.
+A string containing the name and full path of the saved report.
 }
 \description{
 Accepts a data frame containing multiple time series in long format,
@@ -76,10 +80,11 @@ The \code{inputspec} parameter maps the data frame columns to the above.
 }
 \examples{
 \donttest{
-# create an interactive report in the current directory,
+# create an interactive report in the temp directory,
 # with one tab per Location
 filename <- mantis_report(
   df = example_prescription_numbers,
+  file = file.path(tempdir(), "example_prescription_numbers_interactive.html"),
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
     item_cols = c("Location", "Antibiotic", "Spectrum"),
@@ -90,17 +95,18 @@ filename <- mantis_report(
   outputspec = outputspec_interactive(),
   report_title = "Daily antibiotic prescribing",
   dataset_description = "Antibiotic prescriptions by site",
-  save_directory = ".",
-  save_filename = "example_prescription_numbers_interactive",
   show_progress = TRUE
 )
-\dontshow{file.remove("./example_prescription_numbers_interactive.html")}
+
+filename
+\dontshow{unlink(filename)}
 }
 
 \donttest{
-# create an interactive report in the current directory, with alerting rules
+# create an interactive report in the temp directory, with alerting rules
 filename <- mantis_report(
   df = example_prescription_numbers,
+  file = file.path(tempdir(), "example_prescription_numbers_interactive.html"),
   inputspec = inputspec(
     timepoint_col = "PrescriptionDate",
     item_cols = c("Location", "Antibiotic", "Spectrum"),
@@ -118,11 +124,11 @@ filename <- mantis_report(
   ),
   report_title = "Daily antibiotic prescribing",
   dataset_description = "Antibiotic prescriptions by site",
-  save_directory = ".",
-  save_filename = "example_prescription_numbers_interactive",
   show_progress = TRUE
 )
-\dontshow{file.remove("./example_prescription_numbers_interactive.html")}
+
+filename
+\dontshow{unlink(filename)}
 }
 
 }

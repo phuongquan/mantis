@@ -24,6 +24,7 @@ if (
   filename <-
     mantis::mantis_report(
       df = example_prescription_numbers,
+      file = "../../docs/articles/example-prescriptions-interactive.html",
       inputspec = mantis::inputspec(
         timepoint_col = "PrescriptionDate",
         item_cols = c("Antibiotic", "Spectrum", "Location"),
@@ -33,8 +34,6 @@ if (
       outputspec = mantis::outputspec_interactive(),
       report_title = "Example mantis report - interactive",
       dataset_description = "Hover mouse over the graphs to see dates and values. Filter the table by typing into the boxes under the column headings.",
-      save_directory = "../../docs/articles",
-      save_filename = "example-prescriptions-interactive",
       show_progress = FALSE
     )
 }

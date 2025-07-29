@@ -5,6 +5,7 @@ on:
     branches: [main, master]
   pull_request:
   release:
+    branches: [main, master]
     types: [published]
   workflow_dispatch:
 

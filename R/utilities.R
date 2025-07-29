@@ -129,6 +129,20 @@ validate_param_byname <- function(
       error_message = "Expected a data frame",
       error_contents_max_length = 100
     ),
+    "file" = validate_param(
+      param_name = param_name,
+      param_value = param_value,
+      allow_null = FALSE,
+      expect_scalar = TRUE,
+      validation_function = function(x) {
+        nchar(x) > 0 &&
+          dir.exists(dirname(x)) &&
+          tools::file_ext(x) %in% c("html", "htm") &&
+          !grepl("[^a-zA-Z0-9_-]", tools::file_path_sans_ext(basename(x)))
+      },
+      error_message = "Expected a single path to an existing directory, filename should only contain alphanumeric, '-', and '_' characters, and include extension '.html'",
+      error_contents_max_length = 255
+    ),
     "inputspec" = validate_param(
       param_name = param_name,
       param_value = param_value,
@@ -175,28 +189,6 @@ validate_param_byname <- function(
       validation_function = is.logical,
       error_message = "Expected TRUE/FALSE",
       error_contents_max_length = 100
-    ),
-    "save_directory" = validate_param(
-      param_name = param_name,
-      param_value = param_value,
-      allow_null = FALSE,
-      expect_scalar = TRUE,
-      validation_function = function(x) {
-        is.character(x) && dir.exists(x)
-      },
-      error_message = "Directory not found. Expected a single path to an existing directory",
-      error_contents_max_length = 255
-    ),
-    "save_filename" = validate_param(
-      param_name = param_name,
-      param_value = param_value,
-      allow_null = TRUE,
-      expect_scalar = TRUE,
-      validation_function = function(x) {
-        !grepl("[^a-zA-Z0-9_-]", x) && nchar(x) > 0
-      },
-      error_message = "Filename can only contain alphanumeric, '-', and '_' characters, and should not include the file extension",
-      error_contents_max_length = 255
     ),
     "tab_group_name" = ,
     "tab_name" = ,
@@ -599,14 +591,13 @@ testfn_params_required <- function(p1, p2, p3 = NULL, ...) {
 #' @noRd
 testfn_params_type <- function(
   df,
+  file,
   inputspec,
   outputspec,
   alertspec,
   alert_rules,
   dataset_description = "",
   report_title = "mantis report",
-  save_directory = ".",
-  save_filename = "filename",
   show_progress = TRUE,
   timepoint_col = "timepoint_col",
   item_cols = "item_cols",
@@ -645,6 +636,9 @@ testfn_params_type <- function(
   if (missing(df)) {
     df <- data.frame("Fieldname" = 123)
   }
+  if (missing(file)) {
+    file <- "filename.html"
+  }
   if (missing(inputspec)) {
     inputspec <-
       structure(list(rule = NA), class = "mantis_inputspec")
@@ -665,14 +659,13 @@ testfn_params_type <- function(
   validate_params_type(
     match.call(),
     df = df,
+    file = file,
     inputspec = inputspec,
     outputspec = outputspec,
     alertspec = alertspec,
     alert_rules = alert_rules,
     dataset_description = dataset_description,
     report_title = report_title,
-    save_directory = save_directory,
-    save_filename = save_filename,
     show_progress = show_progress,
     timepoint_col = timepoint_col,
     item_cols = item_cols,
