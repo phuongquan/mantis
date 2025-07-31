@@ -1,3 +1,7 @@
+# mantis 0.4.3 (2025-07-31)
+
+Include bespoke reports functionality.
+
 # mantis 0.4.2 (2025-07-25)
 
 Lightweight initial CRAN submission. Only includes standard (non-bespoke) reports.
@@ -9,7 +13,7 @@ Lightweight initial CRAN submission. Only includes standard (non-bespoke) report
 
 ## Bug fixes and minor improvements
 
-* Timestamps added to filenames are now formatted correctly on linux
+* Timestamps added to filenames are now formatted correctly on linux (#25)
 * Intermediate files that are generated while creating a report are now created in `tempdir()` instead of the working directory where possible (#24)
 
 # mantis 0.3.0 (2025-06-10)
