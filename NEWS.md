@@ -1,6 +1,10 @@
 # mantis (development version)
 
-Re-align with initial CRAN release but with full functionality
+Re-align with CRAN release
+
+# mantis 0.4.3 (2025-07-31)
+
+Include bespoke reports functionality.
 
 # mantis 0.4.2 (2025-07-25)
 

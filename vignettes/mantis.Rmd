@@ -174,29 +174,6 @@ the `outputspec` parameter.
 For the `example_prescription_numbers` dataset above, we will save a report in
 the working directory, with separate tabs for each hospital site.
 
-```{r interactive-test, include=FALSE}
-# quietly test can create the report from an rmd but show the code in the next
-# chunk in the vignette
-
-# temporarily set working directory to tempdir
-withr::with_dir(
-  tempdir(),
-  filename <-
-    mantis_report(
-      df = example_prescription_numbers,
-      file = "example_prescription_numbers_interactive.html",
-      inputspec = inspec_tabbed2,
-      outputspec = outputspec_interactive(),
-      report_title = "mantis report",
-      dataset_description = "Antibiotic prescriptions by site",
-      show_progress = FALSE
-    )
-)
-
-# clean up
-file.remove(filename)
-```
-
 ```{r interactive-display, eval=FALSE}
 mantis_report(
   df = example_prescription_numbers,
@@ -222,29 +199,6 @@ parameter.
 
 #### Heatmap
 
-```{r heatmap-test, include=FALSE}
-# quietly test can create the report from an rmd but show the code in the next
-# chunk in the vignette
-
-# temporarily set working directory to tempdir
-withr::with_dir(
-  tempdir(),
-  filename <-
-    mantis_report(
-      df = example_prescription_numbers,
-      file = "example_prescription_numbers_heatmap.html",
-      inputspec = inspec_tabbed,
-      outputspec = outputspec_static_heatmap(),
-      report_title = "mantis report",
-      dataset_description = "Antibiotic prescriptions by site",
-      show_progress = FALSE
-    )
-)
-
-# clean up
-file.remove(filename)
-```
-
 ```{r heatmap-display, eval=FALSE}
 mantis_report(
   df = example_prescription_numbers,
@@ -260,29 +214,6 @@ mantis_report(
 <img src="../man/figures/example_prescription_numbers_heatmap.png" width="500" />
 
 #### Multipanel
-
-```{r multipanel-test, include=FALSE}
-# quietly test can create the report from an rmd but show the code in the next
-# chunk in the vignette
-
-# temporarily set working directory to tempdir
-withr::with_dir(
-  tempdir(),
-  filename <-
-    mantis_report(
-      df = example_prescription_numbers,
-      file = "example_prescription_numbers_multipanel.html",
-      inputspec = inspec_tabbed,
-      outputspec = outputspec_static_multipanel(),
-      report_title = "mantis report",
-      dataset_description = "Antibiotic prescriptions by site",
-      show_progress = FALSE
-    )
-)
-
-# clean up
-file.remove(filename)
-```
 
 ```{r multipanel-display, eval=FALSE}
 mantis_report(
