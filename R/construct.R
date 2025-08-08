@@ -314,7 +314,7 @@ initialise_widgets <- function(
       output_table_interactive(
         inputspec = inputspec,
         plot_type = plot_type,
-        summary_cols = "",
+        summary_cols = NULL,
         height = 0,
         bordered = FALSE
       )

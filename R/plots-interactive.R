@@ -40,6 +40,7 @@ output_table_interactive <- function(
     prepared_df = prepared_df,
     inputspec = inputspec,
     plot_value_type = plot_value_type,
+    summary_cols = summary_cols,
     alert_results = alert_results,
     sort_by = sort_by
   )
@@ -67,6 +68,21 @@ output_table_interactive <- function(
     }
   }
 
+  # generate the summary column(s)
+  summary_colDefs <- list()
+  for (summary_col in summary_cols) {
+    summary_colDefs[[summary_col]] <-
+      reactable::colDef(
+        name = switch(summary_col,
+                      "last_timepoint" = "Last timepoint",
+                      "last_value" = "Last value",
+                      "last_value_nonmissing" = "Last non-missing value",
+                      "max_value" = "Max value",
+                      "mean_value" = "Mean",
+                      summary_col)
+      )
+  }
+
   reactable::reactable(
     table,
     sortable = TRUE,
@@ -81,27 +97,8 @@ output_table_interactive <- function(
     compact = TRUE,
     columns = c(
       item_colDefs,
+      summary_colDefs,
       list(
-        last_timepoint = reactable::colDef(
-          name = "Last timepoint",
-          show = "last_timepoint" %in% summary_cols
-        ),
-        last_value = reactable::colDef(
-          name = "Last value",
-          show = "last_value" %in% summary_cols
-        ),
-        last_value_nonmissing = reactable::colDef(
-          name = "Last non-missing value",
-          show = "last_value_nonmissing" %in% summary_cols
-        ),
-        max_value = reactable::colDef(
-          name = "Max value",
-          show = "max_value" %in% summary_cols
-        ),
-        mean_value = reactable::colDef(
-          name = "Mean",
-          show = "mean_value" %in% summary_cols
-        ),
         # cell argument accepts a function with cell _values_, row _index_,
         # and/or column _names_ as arguments, below just uses _values_
         history = reactable::colDef(

@@ -516,11 +516,12 @@ prepare_df <- function(
 
 
 # -----------------------------------------------------------------------------
-#' Convert prepared df into required format for generating tables/plots
+#' Convert prepared df into required format for generating interactive tables/plots
 #'
 #' @param prepared_df data frame returned from prepare_df()
 #' @param inputspec Specification of data in df
 #' @param plot_value_type "value" or "delta"
+#' @param summary_cols vector of which summary columns to include
 #' @param alert_results `alert_results` object returned from `run_alerts()`
 #' @param sort_by column in output table to sort by. Can be one of
 #'   `alert_overall`, or one of the summary columns. Append a minus sign to sort
@@ -533,13 +534,12 @@ prepare_table <- function(
   prepared_df,
   inputspec,
   plot_value_type = "value",
+  summary_cols = c("max_value"),
   alert_results = NULL,
   sort_by = NULL
 ) {
-  # TODO: Consider passing in just item_cols rather than entire inputspec?
-
   # initialise column names to avoid R CMD check Notes
-  timepoint <- value <- value_for_history <- NULL
+  timepoint <- value <- value_for_history <- history <- NULL
   alert_description <- alert_result <- item_order_final <- NULL
 
   table_df <-
@@ -561,7 +561,9 @@ prepare_table <- function(
     dplyr::summarise(
       item_order_final = min(item_order_final),
       # summary columns
-      # TODO: only generate these if requested
+      # NOTE: ideally would only generate these if requested, but can't find a
+      # way to do this that doesn't require more computational effort than
+      # simply generating them all then deleting the unneeded ones (lower down)
       last_timepoint = max_else_na(timepoint[!is.na(value)]),
       last_value = rev(value)[1],
       last_value_nonmissing = rev(value[!is.na(value)])[1],
@@ -575,7 +577,13 @@ prepare_table <- function(
         plot_value_type
       ),
       .groups = "drop"
-    )
+    ) |>
+    # only keep the summary_cols requested
+    dplyr::select(c(
+      item_cols_prefix(inputspec$item_cols),
+      item_order_final,
+      dplyr::any_of(summary_cols),
+      history))
 
   # add alerts column
   if (!is.null(alert_results)) {
