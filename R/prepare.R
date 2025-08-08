@@ -699,17 +699,16 @@ align_data_timepoints <- function(
   # initialise column names to avoid R CMD check Notes
   timepoint <- value <- NULL
 
-  # TODO: Need to work out correct limits to use based on df
-  #  in case supplied limits don't match df granularity
-  if (is.na(timepoint_limits[1])) {
-    min_timepoint <- min(prepared_df$timepoint)
-  } else {
+  min_timepoint <- min(prepared_df$timepoint)
+  max_timepoint <- max(prepared_df$timepoint)
+  if (!is.na(timepoint_limits[1])) {
     min_timepoint <- adjust_timepoint_limit(
-      timepoint_limits[1], min(prepared_df$timepoint), inputspec$timepoint_unit, direction = "earlier")
+      timepoint_limits[1],
+      min(prepared_df$timepoint),
+      inputspec$timepoint_unit,
+      direction = "earlier")
   }
-  if (is.na(timepoint_limits[2])) {
-    max_timepoint <- max(prepared_df$timepoint)
-  } else {
+  if (!is.na(timepoint_limits[2])) {
     # NOTE: While timepoint_limits should already be a date class,
     # if user supplies an NA first in the vector, the second value gets coerced
     # to numeric and leads to an error in seq() later on
@@ -779,6 +778,9 @@ adjust_timepoint_limit <- function(
     timepoint_unit,
     direction
 ) {
+
+  diff <- timepoint_value - timepoint_limit
+seq(timepoint_value, timepoint_limit, by = timepoint_unit)
 
 }
 
