@@ -1248,3 +1248,27 @@ test_that("arrange_items() sorts by two item_orders", {
     )
   )
 })
+
+
+test_that("adjust_timepoint_limit() moves supplied limit appropriately", {
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-01-01"),
+      timepoint_value = as.Date("2022-01-20"),
+      timepoint_unit = "month",
+      direction = "earlier"
+    ),
+    as.Date("2021-12-20")
+  )
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-01-01"),
+      timepoint_value = as.Date("2022-01-20"),
+      timepoint_unit = "month",
+      direction = "later"
+    ),
+    as.Date("2022-02-20")
+  )
+
+})
+

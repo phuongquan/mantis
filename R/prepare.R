@@ -704,7 +704,8 @@ align_data_timepoints <- function(
   if (is.na(timepoint_limits[1])) {
     min_timepoint <- min(prepared_df$timepoint)
   } else {
-    min_timepoint <- timepoint_limits[1]
+    min_timepoint <- adjust_timepoint_limit(
+      timepoint_limits[1], min(prepared_df$timepoint), inputspec$timepoint_unit, direction = "earlier")
   }
   if (is.na(timepoint_limits[2])) {
     max_timepoint <- max(prepared_df$timepoint)
@@ -721,6 +722,7 @@ align_data_timepoints <- function(
 
   # TODO: Need to work out correct granularity to use based on df
   #  as don't want to insert unnecessary rows
+  # if the supplied limit(s) don't match the df granularity, be kind and adjust it
   all_timepoints <- seq(
     min_timepoint,
     max_timepoint,
@@ -761,6 +763,24 @@ align_data_timepoints <- function(
   df_out
 }
 
+# -----------------------------------------------------------------------------
+#' Adjust the supplied timepoint_limit to align with data if necessary
+#'
+#' @param timepoint_limit datetime value supplied by user
+#' @param timepoint_value datetime value in the data
+#' @param timepoint_unit granularity specified by user
+#' @param direction direction of desired adjustment. Either "earlier" or "later"
+#'
+#' @returns Datetime
+#' @noRd
+adjust_timepoint_limit <- function(
+    timepoint_limit,
+    timepoint_value,
+    timepoint_unit,
+    direction
+) {
+
+}
 
 # -----------------------------------------------------------------------------
 #' Wrapper for max function
