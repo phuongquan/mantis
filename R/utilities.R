@@ -274,8 +274,6 @@ validate_param_byname <- function(
       error_message = "Values allowed are: sec, min, hour, day, week, month, quarter, year",
       error_contents_max_length = 100
     ),
-    # TODO: if they provide a colname that doesn't exist, is it better to error
-    # or ignore?
     "summary_cols" = validate_param(
       param_name = param_name,
       param_value = param_value,

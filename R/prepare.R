@@ -862,10 +862,9 @@ validate_df_to_inputspec_col_names <- function(
 
   # only keep the cols params
   # and drop any items that are NULL using the unlist()
-  # TODO: find the appropriate regex
-  colspec_vector <- unlist(inputspec[
-    endsWith(names(inputspec), "_col") | endsWith(names(inputspec), "_cols")
-  ])
+  colspec_vector <- unlist(
+    inputspec[grep("(.+)(_col|_cols)$", names(inputspec))]
+    )
 
   # ignore any columns in df that are not in specification
   dfnames <- names(df)[names(df) %in% colspec_vector]
@@ -1000,7 +999,6 @@ validate_df_to_inputspec_col_types <- function(
 
   # item col will be coerced to character type
   # Check it doesn't contain both NA values and string "NA" values
-  # TODO: Confirm this is valid for multi-item_cols
   for (col in inputspec$item_cols) {
     item_vals <- df |> dplyr::pull(dplyr::all_of(col))
     if (any(is.na(item_vals)) && any(item_vals == "NA", na.rm = TRUE)) {

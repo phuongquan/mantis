@@ -152,7 +152,6 @@ plot_multipanel_static <- function(
       labels = scales::label_date_short(sep = " "),
       expand = c(0, 0)
     ) +
-    # TODO: try to place scale on right but axis label on left
     # secondary axis errors when some panels are all NAs
     ggplot2::scale_y_continuous(
       position = "right"

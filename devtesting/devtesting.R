@@ -148,7 +148,7 @@ mantis_report(df = example_prescription_numbers,
 )
 
 filename <- mantis_report(df = example_prescription_numbers,
-              file = "",
+              file = "multipanel.html",
               inputspec = inputspec(
                 timepoint_col = "PrescriptionDate",
                 item_cols = c("Antibiotic", "Location"),
