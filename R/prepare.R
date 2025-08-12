@@ -701,27 +701,33 @@ align_data_timepoints <- function(
 
   min_timepoint <- min(prepared_df$timepoint)
   max_timepoint <- max(prepared_df$timepoint)
+  # if the supplied limit(s) don't match the df granularity, be kind and adjust it
   if (!is.na(timepoint_limits[1])) {
     min_timepoint <- adjust_timepoint_limit(
-      timepoint_limits[1],
-      min(prepared_df$timepoint),
-      inputspec$timepoint_unit,
-      direction = "earlier")
+      timepoint_limit = timepoint_limits[1],
+      timepoint_values = prepared_df$timepoint,
+      timepoint_unit = inputspec$timepoint_unit,
+      limit_type = "min")
   }
   if (!is.na(timepoint_limits[2])) {
     # NOTE: While timepoint_limits should already be a date class,
     # if user supplies an NA first in the vector, the second value gets coerced
     # to numeric and leads to an error in seq() later on
     if (inputspec$timepoint_unit %in% c("sec", "min", "hour")) {
-      max_timepoint <- as.POSIXct(timepoint_limits[2])
+      max_timepoint <- adjust_timepoint_limit(
+        timepoint_limit = as.POSIXct(timepoint_limits[2]),
+        timepoint_values = prepared_df$timepoint,
+        timepoint_unit = inputspec$timepoint_unit,
+        limit_type = "max")
     } else {
-      max_timepoint <- as.Date(timepoint_limits[2])
+      max_timepoint <- adjust_timepoint_limit(
+        timepoint_limit = as.Date(timepoint_limits[2]),
+        timepoint_values = prepared_df$timepoint,
+        timepoint_unit = inputspec$timepoint_unit,
+        limit_type = "max")
     }
   }
 
-  # TODO: Need to work out correct granularity to use based on df
-  #  as don't want to insert unnecessary rows
-  # if the supplied limit(s) don't match the df granularity, be kind and adjust it
   all_timepoints <- seq(
     min_timepoint,
     max_timepoint,
@@ -766,23 +772,61 @@ align_data_timepoints <- function(
 #' Adjust the supplied timepoint_limit to align with data if necessary
 #'
 #' @param timepoint_limit datetime value supplied by user
-#' @param timepoint_value datetime value in the data
+#' @param timepoint_values datetime values in the data
 #' @param timepoint_unit granularity specified by user
-#' @param direction direction of desired adjustment. Either "earlier" or "later"
+#' @param limit_type "min" or "max"
 #'
 #' @returns Datetime
 #' @noRd
 adjust_timepoint_limit <- function(
-    timepoint_limit,
-    timepoint_value,
-    timepoint_unit,
-    direction
+  timepoint_limit,
+  timepoint_values,
+  timepoint_unit,
+  limit_type
 ) {
+  # Estimate number of units needed
+  if(timepoint_unit %in% c("month", "quarter", "year")){
+    unit <- "day"
+    unit_length <- switch(
+      timepoint_unit,
+      month = 30,
+      quarter = 90,
+      year = 365
+    )
+  } else{
+    unit <- timepoint_unit
+    unit_length <- 1
+  }
 
-  diff <- timepoint_value - timepoint_limit
-seq(timepoint_value, timepoint_limit, by = timepoint_unit)
+  # NOTE: it doesn't really matter which end of the timepoint_values we start from
+  base_date <- min(timepoint_values)
+  units_diff <- as.numeric(difftime(
+    timepoint_limit,
+    base_date,
+    units = unit
+  ))
+  # pad the sequence length to ensure we always have enough
+  estimated_units_needed <- abs(ceiling(units_diff / unit_length)) + 2
 
+  # Generate candidate dates
+  candidate_dates <- seq(
+    from = min(timepoint_values),
+    by = paste0(ifelse(timepoint_limit < base_date, "-", ""), "1 ", timepoint_unit),
+    length.out = estimated_units_needed
+  )
+
+  # Choose the closest one in the correct direction
+  if (limit_type == "min") {
+    # want the earliest date that is no earlier than the target
+    new_timepoint_limit <- min(candidate_dates[timepoint_limit <= candidate_dates])
+  } else if (limit_type == "max") {
+    # want the greatest date that is no greater than the target
+    new_timepoint_limit <- max(candidate_dates[timepoint_limit >= candidate_dates])
+  }
+
+  new_timepoint_limit
 }
+
 
 # -----------------------------------------------------------------------------
 #' Wrapper for max function

@@ -1250,24 +1250,297 @@ test_that("arrange_items() sorts by two item_orders", {
 })
 
 
-test_that("adjust_timepoint_limit() moves supplied limit appropriately", {
+test_that("adjust_timepoint_limit() moves supplied limit appropriately for months", {
+  # min_timepoint before first timepoint
   expect_equal(
     adjust_timepoint_limit(
       timepoint_limit = as.Date("2022-01-01"),
-      timepoint_value = as.Date("2022-01-20"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "month", length.out = 5),
       timepoint_unit = "month",
-      direction = "earlier"
+      limit_type = "min"
+    ),
+    as.Date("2022-01-20")
+  )
+
+  # min_timepoint at first timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-01-20"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "month", length.out = 5),
+      timepoint_unit = "month",
+      limit_type = "min"
+    ),
+    as.Date("2022-01-20")
+  )
+
+  # min_timepoint between timepoint_values with gaps
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-05-01"),
+      timepoint_values = c(as.Date("2022-01-20"), as.Date("2023-01-20")),
+      timepoint_unit = "month",
+      limit_type = "min"
+    ),
+    as.Date("2022-05-20")
+  )
+
+  # min_timepoint after last timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2023-01-01"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "month", length.out = 5),
+      timepoint_unit = "month",
+      limit_type = "min"
+    ),
+    as.Date("2023-01-20")
+  )
+
+  # max_timepoint after last timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2023-01-01"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "month", length.out = 5),
+      timepoint_unit = "month",
+      limit_type = "max"
+    ),
+    as.Date("2022-12-20")
+  )
+
+  # max_timepoint between timepoint_values with gaps
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-05-01"),
+      timepoint_values = c(as.Date("2022-01-20"), as.Date("2023-01-20")),
+      timepoint_unit = "month",
+      limit_type = "max"
+    ),
+    as.Date("2022-04-20")
+  )
+
+  # max_timepoint before first timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-01-01"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "month", length.out = 5),
+      timepoint_unit = "month",
+      limit_type = "max"
     ),
     as.Date("2021-12-20")
   )
+
+})
+
+test_that("adjust_timepoint_limit() moves supplied limit appropriately for weeks", {
+  # min_timepoint before first timepoint
   expect_equal(
     adjust_timepoint_limit(
       timepoint_limit = as.Date("2022-01-01"),
-      timepoint_value = as.Date("2022-01-20"),
-      timepoint_unit = "month",
-      direction = "later"
+      timepoint_values = seq(as.Date("2022-01-20"), by = "week", length.out = 5),
+      timepoint_unit = "week",
+      limit_type = "min"
     ),
-    as.Date("2022-02-20")
+    as.Date("2022-01-06")
+  )
+
+  # min_timepoint between timepoint_values with gaps
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-02-01"),
+      timepoint_values = c(as.Date("2022-01-20"), as.Date("2022-02-17")),
+      timepoint_unit = "week",
+      limit_type = "min"
+    ),
+    as.Date("2022-02-03")
+  )
+
+  # min_timepoint after last timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-02-20"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "week", length.out = 5),
+      timepoint_unit = "week",
+      limit_type = "min"
+    ),
+    as.Date("2022-02-24")
+  )
+
+  # max_timepoint after last timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-02-20"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "week", length.out = 5),
+      timepoint_unit = "week",
+      limit_type = "max"
+    ),
+    as.Date("2022-02-17")
+  )
+
+  # max_timepoint between timepoint_values with gaps
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-02-01"),
+      timepoint_values = c(as.Date("2022-01-20"), as.Date("2022-02-17")),
+      timepoint_unit = "week",
+      limit_type = "max"
+    ),
+    as.Date("2022-01-27")
+  )
+
+  # max_timepoint before first timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-01-01"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "week", length.out = 5),
+      timepoint_unit = "week",
+      limit_type = "max"
+    ),
+    as.Date("2021-12-30")
+  )
+
+})
+
+
+test_that("adjust_timepoint_limit() moves supplied limit appropriately for years", {
+  # min_timepoint before first timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-01-01"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "year", length.out = 5),
+      timepoint_unit = "year",
+      limit_type = "min"
+    ),
+    as.Date("2022-01-20")
+  )
+
+  # min_timepoint at first timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-01-20"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "year", length.out = 5),
+      timepoint_unit = "year",
+      limit_type = "min"
+    ),
+    as.Date("2022-01-20")
+  )
+
+  # min_timepoint between timepoint_values with gaps
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-05-01"),
+      timepoint_values = c(as.Date("2022-01-20"), as.Date("2027-01-20")),
+      timepoint_unit = "year",
+      limit_type = "min"
+    ),
+    as.Date("2023-01-20")
+  )
+
+  # min_timepoint after last timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2029-01-01"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "year", length.out = 5),
+      timepoint_unit = "year",
+      limit_type = "min"
+    ),
+    as.Date("2029-01-20")
+  )
+
+  # max_timepoint after last timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2029-01-01"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "year", length.out = 5),
+      timepoint_unit = "year",
+      limit_type = "max"
+    ),
+    as.Date("2028-01-20")
+  )
+
+  # max_timepoint between timepoint_values with gaps
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2023-05-01"),
+      timepoint_values = c(as.Date("2022-01-20"), as.Date("2027-01-20")),
+      timepoint_unit = "year",
+      limit_type = "max"
+    ),
+    as.Date("2023-01-20")
+  )
+
+  # max_timepoint before first timepoint
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-01-01"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "year", length.out = 5),
+      timepoint_unit = "year",
+      limit_type = "max"
+    ),
+    as.Date("2021-01-20")
+  )
+
+})
+
+test_that("adjust_timepoint_limit() moves supplied limit appropriately for hours", {
+  # NOTE: coerce posixct values to numeric to ignore timezones
+
+  # min_timepoint before first timepoint
+  expect_equal(
+    as.numeric(adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-02 08:30:00"),
+      timepoint_values = seq(
+        as.POSIXct("2022-01-02 12:00:00"),
+        as.POSIXct("2022-01-03 12:00:00"),
+        by = "hour"
+      ),
+      timepoint_unit = "hour",
+      limit_type = "min"
+    )),
+    as.numeric(as.POSIXct("2022-01-02 09:00:00"))
+  )
+
+  # min_timepoint at first timepoint
+  expect_equal(
+    as.numeric(adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-02 12:00:00"),
+      timepoint_values = seq(
+        as.POSIXct("2022-01-02 12:00:00"),
+        as.POSIXct("2022-01-03 12:00:00"),
+        by = "hour"
+      ),
+      timepoint_unit = "hour",
+      limit_type = "min"
+    )),
+    as.numeric(as.POSIXct("2022-01-02 12:00:00"))
+  )
+
+  # min_timepoint between timepoint_values
+  expect_equal(
+    as.numeric(adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-02 15:30:00"),
+      timepoint_values = seq(
+        as.POSIXct("2022-01-02 12:00:00"),
+        as.POSIXct("2022-01-03 12:00:00"),
+        by = "hour"
+      ),
+      timepoint_unit = "hour",
+      limit_type = "min"
+    )),
+    as.numeric(as.POSIXct("2022-01-02 16:00:00"))
+  )
+
+  # max_timepoint after last timepoint
+  expect_equal(
+    as.numeric(adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-03 15:30:00"),
+      timepoint_values = seq(
+        as.POSIXct("2022-01-02 12:00:00"),
+        as.POSIXct("2022-01-03 12:00:00"),
+        by = "hour"
+      ),
+      timepoint_unit = "hour",
+      limit_type = "max"
+    )),
+    as.numeric(as.POSIXct("2022-01-03 15:00:00"))
   )
 
 })
