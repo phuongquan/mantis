@@ -1399,7 +1399,6 @@ test_that("adjust_timepoint_limit() moves supplied limit appropriately for weeks
 
 })
 
-
 test_that("adjust_timepoint_limit() moves supplied limit appropriately for years", {
   # min_timepoint before first timepoint
   expect_equal(
@@ -1476,6 +1475,67 @@ test_that("adjust_timepoint_limit() moves supplied limit appropriately for years
       limit_type = "max"
     ),
     as.Date("2021-01-20")
+  )
+
+})
+
+test_that("adjust_timepoint_limit() moves supplied limit appropriately for days", {
+  # NOTE: coerce posixct values to numeric to ignore timezones
+
+  # if everything is a Date then nothing changes
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-01-01"),
+      timepoint_values = seq(as.Date("2022-01-20"), by = "quarter", length.out = 5),
+      timepoint_unit = "day",
+      limit_type = "max"
+    ),
+    as.Date("2022-01-01")
+  )
+
+  # limit and values are posixct
+  expect_equal(
+    as.numeric(adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-02 08:30:00"),
+      timepoint_values = seq(
+        as.POSIXct("2022-01-02 12:00:00"),
+        by = "day",
+        length.out = 5
+      ),
+      timepoint_unit = "day",
+      limit_type = "min"
+    )),
+    as.numeric(as.POSIXct("2022-01-02 12:00:00"))
+  )
+
+  # limit is date, values are posixct
+  expect_equal(
+    as.numeric(adjust_timepoint_limit(
+      timepoint_limit = as.Date("2022-01-03"),
+      timepoint_values = seq(
+        as.POSIXct("2022-01-02 12:00:00"),
+        by = "day",
+        length.out = 5
+      ),
+      timepoint_unit = "day",
+      limit_type = "min"
+    )),
+    as.numeric(as.POSIXct("2022-01-03 12:00:00"))
+  )
+
+  # limit is posixct, values are date
+  expect_equal(
+    adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-04 12:00:00"),
+      timepoint_values = seq(
+        as.Date("2022-01-02"),
+        by = "day",
+        length.out = 5
+      ),
+      timepoint_unit = "day",
+      limit_type = "max"
+    ),
+    as.Date("2022-01-04")
   )
 
 })

@@ -784,8 +784,26 @@ adjust_timepoint_limit <- function(
   timepoint_unit,
   limit_type
 ) {
+
+  # if everything is in days then no changes needed
+  if (
+    timepoint_unit == "day" &&
+      inherits(timepoint_limit, what = "Date") && inherits(timepoint_values, what = "Date")
+  ) {
+    return(timepoint_limit)
+  }
+
+  # ensure limit is of same class as values
+  if (inherits(timepoint_values, what = "POSIXct")) {
+    timepoint_limit <- as.POSIXct(timepoint_limit)
+  } else if (inherits(timepoint_values, what = "POSIXlt")) {
+    timepoint_limit <- as.POSIXlt(timepoint_limit)
+  } else if (inherits(timepoint_values, what = "Date")) {
+    timepoint_limit <- as.Date(timepoint_limit)
+  }
+
   # Estimate number of units needed
-  if(timepoint_unit %in% c("month", "quarter", "year")){
+  if (timepoint_unit %in% c("month", "quarter", "year")) {
     unit <- "day"
     unit_length <- switch(
       timepoint_unit,
@@ -793,7 +811,7 @@ adjust_timepoint_limit <- function(
       quarter = 90,
       year = 365
     )
-  } else{
+  } else {
     unit <- timepoint_unit
     unit_length <- 1
   }
@@ -810,7 +828,7 @@ adjust_timepoint_limit <- function(
 
   # Generate candidate dates
   candidate_dates <- seq(
-    from = min(timepoint_values),
+    from = base_date,
     by = paste0(ifelse(timepoint_limit < base_date, "-", ""), "1 ", timepoint_unit),
     length.out = estimated_units_needed
   )
