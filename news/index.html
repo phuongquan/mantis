@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,15 +45,40 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="mantis-development-version">mantis (development version)<a class="anchor" aria-label="anchor" href="#mantis-development-version"></a></h2>
+<p>Re-align with CRAN release</p>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.3" id="mantis-043-2025-07-31">mantis 0.4.3 (2025-07-31)<a class="anchor" aria-label="anchor" href="#mantis-043-2025-07-31"></a></h2><p class="text-muted">CRAN release: 2025-08-01</p>
+<p>Include bespoke reports functionality.</p>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.2" id="mantis-042-2025-07-25">mantis 0.4.2 (2025-07-25)<a class="anchor" aria-label="anchor" href="#mantis-042-2025-07-25"></a></h2><p class="text-muted">CRAN release: 2025-07-28</p>
+<p>Lightweight initial CRAN submission. Only includes standard (non-bespoke) reports.</p>
+<div class="section level3">
+<h3 id="breaking-changes-0-4-2">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-2"></a></h3>
+<ul><li>New <code>file</code> parameter in <code><a href="../reference/mantis_report.html">mantis_report()</a></code> replaces <code>save_directory</code> and <code>save_filename</code> (<a href="https://github.com/phuongquan/mantis/issues/24" class="external-link">#24</a>)</li>
+<li>New <code>add_timestamp</code> parameter in <code><a href="../reference/mantis_report.html">mantis_report()</a></code> adds a timestamp to the supplied file name (<a href="https://github.com/phuongquan/mantis/issues/24" class="external-link">#24</a>)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-and-minor-improvements-0-4-2">Bug fixes and minor improvements<a class="anchor" aria-label="anchor" href="#bug-fixes-and-minor-improvements-0-4-2"></a></h3>
+<ul><li>Timestamps added to filenames are now formatted correctly on linux</li>
+<li>Intermediate files that are generated while creating a report are now created in <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code> instead of the working directory where possible (<a href="https://github.com/phuongquan/mantis/issues/24" class="external-link">#24</a>)</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="mantis-030-2025-06-10">mantis 0.3.0 (2025-06-10)<a class="anchor" aria-label="anchor" href="#mantis-030-2025-06-10"></a></h2>
-<p>Breaking changes</p>
+<div class="section level3">
+<h3 id="breaking-changes-0-3-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h3>
 <ul><li>
 <code>timepoint_unit</code> parameter of <code><a href="../reference/inputspec.html">inputspec()</a></code> replaces <code>period</code>
 </li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="mantis-020-2025-02-07">mantis 0.2.0 (2025-02-07)<a class="anchor" aria-label="anchor" href="#mantis-020-2025-02-07"></a></h2>
-<p>Breaking changes</p>
+<div class="section level3">
+<h3 id="breaking-changes-0-2-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-2-0"></a></h3>
 <ul><li>
 <code><a href="../reference/inputspec.html">inputspec()</a></code> object now takes a <code>item_cols</code> parameter, allowing more than one column in the df to define individual time series, and must include the column being used for tabs (if any).</li>
 <li>New <code><a href="../reference/alertspec.html">alertspec()</a></code> object adds additional output options and wraps <code><a href="../reference/alert_rules.html">alert_rules()</a></code> where relevant</li>
@@ -68,9 +93,12 @@
 <code><a href="../reference/bespoke_rmd_output.html">bespoke_rmd_output()</a></code> replaces <code>bespoke_rmd_tab_group()</code> and <code>bespoke_rmd_tab_item()</code>
 </li>
 <li>New <code><a href="../reference/bespoke_rmd_alert_results.html">bespoke_rmd_alert_results()</a></code> function creates a table containing the alert results for bespoke reports</li>
-</ul><p>Other changes</p>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-and-minor-improvements-0-2-0">Bug fixes and minor improvements<a class="anchor" aria-label="anchor" href="#bug-fixes-and-minor-improvements-0-2-0"></a></h3>
 <ul><li>example_prescription_numbers dataset now has additional data</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.2" id="mantis-012-2025-01-15">mantis 0.1.2 (2025-01-15)<a class="anchor" aria-label="anchor" href="#mantis-012-2025-01-15"></a></h2>
 <p>Pre-release. Expect breaking changes to functions in the future.</p>

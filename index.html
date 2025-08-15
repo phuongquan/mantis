@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,11 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install dependencies first</span></span>
+<code class="sourceCode R"><span><span class="co"># install from CRAN</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mantis"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># or install the latest github release</span></span>
+<span><span class="co"># install dependencies first</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"remotes"</span>,</span>
 <span>  <span class="st">"rmarkdown"</span>,</span>
@@ -99,12 +103,10 @@
 <span>  <span class="st">"purrr"</span>,</span>
 <span>  <span class="st">"htmltools"</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># install the latest release version</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"phuongquan/mantis@v0.3.0"</span>, dependencies <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"phuongquan/mantis@v0.4.3"</span>, dependencies <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># or install the current development version</span></span>
-<span><span class="co"># remotes::install_github("phuongquan/mantis", dependencies = FALSE)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"phuongquan/mantis"</span>, dependencies <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -127,9 +129,10 @@
 <span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="do">## 5 2022-01-01       Meropenem     Broad                       10 SITE1   </span></span>
 <span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="do">## 6 2022-01-01       Vancomycin    Limited                      0 SITE1</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># create a report in the current directory, with one tab per Location</span></span>
+<code class="sourceCode R"><span><span class="co"># create a report in the working directory, with one tab per Location</span></span>
 <span><span class="fu"><a href="reference/mantis_report.html">mantis_report</a></span><span class="op">(</span></span>
 <span>  df <span class="op">=</span> <span class="va">example_prescription_numbers</span>,</span>
+<span>  file <span class="op">=</span> <span class="st">"example_prescription_numbers_report.html"</span>,</span>
 <span>  inputspec <span class="op">=</span> <span class="fu"><a href="reference/inputspec.html">inputspec</a></span><span class="op">(</span></span>
 <span>    timepoint_col <span class="op">=</span> <span class="st">"PrescriptionDate"</span>,</span>
 <span>    item_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Location"</span>, <span class="st">"Antibiotic"</span>, <span class="st">"Spectrum"</span><span class="op">)</span>,</span>
@@ -138,7 +141,7 @@
 <span>    timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Example reports and more detailed guidance can be found in the <a href="https://phuongquan.github.io/mantis/index.html" class="external-link">package website</a>.</p>
+<p>Example reports and more detailed guidance can be found in the <a href="https://phuongquan.github.io/mantis/index.html">package website</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
@@ -154,6 +157,7 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=mantis" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/phuongquan/mantis/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/phuongquan/mantis/issues" class="external-link">Report a bug</a></li>
 </ul>
