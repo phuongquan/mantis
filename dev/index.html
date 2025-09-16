@@ -68,10 +68,10 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The <code>mantis</code> package generates interactive reports that enable quick visual review of multiple related time series. This can help with identification of temporal artefacts and unexpected trends. The choice of visualisations include interactive plots with adjustable axes and tooltips showing the individual dates and values, as well as static heatmap and scatter plots for more lightweight applications. E.g.</p>
+<p>The <code>mantis</code> package generates interactive reports that enable quick visual review of multiple related time series stored in a data frame. This can help with identification of temporal artefacts and unexpected trends. The choice of visualisations include interactive plots with adjustable axes and tooltips showing the individual dates and values, as well as static heatmap and scatter plots for more lightweight applications. E.g.</p>
 <p><img src="reference/figures/example_prescription_numbers_interactive.png" width="350"><img src="reference/figures/example_prescription_numbers_heatmap.png" width="350"></p>
 <p>The resulting html reports are self-contained and shareable without a web server.</p>
-<p><code>mantis</code> is designed for use on data that is essentially a collection of time series in a data frame, where you have already decided which values you are interested in reviewing. If you want to check more generally for temporal changes in record-level, non-numeric data, then check out our sister package <a href="https://ropensci.github.io/daiquiri/index.html" class="external-link">‘daiquiri’</a>.</p>
+<p>Example reports and more detailed guidance can be found in the <a href="https://phuongquan.github.io/mantis/index.html">package website</a>, including how to add <a href="https://phuongquan.github.io/mantis/articles/alert-rules.html">alerting rules</a> and how to add <code>mantis</code> visualisations to your own <a href="https://phuongquan.github.io/mantis/articles/bespoke-reports.html">bespoke reports</a>.</p>
 <div class="section level2">
 <h2 id="why-should-i-use-it">Why should I use it?<a class="anchor" aria-label="anchor" href="#why-should-i-use-it"></a>
 </h2>
@@ -88,8 +88,8 @@
 <code class="sourceCode R"><span><span class="co"># install from CRAN</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mantis"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># or install the latest github release</span></span>
-<span><span class="co"># install dependencies first</span></span>
+<span><span class="co"># or install the current development version</span></span>
+<span><span class="co"># install stable dependencies first</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"remotes"</span>,</span>
 <span>  <span class="st">"rmarkdown"</span>,</span>
@@ -104,9 +104,6 @@
 <span>  <span class="st">"purrr"</span>,</span>
 <span>  <span class="st">"htmltools"</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"phuongquan/mantis@v0.4.3"</span>, dependencies <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># or install the current development version</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"phuongquan/mantis"</span>, dependencies <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -142,7 +139,12 @@
 <span>    timepoint_unit <span class="op">=</span> <span class="st">"day"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Example reports and more detailed guidance can be found in the <a href="https://phuongquan.github.io/mantis/index.html">package website</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="relation-to-other-packages">Relation to other packages<a class="anchor" aria-label="anchor" href="#relation-to-other-packages"></a>
+</h2>
+<p><code>mantis</code> is designed for use on data that is essentially a collection of time series in a data frame, where you have already decided which values you are interested in reviewing. If you want to check more generally for temporal changes in record-level, non-numeric data, then check out our sister package <a href="https://ropensci.github.io/daiquiri/index.html" class="external-link"><code>daiquiri</code></a>.</p>
+<p>If you are not specifically interested in temporal changes, you could try visually inspecting your data frames with <a href="https://docs.ropensci.org/visdat/" class="external-link"><code>visdat</code></a>, or run validation checks on them with <a href="https://docs.ropensci.org/assertr/articles/assertr.html" class="external-link"><code>assertr</code></a> or <a href="https://rstudio.github.io/pointblank/" class="external-link"><code>pointblank</code></a>.</p>
 </div>
 <div class="section level2">
 <h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>

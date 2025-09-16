@@ -49,10 +49,26 @@
 <div class="section level2">
 <h2 id="reporting-issues">Reporting issues<a class="anchor" aria-label="anchor" href="#reporting-issues"></a></h2>
 <p>Please report any bugs or suggestions by opening a <a href="https://github.com/phuongquan/mantis/issues" class="external-link">github issue</a>.</p>
+<p>If you’ve found a bug, please file an issue that illustrates the bug with a minimal <a href="https://www.tidyverse.org/help/#reprex" class="external-link">reprex</a>. See the tidyverse guide on <a href="https://code-review.tidyverse.org/issues/" class="external-link">how to create a great issue</a> for more advice.</p>
 </div>
 <div class="section level2">
 <h2 id="development-guidelines">Development guidelines<a class="anchor" aria-label="anchor" href="#development-guidelines"></a></h2>
-<p>So far, <code>mantis</code> has been developed by a single person so there is not yet a system in place for collaboration. If you’d like to contribute changes please raise an issue first and then we can probably use <a href="https://guides.github.com/introduction/flow/" class="external-link">GitHub flow</a>.</p>
+<p>If you’d like to contribute changes please raise an issue first, to make sure someone from the team agrees that it’s needed.</p>
+<div class="section level3">
+<h3 id="pull-request-process">Pull request process<a class="anchor" aria-label="anchor" href="#pull-request-process"></a></h3>
+<ul><li><p>Fork the package and clone onto your computer.</p></li>
+<li><p>Install all development dependencies with <code>devtools::install_dev_deps()</code>, and then make sure the package passes R CMD check by running <code>devtools::check()</code>. If R CMD check doesn’t pass cleanly, it’s a good idea to ask for help before continuing.</p></li>
+<li><p>Create a Git branch for your changes, with a brief but relevant name.</p></li>
+<li><p>Make your changes, add/update any appropriate unit tests, update any documentation, and make sure R CMD check passes.</p></li>
+<li><p>For user-facing changes, add a bullet to the top of <code>NEWS.md</code> (i.e. just below the first header).</p></li>
+<li><p>Commit and push your changes, then create a PR. The title of your PR should briefly describe the change. The body of your PR should contain <code>Fixes #issue-number</code>.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="code-style">Code style<a class="anchor" aria-label="anchor" href="#code-style"></a></h3>
+<p>New code should follow the tidyverse <a href="https://style.tidyverse.org" class="external-link">style guide</a>. We use <a href="https://posit-dev.github.io/air/" class="external-link">Air</a> to apply this style, but please don’t restyle code that has nothing to do with your PR.</p>
+<p>We use <a href="https://cran.r-project.org/package=roxygen2" class="external-link">roxygen2</a>, with <a href="https://cran.r-project.org/web/packages/roxygen2/vignettes/rd-formatting.html" class="external-link">Markdown syntax</a>, for documentation.</p>
+<p>We use <a href="https://cran.r-project.org/package=testthat" class="external-link">testthat</a> for unit tests.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a></h2>
