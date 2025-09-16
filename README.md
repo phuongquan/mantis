@@ -16,23 +16,24 @@ Review](https://badges.ropensci.org/710_status.svg)](https://github.com/ropensci
 <!-- badges: end -->
 
 The `mantis` package generates interactive reports that enable quick
-visual review of multiple related time series. This can help with
-identification of temporal artefacts and unexpected trends. The choice
-of visualisations include interactive plots with adjustable axes and
-tooltips showing the individual dates and values, as well as static
-heatmap and scatter plots for more lightweight applications. E.g.
+visual review of multiple related time series stored in a data frame.
+This can help with identification of temporal artefacts and unexpected
+trends. The choice of visualisations include interactive plots with
+adjustable axes and tooltips showing the individual dates and values, as
+well as static heatmap and scatter plots for more lightweight
+applications. E.g.
 
 <img src="man/figures/example_prescription_numbers_interactive.png" width="350" /><img src="man/figures/example_prescription_numbers_heatmap.png" width="350" />
 
 The resulting html reports are self-contained and shareable without a
 web server.
 
-`mantis` is designed for use on data that is essentially a collection of
-time series in a data frame, where you have already decided which values
-you are interested in reviewing. If you want to check more generally for
-temporal changes in record-level, non-numeric data, then check out our
-sister package
-[‘daiquiri’](https://ropensci.github.io/daiquiri/index.html).
+Example reports and more detailed guidance can be found in the [package
+website](https://phuongquan.github.io/mantis/index.html), including how
+to add [alerting
+rules](https://phuongquan.github.io/mantis/articles/alert-rules.html)
+and how to add `mantis` visualisations to your own [bespoke
+reports](https://phuongquan.github.io/mantis/articles/bespoke-reports.html).
 
 ## Why should I use it?
 
@@ -60,8 +61,8 @@ We anticipate two main target users:
 # install from CRAN
 install.packages("mantis")
 
-# or install the latest github release
-# install dependencies first
+# or install the current development version
+# install stable dependencies first
 install.packages(c(
   "remotes",
   "rmarkdown",
@@ -76,9 +77,6 @@ install.packages(c(
   "purrr",
   "htmltools"
 ))
-remotes::install_github("phuongquan/mantis@v0.4.3", dependencies = FALSE)
-
-# or install the current development version
 remotes::install_github("phuongquan/mantis", dependencies = FALSE)
 ```
 
@@ -119,8 +117,21 @@ mantis_report(
 )
 ```
 
-Example reports and more detailed guidance can be found in the [package
-website](https://phuongquan.github.io/mantis/index.html).
+## Relation to other packages
+
+`mantis` is designed for use on data that is essentially a collection of
+time series in a data frame, where you have already decided which values
+you are interested in reviewing. If you want to check more generally for
+temporal changes in record-level, non-numeric data, then check out our
+sister package
+[`daiquiri`](https://ropensci.github.io/daiquiri/index.html).
+
+If you are not specifically interested in temporal changes, you could
+try visually inspecting your data frames with
+[`visdat`](https://docs.ropensci.org/visdat/), or run validation checks
+on them with
+[`assertr`](https://docs.ropensci.org/assertr/articles/assertr.html) or
+[`pointblank`](https://rstudio.github.io/pointblank/).
 
 ## Acknowledgements
 
