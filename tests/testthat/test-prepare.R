@@ -1203,7 +1203,8 @@ test_that("arrange_items() sorts by two item_orders", {
     data.frame(
       item = c(rep("a", 9), rep("b", 9), rep("c", 9)),
       item2 = rep(c(rep("x", 3), rep("y", 3), rep("z", 3)), 3)
-    )
+    ),
+    ignore_attr = TRUE
   )
 
   expect_equal(
@@ -1212,7 +1213,8 @@ test_that("arrange_items() sorts by two item_orders", {
     data.frame(
       item = rep(c(rep("a", 3), rep("b", 3), rep("c", 3)), 3),
       item2 = c(rep("x", 9), rep("y", 9), rep("z", 9))
-    )
+    ),
+    ignore_attr = TRUE
   )
 
   expect_equal(
@@ -1221,7 +1223,8 @@ test_that("arrange_items() sorts by two item_orders", {
     data.frame(
       item = rep(c(rep("b", 3), rep("a", 3), rep("c", 3)), 3),
       item2 = c(rep("x", 9), rep("y", 9), rep("z", 9))
-    )
+    ),
+    ignore_attr = TRUE
   )
 
   expect_equal(
@@ -1233,7 +1236,8 @@ test_that("arrange_items() sorts by two item_orders", {
     data.frame(
       item = rep(c(rep("b", 3), rep("c", 3), rep("a", 3)), 3),
       item2 = c(rep("x", 9), rep("y", 9), rep("z", 9))
-    )
+    ),
+    ignore_attr = TRUE
   )
 
   expect_equal(
@@ -1245,7 +1249,8 @@ test_that("arrange_items() sorts by two item_orders", {
     data.frame(
       item = rep(c(rep("b", 3), rep("c", 3), rep("a", 3)), 3),
       item2 = c(rep("x", 9), rep("z", 9), rep("y", 9))
-    )
+    ),
+    ignore_attr = TRUE
   )
 })
 

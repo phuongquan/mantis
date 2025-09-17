@@ -1485,45 +1485,26 @@ arrange_items <- function(
   }
 
   # keep only the items which match a column in the df
-  items <- item_order[which(names(item_order) %in% names(df))]
+  items <- item_order[names(item_order) %in% names(df)]
 
   # explicitly note the levels for each item
-  levels <- items
-  for (i in seq_along(items)) {
-    ascending <- sort(unique(df[names(items[i])][[1]]))
-    if (all(is.character(items[i][[1]]))) {
-      levels[i][[1]] <- unique(c(items[i][[1]], ascending))
+  item_levels <- lapply(names(items), function(col) {
+    explicit_vals <- items[[col]]
+    ascending_vals <- sort(unique(df[[col]]))
+    if (is.character(explicit_vals)) {
+      unique(c(explicit_vals, ascending_vals))
     } else {
-      levels[i][[1]] <- ascending
+      ascending_vals
     }
-  }
+  })
+  names(item_levels) <- names(items)
 
   # Sort using factors for all items, otherwise values not mentioned explicitly
   # can get unsorted by subsequent items
-  # This is super ugly but temporarily just limit it to 3 items until find
-  # better way
-  if (length(items) == 1) {
-    df_sorted <-
-      df |>
-      dplyr::arrange(factor(.data[[names(items[1])]], levels = levels[1][[1]]))
-  } else if (length(items) == 2) {
-    df_sorted <-
-      df |>
-      dplyr::arrange(
-        factor(.data[[names(items[1])]], levels = levels[1][[1]]),
-        factor(.data[[names(items[2])]], levels = levels[2][[1]])
-      )
-  } else if (length(items) == 3) {
-    df_sorted <-
-      df |>
-      dplyr::arrange(
-        factor(.data[[names(items[1])]], levels = levels[1][[1]]),
-        factor(.data[[names(items[2])]], levels = levels[2][[1]]),
-        factor(.data[[names(items[3])]], levels = levels[3][[1]])
-      )
-  }
-
-  df_sorted
+  order_args <- lapply(names(item_levels), function(col)
+    factor(df[[col]], levels = item_levels[[col]])
+  )
+  df[do.call(order, order_args), , drop = FALSE]
 }
 
 
