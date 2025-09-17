@@ -90,13 +90,15 @@ plot_heatmap_static <- function(
         hjust = 1,
         size = 7
       ),
-      axis.text.y = ggplot2::element_text(size = 7),
+      axis.text.y = ggplot2::element_text(
+        size = 7,
+        margin = ggplot2::margin(r = 5)
+      ),
       legend.position = "right",
     )
 
   g
 }
-
 
 # -----------------------------------------------------------------------------
 #' Create a column of plots showing value across all items
@@ -188,13 +190,15 @@ plot_multipanel_static <- function(
         hjust = 1,
         size = 7
       ),
-      axis.text.y = ggplot2::element_text(size = 7),
+      axis.text.y = ggplot2::element_text(
+        size = 7,
+        margin = ggplot2::margin(r = 5)
+      ),
       legend.position = "none",
     )
 
   g
 }
-
 
 # -----------------------------------------------------------------------------
 #' Create an empty gglot object
