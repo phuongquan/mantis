@@ -862,6 +862,10 @@ max_else_na <- function(
   if (all(is.na(x))) {
     if ("Date" %in% class(x)) {
       as.Date(NA)
+    } else if ("POSIXct" %in% class(x)) {
+      as.POSIXct(NA)
+    } else if ("POSIXlt" %in% class(x)) {
+      as.POSIXlt(NA)
     } else {
       NA_real_
     }
