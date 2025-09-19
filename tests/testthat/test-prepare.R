@@ -309,8 +309,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # with time portion (POSIXct)
   df <- data.frame(
     timepoint = seq(
-      as.POSIXct("2022-01-01 12:00:00"),
-      as.POSIXct("2022-01-10 12:00:00"),
+      as.POSIXct("2022-01-01 12:00:00", tz = "UTC"),
+      as.POSIXct("2022-01-10 12:00:00", tz = "UTC"),
       by = "days"
     ),
     item = rep(1, 10),
@@ -328,8 +328,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # with time portion (POSIXlt)
   df <- data.frame(
     timepoint = seq(
-      as.POSIXlt("2022-01-01 12:00:00"),
-      as.POSIXlt("2022-01-10 12:00:00"),
+      as.POSIXlt("2022-01-01 12:00:00", tz = "UTC"),
+      as.POSIXlt("2022-01-10 12:00:00", tz = "UTC"),
       by = "days"
     ),
     item = rep(1, 10),
@@ -348,9 +348,9 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # different time each day
   df <- data.frame(
     timepoint = c(
-      as.POSIXlt("2022-01-01 12:00:00"),
-      as.POSIXlt("2022-01-02 13:00:00"),
-      as.POSIXlt("2022-01-10 16:00:00")
+      as.POSIXlt("2022-01-01 12:00:00", tz = "UTC"),
+      as.POSIXlt("2022-01-02 13:00:00", tz = "UTC"),
+      as.POSIXlt("2022-01-10 16:00:00", tz = "UTC")
     ),
     item = rep(1, 3),
     value = rep(3, 3),
@@ -364,6 +364,7 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
     ),
     class = "invalid_data"
   )
+
 })
 
 
@@ -412,8 +413,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # with time portion
   df <- data.frame(
     timepoint = seq(
-      as.POSIXct("2022-01-01 12:00:00"),
-      as.POSIXct("2022-03-05 12:00:00"),
+      as.POSIXct("2022-01-01 12:00:00", tz = "UTC"),
+      as.POSIXct("2022-03-05 12:00:00", tz = "UTC"),
       by = "week"
     ),
     item = rep(1, 10),
@@ -432,9 +433,9 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # different time each day
   df <- data.frame(
     timepoint = c(
-      as.POSIXlt("2022-01-01 12:00:00"),
-      as.POSIXlt("2022-01-08 13:00:00"),
-      as.POSIXlt("2022-01-15 16:00:00")
+      as.POSIXlt("2022-01-01 12:00:00", tz = "UTC"),
+      as.POSIXlt("2022-01-08 13:00:00", tz = "UTC"),
+      as.POSIXlt("2022-01-15 16:00:00", tz = "UTC")
     ),
     item = rep(1, 3),
     value = rep(3, 3),
@@ -497,8 +498,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # with time portion
   df <- data.frame(
     timepoint = seq(
-      as.POSIXct("2022-01-02 12:00:00"),
-      as.POSIXct("2022-10-02 12:00:00"),
+      as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
+      as.POSIXct("2022-10-02 12:00:00", tz = "UTC"),
       by = "month"
     ),
     item = rep(1, 10),
@@ -517,9 +518,9 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # different time each day
   df <- data.frame(
     timepoint = c(
-      as.POSIXlt("2022-01-01 12:00:00"),
-      as.POSIXlt("2022-02-01 13:00:00"),
-      as.POSIXlt("2022-03-01 16:00:00")
+      as.POSIXlt("2022-01-01 12:00:00", tz = "UTC"),
+      as.POSIXlt("2022-02-01 13:00:00", tz = "UTC"),
+      as.POSIXlt("2022-03-01 16:00:00", tz = "UTC")
     ),
     item = rep(1, 3),
     value = rep(3, 3),
@@ -586,8 +587,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # with time portion
   df <- data.frame(
     timepoint = seq(
-      as.POSIXct("2022-01-02 12:00:00"),
-      as.POSIXct("2024-04-02 12:00:00"),
+      as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
+      as.POSIXct("2024-04-02 12:00:00", tz = "UTC"),
       by = "quarter"
     ),
     item = rep(1, 10),
@@ -606,9 +607,9 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # different time each day
   df <- data.frame(
     timepoint = c(
-      as.POSIXlt("2022-01-01 12:00:00"),
-      as.POSIXlt("2022-04-01 13:00:00"),
-      as.POSIXlt("2022-07-01 16:00:00")
+      as.POSIXlt("2022-01-01 12:00:00", tz = "UTC"),
+      as.POSIXlt("2022-04-01 13:00:00", tz = "UTC"),
+      as.POSIXlt("2022-07-01 16:00:00", tz = "UTC")
     ),
     item = rep(1, 3),
     value = rep(3, 3),
@@ -671,8 +672,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # with time portion
   df <- data.frame(
     timepoint = seq(
-      as.POSIXct("2013-01-02 12:00:00"),
-      as.POSIXct("2022-01-02 12:00:00"),
+      as.POSIXct("2013-01-02 12:00:00", tz = "UTC"),
+      as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
       by = "year"
     ),
     item = rep(1, 10),
@@ -691,9 +692,9 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # different time each day
   df <- data.frame(
     timepoint = c(
-      as.POSIXlt("2022-01-01 12:00:00"),
-      as.POSIXlt("2023-01-01 13:00:00"),
-      as.POSIXlt("2024-01-01 16:00:00")
+      as.POSIXlt("2022-01-01 12:00:00", tz = "UTC"),
+      as.POSIXlt("2023-01-01 13:00:00", tz = "UTC"),
+      as.POSIXlt("2024-01-01 16:00:00", tz = "UTC")
     ),
     item = rep(1, 3),
     value = rep(3, 3),
@@ -741,8 +742,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # good types
   df <- data.frame(
     timepoint = seq(
-      as.POSIXct("2022-01-02 12:00:00"),
-      as.POSIXct("2022-01-12 12:00:00"),
+      as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
+      as.POSIXct("2022-01-12 12:00:00", tz = "UTC"),
       by = "hour"
     ),
     item = rep(1, 241),
@@ -761,9 +762,9 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # different time each hour
   df <- data.frame(
     timepoint = c(
-      as.POSIXlt("2022-01-01 12:00:00"),
-      as.POSIXlt("2022-01-01 13:01:00"),
-      as.POSIXlt("2022-01-01 16:00:30")
+      as.POSIXlt("2022-01-01 12:00:00", tz = "UTC"),
+      as.POSIXlt("2022-01-01 13:01:00", tz = "UTC"),
+      as.POSIXlt("2022-01-01 16:00:30", tz = "UTC")
     ),
     item = rep(1, 3),
     value = rep(3, 3),
@@ -791,8 +792,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # good types
   df <- data.frame(
     timepoint = seq(
-      as.POSIXct("2022-01-02 12:00:00"),
-      as.POSIXct("2022-01-03 12:00:00"),
+      as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
+      as.POSIXct("2022-01-03 12:00:00", tz = "UTC"),
       by = "min"
     ),
     item = rep(1, 1441),
@@ -811,9 +812,9 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # different second each minute
   df <- data.frame(
     timepoint = c(
-      as.POSIXlt("2022-01-01 12:00:00"),
-      as.POSIXlt("2022-01-01 13:01:00"),
-      as.POSIXlt("2022-01-01 16:00:30")
+      as.POSIXlt("2022-01-01 12:00:00", tz = "UTC"),
+      as.POSIXlt("2022-01-01 13:01:00", tz = "UTC"),
+      as.POSIXlt("2022-01-01 16:00:30", tz = "UTC")
     ),
     item = rep(1, 3),
     value = rep(3, 3),
@@ -841,8 +842,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # good types
   df <- data.frame(
     timepoint = seq(
-      as.POSIXct("2022-01-02 12:00:00"),
-      as.POSIXct("2022-01-02 13:00:00"),
+      as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
+      as.POSIXct("2022-01-02 13:00:00", tz = "UTC"),
       by = "sec"
     ),
     item = rep(1, 3601),
@@ -872,6 +873,153 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
     ),
     class = "invalid_data"
   )
+})
+
+
+test_that("validate_df_to_inputspec() checks that timepoint_col values are consistently in one timezone", {
+  inputspec <- inputspec(
+    timepoint_col = "timepoint",
+    item_cols = "item",
+    value_col = "value",
+    timepoint_unit = "day"
+  )
+
+  # sequences are good, with or without explicit tz
+  df <- data.frame(
+    timepoint = seq(
+      as.Date("2022-03-21"),
+      as.Date("2022-04-01"),
+      by = "day"
+    ),
+    item = rep(1, 12),
+    value = rep(3, 12),
+    stringsAsFactors = FALSE
+  )
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+  df <- data.frame(
+    timepoint = seq(
+      as.POSIXct("2022-03-21"),
+      as.POSIXct("2022-04-01"),
+      by = "hour"
+    ),
+    item = rep(1, 264),
+    value = rep(3, 264),
+    stringsAsFactors = FALSE
+  )
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec(
+        timepoint_col = "timepoint",
+        item_cols = "item",
+        value_col = "value",
+        timepoint_unit = "hour"
+      )
+    )
+  )
+
+  # this prints out with different timezones but the underlying values are consistent
+  df <- data.frame(
+    timepoint = seq(
+      as.POSIXct("2022-03-21", tz = "Europe/London"),
+      as.POSIXct("2022-04-01", tz = "Europe/London"),
+      by = "day"
+    ),
+    item = rep(1, 11),
+    value = rep(3, 11),
+    stringsAsFactors = FALSE
+  )
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+  # individual dates within a fixed timezone are good
+  df <- data.frame(
+    timepoint = c(
+      as.POSIXct("2022-03-11", tz = "UTC"),
+      as.POSIXct("2022-03-21", tz = "UTC"),
+      as.POSIXct("2022-04-01", tz = "UTC"),
+      as.POSIXct("2022-04-05", tz = "UTC")
+    ),
+    item = rep(1, 4),
+    value = rep(3, 4),
+    stringsAsFactors = FALSE
+  )
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+  # individual times within a fixed timezone are good
+  df <- data.frame(
+    timepoint = c(
+      as.POSIXct("2022-03-11 12:00:00", tz = "UTC"),
+      as.POSIXct("2022-03-21 12:00:00", tz = "UTC"),
+      as.POSIXct("2022-04-01 12:00:00", tz = "UTC"),
+      as.POSIXct("2022-04-05 12:00:00", tz = "UTC")
+    ),
+    item = rep(1, 4),
+    value = rep(3, 4),
+    stringsAsFactors = FALSE
+  )
+  expect_silent(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    )
+  )
+
+  # individual dates in a timezone with daylight savings are bad
+  df <- data.frame(
+    timepoint = c(
+      as.POSIXct("2022-03-11", tz = "Europe/London"),
+      as.POSIXct("2022-03-21", tz = "Europe/London"),
+      as.POSIXct("2022-04-01", tz = "Europe/London"),
+      as.POSIXct("2022-04-05", tz = "Europe/London")
+    ),
+    item = rep(1, 4),
+    value = rep(3, 4),
+    stringsAsFactors = FALSE
+  )
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
+  # individual times in a timezone with daylight savings are bad
+  df <- data.frame(
+    timepoint = c(
+      as.POSIXct("2022-03-11 12:00:00", tz = "Europe/London"),
+      as.POSIXct("2022-03-21 12:00:00", tz = "Europe/London"),
+      as.POSIXct("2022-04-01 12:00:00", tz = "Europe/London"),
+      as.POSIXct("2022-04-05 12:00:00", tz = "Europe/London")
+    ),
+    item = rep(1, 4),
+    value = rep(3, 4),
+    stringsAsFactors = FALSE
+  )
+  expect_error(
+    validate_df_to_inputspec(
+      df = df,
+      inputspec = inputspec
+    ),
+    class = "invalid_data"
+  )
+
 })
 
 

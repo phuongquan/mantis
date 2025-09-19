@@ -699,6 +699,9 @@ align_data_timepoints <- function(
   # initialise column names to avoid R CMD check Notes
   timepoint <- value <- NULL
 
+  # convert all dates to UTC to expose any daylight savings complications
+  prepared_df$timepoint <- lubridate::with_tz(prepared_df$timepoint, tzone = "UTC")
+
   min_timepoint <- min(prepared_df$timepoint)
   max_timepoint <- max(prepared_df$timepoint)
   # if the supplied limit(s) don't match the df granularity, be kind and adjust it
@@ -710,22 +713,11 @@ align_data_timepoints <- function(
       limit_type = "min")
   }
   if (!is.na(timepoint_limits[2])) {
-    # NOTE: While timepoint_limits should already be a date class,
-    # if user supplies an NA first in the vector, the second value gets coerced
-    # to numeric and leads to an error in seq() later on
-    if (inputspec$timepoint_unit %in% c("sec", "min", "hour")) {
-      max_timepoint <- adjust_timepoint_limit(
-        timepoint_limit = as.POSIXct(timepoint_limits[2]),
-        timepoint_values = prepared_df$timepoint,
-        timepoint_unit = inputspec$timepoint_unit,
-        limit_type = "max")
-    } else {
-      max_timepoint <- adjust_timepoint_limit(
-        timepoint_limit = as.Date(timepoint_limits[2]),
-        timepoint_values = prepared_df$timepoint,
-        timepoint_unit = inputspec$timepoint_unit,
-        limit_type = "max")
-    }
+    max_timepoint <- adjust_timepoint_limit(
+      timepoint_limit = timepoint_limits[2],
+      timepoint_values = prepared_df$timepoint,
+      timepoint_unit = inputspec$timepoint_unit,
+      limit_type = "max")
   }
 
   all_timepoints <- seq(
@@ -795,9 +787,9 @@ adjust_timepoint_limit <- function(
 
   # ensure limit is of same class as values
   if (inherits(timepoint_values, what = "POSIXct")) {
-    timepoint_limit <- as.POSIXct(timepoint_limit)
+    timepoint_limit <- as.POSIXct(timepoint_limit, tz = attr(timepoint_values, "tz"))
   } else if (inherits(timepoint_values, what = "POSIXlt")) {
-    timepoint_limit <- as.POSIXlt(timepoint_limit)
+    timepoint_limit <- as.POSIXlt(timepoint_limit, tz = attr(timepoint_values, "tz"))
   } else if (inherits(timepoint_values, what = "Date")) {
     timepoint_limit <- as.Date(timepoint_limit)
   }
@@ -1428,7 +1420,8 @@ unique_timepoint_subunits <- function(
 ) {
   df |>
     dplyr::pull(dplyr::all_of(timepoint_col)) |>
-    strftime(format = strftime_format) |>
+    lubridate::with_tz("UTC") |>
+    strftime(format = strftime_format, tz = "UTC") |>
     unique()
 }
 

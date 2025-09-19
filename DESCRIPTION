@@ -28,7 +28,8 @@ Imports:
     ggplot2,
     scales,
     purrr,
-    htmltools
+    htmltools,
+    lubridate
 Suggests: 
     covr,
     testthat (>= 3.0.0),
