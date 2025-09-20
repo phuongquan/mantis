@@ -169,7 +169,7 @@ test_that("validate_df_to_inputspec() checks that timepoint_col is a datetime ty
     )
   )
 
-  df$timepoint <- as.POSIXct(df_orig$timepoint)
+  df$timepoint <- as.POSIXct(df_orig$timepoint, tz = "UTC")
   expect_silent(
     validate_df_to_inputspec(
       df = df,
@@ -177,7 +177,7 @@ test_that("validate_df_to_inputspec() checks that timepoint_col is a datetime ty
     )
   )
 
-  df$timepoint <- as.POSIXlt(df_orig$timepoint)
+  df$timepoint <- as.POSIXlt(df_orig$timepoint, tz = "UTC")
   expect_silent(
     validate_df_to_inputspec(
       df = df,
@@ -902,6 +902,7 @@ test_that("validate_df_to_inputspec() checks that timepoint_col values are consi
     )
   )
 
+  # sequences are good, with or without explicit tz
   df <- data.frame(
     timepoint = seq(
       as.POSIXct("2022-03-21"),
@@ -1633,8 +1634,6 @@ test_that("adjust_timepoint_limit() moves supplied limit appropriately for years
 })
 
 test_that("adjust_timepoint_limit() moves supplied limit appropriately for days", {
-  # NOTE: coerce posixct values to numeric to ignore timezones
-
   # if everything is a Date then nothing changes
   expect_equal(
     adjust_timepoint_limit(
@@ -1648,38 +1647,38 @@ test_that("adjust_timepoint_limit() moves supplied limit appropriately for days"
 
   # limit and values are posixct
   expect_equal(
-    as.numeric(adjust_timepoint_limit(
-      timepoint_limit = as.POSIXct("2022-01-02 08:30:00"),
+    adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-02 08:30:00", tz = "UTC"),
       timepoint_values = seq(
-        as.POSIXct("2022-01-02 12:00:00"),
+        as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
         by = "day",
         length.out = 5
       ),
       timepoint_unit = "day",
       limit_type = "min"
-    )),
-    as.numeric(as.POSIXct("2022-01-02 12:00:00"))
+    ),
+    as.POSIXct("2022-01-02 12:00:00", tz = "UTC")
   )
 
   # limit is date, values are posixct
   expect_equal(
-    as.numeric(adjust_timepoint_limit(
+    adjust_timepoint_limit(
       timepoint_limit = as.Date("2022-01-03"),
       timepoint_values = seq(
-        as.POSIXct("2022-01-02 12:00:00"),
+        as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
         by = "day",
         length.out = 5
       ),
       timepoint_unit = "day",
       limit_type = "min"
-    )),
-    as.numeric(as.POSIXct("2022-01-03 12:00:00"))
+    ),
+    as.POSIXct("2022-01-03 12:00:00", tz = "UTC")
   )
 
   # limit is posixct, values are date
   expect_equal(
     adjust_timepoint_limit(
-      timepoint_limit = as.POSIXct("2022-01-04 12:00:00"),
+      timepoint_limit = as.POSIXct("2022-01-04 12:00:00", tz = "UTC"),
       timepoint_values = seq(
         as.Date("2022-01-02"),
         by = "day",
@@ -1694,66 +1693,64 @@ test_that("adjust_timepoint_limit() moves supplied limit appropriately for days"
 })
 
 test_that("adjust_timepoint_limit() moves supplied limit appropriately for hours", {
-  # NOTE: coerce posixct values to numeric to ignore timezones
-
   # min_timepoint before first timepoint
   expect_equal(
-    as.numeric(adjust_timepoint_limit(
-      timepoint_limit = as.POSIXct("2022-01-02 08:30:00"),
+    adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-02 08:30:00", tz = "UTC"),
       timepoint_values = seq(
-        as.POSIXct("2022-01-02 12:00:00"),
-        as.POSIXct("2022-01-03 12:00:00"),
+        as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
+        as.POSIXct("2022-01-03 12:00:00", tz = "UTC"),
         by = "hour"
       ),
       timepoint_unit = "hour",
       limit_type = "min"
-    )),
-    as.numeric(as.POSIXct("2022-01-02 09:00:00"))
+    ),
+    as.POSIXct("2022-01-02 09:00:00", tz = "UTC")
   )
 
   # min_timepoint at first timepoint
   expect_equal(
-    as.numeric(adjust_timepoint_limit(
-      timepoint_limit = as.POSIXct("2022-01-02 12:00:00"),
+    adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
       timepoint_values = seq(
-        as.POSIXct("2022-01-02 12:00:00"),
-        as.POSIXct("2022-01-03 12:00:00"),
+        as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
+        as.POSIXct("2022-01-03 12:00:00", tz = "UTC"),
         by = "hour"
       ),
       timepoint_unit = "hour",
       limit_type = "min"
-    )),
-    as.numeric(as.POSIXct("2022-01-02 12:00:00"))
+    ),
+    as.POSIXct("2022-01-02 12:00:00", tz = "UTC")
   )
 
   # min_timepoint between timepoint_values
   expect_equal(
-    as.numeric(adjust_timepoint_limit(
-      timepoint_limit = as.POSIXct("2022-01-02 15:30:00"),
+    adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-02 15:30:00", tz = "UTC"),
       timepoint_values = seq(
-        as.POSIXct("2022-01-02 12:00:00"),
-        as.POSIXct("2022-01-03 12:00:00"),
+        as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
+        as.POSIXct("2022-01-03 12:00:00", tz = "UTC"),
         by = "hour"
       ),
       timepoint_unit = "hour",
       limit_type = "min"
-    )),
-    as.numeric(as.POSIXct("2022-01-02 16:00:00"))
+    ),
+    as.POSIXct("2022-01-02 16:00:00", tz = "UTC")
   )
 
   # max_timepoint after last timepoint
   expect_equal(
-    as.numeric(adjust_timepoint_limit(
-      timepoint_limit = as.POSIXct("2022-01-03 15:30:00"),
+    adjust_timepoint_limit(
+      timepoint_limit = as.POSIXct("2022-01-03 15:30:00", tz = "UTC"),
       timepoint_values = seq(
-        as.POSIXct("2022-01-02 12:00:00"),
-        as.POSIXct("2022-01-03 12:00:00"),
+        as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
+        as.POSIXct("2022-01-03 12:00:00", tz = "UTC"),
         by = "hour"
       ),
       timepoint_unit = "hour",
       limit_type = "max"
-    )),
-    as.numeric(as.POSIXct("2022-01-03 15:00:00"))
+    ),
+    as.POSIXct("2022-01-03 15:00:00", tz = "UTC")
   )
 
 })
