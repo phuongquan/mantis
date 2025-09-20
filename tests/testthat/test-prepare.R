@@ -1,8 +1,8 @@
 test_that("prepare_table() avoids min/max warnings when all values in a group are NA", {
   df <- data.frame(
     timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
-    item_zero = rep(0, 10),
-    item_na = rep(NA, 10),
+    item_zero = 0,
+    item_na = NA,
     stringsAsFactors = FALSE
   ) |>
     tidyr::pivot_longer(
@@ -33,11 +33,11 @@ test_that("validate_df_to_inputspec() checks that duplicate column names in data
         as.Date("2022-01-10"),
         by = "days"
       ),
-      item = rep(1, 10),
-      value = rep(3, 10),
+      item = 1,
+      value = 3,
       stringsAsFactors = FALSE
     ),
-    data.frame(item = rep(2, 10), stringsAsFactors = FALSE)
+    data.frame(item = 2, stringsAsFactors = FALSE)
   )
 
   inputspec <- inputspec(
@@ -58,8 +58,8 @@ test_that("validate_df_to_inputspec() checks that duplicate column names in data
 test_that("validate_df_to_inputspec() checks that duplicate column names in inputspec not allowed", {
   df <- data.frame(
     timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -95,8 +95,8 @@ test_that("validate_df_to_inputspec() checks that duplicate column names in inpu
 test_that("validate_df_to_inputspec() checks that supplied colnames are present in df", {
   df <- data.frame(
     timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     group = rep("a", 10),
     stringsAsFactors = FALSE
   )
@@ -149,8 +149,8 @@ test_that("validate_df_to_inputspec() checks that supplied colnames are present 
 test_that("validate_df_to_inputspec() checks that timepoint_col is a datetime type", {
   df_orig <- data.frame(
     timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
   df <- df_orig
@@ -208,8 +208,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col is a datetime ty
 test_that("validate_df_to_inputspec() checks that value_col is a numeric type", {
   df_orig <- data.frame(
     timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
   df <- df_orig
@@ -262,8 +262,8 @@ test_that("validate_df_to_inputspec() checks that timepoint column doesn't conta
       seq(as.Date("2022-01-01"), as.Date("2022-01-09"), by = "days"),
       NA
     ),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -294,8 +294,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # good types
   df <- data.frame(
     timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -313,8 +313,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXct("2022-01-10 12:00:00", tz = "UTC"),
       by = "days"
     ),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -332,8 +332,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXlt("2022-01-10 12:00:00", tz = "UTC"),
       by = "days"
     ),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -352,8 +352,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXlt("2022-01-02 13:00:00", tz = "UTC"),
       as.POSIXlt("2022-01-10 16:00:00", tz = "UTC")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -379,8 +379,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # good types
   df <- data.frame(
     timepoint = seq(as.Date("2022-01-01"), as.Date("2022-03-05"), by = "week"),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -398,8 +398,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.Date("2022-01-15"),
       as.Date("2022-01-22")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -417,8 +417,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXct("2022-03-05 12:00:00", tz = "UTC"),
       by = "week"
     ),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -437,8 +437,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXlt("2022-01-08 13:00:00", tz = "UTC"),
       as.POSIXlt("2022-01-15 16:00:00", tz = "UTC")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -457,8 +457,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.Date("2022-01-09"),
       as.Date("2022-01-15")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -483,8 +483,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # good types
   df <- data.frame(
     timepoint = seq(as.Date("2022-01-02"), as.Date("2022-10-02"), by = "month"),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -502,8 +502,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXct("2022-10-02 12:00:00", tz = "UTC"),
       by = "month"
     ),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -522,8 +522,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXlt("2022-02-01 13:00:00", tz = "UTC"),
       as.POSIXlt("2022-03-01 16:00:00", tz = "UTC")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -542,8 +542,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.Date("2022-01-09"),
       as.Date("2022-01-15")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -572,8 +572,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.Date("2024-04-02"),
       by = "quarter"
     ),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -591,8 +591,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXct("2024-04-02 12:00:00", tz = "UTC"),
       by = "quarter"
     ),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -611,8 +611,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXlt("2022-04-01 13:00:00", tz = "UTC"),
       as.POSIXlt("2022-07-01 16:00:00", tz = "UTC")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -631,8 +631,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.Date("2022-05-02"),
       as.Date("2022-06-01")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -657,8 +657,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # good types
   df <- data.frame(
     timepoint = seq(as.Date("2013-01-02"), as.Date("2022-01-02"), by = "year"),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -676,8 +676,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXct("2022-01-02 12:00:00", tz = "UTC"),
       by = "year"
     ),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -696,8 +696,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXlt("2023-01-01 13:00:00", tz = "UTC"),
       as.POSIXlt("2024-01-01 16:00:00", tz = "UTC")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -716,8 +716,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.Date("2022-01-09"),
       as.Date("2022-01-15")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -746,8 +746,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXct("2022-01-12 12:00:00", tz = "UTC"),
       by = "hour"
     ),
-    item = rep(1, 241),
-    value = rep(3, 241),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -766,8 +766,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXlt("2022-01-01 13:01:00", tz = "UTC"),
       as.POSIXlt("2022-01-01 16:00:30", tz = "UTC")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -796,8 +796,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXct("2022-01-03 12:00:00", tz = "UTC"),
       by = "min"
     ),
-    item = rep(1, 1441),
-    value = rep(3, 1441),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -816,8 +816,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXlt("2022-01-01 13:01:00", tz = "UTC"),
       as.POSIXlt("2022-01-01 16:00:30", tz = "UTC")
     ),
-    item = rep(1, 3),
-    value = rep(3, 3),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -846,8 +846,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
       as.POSIXct("2022-01-02 13:00:00", tz = "UTC"),
       by = "sec"
     ),
-    item = rep(1, 3601),
-    value = rep(3, 3601),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -861,8 +861,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col matches inputspe
   # bad types
   df <- data.frame(
     timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
-    item = rep(1, 10),
-    value = rep(3, 10),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -891,8 +891,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col values are consi
       as.Date("2022-04-01"),
       by = "day"
     ),
-    item = rep(1, 12),
-    value = rep(3, 12),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
   expect_silent(
@@ -902,15 +902,15 @@ test_that("validate_df_to_inputspec() checks that timepoint_col values are consi
     )
   )
 
-  # sequences are good, with or without explicit tz
+  # sequences are good, even without explicit tz
   df <- data.frame(
     timepoint = seq(
       as.POSIXct("2022-03-21"),
       as.POSIXct("2022-04-01"),
       by = "hour"
     ),
-    item = rep(1, 264),
-    value = rep(3, 264),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
   expect_silent(
@@ -932,8 +932,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col values are consi
       as.POSIXct("2022-04-01", tz = "Europe/London"),
       by = "day"
     ),
-    item = rep(1, 11),
-    value = rep(3, 11),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
   expect_silent(
@@ -951,8 +951,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col values are consi
       as.POSIXct("2022-04-01", tz = "UTC"),
       as.POSIXct("2022-04-05", tz = "UTC")
     ),
-    item = rep(1, 4),
-    value = rep(3, 4),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
   expect_silent(
@@ -970,8 +970,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col values are consi
       as.POSIXct("2022-04-01 12:00:00", tz = "UTC"),
       as.POSIXct("2022-04-05 12:00:00", tz = "UTC")
     ),
-    item = rep(1, 4),
-    value = rep(3, 4),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
   expect_silent(
@@ -989,8 +989,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col values are consi
       as.POSIXct("2022-04-01", tz = "Europe/London"),
       as.POSIXct("2022-04-05", tz = "Europe/London")
     ),
-    item = rep(1, 4),
-    value = rep(3, 4),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
   expect_error(
@@ -1009,8 +1009,8 @@ test_that("validate_df_to_inputspec() checks that timepoint_col values are consi
       as.POSIXct("2022-04-01 12:00:00", tz = "Europe/London"),
       as.POSIXct("2022-04-05 12:00:00", tz = "Europe/London")
     ),
-    item = rep(1, 4),
-    value = rep(3, 4),
+    item = 1,
+    value = 3,
     stringsAsFactors = FALSE
   )
   expect_error(
@@ -1029,7 +1029,7 @@ test_that("validate_df_to_inputspec() checks that item column(s) can contain NA 
     timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
     item = c(NA, NA, NA, rep(1, 7)),
     item2 = c(NA, NA, NA, rep(1, 7)),
-    value = rep(3, 10),
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -1065,7 +1065,7 @@ test_that("validate_df_to_inputspec() checks that item column(s) don't contain b
     item = c(NA, NA, "NA", rep(1, 7)),
     item2 = c(NA, NA, NA, rep(1, 7)),
     item3 = c("NA", "NA", "NA", rep(1, 7)),
-    value = rep(3, 10),
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -1118,7 +1118,7 @@ test_that("validate_df_to_inputspec() checks that duplicate timepoint-item combi
       5
     ),
     item = c(rep("a", 20), rep("b", 10), rep("c", 20)),
-    value = rep(3, 50),
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -1143,7 +1143,7 @@ test_that("validate_df_to_inputspec() checks that duplicate timepoint-item combi
       5
     ),
     item = c(rep("a", 20), rep("b", 10), rep("c", 20)),
-    value = rep(3, 50),
+    value = 3,
     group = c(rep("G1", 10), rep("G2", 10), rep("G1", 10), rep("G2", 20)),
     stringsAsFactors = FALSE
   )
@@ -1170,7 +1170,7 @@ test_that("validate_df_to_inputspec() allows duplicate timepoint-item combinatio
       5
     ),
     item = c(rep("a", 20), rep("b", 10), rep("c", 20)),
-    value = rep(3, 50),
+    value = 3,
     group = c(
       rep("G1", 10),
       rep("G2", 10),
@@ -1315,7 +1315,7 @@ test_that("arrange_items() sorts by single item_order", {
     ),
     item = c(rep("c", 9), rep("b", 9), rep("a", 9)),
     item2 = rep(c("z", "x", "y"), 9),
-    value = rep(3, 27),
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -1342,7 +1342,7 @@ test_that("arrange_items() sorts by two item_orders", {
     ),
     item = c(rep("c", 9), rep("b", 9), rep("a", 9)),
     item2 = rep(c("z", "x", "y"), 9),
-    value = rep(3, 27),
+    value = 3,
     stringsAsFactors = FALSE
   )
 

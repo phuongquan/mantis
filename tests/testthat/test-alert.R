@@ -464,7 +464,7 @@ test_that("restrict_items() doesn't filter prepared_df when no items specified",
     item1 = c(rep("a", 20), rep("b", 20), rep("c", 20)),
     item2 = rep(c(rep("x", 10), rep("y", 10)), 3),
     item3 = c(rep("one", 40), rep("two", 20)),
-    value = rep(3, 60),
+    value = 3,
     stringsAsFactors = FALSE
   )
 
@@ -497,7 +497,7 @@ test_that("restrict_items() filters prepared_df items correctly when items are s
     item1 = c(rep("a", 20), rep("b", 20), rep("c", 20)),
     item2 = rep(c(rep("x", 10), rep("y", 10)), 3),
     item3 = c(rep("one", 40), rep("two", 20)),
-    value = rep(3, 60),
+    value = 3,
     stringsAsFactors = FALSE
   )
 

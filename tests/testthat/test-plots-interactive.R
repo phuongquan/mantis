@@ -2,7 +2,7 @@ test_that("output_table_interactive() avoids min/max warnings when all values ar
   df <- data.frame(
     timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
     item = "na",
-    value = rep(NA, 10),
+    value = NA,
     stringsAsFactors = FALSE
   )
 

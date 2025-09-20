@@ -35,7 +35,7 @@ test_that("mantis_report() creates multi-tab interactive report and returns path
       3
     ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
-    value = rep(3, 30),
+    value = 3,
     tab = c(rep("one", 20), rep("two", 10)),
     stringsAsFactors = FALSE
   )
@@ -67,7 +67,7 @@ test_that("mantis_report() creates heatmap report and returns path successfully"
       3
     ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
-    value = rep(3, 30),
+    value = 3,
     tab = c(rep("one", 20), rep("two", 10)),
     stringsAsFactors = FALSE
   )
@@ -113,7 +113,7 @@ test_that("mantis_report() creates multipanel report and returns path successful
       3
     ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
-    value = rep(3, 30),
+    value = 3,
     tab = c(rep("one", 20), rep("two", 10)),
     stringsAsFactors = FALSE
   )
@@ -159,7 +159,7 @@ test_that("mantis_report() creates interactive report with alerts successfully",
       3
     ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
-    value = rep(3, 30),
+    value = 3,
     tab = c(rep("one", 20), rep("two", 10)),
     stringsAsFactors = FALSE
   )
@@ -366,7 +366,7 @@ test_that("mantis_report() creates multi-item_cols interactive report and return
       3
     ),
     item = c(rep("a", 10), rep("b", 10), rep("c", 10)),
-    value = rep(3, 30),
+    value = 3,
     tab = c(rep("one", 20), rep("two", 10)),
     stringsAsFactors = FALSE
   )
