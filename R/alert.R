@@ -69,26 +69,17 @@ mantis_alerts <- function(
     fill_with_zero = fill_with_zero
   )
 
-  validate_df_to_inputspec(df, inputspec)
-  validate_alert_rules_to_inputspec(alert_rules, inputspec)
-
-  prepared_df <-
-    prepare_df(
-      df,
+  alert_results <-
+    prepare_and_run_alerts(
+      df = df,
       inputspec = inputspec,
+      alert_rules = alert_rules,
+      filter_results = filter_results,
       timepoint_limits = timepoint_limits,
       fill_with_zero = fill_with_zero
     )
 
-  results <-
-    run_alerts(
-      prepared_df = prepared_df,
-      inputspec = inputspec,
-      alert_rules = alert_rules,
-      filter_results = filter_results
-    )
-
-  results |>
+  alert_results |>
     dplyr::rename_with(
       .fn = item_cols_unprefix,
       .cols = dplyr::all_of(item_cols_prefix(inputspec$item_cols))
@@ -1087,6 +1078,49 @@ run_alert <- function(
       alert_description = alert_rule$description,
       alert_result = ifelse(eval(alert_rule$function_call), "FAIL", "PASS")
     )
+}
+
+# -----------------------------------------------------------------------------
+#' Validate df and prepare alert results data frame
+#'
+#' @param df A data frame containing multiple time series in long format.
+#' @param inputspec [`inputspec()`] object specifying which columns in the
+#'   supplied `df` represent the "timepoint", "item", and "value" for the time
+#'   series.
+#' @param alert_rules [`alert_rules()`] object specifying conditions to test
+#' @param filter_results Only return rows where the alert result is in this
+#'   vector of values. Alert results can be "PASS", "FAIL", or "NA".
+#' @param timepoint_limits Set start and end dates for time period to include.
+#'   Defaults to min/max of `timepoint_col`. Can be either Date values or NAs.
+#' @param fill_with_zero Logical. Replace any missing or NA values with 0?
+#'   Useful when value_col is a record count.
+#' @return tibble
+#' @noRd
+prepare_and_run_alerts <- function(
+  df,
+  inputspec,
+  alert_rules,
+  filter_results = c("PASS", "FAIL", "NA"),
+  timepoint_limits = c(NA, NA),
+  fill_with_zero = FALSE
+) {
+  validate_df_to_inputspec(df, inputspec)
+  validate_alert_rules_to_inputspec(alert_rules, inputspec)
+
+  prepared_df <-
+    prepare_df(
+      df,
+      inputspec = inputspec,
+      timepoint_limits = timepoint_limits,
+      fill_with_zero = fill_with_zero
+    )
+
+  run_alerts(
+    prepared_df = prepared_df,
+    inputspec = inputspec,
+    alert_rules = alert_rules,
+    filter_results = filter_results
+  )
 }
 
 

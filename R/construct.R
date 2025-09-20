@@ -240,24 +240,14 @@ bespoke_rmd_alert_results <- function(
     tab_level = tab_level
   )
 
-  # TODO: bit of repetition here cf mantis_alerts()
-  validate_df_to_inputspec(df, inputspec)
-  validate_alert_rules_to_inputspec(alert_rules, inputspec)
-
-  prepared_df <-
-    prepare_df(
-      df,
-      inputspec = inputspec,
-      timepoint_limits = timepoint_limits,
-      fill_with_zero = fill_with_zero
-    )
-
   alert_results <-
-    run_alerts(
-      prepared_df = prepared_df,
+    prepare_and_run_alerts(
+      df = df,
       inputspec = inputspec,
       alert_rules = alert_rules,
-      filter_results = filter_results
+      filter_results = filter_results,
+      timepoint_limits = timepoint_limits,
+      fill_with_zero = fill_with_zero
     )
 
   # create parent tab if specified
