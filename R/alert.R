@@ -185,8 +185,6 @@ alert_rules <- function(
 ) {
   ars <- list(...)
 
-  # TODO: check only one rule of each type? Don't know if this is necessary
-
   err_validation <- character()
   is_alert_rule <- vapply(ars, is_alert_rule, logical(1))
   if (any(!is_alert_rule)) {
@@ -375,8 +373,6 @@ alert_equals <- function(
   rule_value,
   items = NULL
 ) {
-  # TODO: NEED TO THINK ABOUT WHAT TO DO WITH NAs
-  # currently just removing them but may want them in the extent_value
   validate_params_required(match.call())
   validate_params_type(
     match.call(),
@@ -1062,8 +1058,6 @@ run_alert <- function(
   alert_rule
 ) {
   timepoint <- NULL
-
-  # TODO: if it's a custom rule, wrap it in some error handling
 
   prepared_df |>
     restrict_items(items = alert_rule$items) |>

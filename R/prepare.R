@@ -568,7 +568,6 @@ prepare_table <- function(
       last_value = rev(value)[1],
       last_value_nonmissing = rev(value[!is.na(value)])[1],
       max_value = max_else_na(value),
-      # TODO: match precision to values
       mean_value = round(mean(value, na.rm = TRUE), digits = 1),
       # history column
       history = history_to_list(
