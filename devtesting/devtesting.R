@@ -80,7 +80,7 @@ alert_results <-
       alert_custom(
         short_name = "my_rule_doubled",
         description = "Last value is over double the first value",
-        function_call = quote(rev(value)[1] > 2*value[1])
+        expression = quote(rev(value)[1] > 2*value[1])
       )
     )
   )
@@ -94,7 +94,7 @@ mantis_report(df = example_data,
                 alert_custom(
                   short_name = "my_rule_doubled",
                   description = "Last value is over double the first value",
-                  function_call = quote(rev(value)[1] > 2*value[1])
+                  expression = quote(rev(value)[1] > 2*value[1])
                 )
                 ,
                 alert_difference_above_perc(current_period = 2, previous_period = 4, rule_value = 50)
@@ -140,7 +140,7 @@ mantis_report(df = example_prescription_numbers,
               #   alert_custom(
               #     short_name = "my_rule_doubled",
               #     description = "Last value is over double the first value",
-              #     function_call = quote(rev(value)[1] > 2*value[1])
+              #     expression = quote(rev(value)[1] > 2*value[1])
               #   )
               # ),
               report_title = "mantis report",
@@ -172,7 +172,7 @@ mantis_alerts(
     alert_custom(
       short_name = "my_rule_doubled",
       description = "Last value is over double the first value",
-      function_call = quote(rev(value)[1] > 2*value[1]),
+      expression = quote(rev(value)[1] > 2*value[1]),
       items = list("Antibiotic" = "Amikacin")
     )
   )
@@ -201,7 +201,8 @@ mantis_report(df = data.frame(timepoint = c(seq(as.POSIXlt("2022-01-01 12:00:00"
                 alert_custom(
                   short_name = "my_rule_doubled",
                   description = "Last value is over double the first value",
-                  function_call = quote(rev(value)[1] > 2*value[1]),
+                  expression = quote(rev(value)[1] > 2*value[1]),
                 )
               )
 )
+

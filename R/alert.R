@@ -302,10 +302,10 @@ alert_missing <- function(
   )
 
   if (extent_type == "all") {
-    function_call <- quote(all(is.na(value)))
+    expression <- quote(all(is.na(value)))
     rule_description <- "All values are missing"
   } else if (extent_type == "any") {
-    function_call <- substitute(
+    expression <- substitute(
       sum(is.na(value)) >= x,
       list(x = extent_value)
     )
@@ -315,7 +315,7 @@ alert_missing <- function(
       " values are missing in total"
     )
   } else if (extent_type == "last") {
-    function_call <- substitute(
+    expression <- substitute(
       all(is.na(rev(value)[1:x])),
       list(x = extent_value)
     )
@@ -325,7 +325,7 @@ alert_missing <- function(
       " or more values are missing"
     )
   } else if (extent_type == "consecutive") {
-    function_call <- substitute(
+    expression <- substitute(
       {
         run_lengths <- rle(is.na(value))
         any(run_lengths$lengths[run_lengths$values] >= x)
@@ -340,7 +340,7 @@ alert_missing <- function(
 
   alert_rule(
     type = "missing",
-    function_call = function_call,
+    expression = expression,
     items = items,
     short_name = rule_short_name,
     description = rule_description
@@ -399,7 +399,7 @@ alert_equals <- function(
   )
 
   if (extent_type == "all") {
-    function_call <- substitute(
+    expression <- substitute(
       all(value[!is.na(value)] == rv),
       list(rv = rule_value)
     )
@@ -408,7 +408,7 @@ alert_equals <- function(
       rule_value
     )
   } else if (extent_type == "any") {
-    function_call <- substitute(
+    expression <- substitute(
       sum(value[!is.na(value)] == rv) >= x,
       list(x = extent_value, rv = rule_value)
     )
@@ -419,7 +419,7 @@ alert_equals <- function(
       rule_value
     )
   } else if (extent_type == "last") {
-    function_call <- substitute(
+    expression <- substitute(
       all(rev(value[!is.na(value)])[1:x] == rv),
       list(x = extent_value, rv = rule_value)
     )
@@ -430,7 +430,7 @@ alert_equals <- function(
       rule_value
     )
   } else if (extent_type == "consecutive") {
-    function_call <- substitute(
+    expression <- substitute(
       {
         run_lengths <- rle(value[!is.na(value)])
         any(run_lengths$lengths[run_lengths$values == rv] >= x)
@@ -446,7 +446,7 @@ alert_equals <- function(
 
   alert_rule(
     type = "equals",
-    function_call = function_call,
+    expression = expression,
     items = items,
     short_name = rule_short_name,
     description = rule_description
@@ -500,7 +500,7 @@ alert_above <- function(
   )
 
   if (extent_type == "all") {
-    function_call <- substitute(
+    expression <- substitute(
       all(value[!is.na(value)] > rv),
       list(rv = rule_value)
     )
@@ -509,7 +509,7 @@ alert_above <- function(
       rule_value
     )
   } else if (extent_type == "any") {
-    function_call <- substitute(
+    expression <- substitute(
       sum(value[!is.na(value)] > rv) >= x,
       list(x = extent_value, rv = rule_value)
     )
@@ -520,7 +520,7 @@ alert_above <- function(
       rule_value
     )
   } else if (extent_type == "last") {
-    function_call <- substitute(
+    expression <- substitute(
       all(rev(value[!is.na(value)])[1:x] > rv),
       list(x = extent_value, rv = rule_value)
     )
@@ -531,7 +531,7 @@ alert_above <- function(
       rule_value
     )
   } else if (extent_type == "consecutive") {
-    function_call <- substitute(
+    expression <- substitute(
       {
         run_lengths <- rle(value[!is.na(value)] > rv)
         any(run_lengths$lengths[run_lengths$values] >= x)
@@ -547,7 +547,7 @@ alert_above <- function(
 
   alert_rule(
     type = "above",
-    function_call = function_call,
+    expression = expression,
     items = items,
     short_name = rule_short_name,
     description = rule_description
@@ -600,7 +600,7 @@ alert_below <- function(
   )
 
   if (extent_type == "all") {
-    function_call <- substitute(
+    expression <- substitute(
       all(value[!is.na(value)] < rv),
       list(rv = rule_value)
     )
@@ -609,7 +609,7 @@ alert_below <- function(
       rule_value
     )
   } else if (extent_type == "any") {
-    function_call <- substitute(
+    expression <- substitute(
       sum(value[!is.na(value)] < rv) >= x,
       list(x = extent_value, rv = rule_value)
     )
@@ -620,7 +620,7 @@ alert_below <- function(
       rule_value
     )
   } else if (extent_type == "last") {
-    function_call <- substitute(
+    expression <- substitute(
       all(rev(value[!is.na(value)])[1:x] < rv),
       list(x = extent_value, rv = rule_value)
     )
@@ -631,7 +631,7 @@ alert_below <- function(
       rule_value
     )
   } else if (extent_type == "consecutive") {
-    function_call <- substitute(
+    expression <- substitute(
       {
         run_lengths <- rle(value[!is.na(value)] < rv)
         any(run_lengths$lengths[run_lengths$values] >= x)
@@ -647,7 +647,7 @@ alert_below <- function(
 
   alert_rule(
     type = "below",
-    function_call = function_call,
+    expression = expression,
     items = items,
     short_name = rule_short_name,
     description = rule_description
@@ -717,7 +717,7 @@ alert_difference_above_perc <- function(
     )
   )
 
-  function_call <- substitute(
+  expression <- substitute(
     mean(rev(value)[cp], na.rm = TRUE) >
       (1 + rv / 100) * mean(rev(value)[pp], na.rm = TRUE),
     list(cp = current_period, pp = previous_period, rv = rule_value)
@@ -747,7 +747,7 @@ alert_difference_above_perc <- function(
 
   alert_rule(
     type = "diff_above_perc",
-    function_call = function_call,
+    expression = expression,
     items = items,
     short_name = rule_short_name,
     description = rule_description
@@ -817,7 +817,7 @@ alert_difference_below_perc <- function(
     )
   )
 
-  function_call <- substitute(
+  expression <- substitute(
     mean(rev(value)[cp], na.rm = TRUE) <
       (1 - rv / 100) * mean(rev(value)[pp], na.rm = TRUE),
     list(cp = current_period, pp = previous_period, rv = rule_value)
@@ -847,7 +847,7 @@ alert_difference_below_perc <- function(
 
   alert_rule(
     type = "diff_below_perc",
-    function_call = function_call,
+    expression = expression,
     items = items,
     short_name = rule_short_name,
     description = rule_description
@@ -859,7 +859,7 @@ alert_difference_below_perc <- function(
 #' Create a custom alert rule
 #'
 #' @section Details: `alert_custom()` - Specify a custom rule. The supplied
-#'   `function_call` is passed to `eval()` within a `dplyr::summarise()` after
+#'   `expression` is passed to `eval()` within a `dplyr::summarise()` after
 #'   grouping by the `item_cols` and ordering by the `timepoint_col`. Column
 #'   names that can be used explicitly in the expression are `value` and
 #'   `timepoint`, and which refer to the values in the `value_col` and
@@ -868,7 +868,7 @@ alert_difference_below_perc <- function(
 #' @param short_name Short name to uniquely identify the rule. Only include
 #'   alphanumeric, '-', and '_' characters.
 #' @param description Short description of what the rule checks for
-#' @param function_call Quoted expression containing the call to be evaluated
+#' @param expression Quoted expression containing the call to be evaluated
 #'   per item, that returns either `TRUE` or `FALSE`. Return value of `TRUE`
 #'   means alert result is "FAIL". See Details.
 #' @param items Named list with names corresponding to members of `item_cols`.
@@ -882,14 +882,14 @@ alert_difference_below_perc <- function(
 #'   alert_custom(
 #'     short_name = "my_rule_combo",
 #'     description = "Over 3 missing values and max value is > 10",
-#'     function_call = quote(
+#'     expression = quote(
 #'       sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10
 #'     )
 #'   ),
 #'   alert_custom(
 #'     short_name = "my_rule_doubled",
 #'     description = "Last value is over double the first value",
-#'     function_call = quote(rev(value)[1] > 2 * value[1])
+#'     expression = quote(rev(value)[1] > 2 * value[1])
 #'   )
 #' )
 #'
@@ -898,24 +898,22 @@ alert_difference_below_perc <- function(
 alert_custom <- function(
   short_name,
   description,
-  function_call,
+  expression,
   items = NULL
 ) {
-  # TODO: Consider renaming function_call to quoted_expression
-
   validate_params_required(match.call())
   validate_params_type(
     match.call(),
     short_name = short_name,
     description = description,
-    function_call = function_call,
+    expression = expression,
     items = items
   )
 
   structure(
     list(
       type = "custom",
-      function_call = function_call,
+      expression = expression,
       short_name = short_name,
       description = description,
       items = items
@@ -950,7 +948,7 @@ is_alert_rules <- function(x) inherits(x, "mantis_alert_rules")
 #' Constructor for an alert_rule
 #'
 #' @param type type of rule
-#' @param function_call expression to pass to `eval()`, that returns either
+#' @param expression expression to pass to `eval()`, that returns either
 #'   `TRUE` or `FALSE`. Return value of `TRUE` means alert result is "FAIL"
 #' @param short_name a short computer-friendly name to uniquely identify the
 #'   rule
@@ -975,7 +973,7 @@ is_alert_rules <- function(x) inherits(x, "mantis_alert_rules")
 #' @noRd
 alert_rule <- function(
   type,
-  function_call,
+  expression,
   short_name,
   description,
   items = NULL
@@ -983,7 +981,7 @@ alert_rule <- function(
   structure(
     list(
       type = type,
-      function_call = function_call,
+      expression = expression,
       short_name = short_name,
       description = description,
       items = items
@@ -1076,7 +1074,7 @@ run_alert <- function(
     dplyr::summarise(
       alert_name = alert_rule$short_name,
       alert_description = alert_rule$description,
-      alert_result = ifelse(eval(alert_rule$function_call), "FAIL", "PASS")
+      alert_result = ifelse(eval(alert_rule$expression), "FAIL", "PASS")
     )
 }
 

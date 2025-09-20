@@ -927,15 +927,15 @@ test_that("validate_params_type() checks description params are of correct type"
   )
 })
 
-test_that("validate_params_type() checks function_call params are of correct type", {
-  expect_silent(testfn_params_type(function_call = quote(all(is.na(value)))))
+test_that("validate_params_type() checks expression params are of correct type", {
+  expect_silent(testfn_params_type(expression = quote(all(is.na(value)))))
 
   expect_error(
-    testfn_params_type(function_call = "all(is.na(value))"),
+    testfn_params_type(expression = "all(is.na(value))"),
     class = "invalid_param_type"
   )
   expect_error(
-    testfn_params_type(function_call = NULL),
+    testfn_params_type(expression = NULL),
     class = "invalid_param_type"
   )
 })

@@ -18,7 +18,7 @@ test_that("Valid alert_rules can be specified", {
       alert_custom(
         short_name = "my_rule_doubled",
         description = "Last value is over double the first value",
-        function_call = quote(rev(value)[1] > 2 * value[1])
+        expression = quote(rev(value)[1] > 2 * value[1])
       )
     ),
     "mantis_alert_rules"
@@ -37,7 +37,7 @@ test_that("Invalid alert_rules cannot be specified", {
 })
 
 test_that("alert_missing(all) returns condition correctly", {
-  fc <- alert_missing(extent_type = "all")$function_call
+  fc <- alert_missing(extent_type = "all")$expression
 
   value <- rep(NA, 10)
   expect_true(eval(fc))
@@ -50,7 +50,7 @@ test_that("alert_missing(any) returns condition correctly", {
   fc <- alert_missing(
     extent_type = "any",
     extent_value = 3
-  )$function_call
+  )$expression
 
   value <- c(1, NA, 2, NA, 3, NA)
   expect_true(eval(fc))
@@ -63,7 +63,7 @@ test_that("alert_missing(last) returns condition correctly", {
   fc <- alert_missing(
     extent_type = "last",
     extent_value = 3
-  )$function_call
+  )$expression
 
   value <- c(1, 2, NA, NA, NA)
   expect_true(eval(fc))
@@ -76,7 +76,7 @@ test_that("alert_missing(consecutive) returns condition correctly", {
   fc <- alert_missing(
     extent_type = "consecutive",
     extent_value = 3
-  )$function_call
+  )$expression
 
   value <- c(1, 1, NA, NA, NA, 1)
   expect_true(eval(fc))
@@ -90,7 +90,7 @@ test_that("alert_equals(all) returns condition correctly", {
   fc <- alert_equals(
     extent_type = "all",
     rule_value = 0
-  )$function_call
+  )$expression
 
   value <- rep(0, 10)
   expect_true(eval(fc))
@@ -104,7 +104,7 @@ test_that("alert_equals(any) returns condition correctly", {
     extent_type = "any",
     extent_value = 3,
     rule_value = 0
-  )$function_call
+  )$expression
 
   value <- c(1, 0, 2, 0, 3, 0)
   expect_true(eval(fc))
@@ -121,7 +121,7 @@ test_that("alert_equals(last) returns condition correctly", {
     extent_type = "last",
     extent_value = 3,
     rule_value = 0
-  )$function_call
+  )$expression
 
   value <- c(1, 2, 0, 0, 0)
   expect_true(eval(fc))
@@ -144,7 +144,7 @@ test_that("alert_equals(consecutive) returns condition correctly", {
     extent_type = "consecutive",
     extent_value = 3,
     rule_value = 0
-  )$function_call
+  )$expression
 
   value <- c(1, 2, 0, 0, 0, 1)
   expect_true(eval(fc))
@@ -162,7 +162,7 @@ test_that("alert_below(all) returns condition correctly", {
   fc <- alert_below(
     extent_type = "all",
     rule_value = 3
-  )$function_call
+  )$expression
 
   value <- rep(0, 10)
   expect_true(eval(fc))
@@ -179,7 +179,7 @@ test_that("alert_below(any) returns condition correctly", {
     extent_type = "any",
     extent_value = 3,
     rule_value = 3
-  )$function_call
+  )$expression
 
   value <- c(1, 0, 2, 0, 3, 0)
   expect_true(eval(fc))
@@ -196,7 +196,7 @@ test_that("alert_below(last) returns condition correctly", {
     extent_type = "last",
     extent_value = 3,
     rule_value = 3
-  )$function_call
+  )$expression
 
   value <- c(1, 3, 0, 0, 0)
   expect_true(eval(fc))
@@ -210,7 +210,7 @@ test_that("alert_below(consecutive) returns condition correctly", {
     extent_type = "consecutive",
     extent_value = 3,
     rule_value = 3
-  )$function_call
+  )$expression
 
   value <- c(10, 20, 2, 1, 2, 10)
   expect_true(eval(fc))
@@ -228,7 +228,7 @@ test_that("alert_above(all) returns condition correctly", {
   fc <- alert_above(
     extent_type = "all",
     rule_value = 0
-  )$function_call
+  )$expression
 
   value <- rep(2, 10)
   expect_true(eval(fc))
@@ -245,7 +245,7 @@ test_that("alert_above(any) returns condition correctly", {
     extent_type = "any",
     extent_value = 3,
     rule_value = 0
-  )$function_call
+  )$expression
 
   value <- c(1, 2, 0, 3, 0)
   expect_true(eval(fc))
@@ -259,7 +259,7 @@ test_that("alert_above(last) returns condition correctly", {
     extent_type = "last",
     extent_value = 3,
     rule_value = 0
-  )$function_call
+  )$expression
 
   value <- c(1, 0, 1, 3, 2)
   expect_true(eval(fc))
@@ -273,7 +273,7 @@ test_that("alert_above(consecutive) returns condition correctly", {
     extent_type = "consecutive",
     extent_value = 3,
     rule_value = 1
-  )$function_call
+  )$expression
 
   value <- c(1, 20, 20, 10, 2, 10)
   expect_true(eval(fc))
@@ -293,7 +293,7 @@ test_that("alert_difference_above_perc() returns condition correctly", {
     current_period = 1:2,
     previous_period = 3:6,
     rule_value = 50
-  )$function_call
+  )$expression
 
   value <- c(100, 3, 3, 5, 5, 8, 6)
   expect_true(eval(fc))
@@ -321,7 +321,7 @@ test_that("alert_difference_below_perc() returns condition correctly", {
     current_period = 1:2,
     previous_period = 3:6,
     rule_value = 50
-  )$function_call
+  )$expression
 
   value <- c(0, 10, 10, 10, 10, 4, 4)
   expect_true(eval(fc))
@@ -352,8 +352,8 @@ test_that("alert_custom() returns condition correctly", {
   fc <- alert_custom(
     short_name = "my_rule_doubled",
     description = "Last value is over double the first value",
-    function_call = quote(rev(value)[1] > 2 * value[1])
-  )$function_call
+    expression = quote(rev(value)[1] > 2 * value[1])
+  )$expression
 
   value <- c(1, 0, 3)
   expect_true(eval(fc))

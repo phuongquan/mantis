@@ -33,7 +33,7 @@ alert_difference_below_perc(
   items = NULL
 )
 
-alert_custom(short_name, description, function_call, items = NULL)
+alert_custom(short_name, description, expression, items = NULL)
 }
 \arguments{
 \item{extent_type}{Type of subset of the time series values that must satisfy
@@ -60,7 +60,7 @@ alphanumeric, '-', and '_' characters.}
 
 \item{description}{Short description of what the rule checks for}
 
-\item{function_call}{Quoted expression containing the call to be evaluated
+\item{expression}{Quoted expression containing the call to be evaluated
 per item, that returns either \code{TRUE} or \code{FALSE}. Return value of \code{TRUE}
 means alert result is "FAIL". See Details.}
 }
@@ -113,7 +113,7 @@ Ranges should be contiguous, and denote positions from the end of the time
 series.
 
  \code{alert_custom()} - Specify a custom rule. The supplied
-\code{function_call} is passed to \code{eval()} within a \code{dplyr::summarise()} after
+\code{expression} is passed to \code{eval()} within a \code{dplyr::summarise()} after
 grouping by the \code{item_cols} and ordering by the \code{timepoint_col}. Column
 names that can be used explicitly in the expression are \code{value} and
 \code{timepoint}, and which refer to the values in the \code{value_col} and
@@ -165,14 +165,14 @@ ars <- alert_rules(
   alert_custom(
     short_name = "my_rule_combo",
     description = "Over 3 missing values and max value is > 10",
-    function_call = quote(
+    expression = quote(
       sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10
     )
   ),
   alert_custom(
     short_name = "my_rule_doubled",
     description = "Last value is over double the first value",
-    function_call = quote(rev(value)[1] > 2 * value[1])
+    expression = quote(rev(value)[1] > 2 * value[1])
   )
 )
 

@@ -91,28 +91,27 @@ ars <- alert_rules(
   alert_custom(
     short_name = "my_rule_combo",
     description = "Over 3 missing values and max value is > 10",
-    function_call = quote(
+    expression = quote(
       sum(is.na(value)) > 3 && max(value, na.rm = TRUE) > 10
     )
   ),
   alert_custom(
     short_name = "my_rule_doubled",
     description = "Last value is over double the first value",
-    function_call = quote(
+    expression = quote(
       rev(value)[1] > 2 * value[1]
     )
   )
 )
 ```
 
-The function_call is evaluated per time series, and the expression inside
-`quote()` must return either `TRUE` or `FALSE`. A return value of `TRUE` means
+The `expression` is evaluated per time series, and must return either `TRUE` or `FALSE`. A return value of `TRUE` means
 the alert result is "FAIL"
 
 Column names that can be used explicitly in the expression are `value` and
 `timepoint`, and which refer to the values in the `value_col` and
 `timepoint_col` columns of the data respectively. Before evaluating the
-`function_call`, the dataframe is grouped by the `item_col` and ordered by the
+`expression`, the dataframe is grouped by the `item_col` and ordered by the
 `timepoint_col`.
 
 ## Applying different rules to different time series
@@ -170,7 +169,7 @@ ars <- alert_rules(
   alert_custom(
     short_name = "my_rule_doubled",
     description = "Last 7 values are over double the first 7 values",
-    function_call = quote(
+    expression = quote(
       mean(rev(value)[1:7], na.rm = TRUE) > 2 * (mean(value[1:7], na.rm = TRUE))
     )
   )
@@ -219,7 +218,7 @@ ars_restricted <- alert_rules(
   alert_custom(
     short_name = "my_rule_doubled",
     description = "Last 7 values are over double the first 7 values",
-    function_call = quote(
+    expression = quote(
       mean(rev(value)[1:7], na.rm = TRUE) > 2 * (mean(value[1:7], na.rm = TRUE))
     ),
     items = list("Spectrum" = c("Broad"))
