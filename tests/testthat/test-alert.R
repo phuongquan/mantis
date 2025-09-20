@@ -97,6 +97,14 @@ test_that("alert_equals(all) returns condition correctly", {
 
   value <- c(1, rep(0, 10))
   expect_false(eval(fc))
+
+  # any NAs should be skipped
+  value <- c(0, 0, NA)
+  expect_true(eval(fc))
+
+  value <- c(3, 3, NA)
+  expect_false(eval(fc))
+
 })
 
 test_that("alert_equals(any) returns condition correctly", {
@@ -172,6 +180,14 @@ test_that("alert_below(all) returns condition correctly", {
 
   value <- c(3, rep(0, 10))
   expect_false(eval(fc))
+
+  # any NAs should be skipped
+  value <- c(1, 2, NA)
+  expect_true(eval(fc))
+
+  value <- c(3, 3, NA)
+  expect_false(eval(fc))
+
 })
 
 test_that("alert_below(any) returns condition correctly", {
@@ -203,6 +219,11 @@ test_that("alert_below(last) returns condition correctly", {
 
   value <- c(0, 1, 3, 0, 0)
   expect_false(eval(fc))
+
+  # any NAs should be skipped
+  value <- c(0, 1, 1, 2, 2, NA)
+  expect_true(eval(fc))
+
 })
 
 test_that("alert_below(consecutive) returns condition correctly", {
@@ -238,6 +259,14 @@ test_that("alert_above(all) returns condition correctly", {
 
   value <- c(1, rep(0, 10))
   expect_false(eval(fc))
+
+  # any NAs should be skipped
+  value <- c(1, 2, NA)
+  expect_true(eval(fc))
+
+  value <- c(0, 0, NA)
+  expect_false(eval(fc))
+
 })
 
 test_that("alert_above(any) returns condition correctly", {
@@ -252,6 +281,7 @@ test_that("alert_above(any) returns condition correctly", {
 
   value <- c(0, 0, 2, 0, 3, 0)
   expect_false(eval(fc))
+
 })
 
 test_that("alert_above(last) returns condition correctly", {
@@ -266,6 +296,11 @@ test_that("alert_above(last) returns condition correctly", {
 
   value <- c(0, 1, 2, 0, 0)
   expect_false(eval(fc))
+
+  # any NAs should be skipped
+  value <- c(0, 1, 1, 2, 2, NA)
+  expect_true(eval(fc))
+
 })
 
 test_that("alert_above(consecutive) returns condition correctly", {
@@ -284,9 +319,9 @@ test_that("alert_above(consecutive) returns condition correctly", {
   # any NAs should be skipped
   value <- c(20, NA, 20, 2, 1)
   expect_true(eval(fc))
+
 })
 
-# TODO: more tests for equals/above/below with NAs in
 
 test_that("alert_difference_above_perc() returns condition correctly", {
   fc <- alert_difference_above_perc(
