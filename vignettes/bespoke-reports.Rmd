@@ -14,23 +14,33 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette introduces the basics of how to generate a bespoke html report
-containing tabs and visualisations from the `mantis` package. The easiest way to
-get started is to clone the
-[mantis-templates](https://github.com/phuongquan/mantis-templates) project to
-see it in action, then choose a template Rmd file that you can adapt.
+This vignette introduces the essentials of how to add visualisations from the
+`mantis` package into your own bespoke html reports. It will be assumed that you
+already know how to generate html documents from a Rmd file, including creating
+tabsets. If you don't, take a look at the official documentation and/or the many
+other online resources available before proceeding.
 
-Note: Currently, `mantis` uses `rmarkdown` to generate its reports. In future
-there should be functionality to create Quarto reports.
+Note: Currently, `mantis` uses `rmarkdown` to generate its content and reports,
+and so the visualisations may not render as expected if added to a Quarto
+report. In future there will be more support for generating/adding to Quarto
+reports.
 
 
 ## Overview 
 
-You can use existing `rmarkdown` functionality to create your own bespoke html
-report, and insert `mantis` content and/or tabs as desired. At a minimum, you
-need to know how to generate html documents from a Rmd file, including creating
-tabsets. If you don't, take a look at the official documentation and/or the many
-other online resources available.
+The standard `mantis_report()` is designed for quick and simple review of time
+series that can be stored in a single data frame. If you like the `mantis`
+visualisations but want to build a more complex report, e.g. to display data
+from multiple data frames, display `mantis` content alongside other (non-`mantis`)
+content, or to add your own branding, you can create your own html report
+using existing `rmarkdown` functionality, and then insert `mantis` content
+and/or tabs into your report as desired.
+
+The easiest way to get started with this is to clone the
+[mantis-templates](https://github.com/phuongquan/mantis-templates) project to
+see it in action, then choose a template Rmd file that you can copy from/adapt.
+
+## Adding `mantis` content
 
 `mantis` includes one main function `bespoke_rmd_output()` for creating content
 for bespoke reports. This function use side-effects to generate the desired

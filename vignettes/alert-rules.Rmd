@@ -241,7 +241,7 @@ mantis_report(
   alertspec = alertspec(
     alert_rules = ars_restricted
   ),
-  report_title = "mantis report with alerts",
+  report_title = "mantis report with alerts - restricted",
   dataset_description = "Antibiotic prescriptions by site",
   show_progress = TRUE
 )
