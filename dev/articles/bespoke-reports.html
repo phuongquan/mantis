@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.5.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.5.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,23 +76,35 @@
 
     
     
-<p>This vignette introduces the basics of how to generate a bespoke html
-report containing tabs and visualisations from the <code>mantis</code>
-package. The easiest way to get started is to clone the <a href="https://github.com/phuongquan/mantis-templates" class="external-link">mantis-templates</a>
-project to see it in action, then choose a template Rmd file that you
-can adapt.</p>
+<p>This vignette introduces the essentials of how to add visualisations
+from the <code>mantis</code> package into your own bespoke html reports.
+It will be assumed that you already know how to generate html documents
+from a Rmd file, including creating tabsets. If you don’t, take a look
+at the official documentation and/or the many other online resources
+available before proceeding.</p>
 <p>Note: Currently, <code>mantis</code> uses <code>rmarkdown</code> to
-generate its reports. In future there should be functionality to create
-Quarto reports.</p>
+generate its content and reports, and so the visualisations may not
+render as expected if added to a Quarto report. In future there will be
+more support for generating/adding to Quarto reports.</p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>You can use existing <code>rmarkdown</code> functionality to create
-your own bespoke html report, and insert <code>mantis</code> content
-and/or tabs as desired. At a minimum, you need to know how to generate
-html documents from a Rmd file, including creating tabsets. If you
-don’t, take a look at the official documentation and/or the many other
-online resources available.</p>
+<p>The standard <code><a href="../reference/mantis_report.html">mantis_report()</a></code> is designed for quick and
+simple review of time series that can be stored in a single data frame.
+If you like the <code>mantis</code> visualisations but want to build a
+more complex report, e.g. to display data from multiple data frames,
+display <code>mantis</code> content alongside other
+(non-<code>mantis</code>) content, or to add your own branding, you can
+create your own html report using existing <code>rmarkdown</code>
+functionality, and then insert <code>mantis</code> content and/or tabs
+into your report as desired.</p>
+<p>The easiest way to get started with this is to clone the <a href="https://github.com/phuongquan/mantis-templates" class="external-link">mantis-templates</a>
+project to see it in action, then choose a template Rmd file that you
+can copy from/adapt.</p>
+</div>
+<div class="section level2">
+<h2 id="adding-mantis-content">Adding <code>mantis</code> content<a class="anchor" aria-label="anchor" href="#adding-mantis-content"></a>
+</h2>
 <p><code>mantis</code> includes one main function
 <code><a href="../reference/bespoke_rmd_output.html">bespoke_rmd_output()</a></code> for creating content for bespoke
 reports. This function use side-effects to generate the desired
