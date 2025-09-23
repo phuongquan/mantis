@@ -24,6 +24,8 @@ Other contributors:
 \itemize{
   \item  University of Oxford [copyright holder]
   \item  National Institute for Health Research (NIHR) [funder]
+  \item Rodrigo Pires [reviewer]
+  \item Margaret Siple [reviewer]
 }
 
 }
