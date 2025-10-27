@@ -1,4 +1,4 @@
-# mantis (development version)
+# mantis 1.0.0 (2025-10-27)
 
 Incorporates changes requested for acceptance into https://ropensci.org/.
 
