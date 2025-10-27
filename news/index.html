@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,8 +45,23 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="mantis-development-version">mantis (development version)<a class="anchor" aria-label="anchor" href="#mantis-development-version"></a></h2>
-<p>Re-align with CRAN release</p>
+<h2 class="pkg-version" data-toc-text="1.0.0" id="mantis-100-2025-10-27">mantis 1.0.0 (2025-10-27)<a class="anchor" aria-label="anchor" href="#mantis-100-2025-10-27"></a></h2><p class="text-muted">CRAN release: 2025-10-27</p>
+<p>Incorporates changes requested for acceptance into <a href="https://ropensci.org/" class="external-link uri">https://ropensci.org/</a>.</p>
+<div class="section level3">
+<h3 id="breaking-changes-1-0-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-0-0"></a></h3>
+<ul><li>
+<code>expression</code> parameter of <code><a href="../reference/alert_rule_types.html">alert_custom()</a></code> replaces <code>function_call</code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-and-minor-improvements-1-0-0">Bug fixes and minor improvements<a class="anchor" aria-label="anchor" href="#bug-fixes-and-minor-improvements-1-0-0"></a></h3>
+<ul><li>
+<code>item_order</code> parameter of <code>outputspec()</code> can now handle an arbitrary number of items</li>
+<li>
+<code>timepoint_limits</code> parameter for alerts and bespoke reports now automatically adjusts user-supplied values to align with the data and <code>timepoint_unit</code> where necessary, instead of inserting inappropriate additional timepoints in plots</li>
+<li>Date-only timepoints cast as POSIXt using a daylight-savings-varying timezone no longer result in inappropriate additional timepoints appearing in plots (<a href="https://github.com/phuongquan/mantis/issues/30" class="external-link">#30</a>)</li>
+<li>Stricter validation of POSIXt timepoints</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.3" id="mantis-043-2025-07-31">mantis 0.4.3 (2025-07-31)<a class="anchor" aria-label="anchor" href="#mantis-043-2025-07-31"></a></h2><p class="text-muted">CRAN release: 2025-08-01</p>
@@ -126,7 +141,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by T. Phuong Quan, University of Oxford.</p>
+  <p>Developed by T. Phuong Quan.</p>
 </div>
 
 <div class="pkgdown-footer-right">
