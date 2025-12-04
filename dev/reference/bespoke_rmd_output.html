@@ -15,7 +15,7 @@ important information."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">mantis</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.5.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,7 +103,9 @@ display</p></dd>
 
 <dt id="arg-timepoint-limits">timepoint_limits<a class="anchor" aria-label="anchor" href="#arg-timepoint-limits"></a></dt>
 <dd><p>Set start and end dates for time period to include.
-Defaults to min/max of <code>timepoint_col</code></p></dd>
+Defaults to min/max of <code>timepoint_col</code>. If the <code>timepoint_unit</code> of
+<code><a href="inputspec.html">inputspec()</a></code> is a "day" or longer, this must be a Date type, otherwise it
+should be a POSIXt type.</p></dd>
 
 
 <dt id="arg-fill-with-zero">fill_with_zero<a class="anchor" aria-label="anchor" href="#arg-fill-with-zero"></a></dt>
@@ -187,11 +189,11 @@ the <code>tab_col</code> parameter.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by T. Phuong Quan, University of Oxford.</p>
+  <p>Developed by T. Phuong Quan.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

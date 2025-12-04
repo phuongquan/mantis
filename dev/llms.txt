@@ -1,0 +1,201 @@
+# mantis
+
+The `mantis` package generates interactive reports that enable quick
+visual review of multiple related time series stored in a data frame.
+This can help with identification of temporal artefacts and unexpected
+trends. The choice of visualisations include interactive plots with
+adjustable axes and tooltips showing the individual dates and values, as
+well as static heatmap and scatter plots for more lightweight
+applications. E.g.
+
+![](reference/figures/example_prescription_numbers_interactive.png)![](reference/figures/example_prescription_numbers_heatmap.png)
+
+The resulting html reports are self-contained and shareable without a
+web server.
+
+Example reports and more detailed guidance can be found in the [package
+website](https://phuongquan.github.io/mantis/index.html), including how
+to add [alerting
+rules](https://phuongquan.github.io/mantis/articles/alert-rules.html)
+and how to add `mantis` visualisations to your own [bespoke
+reports](https://phuongquan.github.io/mantis/articles/bespoke-reports.html).
+
+## Why should I use it?
+
+We anticipate two main target users:
+
+1.  Researchers who analyse data from large, temporal datasets,
+    particularly routinely-collected data such as electronic health
+    records. Included as part of the initial analysis stage, it will
+    help you to check for any temporal biases in your datasets before
+    embarking on your main analyses, therefore improving the reliability
+    of your study.
+
+2.  Managers of live data feeds that are used as a data source for
+    downstream analyses. Regular inspection of data that is frequently
+    updated will help to identify any issues early and enable a timely
+    response to rectify issues such as missing data. While a set of
+    validation checks in a data pipeline could also work in this
+    circumstance, the benefit of this package is the ability to check
+    for temporal anomalies that are obvious to the human eye but that
+    are difficult to capture programmatically.
+
+## Installation
+
+``` r
+# install from CRAN
+install.packages("mantis")
+
+# or install the current development version
+# install stable dependencies first
+install.packages(c(
+  "remotes",
+  "rmarkdown",
+  "knitr",
+  "reactable",
+  "dplyr",
+  "tidyr",
+  "dygraphs",
+  "xts",
+  "ggplot2",
+  "scales",
+  "purrr",
+  "htmltools"
+))
+remotes::install_github("phuongquan/mantis", dependencies = FALSE)
+```
+
+## Usage
+
+``` r
+library(mantis)
+
+# this example data frame contains numbers of antibiotic prescriptions 
+# in long format
+data("example_prescription_numbers")
+
+head(example_prescription_numbers)
+```
+
+``` R
+## # A tibble: 6 × 5
+##   PrescriptionDate Antibiotic    Spectrum NumberOfPrescriptions Location
+##   <date>           <chr>         <chr>                    <dbl> <chr>   
+## 1 2022-01-01       Coamoxiclav   Broad                       45 SITE1   
+## 2 2022-01-01       Gentamicin    Broad                       34 SITE1   
+## 3 2022-01-01       Ceftriaxone   Broad                       36 SITE1   
+## 4 2022-01-01       Metronidazole Limited                     17 SITE1   
+## 5 2022-01-01       Meropenem     Broad                       10 SITE1   
+## 6 2022-01-01       Vancomycin    Limited                      0 SITE1
+```
+
+``` r
+# create a report in the working directory, with one tab per Location
+mantis_report(
+  df = example_prescription_numbers,
+  file = "example_prescription_numbers_report.html",
+  inputspec = inputspec(
+    timepoint_col = "PrescriptionDate",
+    item_cols = c("Location", "Antibiotic", "Spectrum"),
+    value_col = "NumberOfPrescriptions",
+    tab_col = "Location",
+    timepoint_unit = "day"
+  )
+)
+```
+
+## Relation to other packages
+
+`mantis` is designed for use on data that is essentially a collection of
+time series in a data frame, where you have already decided which values
+you are interested in reviewing. If you want to check more generally for
+temporal changes in record-level, non-numeric data, then check out our
+sister package
+[`daiquiri`](https://ropensci.github.io/daiquiri/index.html).
+
+If you are not specifically interested in temporal changes, you could
+try visually inspecting your data frames with
+[`visdat`](https://docs.ropensci.org/visdat/), or run validation checks
+on them with
+[`assertr`](https://docs.ropensci.org/assertr/articles/assertr.html) or
+[`pointblank`](https://rstudio.github.io/pointblank/).
+
+## Acknowledgements
+
+This work was supported by the National Institute for Health Research
+Health Protection Research Unit (NIHR HPRU) in Healthcare Associated
+Infections and Antimicrobial Resistance at the University of Oxford in
+partnership with the UK Health Security Agency (UKHSA) (NIHR200915), and
+by the NIHR Oxford Biomedical Research Centre.
+
+## Contributing to this package
+
+Please report any bugs or suggestions by opening a [github
+issue](https://github.com/phuongquan/mantis/issues).
+
+# Package index
+
+## Basic usage
+
+- [`mantis_report()`](https://phuongquan.github.io/mantis/dev/reference/mantis_report.md)
+  : Create an interactive time series report from a data frame
+- [`inputspec()`](https://phuongquan.github.io/mantis/dev/reference/inputspec.md)
+  : Specify relevant columns in the source data frame
+- [`example_prescription_numbers`](https://phuongquan.github.io/mantis/dev/reference/example_prescription_numbers.md)
+  : Example data frame containing numbers of antibiotic prescriptions in
+  long format
+
+## Specifying the output format
+
+- [`outputspec_interactive()`](https://phuongquan.github.io/mantis/dev/reference/outputspec_interactive.md)
+  : Specify output options for an interactive report
+- [`outputspec_static_heatmap()`](https://phuongquan.github.io/mantis/dev/reference/outputspec_static_heatmap.md)
+  : Specify output options for a static report containing heatmaps
+- [`outputspec_static_multipanel()`](https://phuongquan.github.io/mantis/dev/reference/outputspec_static_multipanel.md)
+  : Specify output options for a static report containing a panel of
+  plots.
+
+## Specifying alerting rules
+
+- [`alertspec()`](https://phuongquan.github.io/mantis/dev/reference/alertspec.md)
+  : Specify alerting rules to be run on the data and displayed in the
+  report
+- [`alert_rules()`](https://phuongquan.github.io/mantis/dev/reference/alert_rules.md)
+  : Create set of alert rules
+- [`alert_missing()`](https://phuongquan.github.io/mantis/dev/reference/alert_rule_types.md)
+  [`alert_equals()`](https://phuongquan.github.io/mantis/dev/reference/alert_rule_types.md)
+  [`alert_above()`](https://phuongquan.github.io/mantis/dev/reference/alert_rule_types.md)
+  [`alert_below()`](https://phuongquan.github.io/mantis/dev/reference/alert_rule_types.md)
+  [`alert_difference_above_perc()`](https://phuongquan.github.io/mantis/dev/reference/alert_rule_types.md)
+  [`alert_difference_below_perc()`](https://phuongquan.github.io/mantis/dev/reference/alert_rule_types.md)
+  [`alert_custom()`](https://phuongquan.github.io/mantis/dev/reference/alert_rule_types.md)
+  : Built-in alert rules
+- [`mantis_alerts()`](https://phuongquan.github.io/mantis/dev/reference/mantis_alerts.md)
+  : Generate a data frame containing alert results
+
+## Creating a bespoke report
+
+- [`bespoke_rmd_initialise_widgets()`](https://phuongquan.github.io/mantis/dev/reference/bespoke_rmd_initialise_widgets.md)
+  : Initialise HTML widgets
+- [`bespoke_rmd_output()`](https://phuongquan.github.io/mantis/dev/reference/bespoke_rmd_output.md)
+  : Dynamically generate mantis output for an rmd chunk
+- [`bespoke_rmd_alert_results()`](https://phuongquan.github.io/mantis/dev/reference/bespoke_rmd_alert_results.md)
+  : Dynamically generate a table containing alert results for an rmd
+  chunk
+
+# Articles
+
+### All vignettes
+
+- [Specifying alerting
+  rules](https://phuongquan.github.io/mantis/dev/articles/alert-rules.md):
+- [Creating bespoke
+  reports](https://phuongquan.github.io/mantis/dev/articles/bespoke-reports.md):
+- [Example interactive
+  report](https://phuongquan.github.io/mantis/dev/articles/example-report-interactive.md):
+- [Example heatmap
+  report](https://phuongquan.github.io/mantis/dev/articles/example-report-static-heatmap.md):
+- [Example multipanel
+  report](https://phuongquan.github.io/mantis/dev/articles/example-report-static-multipanel.md):
+- [Get started with
+  mantis](https://phuongquan.github.io/mantis/dev/articles/mantis.md):
