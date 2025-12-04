@@ -61,7 +61,9 @@ bespoke_rmd_initialise_widgets <- function(
 #' @param alertspec [`alertspec()`] object specifying conditions to test and
 #'   display
 #' @param timepoint_limits Set start and end dates for time period to include.
-#'   Defaults to min/max of `timepoint_col`
+#'   Defaults to min/max of `timepoint_col`. If the `timepoint_unit` of
+#'   `inputspec()` is a "day" or longer, this must be a Date type, otherwise it
+#'   should be a POSIXt type.
 #' @param fill_with_zero Logical. Replace any missing or `NA` values with 0?
 #'   Useful when `value_col` is a record count
 #' @param tab_name Character string to appear on the tab label. If omitted or

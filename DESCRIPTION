@@ -1,7 +1,7 @@
 Package: mantis
 Type: Package
 Title: Multiple Time Series Scanner
-Version: 1.0.0
+Version: 1.0.0.9000
 Authors@R: c(
     person(c("T.", "Phuong"), "Quan", email = "phuongquan567@outlook.com",
         role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8566-1817")),

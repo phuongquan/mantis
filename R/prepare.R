@@ -682,7 +682,8 @@ history_to_list <- function(
 #'   the item_cols
 #' @param inputspec Specification of data in df
 #' @param timepoint_limits Vector containing min and max dates for the x-axes.
-#'   Use Date type.
+#' If the `timepoint_unit` of `inputspec()` is a "day" or longer, this must be a
+#' Date type, otherwise it should be a POSIXt type.
 #'
 #'   Ensure timepoint values are the same for all items, for consistency down
 #'   the table. Also can restrict/expand data to a specified period here as
@@ -699,6 +700,7 @@ align_data_timepoints <- function(
   timepoint <- value <- NULL
 
   # convert all dates to UTC to expose any daylight savings complications
+  # NOTE: this also converts Dates to Posixct
   prepared_df$timepoint <- lubridate::with_tz(prepared_df$timepoint, tzone = "UTC")
 
   min_timepoint <- min(prepared_df$timepoint)
@@ -712,8 +714,22 @@ align_data_timepoints <- function(
       limit_type = "min")
   }
   if (!is.na(timepoint_limits[2])) {
+    # if supplied timepoint_limits[1] is NA, timepoint_limits[2] will have been
+    # coerced to int so need to convert it back to expected class
+    if (
+      is.na(timepoint_limits[1]) &&
+        inputspec$timepoint_unit %in% c("day",
+                                        "week",
+                                        "month",
+                                        "quarter",
+                                        "year")
+    ) {
+      timepoint_limits_max <- as.Date(timepoint_limits[2])
+    } else {
+      timepoint_limits_max <- timepoint_limits[2]
+    }
     max_timepoint <- adjust_timepoint_limit(
-      timepoint_limit = timepoint_limits[2],
+      timepoint_limit = timepoint_limits_max,
       timepoint_values = prepared_df$timepoint,
       timepoint_unit = inputspec$timepoint_unit,
       limit_type = "max")

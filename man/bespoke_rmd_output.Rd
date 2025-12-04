@@ -31,7 +31,9 @@ html table(s)/plot(s). If not supplied, default values will be used.}
 display}
 
 \item{timepoint_limits}{Set start and end dates for time period to include.
-Defaults to min/max of \code{timepoint_col}}
+Defaults to min/max of \code{timepoint_col}. If the \code{timepoint_unit} of
+\code{inputspec()} is a "day" or longer, this must be a Date type, otherwise it
+should be a POSIXt type.}
 
 \item{fill_with_zero}{Logical. Replace any missing or \code{NA} values with 0?
 Useful when \code{value_col} is a record count}

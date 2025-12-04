@@ -1,3 +1,9 @@
+# development version
+
+## Bug fixes and minor improvements
+
+* Fixed error when first value of `timepoint_limits` parameter in `bespoke_rmd_output()` is `NA` (#35)
+
 # mantis 1.0.0 (2025-10-27)
 
 Incorporates changes requested for acceptance into https://ropensci.org/.

@@ -1755,3 +1755,48 @@ test_that("adjust_timepoint_limit() moves supplied limit appropriately for hours
 
 })
 
+test_that("align_data_timepoints() adjusts max value correctly when timepoint_limits[1] is NA", {
+  prepared_df <- data.frame(
+    timepoint = seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "days"),
+    item.item = rep("a", 10),
+    value = rep(1, 10),
+    stringsAsFactors = FALSE
+  )
+
+  # limit is a Date
+  aligned_timepoints <-
+    align_data_timepoints(prepared_df = prepared_df,
+                          inputspec = inputspec(
+                            timepoint_col = "timepoint",
+                            item_cols = "item",
+                            value_col = "value",
+                            timepoint_unit = "day"
+                          ),
+                          timepoint_limits = c(NA, as.Date("2022-01-12"))) |>
+    dplyr::pull(timepoint) |>
+    sort()
+
+  expect_equal(aligned_timepoints,
+               seq(as.POSIXct("2022-01-01", tz = "UTC"),
+                   as.POSIXct("2022-01-12", tz = "UTC"),
+                   by = "days"))
+
+  # limit is a Posixct
+  aligned_timepoints <-
+    align_data_timepoints(prepared_df = prepared_df,
+                          inputspec = inputspec(
+                            timepoint_col = "timepoint",
+                            item_cols = "item",
+                            value_col = "value",
+                            timepoint_unit = "hour"
+                          ),
+                          timepoint_limits = c(NA, as.POSIXct("2022-01-12", tz = "UTC"))) |>
+    dplyr::pull(timepoint) |>
+    sort()
+
+  expect_equal(aligned_timepoints,
+               seq(as.POSIXct("2022-01-01", tz = "UTC"),
+                   as.POSIXct("2022-01-12", tz = "UTC"),
+                   by = "hours"))
+
+})
